@@ -51,3 +51,21 @@
 4. Bottom
 
     1. Mount holes for the FPGA board and the breakout boards.
+
+## Drawing
+
+1. Front
+
+    ![Front panel](front.png)
+
+2. Back
+
+    ![Back panel](back.png)
+
+3. Top
+
+    ![Top panel](top.png)
+
+4. Bottom
+
+    ![Bottom panel](bottom.png)
