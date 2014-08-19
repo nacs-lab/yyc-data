@@ -69,3 +69,21 @@
 4. Bottom
 
     ![Bottom panel](bottom.png)
+
+## Parts
+
+1. Ethernet feedthrough
+
+    [EHRJ45P5ES ![EHRJ45P5ES Image](img/EHRJ45P5ES.jpg)](http://www.digikey.com/product-detail/en/EHRJ45P5ES/EHRJ45P5ES-ND/2666475)
+
+2. USB feedthrough
+
+    [17-200001 ![17-200001 Image](img/17-200001.jpg)](http://www.digikey.com/product-detail/en/17-200001/626-1352-ND/2184932)
+
+3. L bracket
+
+    [621 ![621 Image](img/621.jpg)](http://www.digikey.com/product-detail/en/621/621K-ND/316544)
+
+4. Finger guard
+
+    [08174 ![08174 Image](img/08174.jpg)](http://www.digikey.com/product-detail/en/08174/CR220-ND/43240)
