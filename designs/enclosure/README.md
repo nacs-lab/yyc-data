@@ -74,7 +74,7 @@
 
 1. Ethernet feedthrough
 
-    [EHRJ45P5ES ![EHRJ45P5ES Image](img/EHRJ45P5ES.jpg)](http://www.digikey.com/product-detail/en/EHRJ45P5ES/EHRJ45P5ES-ND/2666475)
+    [EHRJ45P5ES <img src="img/EHRJ45P5ES.jpg" alt="EHRJ45P5ES Image" style="width: 10%;"/>](http://www.digikey.com/product-detail/en/EHRJ45P5ES/EHRJ45P5ES-ND/2666475)
 
 2. USB feedthrough
 
