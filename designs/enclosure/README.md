@@ -101,3 +101,14 @@
     [HA92251V4-000U-999](http://www.digikey.com/product-detail/en/HA92251V4-000U-999/259-1614-ND/1937331)
 
     ![](img/HA92251V4-000U-999.jpg)
+
+6. USB-A Power connector
+
+    [A-USBPA-R](http://www.digikey.com/product-detail/en/A-USBPA-R/AE10091-ND/1007894)
+
+    ![](img/A-USBPA-R.jpg)
+
+7. USB-A Male to USB-A Male cable
+
+    [AK670/2-1-BLACK-R](http://www.digikey.com/product-detail/en/AK670%2F2-1-BLACK-R/AE10623-ND/2391702)
+    ![](img/AK670_2_BLACK-R.jpg)
