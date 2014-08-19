@@ -75,24 +75,29 @@
 1. Ethernet feedthrough
 
     [EHRJ45P5ES](http://www.digikey.com/product-detail/en/EHRJ45P5ES/EHRJ45P5ES-ND/2666475)
+
     ![](img/EHRJ45P5ES.jpg)
 
 2. USB feedthrough
 
     [17-200001](http://www.digikey.com/product-detail/en/17-200001/626-1352-ND/2184932)
+
     ![](img/17-200001.jpg)
 
 3. L bracket
 
     [621](http://www.digikey.com/product-detail/en/621/621K-ND/316544)
+
     ![](img/621.jpg)
 
 4. Finger guard
 
     [08174](http://www.digikey.com/product-detail/en/08174/CR220-ND/43240)
+
     ![](img/08174.jpg)
 
 5. Fan
 
     [HA92251V4-000U-999](http://www.digikey.com/product-detail/en/HA92251V4-000U-999/259-1614-ND/1937331)
+
     ![](img/HA92251V4-000U-999.jpg)
