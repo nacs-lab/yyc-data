@@ -88,11 +88,11 @@ Pumping rate from state $n$ to $m$: $\Gamma_{mn}$\\
 
 Diagonal terms,
 \eqar{
-  \pdiff{\rho_{mm}}{t}=&-\rho_{mm}\sum_k\Gamma_{km}+\sum_k\rho_{kk}\Gamma_{mk}+\ui\sum_k\paren{\rho_{mk}\Omega_{km}-\Omega_{mk}\rho_{km}}
+  \diff{\rho_{mm}}{t}=&-\rho_{mm}\sum_k\Gamma_{km}+\sum_k\rho_{kk}\Gamma_{mk}+\ui\sum_k\paren{\rho_{mk}\Omega_{km}-\Omega_{mk}\rho_{km}}
 }
 Off-diagnal terms,
 \eqar{
-  \pdiff{\rho_{mn}}{t}=&-\frac{\rho_{mn}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{kn}}+\ui\sum_k\paren{\rho_{mk}\Omega_{kn}-\Omega_{mk}\rho_{kn}}
+  \diff{\rho_{mn}}{t}=&-\frac{\rho_{mn}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{kn}}+\ui\sum_k\paren{\rho_{mk}\Omega_{kn}-\Omega_{mk}\rho_{kn}}
 }
 
 When only one sideband is driven,
@@ -100,11 +100,36 @@ When only one sideband is driven,
   \Omega_{mn}=&\Omega_{m}\delta_{m,n-\Delta}+\Omega_{n}\delta_{n,m-\Delta}
 }
 where $Delta$ include both the change in vibrational level and internal level.\\
-With $p_n=\rho{nn}$, the equations becomes,
+Define $p_n=\rho_{nn}$, the equations becomes,
 \eqar{
-  \pdiff{p_{m}}{t}=&\sum_k\paren{p_{k}\Gamma_{mk}-p_{m}\Gamma_{km}}+\ui\paren{\rho_{m,m-\Delta}\Omega_{m-\Delta}-\Omega_{m}\rho_{m+\Delta, m}+\rho_{m,m+\Delta}\Omega_{m}-\Omega_{m-\Delta}\rho_{m-\Delta,m}}\\
-  \pdiff{\rho_{m,m+\Delta}}{t}=&-\frac{\rho_{m,m+\Delta}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{k,m+\Delta}}+\ui\Omega_{m}\paren{\rho_{mm}-\rho_{m+\Delta,m+\Delta}}
+  \diff{p_{m}}{t}=&\sum_k\paren{p_{k}\Gamma_{mk}-p_{m}\Gamma_{km}}+\ui\paren{\rho_{m,m-\Delta}\Omega_{m-\Delta}-\Omega_{m}\rho_{m+\Delta, m}+\rho_{m,m+\Delta}\Omega_{m}-\Omega_{m-\Delta}\rho_{m-\Delta,m}}\\
+  \diff{\rho_{m,m+\Delta}}{t}=&-\frac{\rho_{m,m+\Delta}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{k,m+\Delta}}+\ui\Omega_{m}\paren{p_{m}-p_{m+\Delta}}
 }
-$\rho_{mn}$'s with $\abs{m-n}\neq0,\Delta$ are ignored since they are $0$. In particular, since $\Delta$ includes change of internal levels, elements with $\abs{m-n}\geqslant2\Delta$ does not exist.
+$\rho_{mn}$'s with $\abs{m-n}\neq0,\Delta$ are ignored since they are $0$. In particular, since $\Delta$ includes change of internal levels, elements with $\abs{m-n}\geqslant2\Delta$ does not exist.\\
+
+Define $q_n=\ui\rho_{n,n+\Delta}$,
+\eqar{
+  \rho_{n,n+\Delta}=&-\ui q_n\\
+  \rho_{n+\Delta,n}=&\ui q_n^*
+}
+\eqar{
+  \diff{p_{m}}{t}=&\sum_k\paren{p_{k}\Gamma_{mk}-p_{m}\Gamma_{km}}+\ui\paren{\ui q_{m-\Delta}^*\Omega_{m-\Delta}-\ui\Omega_{m}q_{m}^*-\ui q_m\Omega_{m}+\ui\Omega_{m-\Delta}q_{m-\Delta}}\\
+  -\ui\diff{q_m}{t}=&\ui\frac{q_{m}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{k,m+\Delta}}+\ui\Omega_{m}\paren{p_{m}-p_{m+\Delta}}\\
+  \diff{p_{m}}{t}=&\sum_k\paren{p_{k}\Gamma_{mk}-p_{m}\Gamma_{km}}+\Omega_{m}\paren{q_{m}^*+q_m}-\Omega_{m-\Delta}\paren{q_{m-\Delta}^*+q_{m-\Delta}}\\
+  \diff{q_m}{t}=&-\frac{q_{m}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{k,m+\Delta}}+\Omega_{m}\paren{p_{m+\Delta}-p_{m}}
+}
+For a process starting with $q_m=0$, $q_m$ will always remain real.
+\eqar{
+  \diff{p_{m}}{t}=&\sum_kp_{k}\Gamma_{mk}-p_{m}\Gamma_{m}+2\Omega_{m}q_m-2\Omega_{m-\Delta}q_{m-\Delta}\\
+  \diff{q_m}{t}=&-\frac{q_{m}}{2}\paren{\Gamma_{m}+\Gamma_{m+\Delta}}+\Omega_{m}\paren{p_{m+\Delta}-p_{m}}
+}
+where $\Gamma_m\equiv\displaystyle\sum_k\Gamma_{km}$ is the decay rate of state $m$.\\
+
+After writing the two internal states ($a$ and $b$) explicitly,
+\eqar{
+  \diff{p^a_{m}}{t}=&\sum_{\alpha=a,b;k}p^\alpha_{k}\Gamma^{a\alpha}_{mk}-p^a_{m}\Gamma^a_{m}+2\Omega_{m}q_m\\
+  \diff{p^b_{m}}{t}=&\sum_{\alpha=a,b;k}p^\alpha_{k}\Gamma^{b\alpha}_{mk}-p^b_{m}\Gamma^b_{m}-2\Omega_{m-\delta}q_{m-\delta}\\
+  \diff{q_m}{t}=&-\frac{q_{m}}{2}\paren{\Gamma^a_{m}+\Gamma^b_{m+\delta}}+\Omega_{m}\paren{p^b_{m+\delta}-p^a_{m}}
+}
 
 \end{document}
