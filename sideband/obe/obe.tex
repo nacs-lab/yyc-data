@@ -95,5 +95,16 @@ Off-diagnal terms,
   \pdiff{\rho_{mn}}{t}=&-\frac{\rho_{mn}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{kn}}+\ui\sum_k\paren{\rho_{mk}\Omega_{kn}-\Omega_{mk}\rho_{kn}}
 }
 
+When only one sideband is driven,
+\eqar{
+  \Omega_{mn}=&\Omega_{m}\delta_{m,n-\Delta}+\Omega_{n}\delta_{n,m-\Delta}
+}
+where $Delta$ include both the change in vibrational level and internal level.\\
+With $p_n=\rho{nn}$, the equations becomes,
+\eqar{
+  \pdiff{p_{m}}{t}=&\sum_k\paren{p_{k}\Gamma_{mk}-p_{m}\Gamma_{km}}+\ui\paren{\rho_{m,m-\Delta}\Omega_{m-\Delta}-\Omega_{m}\rho_{m+\Delta, m}+\rho_{m,m+\Delta}\Omega_{m}-\Omega_{m-\Delta}\rho_{m-\Delta,m}}\\
+  \pdiff{\rho_{m,m+\Delta}}{t}=&-\frac{\rho_{m,m+\Delta}}{2}\sum_k\paren{\Gamma_{km}+\Gamma_{k,m+\Delta}}+\ui\Omega_{m}\paren{\rho_{mm}-\rho_{m+\Delta,m+\Delta}}
+}
+$\rho_{mn}$'s with $\abs{m-n}\neq0,\Delta$ are ignored since they are $0$. In particular, since $\Delta$ includes change of internal levels, elements with $\abs{m-n}\geqslant2\Delta$ does not exist.
 
 \end{document}
