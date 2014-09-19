@@ -125,11 +125,34 @@ For a process starting with $q_m=0$, $q_m$ will always remain real.
 }
 where $\Gamma_m\equiv\displaystyle\sum_k\Gamma_{km}$ is the decay rate of state $m$.\\
 
-After writing the two internal states ($a$ and $b$) explicitly,
+After writing the two internal states ($a$ and $b$) explicitly and adding a third state ($c$) to take into account $m_F$ pumping,
 \eqar{
-  \diff{p^a_{m}}{t}=&\sum_{\alpha=a,b;k}p^\alpha_{k}\Gamma^{a\alpha}_{mk}-p^a_{m}\Gamma^a_{m}+2\Omega_{m}q_m\\
-  \diff{p^b_{m}}{t}=&\sum_{\alpha=a,b;k}p^\alpha_{k}\Gamma^{b\alpha}_{mk}-p^b_{m}\Gamma^b_{m}-2\Omega_{m-\delta}q_{m-\delta}\\
+  \diff{p^a_{m}}{t}=&\sum_{\alpha=a,b,c;k}p^\alpha_{k}\Gamma^{a\alpha}_{mk}-p^a_{m}\Gamma^a_{m}+2\Omega_{m}q_m\\
+  \diff{p^b_{m}}{t}=&\sum_{\alpha=a,b,c;k}p^\alpha_{k}\Gamma^{b\alpha}_{mk}-p^b_{m}\Gamma^b_{m}-2\Omega_{m-\delta}q_{m-\delta}\\
+  \diff{p^c_{m}}{t}=&\sum_{\alpha=a,b,c;k}p^\alpha_{k}\Gamma^{c\alpha}_{mk}-p^c_{m}\Gamma^c_{m}\\
   \diff{q_m}{t}=&-\frac{q_{m}}{2}\paren{\Gamma^a_{m}+\Gamma^b_{m+\delta}}+\Omega_{m}\paren{p^b_{m+\delta}-p^a_{m}}
 }
+For sodium, states $a$, $b$ and $c$ corresponds to $|F=1, m_F=1\rangle$, $|F=2, m_F=2\rangle$ and  $|F=2, m_F=1\rangle$.\\
+
+When the trapping frequency is much smaller than the line width, $\Gamma^\alpha_m$ is independent with $m$ and is proportional to the corresponding pumping power. $\Gamma^{\alpha\beta}_{mn}$ can be written as,
+\eqar{
+  \Gamma^{\alpha\beta}_{mn}=&\Gamma^{\alpha\beta}\gamma_{mn}\\
+  =&\begin{pmatrix}
+    \Gamma^{aa}&\Gamma^{ab}&\Gamma^{ac}\\
+    \Gamma^{ba}&\Gamma^{bb}&\Gamma^{bc}\\
+    \Gamma^{ca}&\Gamma^{cb}&\Gamma^{cc}
+  \end{pmatrix}\gamma_{mn}\\
+  =&\begin{pmatrix}
+    \Gamma^aB^{aa}&\Gamma^bB^{ab}&\Gamma^cB^{ac}\\
+    \Gamma^aB^{ba}&\Gamma^bB^{bb}&\Gamma^cB^{bc}\\
+    \Gamma^aB^{ca}&\Gamma^bB^{cb}&\Gamma^cB^{cc}
+  \end{pmatrix}\gamma_{mn}\\
+  =&\begin{pmatrix}
+    \Gamma_1B^{aa}&\varepsilon\Gamma_2B^{ab}&\Gamma_2B^{ac}\\
+    \Gamma_1B^{ba}&\varepsilon\Gamma_2B^{bb}&\Gamma_2B^{bc}\\
+    \Gamma_1B^{ca}&\varepsilon\Gamma_2B^{cb}&\Gamma_2B^{cc}
+  \end{pmatrix}\gamma_{mn}
+}
+where $B^{\alpha\beta}$ is the branching ratio, $\Gamma_1$ is the $F$ pumping power ($(1, 1) \rightarrow (2, 2)'$ light), $\Gamma_2$ is the $m_F$ pumping power ($(2, 1) \rightarrow (2, 2)'$ light) and $\varepsilon$ is the off-resonance coupling of the $m_F$ pumping light to the $(2, 2) \rightarrow (2, 3)'$ transition.
 
 \end{document}
