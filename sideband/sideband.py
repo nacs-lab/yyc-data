@@ -1,10 +1,50 @@
 #!/usr/bin/env python
 
 import os.path as _path
-from pyscical.ocl.ode import ElwiseOdeSolver
-from pyscical.ocl.utils import CLArg
 import numpy as np
 import pyopencl as cl
+from cffi import FFI
+
+from pyscical.ocl.ode import ElwiseOdeSolver
+from pyscical.ocl.utils import CLArg
+from pyscical.utils import cffi_ptr
+from pyscical.atomic import sideband_strength, sideband_scatter_strength
+
+_ffi = FFI()
+_ffi.cdef('''
+void _fill_gidx_minmax(unsigned dim, float *gamma,
+                       float *min_out, float *max_out);''')
+_lib = _ffi.verify('''
+#include <math.h>
+
+static const float gamma_thresh = 1e-10;
+
+static void
+_fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
+                  unsigned *max_out)
+{
+#pragma omp parallel for
+    for (unsigned i = 0;i < dim;i++) {
+        float *row = gamma + i * dim;
+        int j = 0;
+        for (;(unsigned)j < dim;j++) {
+            if (fabsf(row[j]) > gamma_thresh) {
+                break;
+            }
+        }
+        min_out[i] = j;
+
+        j = dim - 1;
+        for (;j >= 0;j--) {
+            if (fabsf(row[j]) > gamma_thresh) {
+                break;
+            }
+        }
+        max_out[i] = j + 1;
+    }
+}
+''', extra_compile_args=['-w', '-fopenmp', '-O2', '-std=gnu99'],
+extra_link_args=['-fopenmp'])
 
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                     omegas_x, omegas_y, omegas_z, h_t, gamma_totals,
@@ -60,7 +100,39 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    return events, gamma_xyz
+    # Probably faster if doing is on GPU
+    gidx_minmax_xyz_cpu = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
+
+    gidxmin_x = gidx_minmax_xyz_cpu[:dim_x]
+    gidxmin_y = gidx_minmax_xyz_cpu[dim_x:dim_x + dim_y]
+    gidxmin_z = gidx_minmax_xyz_cpu[dim_x + dim_y:dim_x + dim_y + dim_z]
+
+    gidxmax_x = gidx_minmax_xyz_cpu[dim_x + dim_y + dim_z:
+                                    dim_x * 2 + dim_y + dim_z]
+    gidxmax_y = gidx_minmax_xyz_cpu[dim_x * 2 + dim_y + dim_z:
+                                dim_x * 2 + dim_y * 2 + dim_z]
+    gidxmax_z = gidx_minmax_xyz_cpu[dim_x * 2 + dim_y * 2 + dim_z:]
+    _lib._fill_gidx_minmax(dim_x, cffi_ptr(gamma_x, _ffi)[0],
+                           cffi_ptr(gidxmin_x, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_x, _ffi, writable=True)[0])
+    _lib._fill_gidx_minmax(dim_y, cffi_ptr(gamma_y, _ffi)[0],
+                           cffi_ptr(gidxmin_y, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_y, _ffi, writable=True)[0])
+    _lib._fill_gidx_minmax(dim_z, cffi_ptr(gamma_z, _ffi)[0],
+                           cffi_ptr(gidxmin_z, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_z, _ffi, writable=True)[0])
+
+    gidx_minmax_xyz = cl.Buffer(ctx, mf.READ_ONLY, (dim_x + dim_y + dim_z) * 8)
+    events.append(cl.enqueue_copy(queue, gidx_minmax_xyz, gidx_minmax_xyz_cpu,
+                                  device_offset=0, is_blocking=False))
+
+    return events, gidx_minmax_xyz
+    CLArg('pump_branch', 'gcfloat_p'),
+    CLArg('omegas', 'gcfloat_p'),
+    CLArg('seq_len', 'unsigned'),
+    CLArg('gamma_total', 'gcfloat_p'),
+    CLArg('delta_xyz', 'gcuint_p'),
+    CLArg('omega_xyz_offset', 'gcuint_p')
 
     res, evt = solver.run(t0, t1, h, y0, queue,
                           extra_args=(np.float32(h_x), np.int64(len_x)))
@@ -73,9 +145,24 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
 def main():
     ctx = cl.create_some_context()
     queue = cl.CommandQueue(ctx)
-    gamma_x = np.ones([100, 100]).astype(np.float32)
-    gamma_y = np.zeros([100, 100]).astype(np.float32)
-    gamma_z = np.ones([30, 30]).astype(np.float32)
+    dim_x = 100
+    dim_y = 100
+    dim_z = 30
+    gamma_x = np.empty([dim_x, dim_x], np.float32)
+    gamma_y = np.empty([dim_y, dim_y], np.float32)
+    gamma_z = np.empty([dim_z, dim_z], np.float32)
+
+    for i in range(dim_x):
+        for j in range(dim_x):
+            gamma_x[i, j] = sideband_scatter_strength(i, j, 0.2, 0)
+
+    for i in range(dim_y):
+        for j in range(dim_y):
+            gamma_y[i, j] = sideband_scatter_strength(i, j, 0.2, np.pi / 2)
+
+    for i in range(dim_z):
+        for j in range(dim_z):
+            gamma_z[i, j] = sideband_scatter_strength(i, j, 0.6, np.pi / 2)
 
     pump_branch = None
     omegas_x = None
@@ -86,19 +173,36 @@ def main():
     delta_xyz = None
     omega_xyz = None
 
-    events, gamma_xyz = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z,
-                                        pump_branch, omegas_x, omegas_y,
-                                        omegas_z, h_t, gamma_totals,
-                                        delta_xyz, omega_xyz)
+    events, gidx_minmax_xyz = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+                                              gamma_z, pump_branch, omegas_x,
+                                              omegas_y, omegas_z, h_t,
+                                              gamma_totals, delta_xyz,
+                                              omega_xyz)
 
     cl.wait_for_events(events)
 
-    res_np = np.empty(100**2 * 2 + 30**2, np.float32)
-    cl.enqueue_copy(queue, res_np, gamma_xyz)
+    res_np = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
+    cl.enqueue_copy(queue, res_np, gidx_minmax_xyz)
 
-    print(res_np[:100**2])
-    print(res_np[100**2:100**2 * 2])
-    print(res_np[100**2 * 2:100**2 * 2 + 30**2])
+    gidxmin_x = res_np[:dim_x]
+    gidxmin_y = res_np[dim_x:dim_x + dim_y]
+    gidxmin_z = res_np[dim_x + dim_y:dim_x + dim_y + dim_z]
+
+    gidxmax_x = res_np[dim_x + dim_y + dim_z: dim_x * 2 + dim_y + dim_z]
+    gidxmax_y = res_np[dim_x * 2 + dim_y + dim_z:dim_x * 2 + dim_y * 2 + dim_z]
+    gidxmax_z = res_np[dim_x * 2 + dim_y * 2 + dim_z:]
+
+    print(gidxmin_x)
+    print(gidxmin_y)
+    print(gidxmin_z)
+
+    print(gidxmax_x)
+    print(gidxmax_y)
+    print(gidxmax_z)
+
+    print(gidxmax_x - gidxmin_x)
+    print(gidxmax_y - gidxmin_y)
+    print(gidxmax_z - gidxmin_z)
 
 if __name__ == '__main__':
     main()
