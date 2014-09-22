@@ -113,9 +113,47 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                                                        gamma_z),
                                   device_offset=0, is_blocking=False))
 
+    if pump_branch.dtype != np.float32:
+        raise TypeError("The type of pump_branch should be float32.")
     pump_branch_gpu = cl.Buffer(ctx, mf.READ_ONLY, 36)
     events.append(cl.enqueue_copy(queue, pump_branch_gpu, pump_branch,
                                   device_offset=0, is_blocking=False))
+
+    num_omg_x, d = omegas_x.shape
+    if dim_x != d:
+        raise ValueError("The second dimension of omegas_x is not "
+                         "the same with dim_x.")
+    if omegas_x.dtype != np.float32:
+        raise TypeError("The type of omegas_x should be float32.")
+
+    num_omg_y, d = omegas_y.shape
+    if dim_y != d:
+        raise ValueError("The second dimension of omegas_y is not "
+                         "the same with dim_y.")
+    if omegas_y.dtype != np.float32:
+        raise TypeError("The type of omegas_y should be float32.")
+
+    num_omg_z, d = omegas_z.shape
+    if dim_z != d:
+        raise ValueError("The second dimension of omegas_z is not "
+                         "the same with dim_z.")
+    if omegas_z.dtype != np.float32:
+        raise TypeError("The type of omegas_z should be float32.")
+
+    omegas = cl.Buffer(ctx, mf.READ_ONLY,
+                           (num_omg_x * dim_x + num_omg_y * dim_y +
+                            num_omg_z * dim_z) * 4)
+    events.append(cl.enqueue_copy(queue, omegas, omegas_x,
+                                  device_offset=0, is_blocking=False))
+    events.append(cl.enqueue_copy(queue, omegas, omegas_y,
+                                  device_offset=num_omg_x * dim_x * 4,
+                                  is_blocking=False))
+    events.append(cl.enqueue_copy(queue, omegas, omegas_z,
+                                  device_offset=(num_omg_x * dim_x +
+                                                 num_omg_y * dim_y) * 4,
+                                  is_blocking=False))
+
+    h_t = np.float32(h_t)
 
     dev = queue.device
     src = """
@@ -137,8 +175,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    return events, pump_branch_gpu
-    CLArg('omegas', 'gcfloat_p'),
+    return events, omegas
     CLArg('seq_len', 'unsigned'),
     CLArg('gamma_total', 'gcfloat_p'),
     CLArg('delta_xyz', 'gcuint_p'),
@@ -177,25 +214,30 @@ def main():
     pump_branch = np.array([[0.500, 0.333, 0.167],
                             [0.006, 0.171, 0.002],
                             [0.500, 0.333, 0.167]], np.float32)
-    omegas_x = None
-    omegas_y = None
-    omegas_z = None
-    h_t = None
+    num_omg_x = 10
+    num_omg_y = 10
+    num_omg_z = 10
+    omegas_x = np.ones([num_omg_x, dim_x], np.float32)
+    omegas_y = np.zeros([num_omg_y, dim_y], np.float32)
+    omegas_z = np.ones([num_omg_z, dim_z], np.float32)
+    h_t = 0.1
     gamma_totals = None
     delta_xyz = None
     omega_xyz = None
 
-    events, pump_branch_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
-                                              gamma_z, pump_branch, omegas_x,
-                                              omegas_y, omegas_z, h_t,
-                                              gamma_totals, delta_xyz,
-                                              omega_xyz)
+    events, omegas = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+                                     gamma_z, pump_branch, omegas_x,
+                                     omegas_y, omegas_z, h_t,
+                                     gamma_totals, delta_xyz, omega_xyz)
 
     cl.wait_for_events(events)
 
-    res_np = np.empty(9, np.float32)
-    cl.enqueue_copy(queue, res_np, pump_branch_gpu)
-    print(res_np)
+    res_np = np.empty(num_omg_x * dim_x + num_omg_y * dim_y + num_omg_z * dim_z,
+                      np.float32)
+    cl.enqueue_copy(queue, res_np, omegas)
+    print(res_np[:num_omg_x * dim_x])
+    print(res_np[num_omg_x * dim_x:num_omg_x * dim_x + num_omg_y * dim_y])
+    print(res_np[num_omg_x * dim_x + num_omg_y * dim_y:])
 
 if __name__ == '__main__':
     main()
