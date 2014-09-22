@@ -94,14 +94,14 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
 {
     const ODT *odt = &step->odt;
     float res = 0;
-    float *gamma_branch = &step->gamma_branch[branch][0];
+    const float *gamma_branch = &step->gamma_branch[branch][0];
     // Also try using the other dimension
     gcfloat_p gamma_xs = &odt->gamma_x[i_x];
     gcfloat_p gamma_ys = &odt->gamma_y[i_y];
     gcfloat_p gamma_zs = &odt->gamma_z[i_z];
-    for (unsigned i = odt->gidxmin_x;i < odt->gidxmax_x;i++) {
-        for (unsigned j = odt->gidxmin_y;j < odt->gidxmax_y;j++) {
-            for (unsigned k = odt->gidxmin_z;k < odt->gidxmax_z;k++) {
+    for (unsigned i = odt->gidxmin_x[i_x];i < odt->gidxmax_x[i_x];i++) {
+        for (unsigned j = odt->gidxmin_y[i_y];j < odt->gidxmax_y[i_y];j++) {
+            for (unsigned k = odt->gidxmin_z[i_z];k < odt->gidxmax_z[i_z];k++) {
                 unsigned ijk = calc_idx_3d(odt, i, j, k);
                 unsigned idx = ijk * odt->total_dim + i_3d;
                 float pa = mat->pas[idx];
@@ -127,7 +127,8 @@ diff_pa(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
 {
     const ODT *odt = &step->odt;
     float res = diff_pump(step, mat, cur_val, i_x, i_y, i_z, i_3d, 0);
-    return res + 2 * omega_x[i_x] * omega_y[i_y] * omega_z[i_z] * mat->qs[i_3d];
+    return res + (2 * step->omega_x[i_x] * step->omega_y[i_y] *
+                  step->omega_z[i_z] * mat->qs[i_3d]);
 }
 
 static float
@@ -142,7 +143,8 @@ diff_pb(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     unsigned i_x_new = i_x - step->delta_x;
     unsigned i_y_new = i_y - step->delta_y;
     unsigned i_z_new = i_z - step->delta_z;
-    return (res + 2 * omega_x[i_x_new] * omega_y[i_y_new] * omega_z[i_z_new] *
+    return (res + 2 * step->omega_x[i_x_new] * step->omega_y[i_y_new] *
+            step->omega_z[i_z_new] *
             mat->qs[calc_idx_3d(odt, i_x_new, i_y_new, i_z_new)]);
 }
 
@@ -166,7 +168,7 @@ diff_q(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
         return 0;
     }
     float res = -cur_val / 2 * (step->gamma_total[0] + step->gamma_total[1]);
-    float omega = omega_x[i_x] * omega_y[i_y] * omega_z[i_z];
+    float omega = step->omega_x[i_x] * step->omega_y[i_y] * step->omega_z[i_z];
     return omega * (mat->pbs[calc_idx_3d(odt, i_x_new, i_y_new, i_z_new)]
                     - mat->pas[i_3d]);
 }
@@ -211,9 +213,9 @@ fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
     step->delta_y = seq->delta_y[idx_t];
     step->delta_z = seq->delta_z[idx_t];
 
-    step->omega_x = step->odt.omega + seq->omega_x_offset[idx_t];
-    step->omega_y = step->odt.omega + seq->omega_y_offset[idx_t];
-    step->omega_z = step->odt.omega + seq->omega_z_offset[idx_t];
+    step->omega_x = step->odt.omegas + seq->omega_x_offset[idx_t];
+    step->omega_y = step->odt.omegas + seq->omega_y_offset[idx_t];
+    step->omega_z = step->odt.omegas + seq->omega_z_offset[idx_t];
 }
 
 static float
@@ -221,7 +223,7 @@ calc_sbcooling_diff(float t, gcfloat_p mat_in, unsigned glob_idx, float cur_val,
                     unsigned dim_x, unsigned dim_y, unsigned dim_z,
                     gcfloat_p gamma_xyz, gcuint_p gidx_minmax_xyz,
                     gcfloat_p pump_branch, gcfloat_p omegas,
-                    float h_t, gcfloat_p gamma_total, unsigned seq_len,
+                    float h_t, unsigned seq_len, gcfloat_p gamma_total,
                     gcuint_p delta_xyz, gcuint_p omega_xyz_offset)
 {
     CoolingStep step;
