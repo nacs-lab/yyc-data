@@ -60,8 +60,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    print(events)
-    return
+    return events, gamma_xyz
 
     res, evt = solver.run(t0, t1, h, y0, queue,
                           extra_args=(np.float32(h_x), np.int64(len_x)))
@@ -87,9 +86,19 @@ def main():
     delta_xyz = None
     omega_xyz = None
 
-    evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
-                    omegas_x, omegas_y, omegas_z, h_t, gamma_totals,
-                    delta_xyz, omega_xyz)
+    events, gamma_xyz = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z,
+                                        pump_branch, omegas_x, omegas_y,
+                                        omegas_z, h_t, gamma_totals,
+                                        delta_xyz, omega_xyz)
+
+    cl.wait_for_events(events)
+
+    res_np = np.empty(100**2 * 2 + 30**2, np.float32)
+    cl.enqueue_copy(queue, res_np, gamma_xyz)
+
+    print(res_np[:100**2])
+    print(res_np[100**2:100**2 * 2])
+    print(res_np[100**2 * 2:100**2 * 2 + 30**2])
 
 if __name__ == '__main__':
     main()
