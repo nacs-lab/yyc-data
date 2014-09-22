@@ -46,6 +46,30 @@ _fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
 ''', extra_compile_args=['-w', '-fopenmp', '-O2', '-std=gnu99'],
 extra_link_args=['-fopenmp'])
 
+def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
+    # Probably faster if doing is on GPU
+    gidx_minmax_xyz = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
+
+    gidxmin_x = gidx_minmax_xyz[:dim_x]
+    gidxmin_y = gidx_minmax_xyz[dim_x:dim_x + dim_y]
+    gidxmin_z = gidx_minmax_xyz[dim_x + dim_y:dim_x + dim_y + dim_z]
+
+    gidxmax_x = gidx_minmax_xyz[dim_x + dim_y + dim_z:
+                                    dim_x * 2 + dim_y + dim_z]
+    gidxmax_y = gidx_minmax_xyz[dim_x * 2 + dim_y + dim_z:
+                                dim_x * 2 + dim_y * 2 + dim_z]
+    gidxmax_z = gidx_minmax_xyz[dim_x * 2 + dim_y * 2 + dim_z:]
+    _lib._fill_gidx_minmax(dim_x, cffi_ptr(gamma_x, _ffi)[0],
+                           cffi_ptr(gidxmin_x, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_x, _ffi, writable=True)[0])
+    _lib._fill_gidx_minmax(dim_y, cffi_ptr(gamma_y, _ffi)[0],
+                           cffi_ptr(gidxmin_y, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_y, _ffi, writable=True)[0])
+    _lib._fill_gidx_minmax(dim_z, cffi_ptr(gamma_z, _ffi)[0],
+                           cffi_ptr(gidxmin_z, _ffi, writable=True)[0],
+                           cffi_ptr(gidxmax_z, _ffi, writable=True)[0])
+    return gidx_minmax_xyz
+
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                     omegas_x, omegas_y, omegas_z, h_t, gamma_totals,
                     delta_xyz, omega_xyz):
@@ -68,9 +92,10 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
         raise TypeError("The type of gamma_z should be float32.")
 
     mf = cl.mem_flags
+    events = []
+
     gamma_xyz = cl.Buffer(ctx, mf.READ_ONLY,
                           (dim_x**2 + dim_y**2 + dim_z**2) * 4)
-    events = []
     events.append(cl.enqueue_copy(queue, gamma_xyz, gamma_x,
                                   device_offset=0, is_blocking=False))
     events.append(cl.enqueue_copy(queue, gamma_xyz, gamma_y,
@@ -79,6 +104,18 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     events.append(cl.enqueue_copy(queue, gamma_xyz, gamma_z,
                                   device_offset=(dim_x**2 + dim_y**2) * 4,
                                   is_blocking=False))
+
+    # Probably faster if doing is on GPU
+    gidx_minmax_xyz = cl.Buffer(ctx, mf.READ_ONLY, (dim_x + dim_y + dim_z) * 8)
+    events.append(cl.enqueue_copy(queue, gidx_minmax_xyz,
+                                  _get_gidx_minmax_xyz(dim_x, dim_y, dim_z,
+                                                       gamma_x, gamma_y,
+                                                       gamma_z),
+                                  device_offset=0, is_blocking=False))
+
+    pump_branch_gpu = cl.Buffer(ctx, mf.READ_ONLY, 36)
+    events.append(cl.enqueue_copy(queue, pump_branch_gpu, pump_branch,
+                                  device_offset=0, is_blocking=False))
 
     dev = queue.device
     src = """
@@ -100,38 +137,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    # Probably faster if doing is on GPU
-    gidx_minmax_xyz_cpu = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
-
-    gidxmin_x = gidx_minmax_xyz_cpu[:dim_x]
-    gidxmin_y = gidx_minmax_xyz_cpu[dim_x:dim_x + dim_y]
-    gidxmin_z = gidx_minmax_xyz_cpu[dim_x + dim_y:dim_x + dim_y + dim_z]
-
-    gidxmax_x = gidx_minmax_xyz_cpu[dim_x + dim_y + dim_z:
-                                    dim_x * 2 + dim_y + dim_z]
-    gidxmax_y = gidx_minmax_xyz_cpu[dim_x * 2 + dim_y + dim_z:
-                                dim_x * 2 + dim_y * 2 + dim_z]
-    gidxmax_z = gidx_minmax_xyz_cpu[dim_x * 2 + dim_y * 2 + dim_z:]
-    _lib._fill_gidx_minmax(dim_x, cffi_ptr(gamma_x, _ffi)[0],
-                           cffi_ptr(gidxmin_x, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_x, _ffi, writable=True)[0])
-    _lib._fill_gidx_minmax(dim_y, cffi_ptr(gamma_y, _ffi)[0],
-                           cffi_ptr(gidxmin_y, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_y, _ffi, writable=True)[0])
-    _lib._fill_gidx_minmax(dim_z, cffi_ptr(gamma_z, _ffi)[0],
-                           cffi_ptr(gidxmin_z, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_z, _ffi, writable=True)[0])
-
-    gidx_minmax_xyz = cl.Buffer(ctx, mf.READ_ONLY, (dim_x + dim_y + dim_z) * 8)
-    events.append(cl.enqueue_copy(queue, gidx_minmax_xyz, gidx_minmax_xyz_cpu,
-                                  device_offset=0, is_blocking=False))
-
-    pump_branch_gpu = cl.Buffer(ctx, mf.READ_ONLY, 36)
-    events.append(cl.enqueue_copy(queue, pump_branch_gpu, pump_branch,
-                                  device_offset=0, is_blocking=False))
-
     return events, pump_branch_gpu
-    CLArg('pump_branch', 'gcfloat_p'),
     CLArg('omegas', 'gcfloat_p'),
     CLArg('seq_len', 'unsigned'),
     CLArg('gamma_total', 'gcfloat_p'),
