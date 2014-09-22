@@ -71,7 +71,7 @@ def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
     return gidx_minmax_xyz
 
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
-                    omegas_x, omegas_y, omegas_z, h_t, gamma_totals,
+                    omegas_x, omegas_y, omegas_z, h_t, gamma_total,
                     delta_xyz, omega_xyz):
     dim_x, d = gamma_x.shape
     if dim_x != d:
@@ -140,20 +140,29 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     if omegas_z.dtype != np.float32:
         raise TypeError("The type of omegas_z should be float32.")
 
-    omegas = cl.Buffer(ctx, mf.READ_ONLY,
+    omegas_gpu = cl.Buffer(ctx, mf.READ_ONLY,
                            (num_omg_x * dim_x + num_omg_y * dim_y +
                             num_omg_z * dim_z) * 4)
-    events.append(cl.enqueue_copy(queue, omegas, omegas_x,
+    events.append(cl.enqueue_copy(queue, omegas_gpu, omegas_x,
                                   device_offset=0, is_blocking=False))
-    events.append(cl.enqueue_copy(queue, omegas, omegas_y,
+    events.append(cl.enqueue_copy(queue, omegas_gpu, omegas_y,
                                   device_offset=num_omg_x * dim_x * 4,
                                   is_blocking=False))
-    events.append(cl.enqueue_copy(queue, omegas, omegas_z,
+    events.append(cl.enqueue_copy(queue, omegas_gpu, omegas_z,
                                   device_offset=(num_omg_x * dim_x +
                                                  num_omg_y * dim_y) * 4,
                                   is_blocking=False))
 
     h_t = np.float32(h_t)
+    seq_len, d = gamma_total.shape
+    if d != 3:
+        raise TypeError("Second dimension of gamma_total should be 3.")
+    if gamma_total.dtype != np.float32:
+        raise TypeError("The type of gamma_total should be float32.")
+    seq_len = np.uint32(seq_len)
+    gamma_total_gpu = cl.Buffer(ctx, mf.READ_ONLY, seq_len * 12)
+    events.append(cl.enqueue_copy(queue, gamma_total_gpu, gamma_total,
+                                  device_offset=0, is_blocking=False))
 
     dev = queue.device
     src = """
@@ -175,9 +184,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    return events, omegas
-    CLArg('seq_len', 'unsigned'),
-    CLArg('gamma_total', 'gcfloat_p'),
+    return events, gamma_total_gpu
     CLArg('delta_xyz', 'gcuint_p'),
     CLArg('omega_xyz_offset', 'gcuint_p')
 
@@ -221,23 +228,21 @@ def main():
     omegas_y = np.zeros([num_omg_y, dim_y], np.float32)
     omegas_z = np.ones([num_omg_z, dim_z], np.float32)
     h_t = 0.1
-    gamma_totals = None
+    seq_len = 1000
+    gamma_total = np.ones([seq_len, 3], np.float32)
     delta_xyz = None
     omega_xyz = None
 
-    events, omegas = evolve_sideband(ctx, queue, gamma_x, gamma_y,
-                                     gamma_z, pump_branch, omegas_x,
-                                     omegas_y, omegas_z, h_t,
-                                     gamma_totals, delta_xyz, omega_xyz)
+    events, gamma_total_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+                                              gamma_z, pump_branch, omegas_x,
+                                              omegas_y, omegas_z, h_t,
+                                              gamma_total, delta_xyz, omega_xyz)
 
     cl.wait_for_events(events)
 
-    res_np = np.empty(num_omg_x * dim_x + num_omg_y * dim_y + num_omg_z * dim_z,
-                      np.float32)
-    cl.enqueue_copy(queue, res_np, omegas)
-    print(res_np[:num_omg_x * dim_x])
-    print(res_np[num_omg_x * dim_x:num_omg_x * dim_x + num_omg_y * dim_y])
-    print(res_np[num_omg_x * dim_x + num_omg_y * dim_y:])
+    res_np = np.empty(seq_len * 3, np.float32)
+    cl.enqueue_copy(queue, res_np, gamma_total_gpu)
+    print(res_np)
 
 if __name__ == '__main__':
     main()
