@@ -126,7 +126,11 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     events.append(cl.enqueue_copy(queue, gidx_minmax_xyz, gidx_minmax_xyz_cpu,
                                   device_offset=0, is_blocking=False))
 
-    return events, gidx_minmax_xyz
+    pump_branch_gpu = cl.Buffer(ctx, mf.READ_ONLY, 36)
+    events.append(cl.enqueue_copy(queue, pump_branch_gpu, pump_branch,
+                                  device_offset=0, is_blocking=False))
+
+    return events, pump_branch_gpu
     CLArg('pump_branch', 'gcfloat_p'),
     CLArg('omegas', 'gcfloat_p'),
     CLArg('seq_len', 'unsigned'),
@@ -164,7 +168,9 @@ def main():
         for j in range(dim_z):
             gamma_z[i, j] = sideband_scatter_strength(i, j, 0.6, np.pi / 2)
 
-    pump_branch = None
+    pump_branch = np.array([[0.500, 0.333, 0.167],
+                            [0.006, 0.171, 0.002],
+                            [0.500, 0.333, 0.167]], np.float32)
     omegas_x = None
     omegas_y = None
     omegas_z = None
@@ -173,7 +179,7 @@ def main():
     delta_xyz = None
     omega_xyz = None
 
-    events, gidx_minmax_xyz = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+    events, pump_branch_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
                                               gamma_z, pump_branch, omegas_x,
                                               omegas_y, omegas_z, h_t,
                                               gamma_totals, delta_xyz,
@@ -181,28 +187,9 @@ def main():
 
     cl.wait_for_events(events)
 
-    res_np = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
-    cl.enqueue_copy(queue, res_np, gidx_minmax_xyz)
-
-    gidxmin_x = res_np[:dim_x]
-    gidxmin_y = res_np[dim_x:dim_x + dim_y]
-    gidxmin_z = res_np[dim_x + dim_y:dim_x + dim_y + dim_z]
-
-    gidxmax_x = res_np[dim_x + dim_y + dim_z: dim_x * 2 + dim_y + dim_z]
-    gidxmax_y = res_np[dim_x * 2 + dim_y + dim_z:dim_x * 2 + dim_y * 2 + dim_z]
-    gidxmax_z = res_np[dim_x * 2 + dim_y * 2 + dim_z:]
-
-    print(gidxmin_x)
-    print(gidxmin_y)
-    print(gidxmin_z)
-
-    print(gidxmax_x)
-    print(gidxmax_y)
-    print(gidxmax_z)
-
-    print(gidxmax_x - gidxmin_x)
-    print(gidxmax_y - gidxmin_y)
-    print(gidxmax_z - gidxmin_z)
+    res_np = np.empty(9, np.float32)
+    cl.enqueue_copy(queue, res_np, pump_branch_gpu)
+    print(res_np)
 
 if __name__ == '__main__':
     main()
