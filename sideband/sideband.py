@@ -47,7 +47,7 @@ _fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
 extra_link_args=['-fopenmp'])
 
 def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
-    # Probably faster if doing is on GPU
+    # Probably faster if done on GPU
     gidx_minmax_xyz = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
 
     gidxmin_x = gidx_minmax_xyz[:dim_x]
@@ -72,7 +72,7 @@ def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
 
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                     omegas_x, omegas_y, omegas_z, h_t, gamma_total,
-                    delta_xyz, omega_xyz):
+                    delta_xyz, omega_xyz, p_b, t_len, p_a=None, p_c=None):
     dim_x, d = gamma_x.shape
     if dim_x != d:
         raise ValueError("gamma_x is not a square matrix.")
@@ -105,7 +105,6 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                                   device_offset=(dim_x**2 + dim_y**2) * 4,
                                   is_blocking=False))
 
-    # Probably faster if doing is on GPU
     gidx_minmax_xyz = cl.Buffer(ctx, mf.READ_ONLY, (dim_x + dim_y + dim_z) * 8)
     events.append(cl.enqueue_copy(queue, gidx_minmax_xyz,
                                   _get_gidx_minmax_xyz(dim_x, dim_y, dim_z,
@@ -185,11 +184,16 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              options=['-I', _path.dirname(__file__)])
 
     return events, gamma_total_gpu
-    CLArg('delta_xyz', 'gcuint_p'),
+    CLArg('delta_xyz', 'gcuint_p')
     CLArg('omega_xyz_offset', 'gcuint_p')
+    y0
 
-    res, evt = solver.run(t0, t1, h, y0, queue,
-                          extra_args=(np.float32(h_x), np.int64(len_x)))
+    res, evt = solver.run(0, t_len, h_t, y0, queue,
+                          extra_args=(np.uint32(dim_x), np.uint32(dim_y),
+                                      np.uint32(dim_z), gamma_xyz,
+                                      gidx_minmax_xyz, pump_branch_gpu,
+                                      omegas_gpu, h_t, seq_len, gamma_total_gpu,
+                                      delta_xyz_gpu, omega_xyz_offset))
     print('queued')
     evt.wait()
     print('finished')
@@ -232,11 +236,14 @@ def main():
     gamma_total = np.ones([seq_len, 3], np.float32)
     delta_xyz = None
     omega_xyz = None
+    p_b = None
+    t_len = 10
 
     events, gamma_total_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
                                               gamma_z, pump_branch, omegas_x,
                                               omegas_y, omegas_z, h_t,
-                                              gamma_total, delta_xyz, omega_xyz)
+                                              gamma_total, delta_xyz,
+                                              omega_xyz, p_b, t_len)
 
     cl.wait_for_events(events)
 
