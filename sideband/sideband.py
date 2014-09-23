@@ -163,6 +163,15 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     events.append(cl.enqueue_copy(queue, gamma_total_gpu, gamma_total,
                                   device_offset=0, is_blocking=False))
 
+    d1, d2 = delta_xyz.shape
+    if d1 != 3 or d2 != seq_len:
+        raise TypeError("Dimensions of delta_xyz should be (3, seq_len).")
+    if delta_xyz.dtype != np.uint32:
+        raise TypeError("The type of delta_xyz should be uint32.")
+    delta_xyz_gpu = cl.Buffer(ctx, mf.READ_ONLY, seq_len * 12)
+    events.append(cl.enqueue_copy(queue, delta_xyz_gpu, delta_xyz,
+                                  device_offset=0, is_blocking=False))
+
     dev = queue.device
     src = """
     #include <sideband.cl>
@@ -183,8 +192,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
 
-    return events, gamma_total_gpu
-    CLArg('delta_xyz', 'gcuint_p')
+    return events, delta_xyz_gpu
     CLArg('omega_xyz_offset', 'gcuint_p')
     y0
 
@@ -234,21 +242,21 @@ def main():
     h_t = 0.1
     seq_len = 1000
     gamma_total = np.ones([seq_len, 3], np.float32)
-    delta_xyz = None
+    delta_xyz = np.ones([3, seq_len], np.uint32)
     omega_xyz = None
     p_b = None
     t_len = 10
 
-    events, gamma_total_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
-                                              gamma_z, pump_branch, omegas_x,
-                                              omegas_y, omegas_z, h_t,
-                                              gamma_total, delta_xyz,
-                                              omega_xyz, p_b, t_len)
+    events, delta_xyz_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+                                            gamma_z, pump_branch, omegas_x,
+                                            omegas_y, omegas_z, h_t,
+                                            gamma_total, delta_xyz,
+                                            omega_xyz, p_b, t_len)
 
     cl.wait_for_events(events)
 
-    res_np = np.empty(seq_len * 3, np.float32)
-    cl.enqueue_copy(queue, res_np, gamma_total_gpu)
+    res_np = np.empty(seq_len * 3, np.uint32)
+    cl.enqueue_copy(queue, res_np, delta_xyz_gpu)
     print(res_np)
 
 if __name__ == '__main__':
