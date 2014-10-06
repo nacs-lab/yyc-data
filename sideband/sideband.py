@@ -4,6 +4,7 @@ import os.path as _path
 import numpy as np
 import pyopencl as cl
 from cffi import FFI
+from six.moves import range as _range
 
 from pyscical.ocl.ode import ElwiseOdeSolver
 from pyscical.ocl.utils import CLArg
@@ -72,7 +73,7 @@ def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
 
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                     omegas_x, omegas_y, omegas_z, h_t, gamma_total,
-                    delta_xyz, omega_xyz, p_b, t_len, p_a=None, p_c=None):
+                    delta_xyz, omega_xyz, p_b, p_a=None, p_c=None):
     dim_x, d = gamma_x.shape
     if dim_x != d:
         raise ValueError("gamma_x is not a square matrix.")
@@ -154,11 +155,11 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
 
     h_t = np.float32(h_t)
     seq_len, d = gamma_total.shape
+    t_len = (seq_len - 1) * h_t
     if d != 3:
         raise TypeError("Second dimension of gamma_total should be 3.")
     if gamma_total.dtype != np.float32:
         raise TypeError("The type of gamma_total should be float32.")
-    seq_len = np.uint32(seq_len)
     gamma_total_gpu = cl.Buffer(ctx, mf.READ_ONLY, seq_len * 12)
     events.append(cl.enqueue_copy(queue, gamma_total_gpu, gamma_total,
                                   device_offset=0, is_blocking=False))
@@ -171,6 +172,32 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     delta_xyz_gpu = cl.Buffer(ctx, mf.READ_ONLY, seq_len * 12)
     events.append(cl.enqueue_copy(queue, delta_xyz_gpu, delta_xyz,
                                   device_offset=0, is_blocking=False))
+
+    d1, d2 = omega_xyz.shape
+    if d1 != 3 or d2 != seq_len:
+        raise TypeError("Dimensions of omega_xyz should be (3, seq_len).")
+    if omega_xyz.dtype != np.uint32:
+        raise TypeError("The type of omega_xyz should be uint32.")
+    omega_xyz_offset = np.empty(seq_len * 3, np.uint32)
+    for i in _range(seq_len):
+        _omega_x = omega_xyz[0, i]
+        if _omega_x >= num_omg_x:
+            raise IndexError("omega_x index too larger")
+        omega_xyz_offset[i] = _omega_x * dim_x
+        _omega_y = omega_xyz[1, i]
+        if _omega_y >= num_omg_y:
+            raise IndexError("omega_y index too larger")
+        omega_xyz_offset[seq_len + i] = _omega_y * dim_y + num_omg_x * dim_x
+        _omega_z = omega_xyz[2, i]
+        if _omega_z >= num_omg_z:
+            raise IndexError("omega_z index too larger")
+        omega_xyz_offset[seq_len * 2 + i] = (_omega_z * dim_z +
+                                             num_omg_x * dim_x +
+                                             num_omg_y * dim_y)
+    omega_xyz_offset_gpu = cl.Buffer(ctx, mf.READ_ONLY, seq_len * 12)
+    events.append(cl.enqueue_copy(queue, omega_xyz_offset_gpu, omega_xyz_offset,
+                                  device_offset=0, is_blocking=False))
+
 
     dev = queue.device
     src = """
@@ -191,9 +218,9 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     solver = ElwiseOdeSolver(ctx, dev, src, "calc_sbcooling_diff",
                              extra_args=extra_args,
                              options=['-I', _path.dirname(__file__)])
+    seq_len = np.uint32(seq_len)
 
-    return events, delta_xyz_gpu
-    CLArg('omega_xyz_offset', 'gcuint_p')
+    return events, omega_xyz_offset_gpu
     y0
 
     res, evt = solver.run(0, t_len, h_t, y0, queue,
@@ -201,7 +228,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                                       np.uint32(dim_z), gamma_xyz,
                                       gidx_minmax_xyz, pump_branch_gpu,
                                       omegas_gpu, h_t, seq_len, gamma_total_gpu,
-                                      delta_xyz_gpu, omega_xyz_offset))
+                                      delta_xyz_gpu, omega_xyz_offset_gpu))
     print('queued')
     evt.wait()
     print('finished')
@@ -243,20 +270,19 @@ def main():
     seq_len = 1000
     gamma_total = np.ones([seq_len, 3], np.float32)
     delta_xyz = np.ones([3, seq_len], np.uint32)
-    omega_xyz = None
+    omega_xyz = np.ones([3, seq_len], np.uint32)
     p_b = None
-    t_len = 10
 
-    events, delta_xyz_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
-                                            gamma_z, pump_branch, omegas_x,
-                                            omegas_y, omegas_z, h_t,
-                                            gamma_total, delta_xyz,
-                                            omega_xyz, p_b, t_len)
+    events, omega_xyz_offset_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
+                                                   gamma_z, pump_branch, omegas_x,
+                                                   omegas_y, omegas_z, h_t,
+                                                   gamma_total, delta_xyz,
+                                                   omega_xyz, p_b)
 
     cl.wait_for_events(events)
 
     res_np = np.empty(seq_len * 3, np.uint32)
-    cl.enqueue_copy(queue, res_np, delta_xyz_gpu)
+    cl.enqueue_copy(queue, res_np, omega_xyz_offset_gpu)
     print(res_np)
 
 if __name__ == '__main__':

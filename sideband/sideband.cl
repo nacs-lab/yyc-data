@@ -218,6 +218,31 @@ fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
     step->omega_z = step->odt.omegas + seq->omega_z_offset[idx_t];
 }
 
+static void
+calc_sbcooling_post(float t, __global float *mat_in, unsigned glob_idx,
+                    unsigned dim_x, unsigned dim_y, unsigned dim_z,
+                    gcfloat_p gamma_xyz, gcuint_p gidx_minmax_xyz,
+                    gcfloat_p pump_branch, gcfloat_p omegas,
+                    float h_t, unsigned seq_len, gcfloat_p gamma_total,
+                    gcuint_p delta_xyz, gcuint_p omega_xyz_offset)
+{
+    unsigned total_dim = dim_x * dim_y * dim_z;
+    unsigned cls = glob_idx / total_dim;
+    // Only the coherence term needs to be cleared.
+    if (cls != 3)
+        return;
+    unsigned idx_t = t / h_t;
+    if (idx_t + 1 >= seq_len)
+        return;
+    gcuint_p delta_x = delta_xyz + idx_t;
+    gcuint_p delta_y = delta_x + seq_len;
+    gcuint_p delta_z = delta_y + seq_len;
+    if (delta_x[0] == delta_x[1] && delta_y[0] == delta_y[1] &&
+        delta_z[0] == delta_z[1])
+        return;
+    mat_in[glob_idx] = 0;
+}
+
 static float
 calc_sbcooling_diff(float t, gcfloat_p mat_in, unsigned glob_idx, float cur_val,
                     unsigned dim_x, unsigned dim_y, unsigned dim_z,
