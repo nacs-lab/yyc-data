@@ -40,11 +40,6 @@ typedef struct {
     gcuint_p gidxmax_x; // dim_x
     gcuint_p gidxmax_y; // dim_y
     gcuint_p gidxmax_z; // dim_z
-
-    gcfloat_p pump_branch;
-
-    // Rabi frequencies of the Raman transition for unit power
-    gcfloat_p omegas;
 } ODT;
 
 typedef struct {
@@ -108,18 +103,18 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     for (unsigned i = gidxmin_x;i < gidxmax_x;i++) {
         float gamma_x = gamma_xs[i * odt->dim_x];
         for (unsigned j = gidxmin_y;j < gidxmax_y;j++) {
-            float gamma_y = gamma_ys[j * odt->dim_y];
+            float gamma_xy = gamma_x * gamma_ys[j * odt->dim_y];
             for (unsigned k = gidxmin_z;k < gidxmax_z;k++) {
-                float gamma_z = gamma_zs[k * odt->dim_z];
+                float gamma_xyz = gamma_xy * gamma_zs[k * odt->dim_z];
 
                 unsigned idx = calc_idx_3d(odt, i, j, k);
                 float pa = mat->pas[idx];
                 float pb = mat->pbs[idx];
                 float pc = mat->pcs[idx];
 
-                res += (gamma_x * gamma_y * gamma_z
-                        * (gamma_branch[0] * pa + gamma_branch[1] * pb
-                           + gamma_branch[2] * pc));
+                res += (gamma_xyz *
+                        (gamma_branch[0] * pa + gamma_branch[1] * pb
+                         + gamma_branch[2] * pc));
             }
         }
     }
@@ -130,7 +125,6 @@ static inline float
 diff_pa(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
         unsigned i_x, unsigned i_y, unsigned i_z, unsigned i_3d)
 {
-    const ODT *odt = &step->odt;
     float res = diff_pump(step, mat, cur_val, i_x, i_y, i_z, i_3d, 0);
     return res + (2 * step->omega_x[i_x] * step->omega_y[i_y] *
                   step->omega_z[i_z] * mat->qs[i_3d]);
@@ -144,13 +138,12 @@ diff_pb(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     if (i_x < step->delta_x || i_y < step->delta_y || i_z < step->delta_z) {
         return res;
     }
-    const ODT *odt = &step->odt;
     unsigned i_x_new = i_x - step->delta_x;
     unsigned i_y_new = i_y - step->delta_y;
     unsigned i_z_new = i_z - step->delta_z;
     return (res + 2 * step->omega_x[i_x_new] * step->omega_y[i_y_new] *
             step->omega_z[i_z_new] *
-            mat->qs[calc_idx_3d(odt, i_x_new, i_y_new, i_z_new)]);
+            mat->qs[calc_idx_3d(&step->odt, i_x_new, i_y_new, i_z_new)]);
 }
 
 static inline float
@@ -202,7 +195,8 @@ diff_mat(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
 }
 
 static inline void
-fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
+fill_step(CoolingStep *step, const CoolingSequence *seq, float t,
+          gcfloat_p pump_branch, gcfloat_p omegas)
 {
     unsigned idx_t = t / seq->h;
     gcfloat_p gamma_total = seq->gamma_total + idx_t * 3;
@@ -210,16 +204,16 @@ fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
         float gamma = gamma_total[i];
         step->gamma_total[i] = gamma;
         for (unsigned j = 0;j < 3;j++) {
-            step->gamma_branch[i][j] = step->odt.pump_branch[i * 3 + j] * gamma;
+            step->gamma_branch[i][j] = pump_branch[i * 3 + j] * gamma;
         }
     }
     step->delta_x = seq->delta_x[idx_t];
     step->delta_y = seq->delta_y[idx_t];
     step->delta_z = seq->delta_z[idx_t];
 
-    step->omega_x = step->odt.omegas + seq->omega_x_offset[idx_t];
-    step->omega_y = step->odt.omegas + seq->omega_y_offset[idx_t];
-    step->omega_z = step->odt.omegas + seq->omega_z_offset[idx_t];
+    step->omega_x = omegas + seq->omega_x_offset[idx_t];
+    step->omega_y = omegas + seq->omega_y_offset[idx_t];
+    step->omega_z = omegas + seq->omega_z_offset[idx_t];
 }
 
 static inline void
@@ -275,9 +269,6 @@ calc_sbcooling_diff(float t, gcfloat_p mat_in, unsigned glob_idx, float cur_val,
     odt->gidxmax_y = odt->gidxmax_x + dim_x;
     odt->gidxmax_z = odt->gidxmax_y + dim_y;
 
-    odt->pump_branch = pump_branch;
-    odt->omegas = omegas;
-
     CoolingSequence seq;
     seq.h = h_t;
     seq.gamma_total = gamma_total;
@@ -290,7 +281,7 @@ calc_sbcooling_diff(float t, gcfloat_p mat_in, unsigned glob_idx, float cur_val,
     seq.omega_y_offset = omega_xyz_offset + seq_len;
     seq.omega_z_offset = seq.omega_y_offset + seq_len;
 
-    fill_step(&step, &seq, t);
+    fill_step(&step, &seq, t, pump_branch, omegas);
 
     DensityMatrix mat;
     mat.pas = mat_in;

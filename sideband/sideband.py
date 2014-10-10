@@ -252,11 +252,9 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
 
 
 def main():
-    ctx = cl.create_some_context()
-    queue = cl.CommandQueue(ctx)
-    dim_x = 100
-    dim_y = 100
-    dim_z = 30
+    dim_x = 10
+    dim_y = 10
+    dim_z = 20
     gamma_x = np.empty([dim_x, dim_x], np.float32)
     gamma_y = np.empty([dim_y, dim_y], np.float32)
     gamma_z = np.empty([dim_z, dim_z], np.float32)
@@ -293,9 +291,15 @@ def main():
             for k in range(dim_z):
                 p_b[i, j, k] = np.exp(-(i + j + k / 5.0))
 
+    ctx = cl.create_some_context()
+    queue = cl.CommandQueue(ctx)
+    import time
+    start_time = time.time()
     res = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                           omegas_x, omegas_y, omegas_z, h_t, gamma_total,
                           delta_xyz, omega_xyz, p_b)
+    end_time = time.time()
+    print(end_time - start_time)
     print(res)
 
 if __name__ == '__main__':
