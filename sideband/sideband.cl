@@ -126,7 +126,7 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     return res - cur_val * step->gamma_total[branch];
 }
 
-static float
+static inline float
 diff_pa(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
         unsigned i_x, unsigned i_y, unsigned i_z, unsigned i_3d)
 {
@@ -136,7 +136,7 @@ diff_pa(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
                   step->omega_z[i_z] * mat->qs[i_3d]);
 }
 
-static float
+static inline float
 diff_pb(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
         unsigned i_x, unsigned i_y, unsigned i_z, unsigned i_3d)
 {
@@ -153,14 +153,14 @@ diff_pb(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
             mat->qs[calc_idx_3d(odt, i_x_new, i_y_new, i_z_new)]);
 }
 
-static float
+static inline float
 diff_pc(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
         unsigned i_x, unsigned i_y, unsigned i_z, unsigned i_3d)
 {
     return diff_pump(step, mat, cur_val, i_x, i_y, i_z, i_3d, 2);
 }
 
-static float
+static inline float
 diff_q(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
        unsigned i_x, unsigned i_y, unsigned i_z, unsigned i_3d)
 {
@@ -178,7 +178,7 @@ diff_q(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
                     - mat->pas[i_3d]);
 }
 
-static float
+static inline float
 diff_mat(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
          unsigned glob_idx)
 {
@@ -201,7 +201,7 @@ diff_mat(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     }
 }
 
-static void
+static inline void
 fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
 {
     unsigned idx_t = t / seq->h;
@@ -222,7 +222,7 @@ fill_step(CoolingStep *step, const CoolingSequence *seq, float t)
     step->omega_z = step->odt.omegas + seq->omega_z_offset[idx_t];
 }
 
-static void
+static inline void
 calc_sbcooling_post(float t, __global float *mat_in, unsigned glob_idx,
                     unsigned dim_x, unsigned dim_y, unsigned dim_z,
                     gcfloat_p gamma_xyz, gcuint_p gidx_minmax_xyz,
