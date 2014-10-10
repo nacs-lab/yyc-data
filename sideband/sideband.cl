@@ -180,9 +180,8 @@ diff_mat(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     const ODT *odt = &step->odt;
     unsigned cls = glob_idx / odt->total_dim;
     unsigned i_3d = glob_idx % odt->total_dim;
-    unsigned dim_xy = odt->dim_x * odt->dim_y;
-    unsigned xy = i_3d / dim_xy;
-    unsigned i_z = i_3d % dim_xy;
+    unsigned xy = i_3d / odt->dim_z;
+    unsigned i_z = i_3d % odt->dim_z;
     unsigned i_x = xy / odt->dim_y;
     unsigned i_y = xy % odt->dim_y;
     switch (cls) {
