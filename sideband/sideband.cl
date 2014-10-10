@@ -99,17 +99,23 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     gcfloat_p gamma_xs = &odt->gamma_x[i_x];
     gcfloat_p gamma_ys = &odt->gamma_y[i_y];
     gcfloat_p gamma_zs = &odt->gamma_z[i_z];
-    for (unsigned i = odt->gidxmin_x[i_x];i < odt->gidxmax_x[i_x];i++) {
-        for (unsigned j = odt->gidxmin_y[i_y];j < odt->gidxmax_y[i_y];j++) {
-            for (unsigned k = odt->gidxmin_z[i_z];k < odt->gidxmax_z[i_z];k++) {
+    const unsigned gidxmin_x = odt->gidxmin_x[i_x];
+    const unsigned gidxmax_x = odt->gidxmax_x[i_x];
+    const unsigned gidxmin_y = odt->gidxmin_y[i_y];
+    const unsigned gidxmax_y = odt->gidxmax_y[i_y];
+    const unsigned gidxmin_z = odt->gidxmin_z[i_z];
+    const unsigned gidxmax_z = odt->gidxmax_z[i_z];
+    for (unsigned i = gidxmin_x;i < gidxmax_x;i++) {
+        float gamma_x = gamma_xs[i * odt->dim_x];
+        for (unsigned j = gidxmin_y;j < gidxmax_y;j++) {
+            float gamma_y = gamma_ys[j * odt->dim_y];
+            for (unsigned k = gidxmin_z;k < gidxmax_z;k++) {
+                float gamma_z = gamma_zs[k * odt->dim_z];
+
                 unsigned idx = calc_idx_3d(odt, i, j, k);
                 float pa = mat->pas[idx];
                 float pb = mat->pbs[idx];
                 float pc = mat->pcs[idx];
-
-                float gamma_x = gamma_xs[i * odt->dim_x];
-                float gamma_y = gamma_ys[j * odt->dim_y];
-                float gamma_z = gamma_zs[k * odt->dim_z];
 
                 res += (gamma_x * gamma_y * gamma_z
                         * (gamma_branch[0] * pa + gamma_branch[1] * pb
