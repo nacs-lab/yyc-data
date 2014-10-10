@@ -242,14 +242,8 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                        gamma_xyz, gidx_minmax_xyz, pump_branch_gpu, omegas_gpu,
                        h_t, seq_len, gamma_total_gpu, delta_xyz_gpu,
                        omega_xyz_offset_gpu)
-    res, evt = solver.run_no_process(0, t_len, h_t, y0, queue,
-                                     extra_args=extra_args_vals)
-    print('queued')
-    evt.wait()
-    print('finished')
-    res_np = res.get()
-    return res_np
-
+    return solver.run_no_process(0, t_len, h_t, y0, queue,
+                                 extra_args=extra_args_vals)
 
 def main():
     dim_x = 10
@@ -293,12 +287,18 @@ def main():
 
     ctx = cl.create_some_context()
     queue = cl.CommandQueue(ctx)
+
     import time
     start_time = time.time()
-    res = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
-                          omegas_x, omegas_y, omegas_z, h_t, gamma_total,
-                          delta_xyz, omega_xyz, p_b)
+
+    res_cl, evt = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z,
+                                  pump_branch, omegas_x, omegas_y, omegas_z,
+                                  h_t, gamma_total, delta_xyz, omega_xyz, p_b)
+    evt.wait()
+
+    res = res_cl.get()
     end_time = time.time()
+
     print(end_time - start_time)
     print(res)
 

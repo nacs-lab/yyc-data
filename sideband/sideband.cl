@@ -90,7 +90,8 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     const ODT *odt = &step->odt;
     float res = 0;
     const float *gamma_branch = &step->gamma_branch[branch][0];
-    // Also try using the other dimension
+    // Keep the address difference between work items small to have a
+    // better memory access pattern.
     gcfloat_p gamma_xs = &odt->gamma_x[i_x];
     gcfloat_p gamma_ys = &odt->gamma_y[i_y];
     gcfloat_p gamma_zs = &odt->gamma_z[i_z];
