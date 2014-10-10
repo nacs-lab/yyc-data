@@ -92,6 +92,8 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
     if gamma_z.dtype != np.float32:
         raise TypeError("The type of gamma_z should be float32.")
 
+    total_dim = dim_x * dim_y * dim_z
+
     mf = cl.mem_flags
     events = []
 
@@ -217,22 +219,35 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                   CLArg('omega_xyz_offset', 'gcuint_p'))
     solver = ElwiseOdeSolver(ctx, dev, src, "calc_sbcooling_diff",
                              extra_args=extra_args,
-                             options=['-I', _path.dirname(__file__)])
+                             options=['-I', _path.dirname(__file__)],
+                             post_func='calc_sbcooling_post')
     seq_len = np.uint32(seq_len)
 
-    return events, omega_xyz_offset_gpu
-    y0
+    y0 = np.zeros(total_dim * 4, np.float32)
 
-    res, evt = solver.run(0, t_len, h_t, y0, queue,
-                          extra_args=(np.uint32(dim_x), np.uint32(dim_y),
-                                      np.uint32(dim_z), gamma_xyz,
-                                      gidx_minmax_xyz, pump_branch_gpu,
-                                      omegas_gpu, h_t, seq_len, gamma_total_gpu,
-                                      delta_xyz_gpu, omega_xyz_offset_gpu))
+    if p_a is not None:
+        if p_a.shape != (dim_x, dim_y, dim_z):
+            raise ValueError("Initial value of p_a has wrong shape.")
+        y0[:total_dim] = p_a.flatten()
+    if p_b.shape != (dim_x, dim_y, dim_z):
+        raise ValueError("Initial value of p_b has wrong shape.")
+    y0[total_dim:total_dim * 2] = p_b.flatten()
+    if p_c is not None:
+        if p_c.shape != (dim_x, dim_y, dim_z):
+            raise ValueError("Initial value of p_c has wrong shape.")
+        y0[total_dim * 2:total_dim * 3] = p_c.flatten()
+
+    extra_args_vals = (np.uint32(dim_x), np.uint32(dim_y), np.uint32(dim_z),
+                       gamma_xyz, gidx_minmax_xyz, pump_branch_gpu, omegas_gpu,
+                       h_t, seq_len, gamma_total_gpu, delta_xyz_gpu,
+                       omega_xyz_offset_gpu)
+    res, evt = solver.run_no_process(0, t_len, h_t, y0, queue,
+                                     extra_args=extra_args_vals)
     print('queued')
     evt.wait()
     print('finished')
-    res_np = [a.get() for a in res]
+    res_np = res.get()
+    return res_np
 
 
 def main():
@@ -271,19 +286,16 @@ def main():
     gamma_total = np.ones([seq_len, 3], np.float32)
     delta_xyz = np.ones([3, seq_len], np.uint32)
     omega_xyz = np.ones([3, seq_len], np.uint32)
-    p_b = None
+    p_b = np.empty([dim_x, dim_y, dim_z])
+    for i in range(dim_x):
+        for j in range(dim_y):
+            for k in range(dim_z):
+                p_b[i, j, k] = np.exp(-(i + j + k / 5.0))
 
-    events, omega_xyz_offset_gpu = evolve_sideband(ctx, queue, gamma_x, gamma_y,
-                                                   gamma_z, pump_branch, omegas_x,
-                                                   omegas_y, omegas_z, h_t,
-                                                   gamma_total, delta_xyz,
-                                                   omega_xyz, p_b)
-
-    cl.wait_for_events(events)
-
-    res_np = np.empty(seq_len * 3, np.uint32)
-    cl.enqueue_copy(queue, res_np, omega_xyz_offset_gpu)
-    print(res_np)
+    res = evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
+                          omegas_x, omegas_y, omegas_z, h_t, gamma_total,
+                          delta_xyz, omega_xyz, p_b)
+    print(res)
 
 if __name__ == '__main__':
     main()
