@@ -84,7 +84,7 @@ typedef struct {
 static inline unsigned
 calc_idx_3d(const ODT *odt, unsigned i_x, unsigned i_y, unsigned i_z)
 {
-    return (i_x * odt->dim_y + i_x) * odt->dim_z + i_z;
+    return (i_x * odt->dim_y + i_y) * odt->dim_z + i_z;
 }
 
 static float
@@ -102,8 +102,7 @@ diff_pump(const CoolingStep *step, const DensityMatrix *mat, float cur_val,
     for (unsigned i = odt->gidxmin_x[i_x];i < odt->gidxmax_x[i_x];i++) {
         for (unsigned j = odt->gidxmin_y[i_y];j < odt->gidxmax_y[i_y];j++) {
             for (unsigned k = odt->gidxmin_z[i_z];k < odt->gidxmax_z[i_z];k++) {
-                unsigned ijk = calc_idx_3d(odt, i, j, k);
-                unsigned idx = ijk * odt->total_dim + i_3d;
+                unsigned idx = calc_idx_3d(odt, i, j, k);
                 float pa = mat->pas[idx];
                 float pb = mat->pbs[idx];
                 float pc = mat->pcs[idx];
