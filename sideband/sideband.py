@@ -219,7 +219,8 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                   CLArg('omega_xyz_offset', 'gcuint_p'))
     solver = ElwiseOdeSolver(ctx, dev, src, "calc_sbcooling_diff",
                              extra_args=extra_args,
-                             options=['-I', _path.dirname(__file__)],
+                             options=['-I',
+                                      _path.dirname(_path.abspath(__file__))],
                              post_func='calc_sbcooling_post')
     seq_len = np.uint32(seq_len)
 
