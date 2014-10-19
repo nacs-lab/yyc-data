@@ -1,0 +1,64 @@
+#Enter pulse sequence here
+#TTL 21 is camera
+#TTL 22 is B field
+#amp16 is Cs MOT RP (max. 0.3, use 0.1 for MOT)
+#amp18 is Cs MOT (max. 0.3, use 0.1 for MOT)
+
+dt = 10 us, TTL(all) = 0
+dt = 10 us, amp(16) = 0
+dt = 10 us, amp(18) = 0
+
+#load MOT 10s
+dt = 1 us, amp(16) = .1
+dt = 1 us, amp(18) = .1
+dt = 10000000 us, TTL(22) = 1
+
+#trig camera for 50 us, wait 300ms
+dt = 50 us, TTL(21) = 1
+dt = 300000 us, TTL(21) = 0
+
+#flash MOT off for a dt = 3ms
+dt = 1 us, TTL(22) = 0
+dt = 1 us, amp(16) = 0
+dt = 3000 us, amp(18) = 0
+
+#flash MOT back on
+dt = 1 us, TTL(22) = 1
+dt = 1 us, amp(16) = 0.1
+dt = 1 us, amp(18) = 0.1
+
+#trig camera for 50 us, wait 300ms
+dt = 50 us, TTL(21) = 1
+dt = 300000 us, TTL(21) = 0
+
+dt = 10 us, TTL(all) = 0
+
+
+dt = 10 us, TTL(all) = 0
+dt = 10 us, amp(16) = 0
+dt = 10 us, amp(18) = 0
+
+#load MOT 10s
+dt = 1 us, amp(16) = .1
+dt = 1 us, amp(18) = .1
+dt = 10000000 us, TTL(22) = 1
+
+#trig camera for 50 us, wait 300ms
+dt = 50 us, TTL(21) = 1
+dt = 300000 us, TTL(21) = 0
+
+#flash MOT off for a dt = 5ms
+dt = 1 us, TTL(22) = 0
+dt = 1 us, amp(16) = 0
+dt = 5000 us, amp(18) = 0
+
+#flash MOT back on
+dt = 1 us, TTL(22) = 1
+dt = 1 us, amp(16) = 0.1
+dt = 1 us, amp(18) = 0.1
+
+#trig camera for 50 us, wait 300ms
+dt = 50 us, TTL(21) = 1
+dt = 300000 us, TTL(21) = 0
+
+dt = 10 us, TTL(all) = 0

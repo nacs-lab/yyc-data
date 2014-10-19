@@ -19,6 +19,7 @@
 \usepackage{xkeyval}
 \usepackage{xargs}
 \usepackage{verbatim}
+\usepackage{listings}
 \usetikzlibrary{
   arrows,
   calc,
@@ -130,13 +131,24 @@
 %% document-wide tikz options and styles
 
 \tikzset{%
-  >=latex, % option for nice arrows
+  % >=latex, % option for nice arrows
   inner sep=0pt,%
   outer sep=2pt,%
   mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
     fill=black,circle}%
 }
-
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, very thick,
+    text width=8em,
+    minimum height=2.5em,
+    text centered},
+}
 \makeatletter
 \newbox\@backgroundblock
 \newenvironment{backgroundblock}[2]{%
@@ -261,6 +273,44 @@
 
 \section{MOT temperature}
 \begin{frame}{}
+  \begin{columns}
+    \column{7cm}
+    \only<+->{}
+    \only<-5>{
+      \tiny
+      \lstinputlisting[language=Python, lastline=32]{mot.txt}
+    }
+    \only<6-> {
+      \begin{block}{Cesium MOT temperature}
+        \begin{itemize}
+        \item
+          $TOF\approx3\text{ms}$
+        \item<7->
+          $T\approx1\text{mK}$
+        \end{itemize}
+      \end{block}
+    }
+    \column{5cm}
+    \only<+-> {
+      \begin{tikzpicture}[scale=.8]
+        \path (0, 2) node (dummy) {};
+        \path (0, 0) node[punkt] (mot) {MOT loading};
+        \only<+-> {
+          \path (0, -2) node[punkt] (release) {Release (Light and field off)};
+          \draw[->, thick] (mot) -- (release);
+        }
+        \only<+-> {
+          \path (0, -4) node[punkt] (tof) {Wait (TOF)};
+          \draw[->, thick] (release) -- (tof);
+        }
+        \only<+-> {
+          \path (0, -6) node[punkt] (image) {Image (Light on)};
+          \draw[->, thick] (tof) -- (image);
+        }
+        \path (0, -8) node (dummy) {};
+      \end{tikzpicture}
+    }
+  \end{columns}
 \end{frame}
 
 \section{Looking for single atom in the ODT}
