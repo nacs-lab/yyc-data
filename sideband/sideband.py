@@ -13,8 +13,8 @@ from pyscical.atomic import sideband_strength, sideband_scatter_strength
 
 _ffi = FFI()
 _ffi.cdef('''
-void _fill_gidx_minmax(unsigned dim, float *gamma,
-                       float *min_out, float *max_out);''')
+void _fill_gidx_minmax(unsigned dim, float *gamma, float *min_out,
+                       float *max_out, unsigned idx_align);''')
 _lib = _ffi.verify('''
 #include <math.h>
 
@@ -22,7 +22,7 @@ static const float gamma_thresh = 1e-10;
 
 static void
 _fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
-                  unsigned *max_out)
+                  unsigned *max_out, unsigned idx_align)
 {
 #pragma omp parallel for
     for (unsigned i = 0;i < dim;i++) {
@@ -33,7 +33,7 @@ _fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
                 break;
             }
         }
-        min_out[i] = j;
+        min_out[i] = (j / idx_align) * idx_align;
 
         j = dim - 1;
         for (;j >= 0;j--) {
@@ -41,13 +41,15 @@ _fill_gidx_minmax(unsigned dim, float *gamma, unsigned *min_out,
                 break;
             }
         }
-        max_out[i] = j + 1;
+        j = (j / idx_align + 1) * idx_align;
+        max_out[i] = j > dim - 1 ? dim - 1 : j;
     }
 }
 ''', extra_compile_args=['-w', '-fopenmp', '-O2', '-std=gnu99'],
 extra_link_args=['-fopenmp'])
 
-def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
+def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z,
+                         align=True):
     # Probably faster if done on GPU
     gidx_minmax_xyz = np.empty((dim_x + dim_y + dim_z) * 2, np.uint32)
 
@@ -60,15 +62,21 @@ def _get_gidx_minmax_xyz(dim_x, dim_y, dim_z, gamma_x, gamma_y, gamma_z):
     gidxmax_y = gidx_minmax_xyz[dim_x * 2 + dim_y + dim_z:
                                 dim_x * 2 + dim_y * 2 + dim_z]
     gidxmax_z = gidx_minmax_xyz[dim_x * 2 + dim_y * 2 + dim_z:]
+    # Maybe this value should be dimension dependent but not sure what is
+    # the best way to determine it.
+    idx_align = 16 if align else 1
     _lib._fill_gidx_minmax(dim_x, cffi_ptr(gamma_x, _ffi)[0],
                            cffi_ptr(gidxmin_x, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_x, _ffi, writable=True)[0])
+                           cffi_ptr(gidxmax_x, _ffi, writable=True)[0],
+                           idx_align)
     _lib._fill_gidx_minmax(dim_y, cffi_ptr(gamma_y, _ffi)[0],
                            cffi_ptr(gidxmin_y, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_y, _ffi, writable=True)[0])
+                           cffi_ptr(gidxmax_y, _ffi, writable=True)[0],
+                           idx_align)
     _lib._fill_gidx_minmax(dim_z, cffi_ptr(gamma_z, _ffi)[0],
                            cffi_ptr(gidxmin_z, _ffi, writable=True)[0],
-                           cffi_ptr(gidxmax_z, _ffi, writable=True)[0])
+                           cffi_ptr(gidxmax_z, _ffi, writable=True)[0],
+                           idx_align)
     return gidx_minmax_xyz
 
 def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
@@ -109,10 +117,12 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
                                   is_blocking=False))
 
     gidx_minmax_xyz = cl.Buffer(ctx, mf.READ_ONLY, (dim_x + dim_y + dim_z) * 8)
+    is_cpu = queue.device.type == cl.device_type.CPU
     events.append(cl.enqueue_copy(queue, gidx_minmax_xyz,
                                   _get_gidx_minmax_xyz(dim_x, dim_y, dim_z,
                                                        gamma_x, gamma_y,
-                                                       gamma_z),
+                                                       gamma_z,
+                                                       align=not is_cpu),
                                   device_offset=0, is_blocking=False))
 
     if pump_branch.dtype != np.float32:
@@ -248,7 +258,7 @@ def evolve_sideband(ctx, queue, gamma_x, gamma_y, gamma_z, pump_branch,
 def main():
     dim_x = 10
     dim_y = 10
-    dim_z = 20
+    dim_z = 30
     gamma_x = np.empty([dim_x, dim_x], np.float32)
     gamma_y = np.empty([dim_y, dim_y], np.float32)
     gamma_z = np.empty([dim_z, dim_z], np.float32)
@@ -271,12 +281,12 @@ def main():
     num_omg_x = 10
     num_omg_y = 10
     num_omg_z = 10
-    omegas_x = np.ones([num_omg_x, dim_x], np.float32)
-    omegas_y = np.zeros([num_omg_y, dim_y], np.float32)
-    omegas_z = np.ones([num_omg_z, dim_z], np.float32)
+    omegas_x = np.ones([num_omg_x, dim_x], np.float32) / 10
+    omegas_y = np.ones([num_omg_y, dim_y], np.float32) / 10
+    omegas_z = np.ones([num_omg_z, dim_z], np.float32) / 10
     h_t = 0.1
     seq_len = 1000
-    gamma_total = np.ones([seq_len, 3], np.float32)
+    gamma_total = np.ones([seq_len, 3], np.float32) / 3
     delta_xyz = np.ones([3, seq_len], np.uint32)
     omega_xyz = np.ones([3, seq_len], np.uint32)
     p_b = np.empty([dim_x, dim_y, dim_z])
@@ -300,7 +310,10 @@ def main():
     end_time = time.time()
 
     print(end_time - start_time)
-    print(res)
+    # import matplotlib.pyplot as plt
+    # plt.plot(res)
+    # plt.show()
+    # print(res.tolist())
 
 if __name__ == '__main__':
     main()
