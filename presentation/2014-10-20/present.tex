@@ -272,15 +272,16 @@
 \end{frame}
 
 \section{MOT temperature}
-\begin{frame}{}
+\begin{frame}{MOT temperature}
   \begin{columns}
-    \column{7cm}
+    \column{6.5cm}
     \only<+->{}
-    \only<-5>{
+    \only<+->{}
+    \only<2-6>{
       \tiny
-      \lstinputlisting[language=Python, lastline=32]{mot.txt}
+      \lstinputlisting[language=Python, lastline=28]{mot.txt}
     }
-    \only<6-> {
+    \only<7-> {
       \begin{block}{Cesium MOT temperature}
         \begin{itemize}
         \item
@@ -314,7 +315,42 @@
 \end{frame}
 
 \section{Looking for single atom in the ODT}
-\begin{frame}{}
+\begin{frame}{Looking for single atom in the ODT}
+  \begin{columns}
+    \column{6cm}
+    \begin{block}{}
+      \begin{itemize}[<+->]
+      \item
+        Looking for single atom in the video
+      \item
+        Background fluctuation
+      \item
+        Averaging
+      \item
+        Release MOT
+      \end{itemize}
+    \end{block}
+    \column{5cm}
+    \visible<+-> {
+      \begin{tikzpicture}[scale=.8]
+        \path (0, 2) node (dummy) {};
+        \path (0, 0) node[punkt] (mot) {MOT loading, ODT on};
+        \only<+-> {
+          \path (0, -2) node[punkt] (release) {Release (Light and field off)};
+          \draw[->, thick] (mot) -- (release);
+        }
+        \only<+-> {
+          \path (0, -4) node[punkt] (tof) {Wait (Long)};
+          \draw[->, thick] (release) -- (tof);
+        }
+        \only<+-> {
+          \path (0, -6) node[punkt] (image) {Image (Light on)};
+          \draw[->, thick] (tof) -- (image);
+        }
+        \path (0, -8) node (dummy) {};
+      \end{tikzpicture}
+    }
+  \end{columns}
 \end{frame}
 
 \end{document}
