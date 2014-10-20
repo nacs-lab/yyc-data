@@ -174,28 +174,32 @@
 % Intro
 % \def\timeleft{14:55->14:20}
 \begin{frame}{}
-  \begin{block}{Without precise timing}
-    \begin{itemize}[<+->]
-    \item
-      Vapor pressure
-    \item
-      MOT loading
-    \item
-      Objective alignment
-    \end{itemize}
-  \end{block}
-  \begin{block}{Measurements that require precise timing}
-    \begin{itemize}[<+->]
-    \item
-      Polarization gradient cooling
-    \item
-      Temperature calibration
-    \item
-      ODT loading
-    \item
-      $\cdots\cdots\cdots$
-    \end{itemize}
-  \end{block}
+  \visible<+->{
+    \begin{block}{Without precise timing}
+      \begin{itemize}[<+->]
+      \item
+        Vapor pressure
+      \item
+        MOT loading
+      \item
+        Objective alignment
+      \end{itemize}
+    \end{block}
+  }
+  \visible<+->{
+    \begin{block}{Measurements that require precise timing}
+      \begin{itemize}[<+->]
+      \item
+        Polarization gradient cooling
+      \item
+        Temperature calibration
+      \item
+        ODT loading
+      \item
+        $\cdots\cdots\cdots$
+      \end{itemize}
+    \end{block}
+  }
 \end{frame}
 
 % \def\timeleft{14:20->13:50}
@@ -292,24 +296,26 @@
       \end{block}
     }
     \column{5cm}
-    \only<+-> {
-      \begin{tikzpicture}[scale=.8]
-        \path (0, 2) node (dummy) {};
-        \path (0, 0) node[punkt] (mot) {MOT loading};
-        \only<+-> {
-          \path (0, -2) node[punkt] (release) {Release (Light and field off)};
-          \draw[->, thick] (mot) -- (release);
-        }
-        \only<+-> {
-          \path (0, -4) node[punkt] (tof) {Wait (TOF)};
-          \draw[->, thick] (release) -- (tof);
-        }
-        \only<+-> {
-          \path (0, -6) node[punkt] (image) {Image (Light on)};
-          \draw[->, thick] (tof) -- (image);
-        }
-        \path (0, -8) node (dummy) {};
-      \end{tikzpicture}
+    \visible<+-> {
+      \begin{center}
+        \begin{tikzpicture}[scale=.8]
+          \path (0, 2) node (dummy) {};
+          \path (0, 0) node[punkt] (mot) {MOT loading};
+          \only<+-> {
+            \path (0, -2) node[punkt] (release) {Release (Light and field off)};
+            \draw[->, thick] (mot) -- (release);
+          }
+          \only<+-> {
+            \path (0, -4) node[punkt] (tof) {Wait (TOF)};
+            \draw[->, thick] (release) -- (tof);
+          }
+          \only<+-> {
+            \path (0, -6) node[punkt] (image) {Image (Light on)};
+            \draw[->, thick] (tof) -- (image);
+          }
+          \path (0, -8) node (dummy) {};
+        \end{tikzpicture}
+      \end{center}
     }
   \end{columns}
 \end{frame}
@@ -325,30 +331,32 @@
       \item
         Background fluctuation
       \item
-        Averaging
+        Background subtraction and averaging
       \item
-        Release MOT
+        Release MOT (WIP?)
       \end{itemize}
     \end{block}
     \column{5cm}
     \visible<+-> {
-      \begin{tikzpicture}[scale=.8]
-        \path (0, 2) node (dummy) {};
-        \path (0, 0) node[punkt] (mot) {MOT loading, ODT on};
-        \only<+-> {
-          \path (0, -2) node[punkt] (release) {Release (Light and field off)};
-          \draw[->, thick] (mot) -- (release);
-        }
-        \only<+-> {
-          \path (0, -4) node[punkt] (tof) {Wait (Long)};
-          \draw[->, thick] (release) -- (tof);
-        }
-        \only<+-> {
-          \path (0, -6) node[punkt] (image) {Image (Light on)};
-          \draw[->, thick] (tof) -- (image);
-        }
-        \path (0, -8) node (dummy) {};
-      \end{tikzpicture}
+      \begin{center}
+        \begin{tikzpicture}[scale=.8]
+          \path (0, 2) node (dummy) {};
+          \path (0, 0) node[punkt] (mot) {MOT loading\\ODT on};
+          \only<+-> {
+            \path (0, -2) node[punkt] (release) {Release (Light and field off)};
+            \draw[->, thick] (mot) -- (release);
+          }
+          \only<+-> {
+            \path (0, -4) node[punkt] (tof) {Wait (Long)};
+            \draw[->, thick] (release) -- (tof);
+          }
+          \only<+-> {
+            \path (0, -6) node[punkt] (image) {Image (Light on)};
+            \draw[->, thick] (tof) -- (image);
+          }
+          \path (0, -8) node (dummy) {};
+        \end{tikzpicture}
+      \end{center}
     }
   \end{columns}
 \end{frame}
