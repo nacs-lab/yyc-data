@@ -29,6 +29,8 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:cmr_link
+LIBS:cmr_link-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
