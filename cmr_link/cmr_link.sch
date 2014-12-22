@@ -45,4 +45,15 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Comp
+L DS90CR288A U?
+U 1 1 5491E7BC
+P 5550 3200
+F 0 "U?" V 5500 3200 70  0000 C CNN
+F 1 "DS90CR288A" V 5600 3200 70  0000 C CNN
+F 2 "~" H 5550 2950 60  0000 C CNN
+F 3 "~" H 5550 2950 60  0000 C CNN
+	1    5550 3200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
