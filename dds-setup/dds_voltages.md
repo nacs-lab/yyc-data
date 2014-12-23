@@ -212,6 +212,8 @@ Breakout Board 2
 
 #### Voltages On DDS boards
 
+DC-DC converter trimmed up 10%.
+
 1. Board 1, powered with two thin cables.
 
 DVDD33 3.353
@@ -227,3 +229,7 @@ DVDD18 1.745
 `0x80` write with each step `0x10000` repeated `0x800` times on each channel.
 
 No failure at any voltages.
+
+`0x800` write with each step `0x80000` repeated `0x100` times on each channel.
+
+No failure at maximum voltage.
