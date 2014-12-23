@@ -44,6 +44,8 @@
 
 ### Before any change to the hardware
 
+#### Three write and one read!
+
 Connection one thin wires for both breakout:
 ```
 Total failing rate: 0.00%
@@ -84,3 +86,107 @@ Failing rate for DDS 20: 99.57+-0.02%
 Failing rate for DDS 21: 87.57+-0.40%
 Total failing rate: 95.08%
 ```
+
+#### One write and one read.
+
+Two thin wires for breakout 2, one thick wire for breakout 1:
+```
+Failing rate for DDS 0: 99.63+-0.02%
+Failing rate for DDS 1: 99.59+-0.02%
+Failing rate for DDS 2: 99.45+-0.02%
+Failing rate for DDS 3: 99.35+-0.02%
+Failing rate for DDS 4: 99.25+-0.01%
+Failing rate for DDS 5: 99.22+-0.00%
+Failing rate for DDS 6: 99.22+-0.00%
+Failing rate for DDS 7: 99.22+-0.00%
+Failing rate for DDS 8: 99.22+-0.00%
+Failing rate for DDS 9: 99.28+-0.01%
+Total failing rate: 47.31%
+```
+
+Note that DDS 8 and DDS 9 were never over voltaged.
+
+Two thin wires for breakout 1, one thick wire for breakout 2:
+```
+Failing rate for DDS 0: 74.44+-0.28%
+Failing rate for DDS 1: 94.26+-0.17%
+Failing rate for DDS 2: 99.80+-0.02%
+Failing rate for DDS 3: 99.56+-0.02%
+Failing rate for DDS 4: 99.51+-0.02%
+Failing rate for DDS 5: 99.41+-0.02%
+Failing rate for DDS 6: 99.40+-0.02%
+Failing rate for DDS 7: 99.39+-0.02%
+Failing rate for DDS 8: 99.54+-0.02%
+Failing rate for DDS 9: 99.60+-0.02%
+Total failing rate: 45.95%
+```
+
+One thin wires for breakout 1, one thick wire for breakout 2:
+```
+Failing rate for DDS 7: 0.42+-0.09%
+Failing rate for DDS 8: 0.05+-0.02%
+Total failing rate: 0.02%
+```
+
+Swap No 9 and No 21
+
+One thin wires for breakout 1, one thick wire for breakout 2:
+```
+Failing rate for DDS 4: 0.00+-0.00%
+Failing rate for DDS 5: 0.13+-0.02%
+Failing rate for DDS 6: 0.04+-0.01%
+Failing rate for DDS 7: 5.76+-0.29%
+Failing rate for DDS 8: 3.02+-0.21%
+Failing rate for DDS 9: 14.44+-0.39%
+Total failing rate: 1.11%
+```
+```
+Failing rate for DDS 7: 0.42+-0.09%
+Failing rate for DDS 8: 0.05+-0.02%
+Total failing rate: 0.02%
+```
+
+Two thin wires for breakout 1, one thick wire for breakout 2:
+With No 9 and No 21 swapped
+```
+Failing rate for DDS 0: 89.93+-0.36%
+Failing rate for DDS 1: 97.75+-0.20%
+Failing rate for DDS 2: 99.60+-0.02%
+Failing rate for DDS 3: 99.48+-0.02%
+Failing rate for DDS 4: 99.41+-0.02%
+Failing rate for DDS 5: 99.29+-0.01%
+Failing rate for DDS 6: 99.28+-0.01%
+Failing rate for DDS 7: 99.28+-0.01%
+Failing rate for DDS 8: 99.44+-0.02%
+Failing rate for DDS 9: 99.43+-0.02%
+Total failing rate: 46.80%
+```
+
+Unplug (new) No 21 (and the origianal No 21 is in the No 9 slot)
+Two thin wires for breakout 1, one thick wire for breakout 2:
+```
+Missing DDS: 10
+Missing DDS: 21
+Failing rate for DDS 0: 85.08+-0.29%
+Failing rate for DDS 1: 98.66+-0.11%
+Failing rate for DDS 2: 99.61+-0.02%
+Failing rate for DDS 3: 99.46+-0.02%
+Failing rate for DDS 4: 99.38+-0.02%
+Failing rate for DDS 5: 99.26+-0.01%
+Failing rate for DDS 6: 99.24+-0.01%
+Failing rate for DDS 7: 99.26+-0.01%
+Failing rate for DDS 8: 99.35+-0.02%
+Failing rate for DDS 9: 99.33+-0.02%
+Total failing rate: 48.93%
+```
+
+#### Scope trace of digital signals
+[!Scope trace before modification](before_1.png)
+
+(Ground taken from Pin 51 on the 30x2 connector)
+|Scope Channel No|Pin name|Pin No|
+|----------------|--------|------|
+|1               |WRB-IN  |56    |
+|2               |A1      |49    |
+|3               |D0      |42    |
+|4               |FUD-IN  |53    |
