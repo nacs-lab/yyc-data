@@ -197,3 +197,15 @@ Breakout Board 2
 |2               |A1      |49    |
 |3               |D0      |42    |
 |4               |FUD-IN  |53    |
+
+The traces looks identical with different supply voltages to the board and with spec voltage supply, I can reliably reproduce > 99% failure rate.
+
+### After making the address pulse longer
+#### Scope trace of digital signals
+Breakout Board 1
+
+![Scope trace before modification](after_1.png)
+
+Breakout Board 2
+
+![Scope trace before modification](after_2.png)
