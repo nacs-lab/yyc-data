@@ -8,8 +8,8 @@
 |5             |23          |                 |
 |6             |02          |Filter Replaced  |
 |7             |05          |Filter Replaced  |
-|8             |            |                 |
-|9             |            |                 |
+|8             |20          |(Used to be) Noisy|
+|9             |25          |(Used to be) No Output|
 |10            |            |                 |
 |11            |16          |                 |
 |12            |13          |                 |
