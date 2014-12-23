@@ -181,7 +181,13 @@ Total failing rate: 48.93%
 ```
 
 #### Scope trace of digital signals
+Breakout Board 1
+
 ![Scope trace before modification](before_1.png)
+
+Breakout Board 2
+
+![Scope trace before modification](before_2.png)
 
 (Ground taken from Pin 51 on the 30x2 connector)
 
