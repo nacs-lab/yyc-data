@@ -213,16 +213,13 @@ Breakout Board 2
 #### Voltages On DDS boards
 
 DC-DC converter trimmed up 10%.
+Board 1: powered with two thin cables.
+Board 2: powered with one thick cable.
 
-1. Board 1, powered with two thin cables.
-
-DVDD33 3.353
-DVDD18 1.777
-
-2. Board 2, powered with one thick cable.
-
-DVDD33 3.400
-DVDD18 1.745
+|Net Name|Board 1 / V|Board 2 / V|
+|--------|-----------|-----------|
+|DVDD33  |3.353      |3.400      |
+|DVDD18  |1.777      |1.745      |
 
 #### Test condition
 
