@@ -10,7 +10,7 @@
 |7             |05          |Filter Replaced  |
 |8             |20          |(Used to be) Noisy|
 |9             |25          |(Used to be) No Output|
-|10            |            |                 |
+|10            |01          |Two pin cut for testing|
 |11            |16          |                 |
 |12            |13          |                 |
 |13            |18          |                 |

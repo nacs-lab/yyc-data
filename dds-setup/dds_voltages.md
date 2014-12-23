@@ -29,3 +29,58 @@
 |12V on breakout board 2          |11.86     |
 |Output amp bias on breakout 1|4.446 (expect [4.3, 4.9])|
 |Output amp bias on breakout 2|4.413 (expect [4.3, 4.9])|
+
+|Voltages on DDS 9|Total failing rate|
+|-----------------|------------------|
+|3.075, 1.608     |0.00%             |
+|3.107, 1.641     |1.21%             |
+|3.195, 1.670     |43.51%            |
+
+## 2014/12/23
+
+### Test condition
+
+`0x80` write with each step `0x10000` repeated `0x100` times on each channel.
+
+### Before any change to the hardware
+
+Connection one thin wires for both breakout:
+```
+Total failing rate: 0.00%
+```
+
+Two thin wires for breakout 2, one thick wire for breakout 1:
+```
+Failing rate for DDS 3: 0.01+-0.01%
+Failing rate for DDS 4: 0.00+-0.00%
+Failing rate for DDS 5: 0.02+-0.01%
+Failing rate for DDS 7: 6.66+-0.30%
+Failing rate for DDS 8: 1.00+-0.07%
+Total failing rate: 0.37%
+```
+
+Two thin wires for breakout 2, one thick wire for breakout 1 (10% trim up):
+```
+Failing rate for DDS 0: 99.22+-0.00%
+Failing rate for DDS 1: 99.22+-0.00%
+Failing rate for DDS 2: 99.22+-0.00%
+Failing rate for DDS 3: 99.22+-0.00%
+Failing rate for DDS 4: 99.22+-0.00%
+Failing rate for DDS 5: 99.22+-0.00%
+Failing rate for DDS 6: 99.22+-0.00%
+Failing rate for DDS 7: 99.22+-0.00%
+Failing rate for DDS 8: 99.22+-0.00%
+Failing rate for DDS 9: 99.22+-0.00%
+Failing rate for DDS 11: 60.87+-0.32%
+Failing rate for DDS 12: 59.91+-0.32%
+Failing rate for DDS 13: 99.69+-0.02%
+Failing rate for DDS 14: 99.23+-0.01%
+Failing rate for DDS 15: 99.22+-0.00%
+Failing rate for DDS 16: 99.22+-0.00%
+Failing rate for DDS 17: 99.74+-0.02%
+Failing rate for DDS 18: 99.74+-0.02%
+Failing rate for DDS 19: 99.65+-0.02%
+Failing rate for DDS 20: 99.57+-0.02%
+Failing rate for DDS 21: 87.57+-0.40%
+Total failing rate: 95.08%
+```
