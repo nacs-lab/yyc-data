@@ -181,9 +181,10 @@ Total failing rate: 48.93%
 ```
 
 #### Scope trace of digital signals
-[!Scope trace before modification](before_1.png)
+![Scope trace before modification](before_1.png)
 
 (Ground taken from Pin 51 on the 30x2 connector)
+
 |Scope Channel No|Pin name|Pin No|
 |----------------|--------|------|
 |1               |WRB-IN  |56    |
