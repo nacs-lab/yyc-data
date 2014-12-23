@@ -216,11 +216,11 @@ DC-DC converter trimmed up 10%.
 
 * Board 1:
 
-powered with two thin cables.
+    powered with two thin cables.
 
 * Board 2:
 
-powered with one thick cable.
+    powered with one thick cable.
 
 |Net Name|Board 1 / V|Board 2 / V|
 |--------|-----------|-----------|
