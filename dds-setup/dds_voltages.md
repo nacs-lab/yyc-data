@@ -38,11 +38,11 @@
 
 ## 2014/12/23
 
-### Test condition
+### Before any change to the hardware
+
+#### Test condition
 
 `0x80` write with each step `0x10000` repeated `0x100` times on each channel.
-
-### Before any change to the hardware
 
 #### Three write and one read!
 
@@ -209,3 +209,21 @@ Breakout Board 1
 Breakout Board 2
 
 ![Scope trace before modification](after_2.png)
+
+#### Voltages On DDS boards
+
+1. Board 1, powered with two thin cables.
+
+DVDD33 3.353
+DVDD18 1.777
+
+2. Board 2, powered with one thick cable.
+
+DVDD33 3.400
+DVDD18 1.745
+
+#### Test condition
+
+`0x80` write with each step `0x10000` repeated `0x800` times on each channel.
+
+No failure at any voltages.
