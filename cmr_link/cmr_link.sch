@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "17 dec 2014"
+Date "17 jan 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -46,10 +46,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L DS90CR288A U?
+L DS90CR288A U1
 U 1 1 5491E7BC
 P 5550 3200
-F 0 "U?" V 5500 3200 70  0000 C CNN
+F 0 "U1" V 5500 3200 70  0000 C CNN
 F 1 "DS90CR288A" V 5600 3200 70  0000 C CNN
 F 2 "~" H 5550 2950 60  0000 C CNN
 F 3 "~" H 5550 2950 60  0000 C CNN
