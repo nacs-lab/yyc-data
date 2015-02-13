@@ -1,0 +1,247 @@
+PCBNEW-LibModule-V1  2015年02月13日 星期五 14时04分29秒
+# encoding utf-8
+Units mm
+$INDEX
+12226-8250-00FR
+$EndINDEX
+$MODULE 12226-8250-00FR
+Po 0 0 0 15 54DE4ABB 00000000 ~~
+Li 12226-8250-00FR
+Sc 0
+AR 
+Op 0 0 0
+T0 0 -3.8 1 1 0 0.15 N V 21 N "12226-8250-00FR"
+T1 0 1.8 1 1 0 0.15 N V 21 N "VAL**"
+DS -11.8 -5.6 11.7 -5.6 0.15 21
+DS 11.7 -5.6 11.8 -5.6 0.15 21
+DS 11.8 -5.6 11.8 4 0.15 21
+DS 11.8 4 -11.8 4 0.15 21
+DS -11.8 4 -11.8 -5.6 0.15 21
+$PAD
+Sh "32" C 3 3 0 0 0
+Dr 1.8 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -4.6 0
+$EndPAD
+$PAD
+Sh "30" C 4 4 0 0 0
+Dr 2.3 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -9.6 -2.5
+$EndPAD
+$PAD
+Sh "29" R 3 6 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -13.4 -2.5
+.ZoneConnection 2
+$EndPAD
+$PAD
+Sh "8" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -0.9525 -7.2
+$EndPAD
+$PAD
+Sh "20" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -0.3175 -7.2
+$EndPAD
+$PAD
+Sh "21" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -1.5875 -7.2
+$EndPAD
+$PAD
+Sh "9" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -2.2225 -7.2
+$EndPAD
+$PAD
+Sh "11" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -4.7624 -7.2
+$EndPAD
+$PAD
+Sh "23" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -4.1275 -7.2
+$EndPAD
+$PAD
+Sh "22" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -2.8575 -7.2
+$EndPAD
+$PAD
+Sh "10" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -3.4924 -7.2
+$EndPAD
+$PAD
+Sh "25" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -6.6675 -7.2
+$EndPAD
+$PAD
+Sh "12" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -6.0325 -7.2
+$EndPAD
+$PAD
+Sh "13" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -7.3025 -7.2
+$EndPAD
+$PAD
+Sh "26" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -7.9375 -7.2
+$EndPAD
+$PAD
+Sh "24" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po -5.3975 -7.2
+$EndPAD
+$PAD
+Sh "5" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 2.8575 -7.2
+$EndPAD
+$PAD
+Sh "7" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 0.3175 -7.2
+$EndPAD
+$PAD
+Sh "19" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 0.9524 -7.2
+$EndPAD
+$PAD
+Sh "18" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 2.2225 -7.2
+$EndPAD
+$PAD
+Sh "6" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 1.5875 -7.2
+$EndPAD
+$PAD
+Sh "16" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 4.7625 -7.2
+$EndPAD
+$PAD
+Sh "3" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 5.3975 -7.2
+$EndPAD
+$PAD
+Sh "4" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 4.1274 -7.2
+$EndPAD
+$PAD
+Sh "17" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 3.4925 -7.2
+$EndPAD
+$PAD
+Sh "15" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 6.0325 -7.2
+$EndPAD
+$PAD
+Sh "2" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 6.6675 -7.2
+$EndPAD
+$PAD
+Sh "1" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 7.9375 -7.2
+$EndPAD
+$PAD
+Sh "14" R 0.335 3 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 7.3025 -7.2
+$EndPAD
+$PAD
+Sh "27" R 3 6 0 0 0
+Dr 0 0 0
+At SMD N 00888000
+Ne 0 ""
+Po 13.4 -2.5
+.ZoneConnection 2
+$EndPAD
+$PAD
+Sh "28" C 4 4 0 0 0
+Dr 2.3 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 9.6 -2.5
+$EndPAD
+$PAD
+Sh "31" C 3 3 0 0 0
+Dr 1.8 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 4.6 0
+$EndPAD
+$EndMODULE 12226-8250-00FR
+$EndLIBRARY

@@ -1,4 +1,4 @@
-update=2015年01月16日 星期五 20时14分50秒
+update=2015年02月13日 星期五 12时44分51秒
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -54,8 +54,8 @@ LastNetListRead=
 UseCmpFile=1
 PadDrill="    0.000000"
 PadDrillOvalY="    0.000000"
-PadSizeH="    0.270000"
-PadSizeV="    1.750000"
+PadSizeH="    0.335000"
+PadSizeV="    3.000000"
 PcbTextSizeV="    1.500000"
 PcbTextSizeH="    1.500000"
 PcbTextThickness="    0.300000"
@@ -86,3 +86,4 @@ LibName14=dip_sockets
 LibName15=pga_sockets
 LibName16=valves
 LibName17=tssop
+LibName18=cmr_link
