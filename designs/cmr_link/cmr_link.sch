@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "14 feb 2015"
+Date "17 feb 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -352,21 +352,9 @@ Wire Wire Line
 	8050 2700 8050 900 
 Wire Wire Line
 	8050 900  8150 900 
-Wire Wire Line
-	4950 2500 5050 2500
-Wire Wire Line
-	5050 2500 5050 3200
-Wire Wire Line
-	5050 3200 4950 3200
-Wire Wire Line
-	4950 3300 5050 3300
-Wire Wire Line
-	5050 3300 5050 3800
-Wire Wire Line
-	5050 3800 4950 3800
-Text Label 5050 2500 0    60   ~ 0
+Text Label 4950 2500 0    60   ~ 0
 LVDS_GND
-Text Label 5050 3300 0    60   ~ 0
+Text Label 4950 3300 0    60   ~ 0
 LVDS_VCC
 Text Label 5300 700  0    60   ~ 0
 LVDS_GND
@@ -452,13 +440,7 @@ F 3 "" H 5300 1100 60  0000 C CNN
 	1    5300 1100
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4950 2200 5050 2200
-Wire Wire Line
-	5050 2200 5050 2400
-Wire Wire Line
-	5050 2400 4950 2400
-Text Label 5050 2400 0    60   ~ 0
+Text Label 4950 2400 0    60   ~ 0
 PLL_GND
 Text Label 3050 2000 2    60   ~ 0
 VCC
@@ -470,4 +452,16 @@ Text Label 3050 4500 2    60   ~ 0
 VCC
 Text Label 5300 600  0    60   ~ 0
 VCC
+Text Label 4950 2300 0    60   ~ 0
+PLL_VCC
+Text Label 5300 1250 0    60   ~ 0
+PLL_VCC
+Text Label 5300 1350 0    60   ~ 0
+PLL_GND
+Text Label 4950 2200 0    60   ~ 0
+PLL_GND
+Text Label 4950 3200 0    60   ~ 0
+LVDS_GND
+Text Label 4950 3800 0    60   ~ 0
+LVDS_VCC
 $EndSCHEMATC
