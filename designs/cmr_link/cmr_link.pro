@@ -1,13 +1,11 @@
-update=2015年02月13日 星期五 12时44分51秒
+update=2015年02月19日 星期四 01时14分16秒
 version=1
-last_client=pcbnew
+last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
 [cvpcb/libraries]
 EquName1=devcms
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
@@ -87,3 +85,5 @@ LibName15=pga_sockets
 LibName16=valves
 LibName17=tssop
 LibName18=cmr_link
+[general]
+version=1
