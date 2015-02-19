@@ -1,10 +1,108 @@
-Cmp-Mod V01 Created by CvPcb (2013-may-18)-stable date = 2015年02月13日 星期五 14时02分37秒
+Cmp-Mod V01 Created by CvPcb (2013-may-18)-stable date = 2015年02月18日 星期三 16时09分42秒
+
+BeginCmp
+TimeStamp = /54E4A69C;
+Reference = C1;
+ValeurCmp = C;
+IdModule  = c_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E4A6AB;
+Reference = C2;
+ValeurCmp = C;
+IdModule  = c_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E4A6BA;
+Reference = C3;
+ValeurCmp = C;
+IdModule  = c_0603;
+EndCmp
 
 BeginCmp
 TimeStamp = /54DE4A1B;
 Reference = P1;
 ValeurCmp = 12226-8250-00FR;
 IdModule  = 12226-8250-00FR;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEADB0;
+Reference = R1;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEADAA;
+Reference = R2;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEADA4;
+Reference = R3;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEAC92;
+Reference = R4;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEAC0F;
+Reference = R5;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEAB96;
+Reference = R6;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEA90F;
+Reference = R7;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEA909;
+Reference = R8;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEA903;
+Reference = R9;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEA7C4;
+Reference = R10;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /54DEA660;
+Reference = R11;
+ValeurCmp = 100;
+IdModule  = SM0603_Resistor;
 EndCmp
 
 BeginCmp
