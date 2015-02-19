@@ -11,6 +11,10 @@ is on the bottom left of the board and it should be connected to the ground on
 the breakout board as well as all other odd number pins on this connector.
 Pin 60 of the connector is VCC3V3 from the FPGA board.
 
+# Camera link pin assignments
+
+According to [Andor's document](http://www.andor.com/learning-academy/camera-link-output-ixon-ultra-output-for-direct-data-access), each pixel is a 16bit little endian integer, and according to the standard Port A and Port B should be used in this case.
+
 # Microstrip
 
 Trace width: 10 mil
