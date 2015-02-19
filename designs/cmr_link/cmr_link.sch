@@ -200,11 +200,7 @@ Text Label 6750 2300 0    60   ~ 0
 LVDS_GND
 Text Label 6750 3100 0    60   ~ 0
 LVDS_VCC
-Text Label 1400 5400 0    60   ~ 0
-LVDS_GND
-Text Label 1400 5500 0    60   ~ 0
-LVDS_VCC
-Text Label 1400 5600 0    60   ~ 0
+Text Label 1900 5200 0    60   ~ 0
 Outer_Shield
 Text Label 1400 5700 0    60   ~ 0
 Inner_Shield
@@ -263,17 +259,6 @@ F 3 "" H 4750 3850 60  0000 C CNN
 	1    4750 3850
 	0    1    1    0   
 $EndComp
-$Comp
-L GND #PWR10
-U 1 1 54DEB7C9
-P 1400 5800
-F 0 "#PWR10" H 1400 5800 30  0001 C CNN
-F 1 "GND" H 1400 5730 30  0001 C CNN
-F 2 "" H 1400 5800 60  0000 C CNN
-F 3 "" H 1400 5800 60  0000 C CNN
-	1    1400 5800
-	1    0    0    -1  
-$EndComp
 Text Label 6750 2200 0    60   ~ 0
 PLL_GND
 Text Label 4850 1800 2    60   ~ 0
@@ -284,14 +269,10 @@ Text Label 4850 3500 2    60   ~ 0
 VCC
 Text Label 4850 4300 2    60   ~ 0
 VCC
-Text Label 1400 5300 0    60   ~ 0
+Text Label 4100 5850 0    60   ~ 0
 VCC
 Text Label 6750 2100 0    60   ~ 0
 PLL_VCC
-Text Label 1400 5950 0    60   ~ 0
-PLL_VCC
-Text Label 1400 6050 0    60   ~ 0
-PLL_GND
 Text Label 6750 2000 0    60   ~ 0
 PLL_GND
 Text Label 6750 3000 0    60   ~ 0
@@ -478,31 +459,31 @@ LVDS_GND
 $Comp
 L CONN_01X01 P?
 U 1 1 54E5338C
-P 950 4350
-F 0 "P?" H 950 4450 50  0000 C CNN
-F 1 "Mount" V 1050 4350 50  0000 C CNN
-F 2 "" H 950 4350 60  0000 C CNN
-F 3 "" H 950 4350 60  0000 C CNN
-	1    950  4350
-	1    0    0    -1  
+P 1050 4350
+F 0 "P?" H 1050 4450 50  0000 C CNN
+F 1 "Mount" V 1150 4350 50  0000 C CNN
+F 2 "" H 1050 4350 60  0000 C CNN
+F 3 "" H 1050 4350 60  0000 C CNN
+	1    1050 4350
+	-1   0    0    1   
 $EndComp
 $Comp
 L CONN_01X01 P?
 U 1 1 54E537B3
-P 950 4650
-F 0 "P?" H 950 4750 50  0000 C CNN
-F 1 "Mount" V 1050 4650 50  0000 C CNN
-F 2 "" H 950 4650 60  0000 C CNN
-F 3 "" H 950 4650 60  0000 C CNN
-	1    950  4650
-	1    0    0    -1  
+P 1050 4650
+F 0 "P?" H 1050 4750 50  0000 C CNN
+F 1 "Mount" V 1150 4650 50  0000 C CNN
+F 2 "" H 1050 4650 60  0000 C CNN
+F 3 "" H 1050 4650 60  0000 C CNN
+	1    1050 4650
+	-1   0    0    1   
 $EndComp
 $Comp
 L CONN_02X30 P?
 U 1 1 54E53FCB
 P 2500 3000
 F 0 "P?" H 2500 4550 50  0000 C CNN
-F 1 "CONN_02X30" V 2500 3000 50  0000 C CNN
+F 1 "Output" V 2500 3000 50  0000 C CNN
 F 2 "" H 2500 2500 60  0000 C CNN
 F 3 "" H 2500 2500 60  0000 C CNN
 	1    2500 3000
@@ -1109,4 +1090,335 @@ Wire Wire Line
 	4200 1600 4850 1600
 Text Label 4200 1600 2    60   ~ 0
 A1
+Text Label 2750 1650 0    60   ~ 0
+RxCLK_OUT
+Text Label 2750 1750 0    60   ~ 0
+RxOUT0
+Text Label 2750 1850 0    60   ~ 0
+RxOUT1
+Text Label 2750 1950 0    60   ~ 0
+RxOUT2
+Text Label 2750 2050 0    60   ~ 0
+RxOUT3
+Text Label 2750 2150 0    60   ~ 0
+RxOUT4
+Text Label 2750 2250 0    60   ~ 0
+RxOUT5
+Text Label 2750 2350 0    60   ~ 0
+RxOUT6
+Text Label 2750 2450 0    60   ~ 0
+RxOUT7
+Text Label 2750 2550 0    60   ~ 0
+RxOUT8
+Text Label 2750 2650 0    60   ~ 0
+RxOUT9
+Text Label 2750 2750 0    60   ~ 0
+RxOUT10
+Text Label 2750 2850 0    60   ~ 0
+RxOUT11
+Text Label 2750 2950 0    60   ~ 0
+RxOUT12
+Text Label 2750 3050 0    60   ~ 0
+RxOUT13
+Text Label 2750 3150 0    60   ~ 0
+RxOUT14
+Text Label 2750 4350 0    60   ~ 0
+RxOUT27
+Text Label 2750 4250 0    60   ~ 0
+RxOUT26
+Text Label 2750 4150 0    60   ~ 0
+RxOUT25
+Text Label 2750 4050 0    60   ~ 0
+RxOUT24
+Text Label 2750 3950 0    60   ~ 0
+RxOUT22
+Text Label 2750 3850 0    60   ~ 0
+RxOUT21
+Text Label 2750 3750 0    60   ~ 0
+RxOUT20
+Text Label 2750 3650 0    60   ~ 0
+RxOUT19
+Text Label 2750 3550 0    60   ~ 0
+RxOUT18
+Text Label 2750 3450 0    60   ~ 0
+RxOUT17
+Text Label 2750 3350 0    60   ~ 0
+RxOUT16
+Text Label 2750 3250 0    60   ~ 0
+RxOUT15
+Text Label 2750 1550 0    60   ~ 0
+RxOUT23
+$Comp
+L CONN_01X30 P?
+U 1 1 54E6470E
+P 3350 3000
+F 0 "P?" H 3350 4550 50  0000 C CNN
+F 1 "Testing" V 3450 3000 50  0000 C CNN
+F 2 "" H 3350 3000 60  0000 C CNN
+F 3 "" H 3350 3000 60  0000 C CNN
+	1    3350 3000
+	-1   0    0    1   
+$EndComp
+Text Label 3550 4450 0    60   ~ 0
+VCC3v3
+Text Label 3550 1650 0    60   ~ 0
+RxCLK_OUT
+Text Label 3550 1750 0    60   ~ 0
+RxOUT0
+Text Label 3550 1850 0    60   ~ 0
+RxOUT1
+Text Label 3550 1950 0    60   ~ 0
+RxOUT2
+Text Label 3550 2050 0    60   ~ 0
+RxOUT3
+Text Label 3550 2150 0    60   ~ 0
+RxOUT4
+Text Label 3550 2250 0    60   ~ 0
+RxOUT5
+Text Label 3550 2350 0    60   ~ 0
+RxOUT6
+Text Label 3550 2450 0    60   ~ 0
+RxOUT7
+Text Label 3550 2550 0    60   ~ 0
+RxOUT8
+Text Label 3550 2650 0    60   ~ 0
+RxOUT9
+Text Label 3550 2750 0    60   ~ 0
+RxOUT10
+Text Label 3550 2850 0    60   ~ 0
+RxOUT11
+Text Label 3550 2950 0    60   ~ 0
+RxOUT12
+Text Label 3550 3050 0    60   ~ 0
+RxOUT13
+Text Label 3550 3150 0    60   ~ 0
+RxOUT14
+Text Label 3550 4350 0    60   ~ 0
+RxOUT27
+Text Label 3550 4250 0    60   ~ 0
+RxOUT26
+Text Label 3550 4150 0    60   ~ 0
+RxOUT25
+Text Label 3550 4050 0    60   ~ 0
+RxOUT24
+Text Label 3550 3950 0    60   ~ 0
+RxOUT22
+Text Label 3550 3850 0    60   ~ 0
+RxOUT21
+Text Label 3550 3750 0    60   ~ 0
+RxOUT20
+Text Label 3550 3650 0    60   ~ 0
+RxOUT19
+Text Label 3550 3550 0    60   ~ 0
+RxOUT18
+Text Label 3550 3450 0    60   ~ 0
+RxOUT17
+Text Label 3550 3350 0    60   ~ 0
+RxOUT16
+Text Label 3550 3250 0    60   ~ 0
+RxOUT15
+Text Label 3550 1550 0    60   ~ 0
+RxOUT23
+Text Label 1250 4350 0    60   ~ 0
+Outer_Shield
+Text Label 1250 4650 0    60   ~ 0
+Outer_Shield
+$Comp
+L CONN_01X02 P?
+U 1 1 54E66323
+P 2500 4850
+F 0 "P?" H 2500 5000 50  0000 C CNN
+F 1 "Power" V 2600 4850 50  0000 C CNN
+F 2 "" H 2500 4850 60  0000 C CNN
+F 3 "" H 2500 4850 60  0000 C CNN
+	1    2500 4850
+	-1   0    0    1   
+$EndComp
+Text Label 2700 4800 0    60   ~ 0
+VCC3v3
+$Comp
+L GND #PWR?
+U 1 1 54E66414
+P 2800 4900
+F 0 "#PWR?" H 2800 4900 30  0001 C CNN
+F 1 "GND" H 2800 4830 30  0001 C CNN
+F 2 "" H 2800 4900 60  0000 C CNN
+F 3 "" H 2800 4900 60  0000 C CNN
+	1    2800 4900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2800 4900 2700 4900
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E67EC2
+P 2850 5400
+F 0 "FI?" H 2850 5500 50  0000 C CNN
+F 1 "LVDS_Filter1" H 2900 5250 50  0000 L CNN
+F 2 "" H 2850 5400 60  0000 C CNN
+F 3 "" H 2850 5400 60  0000 C CNN
+	1    2850 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E68257
+P 3650 5400
+F 0 "FI?" H 3650 5500 50  0000 C CNN
+F 1 "LVDS_Filter2" H 3700 5250 50  0000 L CNN
+F 2 "" H 3650 5400 60  0000 C CNN
+F 3 "" H 3650 5400 60  0000 C CNN
+	1    3650 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 5400 3300 5400
+$Comp
+L GND #PWR?
+U 1 1 54E68B3C
+P 2500 5650
+F 0 "#PWR?" H 2500 5650 30  0001 C CNN
+F 1 "GND" H 2500 5580 30  0001 C CNN
+F 2 "" H 2500 5650 60  0000 C CNN
+F 3 "" H 2500 5650 60  0000 C CNN
+	1    2500 5650
+	1    0    0    -1  
+$EndComp
+Text Label 2400 5400 2    60   ~ 0
+VCC3v3
+Wire Wire Line
+	2400 5400 2500 5400
+Text Label 4100 5400 0    60   ~ 0
+LVDS_VCC
+Wire Wire Line
+	4100 5400 4000 5400
+Wire Wire Line
+	2500 5650 4100 5650
+Connection ~ 2850 5650
+Text Label 4100 5650 0    60   ~ 0
+LVDS_GND
+Connection ~ 3650 5650
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E69C13
+P 2850 5850
+F 0 "FI?" H 2850 5950 50  0000 C CNN
+F 1 "VCC_Filter1" H 2900 5700 50  0000 L CNN
+F 2 "" H 2850 5850 60  0000 C CNN
+F 3 "" H 2850 5850 60  0000 C CNN
+	1    2850 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E69C19
+P 3650 5850
+F 0 "FI?" H 3650 5950 50  0000 C CNN
+F 1 "VCC_Filter2" H 3700 5700 50  0000 L CNN
+F 2 "" H 3650 5850 60  0000 C CNN
+F 3 "" H 3650 5850 60  0000 C CNN
+	1    3650 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 5850 3300 5850
+$Comp
+L GND #PWR?
+U 1 1 54E69C20
+P 2500 6100
+F 0 "#PWR?" H 2500 6100 30  0001 C CNN
+F 1 "GND" H 2500 6030 30  0001 C CNN
+F 2 "" H 2500 6100 60  0000 C CNN
+F 3 "" H 2500 6100 60  0000 C CNN
+	1    2500 6100
+	1    0    0    -1  
+$EndComp
+Text Label 2400 5850 2    60   ~ 0
+VCC3v3
+Wire Wire Line
+	2400 5850 2500 5850
+Wire Wire Line
+	4100 5850 4000 5850
+Connection ~ 2850 6100
+Wire Wire Line
+	2500 6100 3650 6100
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E6A977
+P 2850 6300
+F 0 "FI?" H 2850 6400 50  0000 C CNN
+F 1 "PLL_Filter1" H 2900 6150 50  0000 L CNN
+F 2 "" H 2850 6300 60  0000 C CNN
+F 3 "" H 2850 6300 60  0000 C CNN
+	1    2850 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L EMI_FILTER2 FI?
+U 1 1 54E6A97D
+P 3650 6300
+F 0 "FI?" H 3650 6400 50  0000 C CNN
+F 1 "PLL_Filter2" H 3700 6150 50  0000 L CNN
+F 2 "" H 3650 6300 60  0000 C CNN
+F 3 "" H 3650 6300 60  0000 C CNN
+	1    3650 6300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 6300 3300 6300
+$Comp
+L GND #PWR?
+U 1 1 54E6A984
+P 2500 6550
+F 0 "#PWR?" H 2500 6550 30  0001 C CNN
+F 1 "GND" H 2500 6480 30  0001 C CNN
+F 2 "" H 2500 6550 60  0000 C CNN
+F 3 "" H 2500 6550 60  0000 C CNN
+	1    2500 6550
+	1    0    0    -1  
+$EndComp
+Text Label 2400 6300 2    60   ~ 0
+VCC3v3
+Wire Wire Line
+	2400 6300 2500 6300
+Text Label 4100 6300 0    60   ~ 0
+PLL_VCC
+Wire Wire Line
+	4100 6300 4000 6300
+Wire Wire Line
+	2500 6550 4100 6550
+Connection ~ 2850 6550
+Text Label 4100 6550 0    60   ~ 0
+PLL_GND
+Connection ~ 3650 6550
+$Comp
+L R R?
+U 1 1 54E6D056
+P 1550 5200
+F 0 "R?" V 1630 5200 50  0000 C CNN
+F 1 "R" V 1557 5201 50  0000 C CNN
+F 2 "" V 1480 5200 30  0000 C CNN
+F 3 "" H 1550 5200 30  0000 C CNN
+	1    1550 5200
+	0    1    1    0   
+$EndComp
+Text Label 1200 5200 2    60   ~ 0
+Inner_Shield
+Wire Wire Line
+	1800 5200 1900 5200
+Wire Wire Line
+	1300 5200 1200 5200
+$Comp
+L GND #PWR?
+U 1 1 54E6D90A
+P 1300 5700
+F 0 "#PWR?" H 1300 5700 30  0001 C CNN
+F 1 "GND" H 1300 5630 30  0001 C CNN
+F 2 "" H 1300 5700 60  0000 C CNN
+F 3 "" H 1300 5700 60  0000 C CNN
+	1    1300 5700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 5700 1400 5700
 $EndSCHEMATC
