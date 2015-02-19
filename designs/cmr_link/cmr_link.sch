@@ -651,7 +651,7 @@ Connection ~ 2250 1850
 Connection ~ 2250 1750
 Connection ~ 2250 1650
 Text Label 2750 4450 0    60   ~ 0
-VCC3v3
+3v3_FPGA
 Wire Wire Line
 	2150 4450 2250 4450
 Wire Wire Line
@@ -1034,7 +1034,7 @@ F 3 "" H 3350 3000 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Text Label 3550 4450 0    60   ~ 0
-VCC3v3
+3v3_FPGA
 Text Label 3550 1650 0    60   ~ 0
 RxCLK_OUT
 Text Label 3550 1750 0    60   ~ 0
@@ -1108,7 +1108,7 @@ F 3 "" H 2500 4850 60  0000 C CNN
 	1    2500 4850
 	-1   0    0    1   
 $EndComp
-Text Label 2700 4800 0    60   ~ 0
+Text Label 4400 4950 0    60   ~ 0
 VCC3v3
 $Comp
 L GND #PWR011
@@ -1311,4 +1311,40 @@ Wire Wire Line
 	6750 1900 7350 1900
 Text Label 7350 1900 0    60   ~ 0
 PLL_VCC
+Text Label 3700 4950 2    60   ~ 0
+3v3_FPGA
+$Comp
+L R R7
+U 1 1 54E63C55
+P 4050 4850
+F 0 "R7" V 4130 4850 50  0000 C CNN
+F 1 "R" V 4057 4851 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603" V 3980 4850 30  0001 C CNN
+F 3 "" H 4050 4850 30  0000 C CNN
+	1    4050 4850
+	0    1    1    0   
+$EndComp
+$Comp
+L R R8
+U 1 1 54E63D9C
+P 4050 5050
+F 0 "R8" V 4130 5050 50  0000 C CNN
+F 1 "R" V 4057 5051 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603" V 3980 5050 30  0001 C CNN
+F 3 "" H 4050 5050 30  0000 C CNN
+	1    4050 5050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3700 4950 3800 4950
+Wire Wire Line
+	3800 4850 3800 5050
+Connection ~ 3800 4950
+Wire Wire Line
+	4300 5050 4300 4850
+Wire Wire Line
+	4300 4950 4400 4950
+Connection ~ 4300 4950
+Text Label 2700 4800 0    60   ~ 0
+VCC3v3
 $EndSCHEMATC
