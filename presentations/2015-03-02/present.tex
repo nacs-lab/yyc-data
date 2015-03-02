@@ -175,64 +175,87 @@
 %   \tableofcontents
 % \end{frame}
 
-\begin{frame}{Raman resonance}
-  \begin{columns}
+\begin{frame}[t]{}
+  \begin{columns}[t]
     \column{5cm}
     \begin{center}
-      \begin{tikzpicture}[scale=0.9]
-        \visible<+-> {
-          \draw[line width=1] (0, 0) -- (2, 0);
-          \path (1, 0) node[above] {$|4', -3\rangle$};
-          \draw[line width=1] (2.5, -0.2) -- (4.5, -0.2);
-          \path (3.5, -.2) node[above] {$|4', -4\rangle$};
-          \draw[line width=1] (0, -0.8) -- (2, -0.8);
-          \path (1, -.8) node[above] {$|3', -3\rangle$};
+      \only<1-8, 11-13, 16-> {
+        \begin{tikzpicture}[scale=0.9]
+          \visible<+-> {
+            \draw[line width=1] (0, 0) -- (2, 0);
+            \path (1, 0) node[above] {$|4', -3\rangle$};
+            \draw[line width=1] (2.5, -0.2) -- (4.5, -0.2);
+            \path (3.5, -.2) node[above] {$|4', -4\rangle$};
+            \draw[line width=1] (0, -0.8) -- (2, -0.8);
+            \path (1, -.8) node[above] {$|3', -3\rangle$};
 
-          \draw[line width=1] (0, -5) -- (2, -5);
-          \path (1, -5) node[above] {$|4, -3\rangle$};
-          \draw[line width=1] (2.5, -5.2) -- (4.5, -5.2);
-          \path (3.5, -5.2) node[above] {$|4, -4\rangle$};
-          \draw[line width=1] (0, -7) -- (2, -7);
-          \path (1, -7) node[above] {$|3, -3\rangle$};
-        }
+            \draw[line width=1] (0, -5) -- (2, -5);
+            \path (1, -5) node[above] {$|4, -3\rangle$};
+            \draw[line width=1] (2.5, -5.2) -- (4.5, -5.2);
+            \path (3.5, -5.2) node[above] {$|4, -4\rangle$};
+            \draw[line width=1] (0, -7) -- (2, -7);
+            \path (1, -7) node[above] {$|3, -3\rangle$};
+          }
 
-        \visible<+-> {
-          \draw[line width=1,dashed,blue] (2.5, -2) -- (4.5, -2);
-          \draw[line width=1,dashed,blue,<->] (2.7, -2) -- (2.7, -.2);
-          \path (2.7, -1.1) node[right] {$\approx18\text{GHz}$};
-          \draw[line width=1,red,->] (4.1, -5.2) -- (4.1, -2);
-          \draw[line width=1,red,->] (4.1, -2) -- (1.55, -7);
-        }
-      \end{tikzpicture}
+          \visible<+-> {
+            \draw[line width=1,dashed,blue] (2.5, -2) -- (4.5, -2);
+            \draw[line width=1,dashed,blue,<->] (2.7, -2) -- (2.7, -.2);
+            \path (2.7, -1.1) node[right] {$\approx18\text{GHz}$};
+            \draw[line width=1,red,->] (4.1, -5.2) -- (4.1, -2);
+            \draw[line width=1,red,->] (4.1, -2) -- (1.55, -7);
+          }
+        \end{tikzpicture}
+      }
+      \only<9-10> {
+        \includegraphics[width=5cm]{Scatter.png}
+      }
+      \only<14-15> {
+        \includegraphics[width=5cm]{4_-4.png}\\
+        \includegraphics[width=5cm]{4_4.png}
+      }
     \end{center}
     \column{6.5cm}
-    \only<3-11>{
+    \only<3-15>{
       \begin{block}{}
         \begin{itemize}
-        \item<3-> Use single atom
-        \item<4-> Light
-          \begin{itemize}
-          \item<5-> Power: \visible<6->{
-              Alignment and scattering measurement \checkmark}
-          \item<7-> Frequency: \visible<8->{Beat note \checkmark}
-          \end{itemize}
-        \item<9-> State
-          \begin{itemize}
-          \item<10-> Dark state pumping \checkmark
-          \item<11-> Cycling transition detuning \checkmark
-          \end{itemize}
+          \item<3-> Use single atom
+          \item<4-> Light
+            \begin{itemize}
+            \item<5-> Power \visible<10->{\checkmark}
+            \item<10-> Frequency \visible<12->{\checkmark}
+            \end{itemize}
+          \item<12-> State \visible<15->{\checkmark}
         \end{itemize}
       \end{block}
+      \only<6-9>{
+        \begin{itemize}
+        \item<6-> Shrink size
+        \item<7-> Alignment
+        \item<8-> Scattering measurement
+        \end{itemize}
+      }
+      \only<10-11>{
+        \begin{itemize}
+        \item<10-> Use co-propagating beams
+        \item<11-> Measure beat note
+        \end{itemize}
+      }
+      \only<13-14>{
+        \begin{itemize}
+        \item<13-> Dark state pumping
+        \item<14-> Cycling transition Zeeman shift
+        \end{itemize}
+      }
     }
-    \only<12->{
+    \only<16->{
       \begin{center}
         \includegraphics[width=6cm]{Raman_line.png}
       \end{center}
       \begin{block}{}
         \begin{itemize}
-        \item<13->
+        \item<17->
           Zeeman shift $\approx21\text{MHz}$
-        \item<14->
+        \item<18->
           Red shifted (and wider) with higher Raman intensity
         \end{itemize}
       \end{block}
