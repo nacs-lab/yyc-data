@@ -25,3 +25,5 @@
 |||||
 |J10107-ND         |60              |64             |SMB connector             |
 |3M2360-ND         |30              |35             |30x2 pins connector       |
+
+Parts should be either in the original package from DigiKey or MiniCircuits with part number on them or in a zip lock bag with at least two labels with the part number on it.
