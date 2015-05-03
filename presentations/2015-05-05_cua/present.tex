@@ -168,20 +168,6 @@
 
 \begin{document}
 
-% Figures
-% * Overall plan
-% * Organize pictures with timeline
-% * Cs single atom
-% * Cs Raman sideband
-% * Na MOT
-% * Innolume diode
-% * Innolume frequency tuning range
-% * Innolume power
-% * Doubler
-% * Doubler effeciency
-% * Setup
-% * Group members
-
 % Goal of our experiment:
 %
 % Develop a new approach to make dipolar di-atomic molecules with single
@@ -194,10 +180,47 @@
 % 3. Raman sideband cooling
 % 4. STIRAP to molecular ground state
 
-\begin{frame}{}
-  % TODO figure
-  \titlepage
+\makeatletter
+\begin{frame}[t]{}
+  \begin{center}
+    \usebeamerfont{title}{\inserttitle\par}
+  \end{center}
+  \begin{columns}[t]
+    \column{8cm}
+    \only<1>{
+      \includegraphics[width=8cm]{overall_full_min.png}
+    }
+    \only<2>{
+      \includegraphics[width=8cm]{overall_trap_min.png}
+    }
+    \only<3>{
+      \includegraphics[width=8cm]{overall_stirap_min.png}
+    }
+    \only<4>{
+      \includegraphics[width=8cm]{overall_application_min.png}
+    }
+    \column{4cm}
+    \begin{center}
+      {\large{Yichao Yu}}\\
+      {\small{\@date}}\\
+      {\small{Harvard/Ni Group}}
+    \end{center}
+  \end{columns}
 \end{frame}
+\makeatother
+
+% Figures
+% * Organize pictures with timeline
+% * Cs single atom
+% * Cs Raman sideband
+% * Na MOT
+% * Innolume diode
+% * Innolume frequency tuning range
+% * Innolume power
+% * Doubler
+% * Doubler effeciency
+% * Setup
+% * Group members
 
 % Currently we've got
 % PIC: Cs single atom
@@ -208,6 +231,10 @@
 % the properties of the atom. Also laser
 
 \begin{frame}{Current state}
+  \begin{columns}
+    \column{6cm}
+    \column{6cm}
+  \end{columns}
   \begin{block}{}
     % TODO pictures
     \begin{itemize}[<+->]
