@@ -233,13 +233,31 @@
 \begin{frame}{Current state}
   \begin{columns}
     \column{6cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \draw[->, line width=2] (0, 0) -- (0, -8);
+
+        \visible<2-> {
+          \path (0, 0) node[left, text width=1.5cm] {MOT};
+        }
+
+        \visible<3-> {
+          \path (0, -3) node[left, text width=1.5cm] {Trapping single atom};
+          \path (0, -3) node[right]
+          {\includegraphics[width=3.5cm]{Cs_single_atom.png}};
+        }
+
+        \visible<4-> {
+          \path (0, -6) node[left, text width=1.5cm] {Single atom cooling};
+          \path (0, -6) node[right]
+          {\includegraphics[width=3.5cm]{Cs_single_atom.png}};
+        }
+      \end{tikzpicture}
+    \end{center}
     \column{6cm}
   \end{columns}
   \begin{block}{}
-    % TODO pictures
     \begin{itemize}[<+->]
-    \item Trapping Cs single atom
-    \item Cs single atom cooling
     \item Na MOT
     \item Looking for trapped single Na atom
     \end{itemize}
