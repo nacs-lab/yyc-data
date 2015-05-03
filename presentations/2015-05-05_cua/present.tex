@@ -168,37 +168,34 @@
 
 \begin{document}
 
+% Goal of our experiment:
+%
+% Develop a new approach to make dipolar di-atomic molecules with single
+% site addressability.
+% As a platform for quantum simulation/computing, quantum chemistry etc.
+
+% Method (illustrated in the picture) we use
+% 1. MOT
+% 2. Trap single atom in optical dipole trap
+% 3. Raman sideband cooling
+% 4. STIRAP to molecular ground state
+
 \begin{frame}{}
+  % TODO figure
   \titlepage
 \end{frame}
 
-\begin{frame}{}
-  \begin{block}{Molecules}
-    \begin{itemize}[<+->]
-    \item Quantum information
-    \item Quantum simulation
-    \item Quantum chemistry
-    \item Precision measurement
-    \end{itemize}
-  \end{block}
-  \begin{block}{}
-    \begin{itemize}[<+->]
-    \item MOT
-    \item Trap single atom(s) in an optical dipole trap
-    \item Raman sideband cooling to ground state
-    \item Combine two traps with Na and Cs atom
-    \item Drive STIRAP to molecular state
-    \end{itemize}
-  \end{block}
-\end{frame}
+% Currently we've got
+% PIC: Cs single atom
+% PIC: Cs Raman sideband
+% PIC: Na MOT
 
-\begin{frame}{}
-  \tableofcontents
-\end{frame}
+% As one can tell. Soldium is harder. Apart from expected reasons like
+% the properties of the atom. Also laser
 
-\section{Current state}
 \begin{frame}{Current state}
   \begin{block}{}
+    % TODO pictures
     \begin{itemize}[<+->]
     \item Trapping Cs single atom
     \item Cs single atom cooling
@@ -206,38 +203,98 @@
     \item Looking for trapped single Na atom
     \end{itemize}
   \end{block}
+  \visible<+->{
+    \begin{block}{Problems}
+      \begin{itemize}[<+->]
+      \item Sodium laser
+      \item MOT stability
+      \end{itemize}
+    \end{block}
+  }
 \end{frame}
 
-\section{Laser system for Sodium}
+% Since we are using Na, need sodium laser
+% Frequencies
+
+% As usual also requires
+% * Narrow linewidth
+% * Tunable
+% * (Low cost)
+
+% Use diode
+% * Cheap
+% * Compact
+% * Everyone knows how to use it
+
+% Gap around the frequency we want
+% Frequency doubling
+% Bare diode cannot generate enough power
+% Innolume diode (TODO: Picture)
+% * Tunable over ~100nm (TODO: Test data)
+% * High power (TODO: Test data)
+% Waveguide frequency doubler (TODO: Picture)
+% * High effeciency (TODO: Test data)
+
 \begin{frame}{Laser system for Sodium}
-  \begin{block}{Requirements}
-    \begin{itemize}[<+->]
-    \item Narrow linewidth
-    \item Tunable
-    \item Multiple frequencies / low cost
-    \end{itemize}
-  \end{block}
-  \begin{block}{}
-    \begin{itemize}[<+->]
-    \item Visible diode laser
-    \item Gap between $460$-$620$nm and $1060$-$1260$nm
-    \item $1178$nm diode laser (also @ $1156$nm)\\
-      <data>
-    \item waveguide doubler\\
-      <data>
-    \end{itemize}
-  \end{block}
+  \begin{columns}
+    \column{5.8cm}
+    \begin{block}{Sodium wavelengths}
+      \begin{itemize}
+      \item<1-> D lines $\approx589$nm
+      \item<2-> D2 line (Cooling, Imaging)
+      \item<3-> D1 line (Pumping, Cooling)
+      \item<4-> Off resonance (Raman transition)
+      \end{itemize}
+    \end{block}
+    \visible<6->{
+      % TODO Sodium wavelength
+      \includegraphics[width=5.5cm]{toptica_diode_spectrum.png}
+    }
+    \column{5.8cm}
+    \only<5-> {
+      \begin{block}{Using \only<7->{doubled }diode laser\only<7->{ $589\times2=1178$nm}}
+        \begin{itemize}
+        \item<6-> Diode laser spectrum
+        \item<8-> Power requirement for frequency doubling
+        \item<9-> Diode laser from Innolume / TimeBase\\
+          \visible<10->{Tunable from $...$nm to $...$nm}
+        \item<12-> Waveguide doubler
+        \end{itemize}
+      \end{block}
+    }
+  \end{columns}
 \end{frame}
 
-\section{MOT stability}
+% Another problem: MOT stability
+% Reason
+% Small beam and small MOT (sensitive loading)
+% multiple reflections / other fluctuations from glass plates (TODO: diagram)
+
+% Modulating at high frequency (kHz) to average out any static effect
+% (TODO: diagram)
+% Video?
+
+% Figures
+% * Overall plan
+% * Organize pictures with timeline
+% * Cs single atom
+% * Cs Raman sideband
+% * Na MOT
+% * Innolume diode
+% * Innolume frequency tuning range
+% * Innolume power
+% * Doubler
+% * Doubler effeciency
+% * Setup
+
 \begin{frame}{MOT stability}
   \begin{itemize}[<+->]
   \item Interference and stability issue with a small MOT
-  \item Modulating the MOT
+  \item Modulating the MOT beams
   \end{itemize}
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}{Members}
 \end{frame}
 
 \end{document}
