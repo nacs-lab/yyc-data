@@ -169,7 +169,7 @@
 \begin{document}
 
 % Goal of our experiment:
-%
+% 
 % Develop a new approach to make dipolar di-atomic molecules with single
 % site addressability.
 % As a platform for quantum simulation/computing, quantum chemistry etc.
@@ -228,45 +228,59 @@
 % the properties of the atom. Also laser
 
 \begin{frame}{Current state}
-  \begin{columns}
+  \vspace{-0.8cm}
+  \begin{columns}[t]
     \column{6cm}
     \begin{center}
+      {\LARGE{Cesium}}
       \begin{tikzpicture}
-        \draw[->, line width=2] (0, 0) -- (0, -8);
+        \draw[->, line width=2] (0, -1) -- (0, -8);
 
         \visible<2-> {
-          \path (0, 0) node[left, text width=1.5cm] {MOT};
+          \path (0, -1) node[below left, text width=1.5cm] {MOT};
         }
 
         \visible<3-> {
           \path (0, -3) node[left, text width=1.5cm] {Trapping single atom};
-          \path (0, -3) node[right]
+          \path (0.2, -3) node[right]
           {\includegraphics[width=3.5cm]{Cs_single_atom.png}};
         }
 
         \visible<4-> {
-          \path (0, -6) node[left, text width=1.5cm] {Single atom cooling};
+          \path (0.2, -6) node[left, text width=1.5cm] {Single atom cooling};
           \path (0, -6) node[right]
           {\includegraphics[width=4cm]{Cs_sideband.png}};
         }
       \end{tikzpicture}
     \end{center}
     \column{6cm}
+    \begin{center}
+      \visible<5->{
+        {\LARGE{Sodium}}
+        \begin{tikzpicture}
+          \draw[->, line width=2] (0, 1.2) -- (0, -3);
+
+          \visible<6-> {
+            \path (0, 0) node[left, text width=1.5cm] {MOT};
+            \path (0.2, 0) node[right]
+            {\includegraphics[width=2.5cm]{Na_MOT.png}};
+          }
+
+          \visible<7-> {
+            \path (0, -2) node[left, text width=1.5cm] {Looking for single atom};
+          }
+        \end{tikzpicture}
+      }
+      \visible<8-> {
+        \begin{block}{Problems}
+          \begin{itemize}
+          \item<9-> Sodium laser
+          \item<10-> MOT stability
+          \end{itemize}
+        \end{block}
+      }
+    \end{center}
   \end{columns}
-  \begin{block}{}
-    \begin{itemize}[<+->]
-    \item Na MOT
-    \item Looking for trapped single Na atom
-    \end{itemize}
-  \end{block}
-  \visible<+->{
-    \begin{block}{Problems}
-      \begin{itemize}[<+->]
-      \item Sodium laser
-      \item MOT stability
-      \end{itemize}
-    \end{block}
-  }
 \end{frame}
 
 % Since we are using Na, need sodium laser
