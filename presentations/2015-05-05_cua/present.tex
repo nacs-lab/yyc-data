@@ -289,20 +289,11 @@
 % Gap around the frequency we want
 % Frequency doubling
 % Bare diode cannot generate enough power
-% Innolume diode (TODO: Picture)
-% * Tunable over ~100nm (TODO: Test data)
-% * High power (TODO: Test data)
-% Waveguide frequency doubler (TODO: Picture)
-% * High effeciency (TODO: Test data)
-
-% Figures
-% * Innolume diode
-% * Innolume frequency tuning range
-% * Innolume power
-% * Doubler
-% * Doubler effeciency
-% * Setup
-% * Group members
+% Innolume diode
+% * Tunable over ~100nm
+% * High power
+% Waveguide frequency doubler
+% * High effeciency
 
 \begin{frame}{Laser system for Sodium}
   \vspace{-0.8cm}
@@ -317,7 +308,6 @@
       \end{itemize}
     \end{block}
     \visible<6->{
-      % TODO Sodium wavelength
       \begin{tikzpicture}
         \visible<-8>{
           \path (0, 0) node[above right]
@@ -334,9 +324,13 @@
             node[below] {$\mathbf{1178}$nm};
           }
         }
-        \visible<9->{
+        \visible<9-11>{
           \path (0.5, 0) node[above right]
           {\includegraphics[width=4.5cm]{Na_diode.png}};
+        }
+        \visible<12->{
+          \path (0, 0) node[above right]
+          {\includegraphics[width=5.5cm]{Na_doubler.png}};
         }
       \end{tikzpicture}
     }
@@ -352,6 +346,16 @@
         \item<12-> Waveguide doubler
         \end{itemize}
       \end{block}
+      \begin{tikzpicture}
+        \visible<11>{
+          \path (0, 0) node[above right]
+          {\includegraphics[width=5.5cm]{Na_seed_power.png}};
+        }
+        \visible<13>{
+          \path (0, 0) node[above right]
+          {\includegraphics[width=5.5cm]{Na_doubler_power.png}};
+        }
+      \end{tikzpicture}
     }
   \end{columns}
 \end{frame}
@@ -362,15 +366,65 @@
 % multiple reflections / other fluctuations from glass plates (TODO: diagram)
 
 % Modulating at high frequency (kHz) to average out any static effect
-% (TODO: diagram)
 % Video?
 
-\begin{frame}{MOT stability}
-  \begin{itemize}[<+->]
-  \item Interference and stability issue with a small MOT
-  \item Modulating the MOT beams
-  \end{itemize}
+\begin{frame}[t]{MOT stability}
+  \begin{columns}
+    \column{8cm}
+    \begin{center}
+      \begin{tikzpicture}[scale=1.1]
+        \visible<-3>{
+          \fill[orange, opacity=0.4] (0, 0) circle (0.5);
+          \path (-0.5, 0) node[left] {MOT};
+          \draw[->, red, line width=1.5] (-2, -4) -- (-3, -3) -- +(45:6.4);
+          \draw[line width=1] (-3, -4) -- +(90:1.5);
+
+          \draw[->, red, line width=1.5] (2, -4) -- (3, -3) -- +(135:6.4);
+          \draw[line width=1] (3, -4) -- +(90:1.5);
+
+          \visible<2->{
+            \draw[line width=5, blue, opacity=0.4] (-1.9, -0.7)
+            rectangle (1.9, 0.7);
+            \path (2, 0) node[left, text width=1cm] {Glass Cell};
+
+            \draw[line width=2.5, blue, opacity=0.4] (-1.9, -1) -- (1.9, -1);
+            \draw[line width=2.5, blue, opacity=0.4] (-1.9, 1) -- (1.9, 1);
+            \path (-2.2, 1) node[above] {Field plate};
+            \path (-2.2, -1) node[below] {Field plate};
+          }
+
+          \visible<3-> {
+            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(43:6.4);
+            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(47:6.4);
+            \draw[line width=1, opacity=0.3] (-3, -4) -- +(89:1.5);
+            \draw[line width=1, opacity=0.3] (-3, -4) -- +(91:1.5);
+
+            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(133:6.4);
+            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(137:6.4);
+            \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
+            \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
+          }
+        }
+        \visible<4>{
+          \path (0, 0) node[below]
+          {\movie[height = 4cm,width = 6cm,showcontrols,poster]{}{Piezo.3gp}};
+        }
+      \end{tikzpicture}
+    \end{center}
+    \column{4cm}
+    \begin{block}{}
+      \begin{itemize}
+      \item<1-> MOT beam path
+      \item<2-> Interference and stability
+      \item<3-> Modulating the MOT beams
+      \item<4-> Performance
+      \end{itemize}
+    \end{block}
+  \end{columns}
 \end{frame}
+
+% Figures
+% * Group members
 
 \begin{frame}{Members}
 \end{frame}
