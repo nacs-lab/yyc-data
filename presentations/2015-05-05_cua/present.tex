@@ -295,9 +295,9 @@
 % Waveguide frequency doubler
 % * High effeciency
 
-\begin{frame}{Laser system for Sodium}
-  \vspace{-0.8cm}
-  \begin{columns}[t]
+\begin{frame}[t]{Laser system for Sodium}
+  \vspace{-0.4cm}
+  \begin{columns}
     \column{5.8cm}
     \begin{block}{Sodium wavelengths}
       \begin{itemize}
@@ -335,7 +335,7 @@
       \end{tikzpicture}
     }
     \column{5.8cm}
-    \vspace{-0.8cm}
+    \vspace{-0.7cm}
     \only<5-> {
       \begin{block}{Using \only<7->{doubled }diode laser\only<7->{ $589\times2=1178$nm}}
         \begin{itemize}
@@ -405,7 +405,7 @@
             \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
           }
         }
-        \visible<4>{
+        \only<4>{
           \path (0, 0) node[below]
           {\movie[height = 4cm,width = 6cm,showcontrols,poster]{}{Piezo.3gp}};
         }
