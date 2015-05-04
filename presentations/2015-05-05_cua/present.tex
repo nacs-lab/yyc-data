@@ -209,16 +209,6 @@
 \end{frame}
 \makeatother
 
-% Figures
-% * Na MOT
-% * Innolume diode
-% * Innolume frequency tuning range
-% * Innolume power
-% * Doubler
-% * Doubler effeciency
-% * Setup
-% * Group members
-
 % Currently we've got
 % * Cs single atom
 % * Cs Raman sideband
@@ -305,8 +295,18 @@
 % Waveguide frequency doubler (TODO: Picture)
 % * High effeciency (TODO: Test data)
 
+% Figures
+% * Innolume diode
+% * Innolume frequency tuning range
+% * Innolume power
+% * Doubler
+% * Doubler effeciency
+% * Setup
+% * Group members
+
 \begin{frame}{Laser system for Sodium}
-  \begin{columns}
+  \vspace{-0.8cm}
+  \begin{columns}[t]
     \column{5.8cm}
     \begin{block}{Sodium wavelengths}
       \begin{itemize}
@@ -318,16 +318,37 @@
     \end{block}
     \visible<6->{
       % TODO Sodium wavelength
-      \includegraphics[width=5.5cm]{toptica_diode_spectrum.png}
+      \begin{tikzpicture}
+        \visible<-8>{
+          \path (0, 0) node[above right]
+          {\includegraphics[width=5.5cm]{toptica_diode_spectrum.png}};
+
+          \visible<6-7>{
+            \path (2.01, 0.98) node[above, white] {$\mathbf{589}$nm};
+            \draw[<-, blue, line width=1] (1.5, 0.5) -- (2, 1)
+            node[above] {$\mathbf{589}$nm};
+          }
+
+          \visible<7-8>{
+            \draw[<-, white, line width=1] (3.93, 2.4) -- (3.3, 1.7)
+            node[below] {$\mathbf{1178}$nm};
+          }
+        }
+        \visible<9->{
+          \path (0.5, 0) node[above right]
+          {\includegraphics[width=4.5cm]{Na_diode.png}};
+        }
+      \end{tikzpicture}
     }
     \column{5.8cm}
+    \vspace{-0.8cm}
     \only<5-> {
       \begin{block}{Using \only<7->{doubled }diode laser\only<7->{ $589\times2=1178$nm}}
         \begin{itemize}
         \item<6-> Diode laser spectrum
         \item<8-> Power requirement for frequency doubling
-        \item<9-> Diode laser from Innolume / TimeBase\\
-          \visible<10->{Tunable from $...$nm to $...$nm}
+        \item<9-> Diode laser from Innolume\\
+          \uncover<-8, 10->{Tunable $1175$-$1280$nm}
         \item<12-> Waveguide doubler
         \end{itemize}
       \end{block}
