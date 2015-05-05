@@ -164,14 +164,17 @@
 \author{Yichao Yu}
 \institute{Ni Group/Harvard}
 \date{May 5, 2015}
+\makeatletter
+\def\thedate{\@date}
+\makeatother
 
 \begin{document}
 
 % Goal of our experiment:
-
 % Develop a new approach to make dipolar di-atomic molecules with single
-% site addressability.
-% As a platform for quantum simulation/computing, quantum chemistry etc.
+% site resolution and addressability
+% As a platform for quantum simulation/computing, quantum state
+% resolved chemistry etc.
 
 % Method (illustrated in the picture) we use
 % 1. MOT
@@ -179,34 +182,41 @@
 % 3. Raman sideband cooling
 % 4. STIRAP to molecular ground state
 
-\makeatletter
+% Compare to a bulk gas experiment (we believe):
+% 1. Simpler
+% 2. More compact
+% 3. Lower entropy
+
 \begin{frame}[t]{}
   \begin{center}
     \usebeamerfont{title}{\inserttitle\par}
   \end{center}
-  \begin{columns}[t]
-    \column{8cm}
-    \only<1>{
+  \only<1>{
+    \begin{columns}[t]
+      \column{8cm}
+      \only<1>{} % Somehow the author and date etc moves to the bottom of the
+      % page if this is removed.....
       \includegraphics[width=8cm]{overall_full_min.png}
-    }
+      \column{4cm}
+      \begin{center}
+        {\large{Yichao Yu}}\\
+        {\small{\thedate}}\\
+        {\small{Harvard/Ni Group}}
+      \end{center}
+    \end{columns}
+  }
+  \begin{center}
     \only<2>{
-      \includegraphics[width=8cm]{overall_trap_min.png}
+      \includegraphics[width=10cm]{overall_trap_min.png}
     }
     \only<3>{
-      \includegraphics[width=8cm]{overall_stirap_min.png}
+      \includegraphics[width=10cm]{overall_stirap_min.png}
     }
     \only<4>{
-      \includegraphics[width=8cm]{overall_application_min.png}
+      \includegraphics[width=10cm]{overall_application_min.png}
     }
-    \column{4cm}
-    \begin{center}
-      {\large{Yichao Yu}}\\
-      {\small{\@date}}\\
-      {\small{Harvard/Ni Group}}
-    \end{center}
-  \end{columns}
+  \end{center}
 \end{frame}
-\makeatother
 
 % Currently we've got
 % * Cs single atom
@@ -261,7 +271,7 @@
         \end{tikzpicture}
       }
       \visible<8-> {
-        \begin{block}{Problems}
+        \begin{block}{Challenges}
           \begin{itemize}
           \item<9-> Sodium laser
           \item<10-> MOT stability
@@ -294,68 +304,90 @@
 % Waveguide frequency doubler
 % * High effeciency
 
-\begin{frame}[t]{Laser system for Sodium}
-  \vspace{-0.8cm}
-  \begin{columns}[t]
-    \column{5.8cm}
+% IMP: Could like to find highest power
+
+\begin{frame}{Laser system for Sodium}
+  \begin{columns}
+    \column{4.5cm}
     \begin{block}{Sodium wavelengths}
       \begin{itemize}
       \item<1-> D lines $\approx589$nm
-      \item<2-> D2 line (Cooling, Imaging)
-      \item<3-> D1 line (Pumping, Cooling)
-      \item<4-> Off resonance (Raman transition)
+      \item<2-> D2 line\\
+        Cooling and Imaging
+      \item<3-> D1 line\\
+        Pumping and Cooling
+      \item<4-> Off resonance\\
+        ($\delta\approx10$GHz)\\
+        Raman transition
       \end{itemize}
     \end{block}
-    \visible<6->{
+    \column{7cm}
+    \visible<5->{
       \begin{tikzpicture}
-        \visible<-8>{
-          \path (0, 0) node[above right]
-          {\includegraphics[width=5.5cm]{toptica_diode_spectrum.png}};
+        \path (0, 0) node[above right]
+        {\includegraphics[width=7cm]{toptica_diode_spectrum.png}};
+        \path (3.75, 0) node[below, align=center]
+        {Diode spectrum\\{\tiny{(Picture from Topica)}}};
 
-          \visible<6-7>{
-            \path (2.01, 0.98) node[above, white] {$\mathbf{589}$nm};
-            \draw[<-, blue, line width=1] (1.5, 0.5) -- (2, 1)
-            node[above] {$\mathbf{589}$nm};
-          }
+        \path (2.56, 1.25) node[above, white] {$\mathbf{589}$nm};
+        \draw[<-, blue, line width=1] (1.98, 0.67) -- (2.55, 1.27)
+        node[above] {$\mathbf{589}$nm};
 
-          \visible<7-8>{
-            \draw[<-, white, line width=1] (3.8, 2.4) -- (3.3, 1.7)
-            node[below] {$\mathbf{1178}$nm};
-          }
-        }
-        \visible<9-11>{
-          \path (0.5, 0) node[above right]
-          {\includegraphics[width=4.5cm]{Na_diode.png}};
-        }
-        \visible<12->{
-          \path (0, 0) node[above right]
-          {\includegraphics[width=5.5cm]{Na_doubler.png}};
+        \visible<6->{
+          \draw[<-, white, line width=1] (4.84, 3.01) -- (4.4, 2.66)
+          node[below, align=center] {$\mathbf{589\times2}$\\$\mathbf{=1178}$nm};
         }
       \end{tikzpicture}
     }
-    \column{5.8cm}
-    \vspace{-0.7cm}
-    \only<5-> {
-      \begin{block}{Using \only<7->{doubled }diode laser\only<7->{ at $589\times2=1178$nm}}
+  \end{columns}
+\end{frame}
+
+% Good for other transition (molecule, other atoms)
+
+\begin{frame}{$1178$nm seed diode laser}
+  \begin{columns}
+    \column{4cm}
+    \begin{tikzpicture}
+      \path (0, 0) node[above]
+      {\includegraphics[width=4cm]{Na_diode.png}};
+      \path (0, 0) node[below, align=center] {\tiny{Picture from Innolume}};
+    \end{tikzpicture}
+    \column{7cm}
+    \begin{center}
+      \begin{block}{Laser diode from Innolume}
         \begin{itemize}
-        \item<6-> Diode laser spectrum
-        \item<8-> Power requirement for frequency doubling
-        \item<9-> Diode laser from Innolume\\
-          \uncover<-8, 10->{Tunable $1175$-$1280$nm}
-        \item<12-> Waveguide doubler
+        \item<2-> Tunable over $>100$nm: $1175$-$1280$nm
+        \item<3-> Max power: $200$mW\\
+          Max current: $500$mA
         \end{itemize}
       \end{block}
       \begin{tikzpicture}
-        \visible<11>{
+        \visible<3->{
           \path (0, 0) node[above right]
-          {\includegraphics[width=5.5cm]{Na_seed_power.png}};
-        }
-        \visible<13>{
-          \path (0, 0) node[above right]
-          {\includegraphics[width=5.5cm]{Na_doubler_power.png}};
+          {\includegraphics[width=6.7cm]{Na_seed_power.png}};
         }
       \end{tikzpicture}
-    }
+    \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Frequency doubling to $589$nm}
+  \begin{columns}
+    \column{5.8cm}
+    \begin{tikzpicture}
+      \path (0, 0) node[above]
+      {\includegraphics[width=5.5cm]{Na_doubler.png}};
+      \path (0, 0) node[below, align=center]
+      {Waveguide doubler module\\
+        from NTT Electronics};
+    \end{tikzpicture}
+    \column{5.8cm}
+    \begin{tikzpicture}
+      \visible<2->{
+        \path (0, 0) node[above right]
+        {\includegraphics[width=5.5cm]{Na_doubler_power.png}};
+      }
+    \end{tikzpicture}
   \end{columns}
 \end{frame}
 
@@ -367,59 +399,53 @@
 % Modulating at high frequency (kHz) to average out any static effect
 % * Video
 
+% IMP: Shorten the description of setup
+% IMP: Emphasise size and vapor pressure (so no Zeeman slower) (so more sensitive)
+
+% IMP: Video: describe what it is.
+% IMP: Ready for next step
+
 \begin{frame}[t]{MOT stability}
-  \begin{columns}
-    \column{8cm}
-    \begin{center}
+  \begin{center}
+    \only<-3>{
       \begin{tikzpicture}[scale=1.1]
-        \visible<-3>{
-          \fill[orange, opacity=0.4] (0, 0) circle (0.5);
-          \path (-0.5, 0) node[left] {MOT};
-          \draw[->, red, line width=1.5] (-2, -4) -- (-3, -3) -- +(45:6.4);
-          \draw[line width=1] (-3, -4) -- +(90:1.5);
+        \fill[orange, opacity=0.4] (0, 0) circle (0.5);
+        \path (-0.5, 0) node[left] {MOT};
+        \draw[->, red, line width=1.5] (-2, -4) -- (-3, -3) -- +(45:6.4);
+        \draw[line width=1] (-3, -4) -- +(90:1.5);
 
-          \draw[->, red, line width=1.5] (2, -4) -- (3, -3) -- +(135:6.4);
-          \draw[line width=1] (3, -4) -- +(90:1.5);
+        \draw[->, red, line width=1.5] (2, -4) -- (3, -3) -- +(135:6.4);
+        \draw[line width=1] (3, -4) -- +(90:1.5);
 
-          \visible<2->{
-            \draw[line width=5, blue, opacity=0.4] (-1.9, -0.7)
-            rectangle (1.9, 0.7);
-            \path (2, 0) node[left, text width=1cm] {Glass Cell};
+        \visible<2->{
+          \draw[line width=5, blue, opacity=0.4] (-1.9, -0.7)
+          rectangle (1.9, 0.7);
+          \path (2, 0) node[left, text width=1cm] {Glass Cell};
 
-            \draw[line width=2.5, blue, opacity=0.4] (-1.9, -1) -- (1.9, -1);
-            \draw[line width=2.5, blue, opacity=0.4] (-1.9, 1) -- (1.9, 1);
-            \path (-2.2, 1) node[above] {Field plate};
-            \path (-2.2, -1) node[below] {Field plate};
-          }
-
-          \visible<3-> {
-            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(43:6.4);
-            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(47:6.4);
-            \draw[line width=1, opacity=0.3] (-3, -4) -- +(89:1.5);
-            \draw[line width=1, opacity=0.3] (-3, -4) -- +(91:1.5);
-
-            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(133:6.4);
-            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(137:6.4);
-            \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
-            \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
-          }
+          \draw[line width=2.5, blue, opacity=0.4] (-1.9, -1) -- (1.9, -1);
+          \draw[line width=2.5, blue, opacity=0.4] (-1.9, 1) -- (1.9, 1);
+          \path (-2.2, 1) node[above] {Field plate};
+          \path (-2.2, -1) node[below] {Field plate};
         }
-        \only<4>{
-          \path (0, 0) node[below]
-          {\movie[height = 4cm,width = 6cm,showcontrols,poster]{}{Piezo.mp4}};
+
+        \visible<3-> {
+          \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(43:6.4);
+          \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(47:6.4);
+          \draw[line width=1, opacity=0.3] (-3, -4) -- +(89:1.5);
+          \draw[line width=1, opacity=0.3] (-3, -4) -- +(91:1.5);
+
+          \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(133:6.4);
+          \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(137:6.4);
+          \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
+          \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
         }
       \end{tikzpicture}
-    \end{center}
-    \column{4cm}
-    \begin{block}{}
-      \begin{itemize}
-      \item<1-> MOT beam path
-      \item<2-> Interference and stability
-      \item<3-> Modulating the MOT beams
-      \item<4-> Performance
-      \end{itemize}
-    \end{block}
-  \end{columns}
+    }
+    \only<4>{
+      \vspace{-0.4cm}
+      \movie[height = 8cm,width = 10cm,showcontrols,poster]{}{Piezo.mp4}
+    }
+  \end{center}
 \end{frame}
 
 \begin{frame}[t]
