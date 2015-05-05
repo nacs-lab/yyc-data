@@ -162,7 +162,7 @@
 
 \def\theauthor{Yichao Yu}
 \def\theinstitute{Ni Group/Harvard}
-\title{Apparatus for making dipolar NaCs molecules}
+\title{Polar Molecule Express}
 \author{\theauthor}
 \institute{\theinstitute}
 \date{May 5, 2015}
@@ -185,15 +185,14 @@
 % 4. STIRAP to molecular ground state
 
 % Compare to a bulk gas experiment (we believe):
-% 1. Simpler
-% 2. More compact
-% 3. Lower entropy
+% 1. More compact
+% 2. Lower entropy
 
 \begin{frame}[t]{}
-  \begin{center}
-    \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
-  \end{center}
   \only<1>{
+    \begin{center}
+      \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
+    \end{center}
     \begin{columns}[t]
       \column{8cm}
       \only<1>{} % Somehow the author and date etc moves to the bottom of the
@@ -223,7 +222,7 @@
 
 % Currently we've got
 % * Cs single atom
-% * Cs Raman sideband
+% * Cs Raman motional sideband
 % * Na MOT
 
 % As one can tell. Soldium is harder. Apart from expected reasons like
@@ -344,6 +343,9 @@
 % * Tunable over ~100nm
 % Good for other transition (molecule, other atoms)
 
+% IMP: mode hop free tuning range
+% IMP:
+
 \begin{frame}{$1178$nm seed diode laser}
   \begin{columns}
     \column{4cm}
@@ -353,12 +355,14 @@
       \path (0, 0) node[below, align=center] {\tiny{Picture from Innolume}};
     \end{tikzpicture}
     \column{7cm}
+    \vspace{-0.8cm}
     \begin{center}
       \begin{block}{Laser diode from Innolume}
         \begin{itemize}
-        \item<2-> Max power: $200$mW\\
-          Max current: $500$mA
-        \item<3-> Tunable over $>100$nm: $1175$-$1280$nm
+        \item<2-> Max power: $200$mW (@ $500$mA)
+        \item<3-> Line width: $200$kHz
+        \item<4-> Mode hop free: $3$GHz
+        \item<5-> Tunable over $>100$nm: $1175$-$1280$nm
         \end{itemize}
       \end{block}
       \begin{tikzpicture}
