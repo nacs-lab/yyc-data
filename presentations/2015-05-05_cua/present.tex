@@ -357,7 +357,7 @@
       \begin{block}{Laser diode from Innolume}
         \begin{itemize}
         \item<2-> Max power: $200$mW (@ $500$mA)
-        \item<3-> Line width: $200$kHz
+        \item<3-> Line width: $<200$kHz
         \item<4-> Mode hop free: $3$GHz
         \item<5-> Tunable over $>100$nm: $1175$-$1280$nm
         \end{itemize}
@@ -415,47 +415,60 @@
 % Seems to be working and we hope it can give us more stable loading
 
 \begin{frame}[t]{MOT stability}
-  \begin{center}
-    \only<-3>{
-      \begin{tikzpicture}[scale=1.1]
-        \fill[orange, opacity=0.4] (0, 0) circle (0.5);
-        \path (-0.5, 0) node[left] {MOT};
-        \draw[->, red, line width=1.5] (-2, -4) -- (-3, -3) -- +(45:6.4);
-        \draw[line width=1] (-3, -4) -- +(90:1.5);
+  \only<-5>{
+    \begin{columns}
+      \column{8cm}
+      \begin{center}
+        \begin{tikzpicture}
+          \fill[orange, opacity=0.4] (0, 0) circle (0.5);
+          \path (-0.5, 0) node[left] {MOT};
+          \draw[->, red, line width=1.5] (-2, -4) -- (-3, -3) -- +(45:6.4);
+          \draw[line width=1] (-3, -4) -- +(90:1.5);
 
-        \draw[->, red, line width=1.5] (2, -4) -- (3, -3) -- +(135:6.4);
-        \draw[line width=1] (3, -4) -- +(90:1.5);
+          \draw[->, red, line width=1.5] (2, -4) -- (3, -3) -- +(135:6.4);
+          \draw[line width=1] (3, -4) -- +(90:1.5);
 
-        \visible<2->{
-          \draw[line width=5, blue, opacity=0.4] (-1.9, -0.7)
-          rectangle (1.9, 0.7);
-          \path (2, 0) node[left, text width=1cm] {Glass Cell};
+          \visible<4->{
+            \draw[line width=5, blue, opacity=0.4] (-1.9, -0.7)
+            rectangle (1.9, 0.7);
+            \path (2, 0) node[left, text width=1cm] {Glass Cell};
 
-          \draw[line width=2.5, blue, opacity=0.4] (-1.9, -1) -- (1.9, -1);
-          \draw[line width=2.5, blue, opacity=0.4] (-1.9, 1) -- (1.9, 1);
-          \path (-2.2, 1) node[above] {Field plate};
-          \path (-2.2, -1) node[below] {Field plate};
-        }
+            \draw[line width=2.5, blue, opacity=0.4] (-1.9, -1) -- (1.9, -1);
+            \draw[line width=2.5, blue, opacity=0.4] (-1.9, 1) -- (1.9, 1);
+            \path (-2.2, 1) node[above] {Field plate};
+            \path (-2.2, -1) node[below] {Field plate};
+          }
 
-        \visible<3-> {
-          \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(43:6.4);
-          \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(47:6.4);
-          \draw[line width=1, opacity=0.3] (-3, -4) -- +(89:1.5);
-          \draw[line width=1, opacity=0.3] (-3, -4) -- +(91:1.5);
+          \visible<5-> {
+            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(43:6.4);
+            \draw[->, red, line width=1.5, opacity=0.3] (-3, -3) -- +(47:6.4);
+            \draw[line width=1, opacity=0.3] (-3, -4) -- +(89:1.5);
+            \draw[line width=1, opacity=0.3] (-3, -4) -- +(91:1.5);
 
-          \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(133:6.4);
-          \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(137:6.4);
-          \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
-          \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
-        }
-        \path (0, -4) node[below, align=center] {MOT beam path in horizontal plane};
-      \end{tikzpicture}
-    }
-    \only<4>{
-      \vspace{-0.4cm}
+            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(133:6.4);
+            \draw[->, red, line width=1.5, opacity=0.3] (3, -3) -- +(137:6.4);
+            \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
+            \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
+          }
+          \path (0, -4) node[below, align=center] {MOT beam path in horizontal plane};
+        \end{tikzpicture}
+      \end{center}
+      \column{3.9cm}
+      \begin{block}{}
+        \begin{itemize}
+        \item Low vapor pressure
+        \item<2-> Small Beam ($\phi \approx1$cm)
+        \item<3-> Small MOT ($\phi \approx2$mm)
+        \end{itemize}
+      \end{block}
+    \end{columns}
+  }
+  \only<6>{
+    \begin{center}
+      \vspace{-0.6cm}
       \movie[height = 8cm,width = 10cm,showcontrols,poster]{}{Piezo.avi}
-    }
-  \end{center}
+    \end{center}
+  }
 \end{frame}
 
 \begin{frame}[t]
