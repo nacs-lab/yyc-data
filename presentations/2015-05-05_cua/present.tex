@@ -296,15 +296,8 @@
 % * Everyone knows how to use it
 
 % Gap around the frequency we want
-% Frequency doubling
-% Bare diode cannot generate enough power
-% Innolume diode
-% * Tunable over ~100nm
-% * High power
-% Waveguide frequency doubler
-% * High effeciency
-
-% IMP: Could like to find highest power
+% Frequency doubling (although 1178nm narrow linewidth diode laser was also
+% not available until a few years ago)
 
 \begin{frame}{Laser system for Sodium}
   \begin{columns}
@@ -342,6 +335,11 @@
   \end{columns}
 \end{frame}
 
+% Could like to find highest power
+% Innolume diode
+% * Long gain chip so a little bit harder to tune but,
+% * High power (compare to Toptica ones) higher effeciency after doubling
+% * Tunable over ~100nm
 % Good for other transition (molecule, other atoms)
 
 \begin{frame}{$1178$nm seed diode laser}
@@ -356,13 +354,13 @@
     \begin{center}
       \begin{block}{Laser diode from Innolume}
         \begin{itemize}
-        \item<2-> Tunable over $>100$nm: $1175$-$1280$nm
-        \item<3-> Max power: $200$mW\\
+        \item<2-> Max power: $200$mW\\
           Max current: $500$mA
+        \item<3-> Tunable over $>100$nm: $1175$-$1280$nm
         \end{itemize}
       \end{block}
       \begin{tikzpicture}
-        \visible<3->{
+        \visible<2->{
           \path (0, 0) node[above right]
           {\includegraphics[width=6.7cm]{Na_seed_power.png}};
         }
@@ -371,39 +369,47 @@
   \end{columns}
 \end{frame}
 
+% Bare diode power is still low
+% Waveguide frequency doubler
+% * Fiber coubled
+% * Compact
+% * Consentrate intensity in waveguide
+% * High effeciency
+
+% Combining the two: 40mW Na light source on 1x2 feet breadboard
+% Enough for D1 and Raman transition. Hopefully enough for MOT as well.
+
 \begin{frame}{Frequency doubling to $589$nm}
   \begin{columns}
-    \column{5.8cm}
+    \column{4.5cm}
     \begin{tikzpicture}
       \path (0, 0) node[above]
-      {\includegraphics[width=5.5cm]{Na_doubler.png}};
+      {\includegraphics[width=4.5cm]{Na_doubler.png}};
       \path (0, 0) node[below, align=center]
       {Waveguide doubler module\\
         from NTT Electronics};
     \end{tikzpicture}
-    \column{5.8cm}
+    \column{7.5cm}
     \begin{tikzpicture}
       \visible<2->{
         \path (0, 0) node[above right]
-        {\includegraphics[width=5.5cm]{Na_doubler_power.png}};
+        {\includegraphics[width=7.2cm]{Na_doubler_power.png}};
       }
     \end{tikzpicture}
   \end{columns}
 \end{frame}
 
 % Another problem: MOT stability
+% By that I mean the MOT moves around a lot.
 % Reason
-% Small beam and small MOT (sensitive loading)
+% Small beam, low vapor pressure and small MOT (sensitive loading)
+% All make it more sensitive to fluctuation and is made worth by
 % multiple reflections / other fluctuations from glass plates
 
 % Modulating at high frequency (kHz) to average out any static effect
-% * Video
+% * Video (Same MOT from two directions)
 
-% IMP: Shorten the description of setup
-% IMP: Emphasise size and vapor pressure (so no Zeeman slower) (so more sensitive)
-
-% IMP: Video: describe what it is.
-% IMP: Ready for next step
+% Seems to be working and we hope it can give us more stable loading
 
 \begin{frame}[t]{MOT stability}
   \begin{center}
@@ -439,6 +445,7 @@
           \draw[line width=1, opacity=0.3] (3, -4) -- +(91:1.5);
           \draw[line width=1, opacity=0.3] (3, -4) -- +(89:1.5);
         }
+        \path (0, -4) node[below, align=center] {MOT beam path in horizontal plane};
       \end{tikzpicture}
     }
     \only<4>{
