@@ -160,9 +160,11 @@
 \addtobeamertemplate{background}{\box\@backgroundblock}{}
 \makeatother
 
+\def\theauthor{Yichao Yu}
+\def\theinstitute{Ni Group/Harvard}
 \title{Apparatus for making dipolar NaCs molecules}
-\author{Yichao Yu}
-\institute{Ni Group/Harvard}
+\author{\theauthor}
+\institute{\theinstitute}
 \date{May 5, 2015}
 \makeatletter
 \def\thedate{\@date}
@@ -189,7 +191,7 @@
 
 \begin{frame}[t]{}
   \begin{center}
-    \usebeamerfont{title}{\inserttitle\par}
+    \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
   \end{center}
   \only<1>{
     \begin{columns}[t]
@@ -199,9 +201,10 @@
       \includegraphics[width=8cm]{overall_full_min.png}
       \column{4cm}
       \begin{center}
-        {\large{Yichao Yu}}\\
-        {\small{\thedate}}\\
-        {\small{Harvard/Ni Group}}
+        \usebeamercolor[fg]{title}{
+          {\large{\theauthor}}\\
+          {\small{\thedate}}\\
+          {\small{\theinstitute}}}
       \end{center}
     \end{columns}
   }
