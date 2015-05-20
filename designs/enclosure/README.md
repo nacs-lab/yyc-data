@@ -112,3 +112,7 @@
 
     [AK670/2-1-BLACK-R](http://www.digikey.com/product-detail/en/AK670%2F2-1-BLACK-R/AE10623-ND/2391702)
     ![](img/AK670_2_BLACK-R.jpg)
+
+8. Power connector
+
+    [KPJX-PM-4S](http://www.mouser.com/ProductDetail/Kycon/KPJX-PM-4S/?qs=sGAEpiMZZMtnOp%252bbbqA001IXQJRyqYiVKhxOyaJFs88%3d)
