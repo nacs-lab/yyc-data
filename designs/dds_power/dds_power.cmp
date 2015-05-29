@@ -1,4 +1,53 @@
-Cmp-Mod V01 Created by Cvpcb (2015-05-27 BZR 5686)-product   date = 2015年05月29日 星期五 10时15分12秒
+Cmp-Mod V01 Created by Cvpcb (2015-05-27 BZR 5686)-product   date = 2015年05月29日 星期五 11时06分37秒
+
+BeginCmp
+TimeStamp = /55688DD5;
+Reference = C1;
+ValeurCmp = CP;
+IdModule  = Capacitors_ThroughHole:C_Radial_D5_L11_P2;
+EndCmp
+
+BeginCmp
+TimeStamp = /55687ADF;
+Reference = C2;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /556890A2;
+Reference = C3;
+ValeurCmp = CP;
+IdModule  = Capacitors_ThroughHole:C_Radial_D5_L11_P2;
+EndCmp
+
+BeginCmp
+TimeStamp = /55687E96;
+Reference = C4;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /55687EED;
+Reference = C5;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /556883C0;
+Reference = C6;
+ValeurCmp = CP;
+IdModule  = Capacitors_ThroughHole:C_Radial_D5_L11_P2;
+EndCmp
+
+BeginCmp
+TimeStamp = /556883ED;
+Reference = C7;
+ValeurCmp = CP;
+IdModule  = Capacitors_ThroughHole:C_Radial_D5_L11_P2;
+EndCmp
 
 BeginCmp
 TimeStamp = /5567B186;
@@ -43,10 +92,10 @@ IdModule  = cmr_link:3-pins_150mil;
 EndCmp
 
 BeginCmp
-TimeStamp = /55679718;
+TimeStamp = /55689EDE;
 Reference = P1;
-ValeurCmp = Vin;
-IdModule  = cmr_link:2-pins_150mil;
+ValeurCmp = CONN_3;
+IdModule  = cmr_link:3-pins_150mil;
 EndCmp
 
 BeginCmp
@@ -95,21 +144,28 @@ BeginCmp
 TimeStamp = /55679800;
 Reference = R1;
 ValeurCmp = 0;
-IdModule  = ;
+IdModule  = Resistors_SMD:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /55679B76;
 Reference = R2;
 ValeurCmp = 0;
-IdModule  = ;
+IdModule  = Resistors_SMD:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5568A5A8;
+Reference = R3;
+ValeurCmp = 0;
+IdModule  = Resistors_SMD:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /55679BD9;
 Reference = RV1;
 ValeurCmp = POT;
-IdModule  = ;
+IdModule  = Potentiometers:Potentiometer_Bourns_3005_Angular_ScrewFront;
 EndCmp
 
 BeginCmp
