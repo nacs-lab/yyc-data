@@ -10,7 +10,6 @@ LIBS:cmos4000
 LIBS:adc-dac
 LIBS:memory
 LIBS:xilinx
-LIBS:special
 LIBS:microcontrollers
 LIBS:dsp
 LIBS:microchip
@@ -29,8 +28,8 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:cmr_link
-LIBS:cmr_link-cache
+LIBS:qd48t018033
+LIBS:dds_power-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -78,21 +77,6 @@ F 3 "" H 2200 2900 30  0000 C CNN
 	1    2200 2900
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	2550 2450 1800 2450
-Wire Wire Line
-	1800 2650 1850 2650
-Wire Wire Line
-	1850 2650 1850 2750
-Wire Wire Line
-	1850 2750 2550 2750
-Wire Wire Line
-	2550 2600 1950 2600
-Wire Wire Line
-	1950 2600 1950 2900
-Wire Wire Line
-	2450 2900 2450 2750
-Connection ~ 2450 2750
 $Comp
 L R R2
 U 1 1 55679B76
@@ -104,10 +88,6 @@ F 3 "" H 4550 2650 30  0000 C CNN
 	1    4550 2650
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	3950 2650 4300 2650
-Wire Wire Line
-	3950 2550 4300 2550
 $Comp
 L POT RV1
 U 1 1 55679BD9
@@ -119,14 +99,6 @@ F 3 "" H 4300 2300 60  0000 C CNN
 	1    4300 2300
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	4450 2300 4800 2300
-Wire Wire Line
-	4800 2300 4800 2650
-Wire Wire Line
-	4300 2050 4450 2050
-Wire Wire Line
-	4450 2050 4450 2300
 $Comp
 L CONN_2 P2
 U 1 1 55679E0F
@@ -193,38 +165,6 @@ F 3 "" H 3600 4150 60  0000 C CNN
 	1    3600 4150
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	1800 3700 3700 3700
-Wire Wire Line
-	2100 3700 2100 3800
-Wire Wire Line
-	2500 3700 2500 3800
-Connection ~ 2100 3700
-Wire Wire Line
-	2900 3700 2900 3800
-Connection ~ 2500 3700
-Wire Wire Line
-	3300 3700 3300 3800
-Connection ~ 2900 3700
-Wire Wire Line
-	3700 3700 3700 3800
-Connection ~ 3300 3700
-Wire Wire Line
-	1800 3500 3500 3500
-Wire Wire Line
-	1900 3500 1900 3800
-Wire Wire Line
-	2300 3500 2300 3800
-Connection ~ 1900 3500
-Wire Wire Line
-	2700 3500 2700 3800
-Connection ~ 2300 3500
-Wire Wire Line
-	3100 3500 3100 3800
-Connection ~ 2700 3500
-Wire Wire Line
-	3500 3500 3500 3800
-Connection ~ 3100 3500
 $Comp
 L CONN_3 K1
 U 1 1 5567B186
@@ -291,10 +231,122 @@ F 3 "" H 4550 5000 60  0000 C CNN
 	1    4550 5000
 	1    0    0    -1  
 $EndComp
+$Comp
+L C C?
+U 1 1 55687ADF
+P 2250 2200
+F 0 "C?" H 2250 2300 40  0000 L CNN
+F 1 "C" H 2256 2115 40  0000 L CNN
+F 2 "" H 2288 2050 30  0000 C CNN
+F 3 "" H 2250 2200 60  0000 C CNN
+	1    2250 2200
+	0    1    1    0   
+$EndComp
+$Comp
+L C C?
+U 1 1 55687E96
+P 4500 5450
+F 0 "C?" H 4500 5550 40  0000 L CNN
+F 1 "C" H 4506 5365 40  0000 L CNN
+F 2 "" H 4538 5300 30  0000 C CNN
+F 3 "" H 4500 5450 60  0000 C CNN
+	1    4500 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 55687EED
+P 4500 5950
+F 0 "C?" H 4500 6050 40  0000 L CNN
+F 1 "C" H 4506 5865 40  0000 L CNN
+F 2 "" H 4538 5800 30  0000 C CNN
+F 3 "" H 4500 5950 60  0000 C CNN
+	1    4500 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP C?
+U 1 1 556883ED
+P 4750 5950
+F 0 "C?" H 4800 6050 40  0000 L CNN
+F 1 "CP" H 4800 5850 40  0000 L CNN
+F 2 "" H 4850 5800 30  0000 C CNN
+F 3 "" H 4750 5950 300 0000 C CNN
+	1    4750 5950
+	-1   0    0    1   
+$EndComp
+$Comp
+L CP C?
+U 1 1 556883C0
+P 4750 5450
+F 0 "C?" H 4800 5550 40  0000 L CNN
+F 1 "CP" H 4800 5350 40  0000 L CNN
+F 2 "" H 4850 5300 30  0000 C CNN
+F 3 "" H 4750 5450 300 0000 C CNN
+	1    4750 5450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 2450 1800 2450
+Wire Wire Line
+	1800 2650 1850 2650
+Wire Wire Line
+	1850 2650 1850 2750
+Wire Wire Line
+	1850 2750 2550 2750
+Wire Wire Line
+	2550 2600 1950 2600
+Wire Wire Line
+	1950 2600 1950 2900
+Connection ~ 2450 2750
+Wire Wire Line
+	3950 2650 4300 2650
+Wire Wire Line
+	3950 2550 4300 2550
+Wire Wire Line
+	4450 2300 4800 2300
+Wire Wire Line
+	4800 2300 4800 2650
+Wire Wire Line
+	4300 2050 4450 2050
+Wire Wire Line
+	4450 2050 4450 2300
+Wire Wire Line
+	1800 3700 3700 3700
+Wire Wire Line
+	2100 3700 2100 3800
+Wire Wire Line
+	2500 3700 2500 3800
+Connection ~ 2100 3700
+Wire Wire Line
+	2900 3700 2900 3800
+Connection ~ 2500 3700
+Wire Wire Line
+	3300 3700 3300 3800
+Connection ~ 2900 3700
+Wire Wire Line
+	3700 3700 3700 3800
+Connection ~ 3300 3700
+Wire Wire Line
+	1800 3500 3500 3500
+Wire Wire Line
+	1900 3500 1900 3800
+Wire Wire Line
+	2300 3500 2300 3800
+Connection ~ 1900 3500
+Wire Wire Line
+	2700 3500 2700 3800
+Connection ~ 2300 3500
+Wire Wire Line
+	3100 3500 3100 3800
+Connection ~ 2700 3500
+Wire Wire Line
+	3500 3500 3500 3800
+Connection ~ 3100 3500
 Wire Wire Line
 	3950 2450 4150 2450
 Wire Wire Line
-	4150 2450 4150 4900
+	4150 2450 4150 6150
 Wire Wire Line
 	4150 2900 4200 2900
 Wire Wire Line
@@ -313,7 +365,7 @@ Wire Wire Line
 	4150 4900 4200 4900
 Connection ~ 4150 4500
 Wire Wire Line
-	4100 2650 4100 5000
+	4100 2650 4100 5700
 Wire Wire Line
 	4100 3000 4200 3000
 Connection ~ 4100 2650
@@ -335,7 +387,7 @@ Connection ~ 4100 4600
 Wire Wire Line
 	3950 2750 4050 2750
 Wire Wire Line
-	4050 2750 4050 5100
+	4050 2750 4050 5250
 Wire Wire Line
 	4050 3100 4200 3100
 Wire Wire Line
@@ -353,4 +405,52 @@ Connection ~ 4050 4300
 Wire Wire Line
 	4050 5100 4200 5100
 Connection ~ 4050 4700
+Connection ~ 2450 2200
+Connection ~ 2050 2450
+Connection ~ 2050 2200
+Wire Wire Line
+	4050 5250 4750 5250
+Connection ~ 4050 5100
+Connection ~ 4500 5250
+Wire Wire Line
+	4500 5750 4500 5650
+Wire Wire Line
+	4750 5650 4750 5750
+Wire Wire Line
+	4150 6150 4750 6150
+Connection ~ 4150 4900
+Connection ~ 4500 6150
+Wire Wire Line
+	4100 5700 4750 5700
+Connection ~ 4500 5700
+Connection ~ 4750 5700
+Connection ~ 4100 5000
+$Comp
+L CP C?
+U 1 1 55688DD5
+P 2050 1900
+F 0 "C?" H 2100 2000 40  0000 L CNN
+F 1 "CP" H 2100 1800 40  0000 L CNN
+F 2 "" H 2150 1750 30  0000 C CNN
+F 3 "" H 2050 1900 300 0000 C CNN
+	1    2050 1900
+	-1   0    0    1   
+$EndComp
+$Comp
+L CP C?
+U 1 1 556890A2
+P 2450 1900
+F 0 "C?" H 2500 2000 40  0000 L CNN
+F 1 "CP" H 2500 1800 40  0000 L CNN
+F 2 "" H 2550 1750 30  0000 C CNN
+F 3 "" H 2450 1900 300 0000 C CNN
+	1    2450 1900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2450 2100 2450 2900
+Wire Wire Line
+	2050 2100 2050 2450
+Wire Wire Line
+	2450 1700 2050 1700
 $EndSCHEMATC
