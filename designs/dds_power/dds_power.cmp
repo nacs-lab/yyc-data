@@ -1,0 +1,122 @@
+Cmp-Mod V01 Created by Cvpcb (2015-05-27 BZR 5686)-product   date = 2015年05月29日 星期五 10时15分12秒
+
+BeginCmp
+TimeStamp = /5567B186;
+Reference = K1;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /5567B301;
+Reference = K2;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /5567B363;
+Reference = K3;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /5567B3A5;
+Reference = K4;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /5567B3F0;
+Reference = K5;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /5567B4C8;
+Reference = K6;
+ValeurCmp = 1.8_3.3;
+IdModule  = cmr_link:3-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679718;
+Reference = P1;
+ValeurCmp = Vin;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679E0F;
+Reference = P2;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679E79;
+Reference = P3;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679EE1;
+Reference = P4;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679F23;
+Reference = P5;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679F53;
+Reference = P6;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679FF5;
+Reference = P7;
+ValeurCmp = 12V;
+IdModule  = cmr_link:2-pins_150mil;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679800;
+Reference = R1;
+ValeurCmp = 0;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679B76;
+Reference = R2;
+ValeurCmp = 0;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /55679BD9;
+Reference = RV1;
+ValeurCmp = POT;
+IdModule  = ;
+EndCmp
+
+BeginCmp
+TimeStamp = /556796D6;
+Reference = U1;
+ValeurCmp = QD48T018033;
+IdModule  = qd48t018033:qd48t018033;
+EndCmp
+
+EndListe
