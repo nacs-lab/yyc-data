@@ -18,8 +18,8 @@ Channel 3 (DC) and Channel 4 (AC) are the same signal.
 
     * With fast feedback plugged in
 
-        ![](deltaT2_no-feedback.png)
+        ![](deltaT2.png)
 
     * With fast feedback unplugged
 
-        ![](deltaT2.png)
+        ![](deltaT2_no-feedback.png)
