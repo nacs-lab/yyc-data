@@ -2,9 +2,17 @@ using Scical
 using PyPlot
 using LsqFit
 
+function tryParseNumber(s)
+    try
+        parse(Float64, s)
+    catch
+        s
+    end
+end
+
 function getFileInfo(name)
     bname = basename(name)
-    return ("$name.txt", Any[parse(Float64, v) for v in split(bname, '_')])
+    return ("$name.txt", Any[tryParseNumber(v) for v in split(bname, '_')])
 end
 
 function getData(finfo)
@@ -53,4 +61,20 @@ end
 
 function plotSingleFile(finfo)
     plotSingleData(finfo, getData(finfo))
+end
+
+model(x, p) = begin
+    angl = x / 180 * π
+    angl2 = 2 * angl
+    p[1] + p[2] * sin(angl2) + p[3] * cos(angl2)
+end
+
+function fitData(finfo, data)
+    fit = curve_fit(model, data[:, 1], data[:, 2], 1 ./ data[:, 3].^2,
+                    [mean(data[:, 2]), 0.0, 0.0])
+
+    # We can estimate errors on the fit parameters,
+    # to get 95% confidence error bars:
+    errors = estimate_errors(fit, 0.95)
+    (fit.param, errors)
 end
