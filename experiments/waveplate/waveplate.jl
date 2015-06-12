@@ -78,3 +78,13 @@ function fitData(finfo, data)
     errors = estimate_errors(fit, 0.95)
     (fit.param, errors)
 end
+
+function plotDataFit(finfo, data)
+    param, errors = fitData(finfo, data)
+    plotSingleData(finfo, data)
+    xs = linspace(minimum(data[:, 1]) - 5, maximum(data[:, 1]) + 5, 1000)
+    ys = model(xs, param)
+    plot(xs, ys)
+end
+
+plotFileFit(finfo) = plotDataFit(finfo, getData(finfo))
