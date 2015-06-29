@@ -85,6 +85,8 @@
 
     3. DDS board
 
+        Total price: `$7867.73`
+
         * Parts
 
             Subtotal: `$5490.53`
@@ -96,7 +98,7 @@
 
         * PCB & Assembly
 
-            Subtotal: `$255.00`
+            Subtotal: `$2377.20`
 
             ![PCB quote](dds-pcb.png)
 
