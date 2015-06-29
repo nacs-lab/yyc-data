@@ -83,8 +83,23 @@
 
             ![PCB quote](power-pcb.png)
 
-    3. FPGA breakout board
+    3. DDS board
 
-    4. DDS board
+        * Parts
+
+            Subtotal: `$5490.53`
+
+            [Detailed listing](dds-digikey.md)
+
+            ![Shopping cart (Harvard pricing) screenshot](dds-digikey.png)
+
+
+        * PCB & Assembly
+
+            Subtotal: `$255.00`
+
+            ![PCB quote](dds-pcb.png)
+
+    4. FPGA breakout board
 
     5. TTL board
