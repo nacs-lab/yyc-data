@@ -54,6 +54,27 @@
 
     ![Shopping cart screenshot](minicircuits.png)
 
+9. PCB's
+
+    1. Camera link
+
+        Total price: `$427.05`
+
+        * Parts
+
+            Subtotal: `$172.05`
+
+            [Detailed listing](cmrlink-digikey.md)
+
+            ![Shopping cart (Harvard pricing) screenshot](cmrlink-digikey.png)
+
+
+        * PCB
+
+            Subtotal: `$255.00`
+
+            ![PCB quote](cmrlink-pcb.png)
+
 15. Power breakout board
 16. FPGA breakout board
 17. DDS board
