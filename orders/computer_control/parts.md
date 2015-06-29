@@ -38,6 +38,14 @@
 
     ![Shopping cart screenshot](aux-lcom.png)
 
+7. Analog output cards
+
+    Total price: `$2116.80`
+
+    [Quote](ni.pdf)
+
+    ![Quatation screenshot](ni.png)
+
 7. TTL breakout
 8. Ni cards
 10. 3.5G amp
