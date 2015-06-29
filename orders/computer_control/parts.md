@@ -22,8 +22,14 @@
 
     ![Shopping cart (Harvard pricing) screenshot](aux-digikey.png)
 
+5. MixNV
 
-5. Windfreak
+    Total price: `$499.00`
+
+    [Windfreak listing](https://www.windfreaktech.com/rf-mixer-downconverter-upconverter.html)
+
+    ![Listing Screenshot](MixNV.png)
+
 6. L-Com panel
 7. TTL breakout
 8. Ni cards
