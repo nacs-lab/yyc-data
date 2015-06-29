@@ -46,10 +46,14 @@
 
     ![Quatation screenshot](ni.png)
 
-7. TTL breakout
-8. Ni cards
-10. 3.5G amp
-11. 3.5G power splitter (1-3/1-8)
+8. Minicircuits everything
+
+    Total price: `$728.25`
+
+    [Detailed listing](minicircuits.md)
+
+    ![Shopping cart screenshot](minicircuits.png)
+
 15. Power breakout board
 16. FPGA breakout board
 17. DDS board
