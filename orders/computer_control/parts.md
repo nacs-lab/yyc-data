@@ -30,12 +30,18 @@
 
     ![Listing Screenshot](MixNV.png)
 
-6. L-Com panel
+6. L-com Auxiliary
+
+    Total price: `$474.27`
+
+    [Detailed listing](aux-lcom.md)
+
+    ![Shopping cart screenshot](aux-lcom.png)
+
 7. TTL breakout
 8. Ni cards
 10. 3.5G amp
 11. 3.5G power splitter (1-3/1-8)
-12. SMB-SMA adaptor (L-com)
 15. Power breakout board
 16. FPGA breakout board
 17. DDS board
