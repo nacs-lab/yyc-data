@@ -128,3 +128,9 @@
             ![Assembly quote](fpga_breakout-asm.png)
 
     5. TTL board
+
+        Total price: `$643.00`
+
+        * PCB
+
+            ![PCB quote](ttl-pcb.png)
