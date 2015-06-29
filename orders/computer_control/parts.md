@@ -1,4 +1,9 @@
 1. FPGA dev board
+
+    [Avnet Listing](http://avnetexpress.avnet.com/store/em/EMController/_/A-5004312321719?action=part&catalogId=500201&langId=-1&storeId=500201)
+    ![Cart Screenshot](ZC702_dev.png)
+    Price: `$895.0`
+
 2. Box
 3. DDS power supply
 4. USB power supply
