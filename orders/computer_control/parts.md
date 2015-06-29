@@ -104,4 +104,22 @@
 
     4. FPGA breakout board
 
+        Total price: `$1128.80`
+
+        * Parts
+
+            Subtotal: `$46.74`
+
+            [Detailed listing](fpga_breakout-digikey.md)
+
+            ![Shopping cart (Harvard pricing) screenshot](fpga_breakout-digikey.png)
+
+
+        * PCB & Assembly
+
+            Subtotal: `$1082.06`
+
+            ![PCB quote](fpga_breakout-pcb.png)
+            ![Assembly quote](fpga_breakout-asm.png)
+
     5. TTL board
