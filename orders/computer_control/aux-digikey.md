@@ -1,4 +1,5 @@
 |Part Number (With link)|Quantity|Price (Harvard pricing)|
+|-----------------------|--------|-----------------------|
 |[285-1925-ND](http://www.digikey.com/product-detail/en/DT100PW480C/285-1925-ND/2135310)|1|72.11|
 |[993-1283-ND1](http://www.digikey.com/product-detail/en/PSAA10A-050QA/993-1283-ND/4835594)|1|9.56|
 |[1053-1275-ND](http://www.digikey.com/product-detail/en/OD9220-12HB/1053-1275-ND/2621180)|2|18.86|
