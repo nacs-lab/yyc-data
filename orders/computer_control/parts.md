@@ -1,10 +1,15 @@
 1. FPGA dev board
 
+    Total price: `$895.00`
     [Avnet Listing](http://avnetexpress.avnet.com/store/em/EMController/_/A-5004312321719?action=part&catalogId=500201&langId=-1&storeId=500201)
     ![Cart Screenshot](ZC702_dev.png)
-    Price: `$895.0`
 
 2. Box
+
+    Total price: `$149.00`
+    [Lansing Enclosures Price List](http://www.lansing-enclosures.com/main/media/graybox_prices.pdf)
+    ![Price Screenshot](B3F10-062A.png)
+
 3. DDS power supply
 4. USB power supply
 5. Windfreak
