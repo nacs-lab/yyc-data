@@ -119,7 +119,12 @@
 
             Subtotal: `$1082.06`
 
+            PCB
+
             ![PCB quote](fpga_breakout-pcb.png)
+
+            Assembly
+
             ![Assembly quote](fpga_breakout-asm.png)
 
     5. TTL board
