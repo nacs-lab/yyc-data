@@ -75,9 +75,16 @@
 
             ![PCB quote](cmrlink-pcb.png)
 
-15. Power breakout board
-16. FPGA breakout board
-17. DDS board
-18. TTL board
-19. Camera link board
-20. Camera link cabel
+    2. Power breakout board
+
+        Total price: `$66.00`
+
+        * PCB
+
+            ![PCB quote](power-pcb.png)
+
+    3. FPGA breakout board
+
+    4. DDS board
+
+    5. TTL board
