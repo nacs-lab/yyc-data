@@ -1,3 +1,5 @@
+# Parts for FPGA breakout board from **[DigiKey](http://www.digikey.com/)**
+
 |Part Number (With link)|Quantity|Price (Harvard pricing)|Description|
 |-----------------------|--------|-----------------------|-----------|
 |[WM4200-ND](http://www.digikey.com/product-detail/en/0022232021/WM4200-ND/26667)|6|1.02|Power jumper|

@@ -1,3 +1,5 @@
+# Parts for DDS board from **[DigiKey](http://www.digikey.com/)**
+
 |Part Number (With link)|Quantity|Price (Harvard pricing)|Description|
 |-----------------------|--------|-----------------------|-----------|
 |[445-1314-1-ND](http://www.digikey.com/product-detail/en/C1608X7R1H104K080AA/445-1314-1-ND/567687)|630|6.30|C 0.1u 0603|

@@ -22,7 +22,7 @@
 
     ![Shopping cart (Harvard pricing) screenshot](aux-digikey.png)
 
-5. MixNV
+5. MixNV from **[Windfreak](https://www.windfreaktech.com/)**
 
     Total price: `$499.00`
 
@@ -30,7 +30,7 @@
 
     ![Listing Screenshot](MixNV.png)
 
-6. L-com Auxiliary
+6. Auxiliary parts from **[L-com](http://www.l-com.com/)**
 
     Total price: `$474.27`
 
@@ -38,7 +38,7 @@
 
     ![Shopping cart screenshot](aux-lcom.png)
 
-7. Analog output cards
+7. Analog output cards from **[National Instruments](http://www.ni.com/)**
 
     Total price: `$2116.80`
 
@@ -46,7 +46,7 @@
 
     ![Quatation screenshot](ni.png)
 
-8. Minicircuits everything
+8. Parts from **[Minicircuits](http://www.minicircuits.com/homepage/homepage.html)**
 
     Total price: `$728.25`
 
@@ -54,13 +54,21 @@
 
     ![Shopping cart screenshot](minicircuits.png)
 
-9. PCB's
+9. Camera link-computer interface from **[National Instruments](http://www.ni.com/)**
 
-    1. Camera link
+    Total price: `$10788.00`
+
+    [Online listing](http://sine.ni.com/nips/cds/view/p/lang/en/nid/210236)
+
+    ![Price screenshot](ni-cmrlink.png)
+
+10. PCB's
+
+    1. Camera link-FPGA interface
 
         Total price: `$427.05`
 
-        * Parts
+        * Parts from **[DigiKey](http://www.digikey.com/)**
 
             Subtotal: `$172.05`
 
@@ -69,7 +77,7 @@
             ![Shopping cart (Harvard pricing) screenshot](cmrlink-digikey.png)
 
 
-        * PCB
+        * PCB from **[Sunstone](http://www.sunstone.com/)**
 
             Subtotal: `$255.00`
 
@@ -79,7 +87,7 @@
 
         Total price: `$66.00`
 
-        * PCB
+        * PCB from **[Advanced circuits](http://www.4pcb.com/)**
 
             ![PCB quote](power-pcb.png)
 
@@ -87,7 +95,7 @@
 
         Total price: `$7867.73`
 
-        * Parts
+        * Parts from **[DigiKey](http://www.digikey.com/)**
 
             Subtotal: `$5490.53`
 
@@ -96,7 +104,7 @@
             ![Shopping cart (Harvard pricing) screenshot](dds-digikey.png)
 
 
-        * PCB & Assembly
+        * PCB & Assembly by **[Screaming Circuits](https://www.screamingcircuits.com/)**
 
             Subtotal: `$2377.20`
 
@@ -106,7 +114,7 @@
 
         Total price: `$1128.80`
 
-        * Parts
+        * Parts from **[DigiKey](http://www.digikey.com/)**
 
             Subtotal: `$46.74`
 
@@ -114,16 +122,15 @@
 
             ![Shopping cart (Harvard pricing) screenshot](fpga_breakout-digikey.png)
 
-
         * PCB & Assembly
 
             Subtotal: `$1082.06`
 
-            PCB
+            PCB from **[Sunstone](http://www.sunstone.com/)**
 
             ![PCB quote](fpga_breakout-pcb.png)
 
-            Assembly
+            Assembly by **[Screaming Circuits](https://www.screamingcircuits.com/)**
 
             ![Assembly quote](fpga_breakout-asm.png)
 
@@ -131,6 +138,6 @@
 
         Total price: `$643.00`
 
-        * PCB
+        * PCB from **[Sunstone](http://www.sunstone.com/)**
 
             ![PCB quote](ttl-pcb.png)
