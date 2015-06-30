@@ -1,4 +1,4 @@
-1. FPGA dev board
+1. FPGA dev board from **[AVNET](http://avnetexpress.avnet.com/)**
 
     Total price: `$895.00`
 
@@ -6,7 +6,7 @@
 
     ![Cart Screenshot](ZC702_dev.png)
 
-2. Box
+2. Box from **[Lansing Enclosure](http://www.lansing-enclosures.com/)**
 
     Total price: `$149.00`
 
@@ -14,7 +14,7 @@
 
     ![Price Screenshot](B3F10-062A.png)
 
-3. Auxiliary parts from DigiKey
+3. Auxiliary parts from **[DigiKey](http://www.digikey.com/)**
 
     Total price: `$261.82`
 

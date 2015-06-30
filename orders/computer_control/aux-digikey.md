@@ -1,3 +1,5 @@
+# Auxiliary parts from **[DigiKey](http://www.digikey.com/)**
+
 |Part Number (With link)|Quantity|Price (Harvard pricing)|Description|
 |-----------------------|--------|-----------------------|-----------|
 |[285-1925-ND](http://www.digikey.com/product-detail/en/DT100PW480C/285-1925-ND/2135310)|1|72.11|DDS Power supply|
