@@ -1,3 +1,5 @@
+* Total price: `$26044.72`
+
 1. FPGA dev board from **[AVNET](http://avnetexpress.avnet.com/)**
 
     Total price: `$895.00`
