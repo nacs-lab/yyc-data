@@ -30,21 +30,21 @@ function solve_ode(t0, y0, f, t1, h)
         t = ts[i]
         prev = sub(ys, (:, i - 1))
         f(t, prev, k1)
-        for j in 1:nele
-            tmp[j] = prev[j] + h2 * k1[j]
+        @inbounds for j in 1:nele
+            tmp[j] = ys[j, i - 1] + h2 * k1[j]
         end
         f(t + h2, tmp, k2)
-        for j in 1:nele
-            tmp[j] = prev[j] + h2 * k2[j]
+        @inbounds for j in 1:nele
+            tmp[j] = ys[j, i - 1] + h2 * k2[j]
         end
         f(t + h2, tmp, k3)
-        for j in 1:nele
-            tmp[j] = prev[j] + h * k3[j]
+        @inbounds for j in 1:nele
+            tmp[j] = ys[j, i - 1] + h * k3[j]
         end
         f(t + h, tmp, k4)
-        for j in 1:nele
-            ys[j, i] = prev[j] + (h6 * k1[j] + h3 * k2[j] +
-                                  h3 * k3[j] + h6 * k4[j])
+        @inbounds for j in 1:nele
+            ys[j, i] = ys[j, i - 1] + (h6 * k1[j] + h3 * k2[j] +
+                                       h3 * k3[j] + h6 * k4[j])
         end
     end
     collect(ts), ys
