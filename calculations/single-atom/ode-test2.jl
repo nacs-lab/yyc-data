@@ -35,20 +35,31 @@ typealias HarmonicHamiltonian{To, Td} Hamiltonian1D{Td, HarmonicPotential{To}}
 call(::Type{HarmonicHamiltonian}, omega, d, c) =
     Hamiltonian1D(d, HarmonicPotential(omega, c))
 
-grid_size = 162
-grid_space = 0.02 * 150 / grid_size
+grid_size = 401
+grid_space = 0.02
 x_omega = 5π
 
 x_center = grid_size * grid_space / 2
-psi_init = complex(exp(-linspace(-3 * x_center, 3 * x_center, grid_size).^2))
+psi_init = complex(exp(-linspace(-2.5 * x_center, 1.5 * x_center, grid_size).^2))
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 
 println("start")
-@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.0001)
+@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 4000)
 
-imshow(log(log(abs(y) + 1)))
+# 2000: stable, error -> 2.5e-7, 22s
+# 4000: stable, error -> 0.8e-8, 42s
+
+figure()
+imshow(abs(y[:, 1:8:end]))
 colorbar()
+
+figure()
+plot(abs(y[:, 1]))
+plot(abs(y[:, end]))
+
+figure()
+plot(abs(y[:, 1]) - abs(y[:, end]))
 
 println()
 readline()
