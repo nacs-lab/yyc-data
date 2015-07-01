@@ -84,18 +84,28 @@ function diff2(ary, i)
                 - 3 / 20 * (ary[i - 2] + ary[i + 2])
                 + 3 / 2 * (ary[i - 1] + ary[i + 1])
                 - 49 / 18 * ary[i])
-    elseif i < 4
-        # 6th order single side
-        return (469 / 90 * ary[i] - 223 / 10 * ary[i + 1]
-                + 879 / 20 * ary[i + 2] - 949 / 18 * ary[i + 3]
-                + 41 * ary[i + 4] - 201 / 10 * ary[i + 5]
-                + 1019 / 180 * ary[i + 6] - 7 / 10 * ary[i + 7])
+    elseif i == 3 || i == len - 2
+        # 4th order
+        return (-1 / 12 * (ary[i - 2] + ary[i + 2])
+                + 4 / 3 * (ary[i - 1] + ary[i + 1])
+                - 5 / 2 * ary[i])
+    elseif i == 2 || i == len - 1
+        # 2th order
+        return ary[i - 1] + ary[i + 1] - 2 * ary[i]
     else
-        # 6th order single side
-        return (469 / 90 * ary[i] - 223 / 10 * ary[i - 1]
-                + 879 / 20 * ary[i - 2] - 949 / 18 * ary[i - 3]
-                + 41 * ary[i - 4] - 201 / 10 * ary[i - 5]
-                + 1019 / 180 * ary[i - 6] - 7 / 10 * ary[i - 7])
+        return 0.0 * ary[i]
+    # elseif i < 4
+    #     # 6th order single side
+    #     return (469 / 90 * ary[i] - 223 / 10 * ary[i + 1]
+    #             + 879 / 20 * ary[i + 2] - 949 / 18 * ary[i + 3]
+    #             + 41 * ary[i + 4] - 201 / 10 * ary[i + 5]
+    #             + 1019 / 180 * ary[i + 6] - 7 / 10 * ary[i + 7])
+    # else
+    #     # 6th order single side
+    #     return (469 / 90 * ary[i] - 223 / 10 * ary[i - 1]
+    #             + 879 / 20 * ary[i - 2] - 949 / 18 * ary[i - 3]
+    #             + 41 * ary[i - 4] - 201 / 10 * ary[i - 5]
+    #             + 1019 / 180 * ary[i - 6] - 7 / 10 * ary[i - 7])
     end
 end
 
