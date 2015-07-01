@@ -58,4 +58,45 @@ function call(k::ODEKernel, t, y)
     ydot
 end
 
+immutable ExtendedArray{Ary} <: AbstractArray
+    ary::Ary
+end
+
+getindex{Ary}(ary::ExtendedArray{Ary}, i) = if i <= 0 || i > length(ary.ary)
+    return eltype(Ary)(0)
+else
+    @inbounds return ary.ary[i]
+end
+
+function diff2(ary, i)
+    len = length(ary)
+    # @assert len >= 10 # Too lazy to support len < 9
+    @inbounds if 5 <= i <= len - 4
+        # 8th order
+        return (-1 / 560 * (ary[i - 4] + ary[i + 4])
+                + 8 / 315 * (ary[i - 3] + ary[i + 3])
+                - 1 / 5 * (ary[i - 2] + ary[i + 2])
+                + 8 / 5 * (ary[i - 1] + ary[i + 1])
+                - 205 / 72 * ary[i])
+    elseif i == 4 || i == len - 3
+        # 6th order
+        return (1 / 90 * (ary[i - 3] + ary[i + 3])
+                - 3 / 20 * (ary[i - 2] + ary[i + 2])
+                + 3 / 2 * (ary[i - 1] + ary[i + 1])
+                - 49 / 18 * ary[i])
+    elseif i < 4
+        # 6th order single side
+        return (469 / 90 * ary[i] - 223 / 10 * ary[i + 1]
+                + 879 / 20 * ary[i + 2] - 949 / 18 * ary[i + 3]
+                + 41 * ary[i + 4] - 201 / 10 * ary[i + 5]
+                + 1019 / 180 * ary[i + 6] - 7 / 10 * ary[i + 7])
+    else
+        # 6th order single side
+        return (469 / 90 * ary[i] - 223 / 10 * ary[i - 1]
+                + 879 / 20 * ary[i - 2] - 949 / 18 * ary[i - 3]
+                + 41 * ary[i - 4] - 201 / 10 * ary[i - 5]
+                + 1019 / 180 * ary[i - 6] - 7 / 10 * ary[i - 7])
+    end
+end
+
 println("Import done.")
