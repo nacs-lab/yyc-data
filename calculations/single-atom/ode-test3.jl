@@ -38,13 +38,22 @@ psi_init = complex(exp(-linspace(-2.5 * x_center, 1.5 * x_center, grid_size).^2)
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 
 println("start")
-@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 2000)
-@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 2000)
+@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 1000)
+@time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 1383)
 
-# 401 x 2000: stable, error -> 2.5e-7, 56ms
-# 401 x 4000: stable, error -> 0.8e-8, 100ms
+# 401 x 2000 8th: stable, error -> 2.5e-7, 56ms
+# 401 x 4000 8th: stable, error -> 0.8e-8, 100ms
+
+# 8th x 401:
+#    1382-1385
 
 absy = abs(y)
+
+diff_absy = absy[:, 1] - absy[:, end]
+println(maximum(abs(diff_absy)))
+println(any(isnan, diff_absy))
+
+# exit()
 
 figure()
 imshow(log(log1p(absy)))

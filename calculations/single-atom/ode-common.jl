@@ -68,30 +68,34 @@ else
     @inbounds return ary.ary[i]
 end
 
+@inline diff2_8th(ary, i) = (-1 / 560 * (ary[i - 4] + ary[i + 4])
+                             + 8 / 315 * (ary[i - 3] + ary[i + 3])
+                             - 1 / 5 * (ary[i - 2] + ary[i + 2])
+                             + 8 / 5 * (ary[i - 1] + ary[i + 1])
+                             - 205 / 72 * ary[i])
+
+@inline diff2_6th(ary, i) = (1 / 90 * (ary[i - 3] + ary[i + 3])
+                             - 3 / 20 * (ary[i - 2] + ary[i + 2])
+                             + 3 / 2 * (ary[i - 1] + ary[i + 1])
+                             - 49 / 18 * ary[i])
+
+@inline diff2_4th(ary, i) = (-1 / 12 * (ary[i - 2] + ary[i + 2])
+                             + 4 / 3 * (ary[i - 1] + ary[i + 1])
+                             - 5 / 2 * ary[i])
+
+@inline diff2_2nd(ary, i) = ary[i - 1] + ary[i + 1] - 2 * ary[i]
+
 function diff2(ary, i)
     len = length(ary)
     # @assert len >= 10 # Too lazy to support len < 9
     @inbounds if 5 <= i <= len - 4
-        # 8th order
-        return (-1 / 560 * (ary[i - 4] + ary[i + 4])
-                + 8 / 315 * (ary[i - 3] + ary[i + 3])
-                - 1 / 5 * (ary[i - 2] + ary[i + 2])
-                + 8 / 5 * (ary[i - 1] + ary[i + 1])
-                - 205 / 72 * ary[i])
+        return diff2_8th(ary, i)
     elseif i == 4 || i == len - 3
-        # 6th order
-        return (1 / 90 * (ary[i - 3] + ary[i + 3])
-                - 3 / 20 * (ary[i - 2] + ary[i + 2])
-                + 3 / 2 * (ary[i - 1] + ary[i + 1])
-                - 49 / 18 * ary[i])
+        return diff2_6th(ary, i)
     elseif i == 3 || i == len - 2
-        # 4th order
-        return (-1 / 12 * (ary[i - 2] + ary[i + 2])
-                + 4 / 3 * (ary[i - 1] + ary[i + 1])
-                - 5 / 2 * ary[i])
+        return diff2_4th(ary, i)
     elseif i == 2 || i == len - 1
-        # 2th order
-        return ary[i - 1] + ary[i + 1] - 2 * ary[i]
+        return diff2_2nd(ary, i)
     else
         return 0.0 * ary[i]
     # elseif i < 4
