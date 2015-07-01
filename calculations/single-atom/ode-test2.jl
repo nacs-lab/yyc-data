@@ -13,7 +13,7 @@ call(h::HarmonicPotential, x) = h.omega^2 .* (x - h.center).^2
                                      ifelse(n % 2 == 0,
                                             2, -2) / n^2) / (d^2)
 
-immutable Hamiltonian1D{T, P}
+immutable Hamiltonian1D{T, P} <: ODEKernel
     d::T # grid spacing
     p::P # potential
 end
@@ -30,12 +30,6 @@ function call(h::Hamiltonian1D, t, y, ydot)
     end
 end
 
-function call(h::Hamiltonian1D, t, y)
-    ydot = similar(y)
-    h(t, y, ydot)
-    ydot
-end
-
 typealias HarmonicHamiltonian{To, Td} Hamiltonian1D{Td, HarmonicPotential{To}}
 
 call(::Type{HarmonicHamiltonian}, omega, d, c) =
@@ -47,9 +41,6 @@ x_omega = 5π
 
 x_center = grid_size * grid_space / 2
 psi_init = complex(exp(-linspace(-3 * x_center, 3 * x_center, grid_size).^2))
-
-# println(psi_init)
-# error()
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 

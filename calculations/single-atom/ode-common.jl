@@ -50,4 +50,12 @@ function solve_ode(t0, y0, f, t1, h)
     collect(ts), ys
 end
 
+abstract ODEKernel
+
+function call(k::ODEKernel, t, y)
+    ydot = similar(y)
+    k(t, y, ydot)
+    ydot
+end
+
 println("Import done.")
