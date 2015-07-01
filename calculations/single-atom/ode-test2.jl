@@ -36,10 +36,10 @@ call(::Type{HarmonicHamiltonian}, omega, d, c) =
     Hamiltonian1D(d, HarmonicPotential(omega, c))
 
 grid_size = 401
-grid_space = 0.02
+grid_space = 0.02 * 400 / (grid_size - 1)
 x_omega = 5π
 
-x_center = grid_size * grid_space / 2
+x_center = (grid_size + 1) * grid_space / 2
 psi_init = complex(exp(-linspace(-2.5 * x_center, 1.5 * x_center, grid_size).^2))
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
@@ -50,16 +50,18 @@ println("start")
 # 401 x 2000: stable, error -> 2.5e-7, 22s
 # 401 x 4000: stable, error -> 0.8e-8, 42s
 
+absy = abs(y)
+
 figure()
-imshow(abs(y[:, 1:8:end]))
+imshow(absy[:, 1:2:end])
 colorbar()
 
 figure()
-plot(abs(y[:, 1]))
-plot(abs(y[:, end]))
+plot(absy[:, 1])
+plot(absy[:, end])
 
 figure()
-plot(abs(y[:, 1]) - abs(y[:, end]))
+plot(absy[:, 1] - absy[:, end])
 
 println()
 readline()
