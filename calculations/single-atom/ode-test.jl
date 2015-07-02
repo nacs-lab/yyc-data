@@ -1,5 +1,7 @@
 #!/usr/bin/julia -f
 
+# Simple mechanical harmonic oscillator
+
 include("ode-common.jl")
 
 immutable SimpleOscillator{T} <: ODEKernel

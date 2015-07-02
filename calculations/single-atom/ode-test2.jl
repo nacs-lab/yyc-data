@@ -1,5 +1,8 @@
 #!/usr/bin/julia -f
 
+# Quantum mechanical harmonic oscillator using pure positional space
+# Fourier grid differentiation and RG ODE solver
+
 include("ode-common.jl")
 
 immutable HarmonicPotential{T}

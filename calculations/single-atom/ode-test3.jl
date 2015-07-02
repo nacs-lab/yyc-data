@@ -1,5 +1,8 @@
 #!/usr/bin/julia -f
 
+# Quantum mechanical harmonic oscillator using 8-th order finite difference
+# differentiation and RG ODE solver
+
 include("ode-common.jl")
 
 immutable HarmonicPotential{T}
