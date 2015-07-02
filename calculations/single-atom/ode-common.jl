@@ -26,23 +26,25 @@ function solve_ode(t0, y0, f, t1, h)
     k3 = similar(y0)
     k4 = similar(y0)
     tmp = similar(y0)
-    for i in 2:nstep
+    @inbounds for i in 2:nstep
         t = ts[i]
-        prev = sub(ys, (:, i - 1))
-        f(t, prev, k1)
-        @inbounds for j in 1:nele
+        for j in 1:nele
+            tmp[j] = ys[j, i - 1]
+        end
+        f(t, tmp, k1)
+        for j in 1:nele
             tmp[j] = ys[j, i - 1] + h2 * k1[j]
         end
         f(t + h2, tmp, k2)
-        @inbounds for j in 1:nele
+        for j in 1:nele
             tmp[j] = ys[j, i - 1] + h2 * k2[j]
         end
         f(t + h2, tmp, k3)
-        @inbounds for j in 1:nele
+        for j in 1:nele
             tmp[j] = ys[j, i - 1] + h * k3[j]
         end
         f(t + h, tmp, k4)
-        @inbounds for j in 1:nele
+        for j in 1:nele
             ys[j, i] = ys[j, i - 1] + (h6 * k1[j] + h3 * k2[j] +
                                        h3 * k3[j] + h6 * k4[j])
         end
@@ -98,18 +100,6 @@ function diff2(ary, i)
         return diff2_2nd(ary, i)
     else
         return 0.0 * ary[i]
-    # elseif i < 4
-    #     # 6th order single side
-    #     return (469 / 90 * ary[i] - 223 / 10 * ary[i + 1]
-    #             + 879 / 20 * ary[i + 2] - 949 / 18 * ary[i + 3]
-    #             + 41 * ary[i + 4] - 201 / 10 * ary[i + 5]
-    #             + 1019 / 180 * ary[i + 6] - 7 / 10 * ary[i + 7])
-    # else
-    #     # 6th order single side
-    #     return (469 / 90 * ary[i] - 223 / 10 * ary[i - 1]
-    #             + 879 / 20 * ary[i - 2] - 949 / 18 * ary[i - 3]
-    #             + 41 * ary[i - 4] - 201 / 10 * ary[i - 5]
-    #             + 1019 / 180 * ary[i - 6] - 7 / 10 * ary[i - 7])
     end
 end
 
