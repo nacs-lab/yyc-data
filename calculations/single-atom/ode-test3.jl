@@ -42,10 +42,13 @@ h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 println("start")
 @time t, y = solve_ode(0.0, psi_init, h, 0.2, 0.2 / 1000)
 gc()
-@time t, y = solve_ode(0.0, psi_init, h, 1.0, 0.2 / 4000)
+@time t, y = solve_ode(0.0, psi_init, h, 1.0, 0.2 / 2000)
 
 # 401 x 2000 8th: stable, error -> 2.5e-7, 56ms
 # 401 x 4000 8th: stable, error -> 0.8e-8, 100ms
+
+# 1001 x 0.2 / 4000 (1.0): error -> 4.16e-11, 1.22s
+# 1001 x 0.2 / 2000 (1.0): error -> 3.20e-10, 624.96ms
 
 # 8th x 401:
 #    1382-1385
@@ -59,11 +62,9 @@ diff_absy = absy[:, 1] - absy[:, end]
 println(maximum(abs(diff_absy)))
 println(any(isnan, diff_absy))
 
-# exit()
-
-figure()
-imshow(log(log1p(absy[:, 1:4:end])))
-colorbar()
+# figure()
+# imshow(log(log1p(absy[:, 1:4:end])))
+# colorbar()
 
 figure()
 imshow(absy[:, 1:4:end])
