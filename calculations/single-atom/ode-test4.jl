@@ -17,12 +17,6 @@ immutable Hamiltonian1D{T, P} <: ODEKernel
     p::P # potential
 end
 
-function my_plan_fft!(X)
-    FFTW.Plan(X, X, 1:1, FFTW.FORWARD, FFTW.MEASURE, FFTW.NO_TIMELIMIT)
-end
-
-@inline call(p::FFTW.Plan, Z) = FFTW.execute(p.plan, Z, Z)
-
 function call(h::Hamiltonian1D, t, y, ydot)
     len = length(y)
     @inbounds for i in 1:len
@@ -56,13 +50,17 @@ x_omega = 5π
 x_center = (grid_size + 1) * grid_space / 2
 psi_init = complex(exp(-linspace(-2.5 * x_center, 1.5 * x_center, grid_size).^2))
 
-const y_fft! = my_plan_fft!(copy(psi_init))
+const y_fft! = plan_fft!(copy(psi_init), 1:1, FFTW.MEASURE)
 const y_ifft! = plan_ifft!(copy(psi_init), 1:1, FFTW.MEASURE)
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 
 println("start")
 @time t, y = solve_ode(0.0, psi_init, h, 1.0, 0.2 / 4000)
+gc()
+@time t, y = solve_ode(0.0, psi_init, h, 1.0, 0.2 / 4000)
+
+# exit()
 
 # 401 x 2000: stable, error -> 2.5e-7, 472ms
 # 401 x 4000: stable, error -> 0.8e-8, 725ms
