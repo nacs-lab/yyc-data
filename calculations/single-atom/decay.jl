@@ -97,12 +97,12 @@ function propagate_average(H, dt, nstep, ntime)
 end
 
 # Γ, Ω, δ
-h = StationaryAtom(20e6, 40e6, 20e6)
+h = StationaryAtom(10e6, 40e6, 40e6)
 
 println("start")
 @time ps = propagate_average(h, 1e-9, 10, 1)
 gc()
-@time ps = propagate_average(h, 5e-10, 500, 100_000)
+@time ps = propagate_average(h, 1e-9, 500, 100_000)
 
 figure()
 plot(ps'[:, 1])
