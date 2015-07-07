@@ -1,23 +1,24 @@
 #!/usr/bin/julia -f
 
-# Quantum mechanical harmonic oscillator using split operator method
+# Quantum mechanical harmonic oscillator using split operator method with
+# Float32 precision
 
 using PyPlot
 # include("ode-common.jl")
 
-immutable HarmonicPotential{T}
-    omega::T
-    center::T
+immutable HarmonicPotential
+    omega::Float32
+    center::Float32
 end
 
-call(h::HarmonicPotential, x) = h.omega^2 .* (x - h.center).^2
+call(h::HarmonicPotential, x::Float32) = h.omega^2 .* (x - h.center).^2
 
-immutable Hamiltonian1D{T, P}
-    d::T # grid spacing
+immutable Hamiltonian1D{P}
+    d::Float32 # grid spacing
     p::P # potential
 end
 
-function propagate(H::Hamiltonian1D, y0, t0, t1, dt)
+function propagate(H::Hamiltonian1D, y0, t0::Float32, t1::Float32, dt::Float32)
     if t1 <= t0
         error("End time should be after start time.")
     end
@@ -39,7 +40,7 @@ function propagate(H::Hamiltonian1D, y0, t0, t1, dt)
     prop_x_2 = similar(y0)
     prop_p = similar(y0)
 
-    k0 = 2π / (nele * H.d)
+    k0 = Float32(2π / (nele * H.d))
     @inbounds for i in 1:nele
         x = i * H.d # coordinate
         prop_x_2[i] = exp(-im * H.p(x) * dt / 2)
@@ -66,34 +67,26 @@ function propagate(H::Hamiltonian1D, y0, t0, t1, dt)
     collect(ts), ys
 end
 
-typealias HarmonicHamiltonian{To, Td} Hamiltonian1D{Td, HarmonicPotential{To}}
+typealias HarmonicHamiltonian Hamiltonian1D{HarmonicPotential}
 
 call(::Type{HarmonicHamiltonian}, omega, d, c) =
     Hamiltonian1D(d, HarmonicPotential(omega, c))
 
 grid_size = 2001
-grid_space = 0.01 # * 1000 / (grid_size - 1)
-x_omega = 1π
+grid_space = 0.01f0 # * 1000 / (grid_size - 1)
+x_omega = 1f0π
 
 x_center = (grid_size + 1) * grid_space / 2
 x_center2 = x_center
-psi_init = complex(exp(-linspace(-2.0 * x_center2,
-                                 1.0 * x_center2, grid_size).^2))
+psi_init = complex(exp(-linspace(-2.0f0 * x_center2,
+                                 1.0f0 * x_center2, grid_size).^2))
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 
 println("start")
-@time t, y = propagate(h, psi_init, 0.0, 0.2, 0.2 / 100)
+@time t, y = propagate(h, psi_init, 0.0f0, 0.2f0, 0.2f0 / 100)
 gc()
-@time t, y = propagate(h, psi_init, 0.0, 100.0, 1.0 / 100)
-
-# exit()
-
-# 401 x 2000: stable, error -> 2.5e-7, 472ms
-# 401 x 4000: stable, error -> 0.8e-8, 725ms
-
-# 1001 x 0.2 / 2000 (1.0): error -> 2e-11, 1.406
-# 1001 x 0.2 / 4000 (1.0): error -> 7e-13, 2.59s
+@time t, y = propagate(h, psi_init, 0.0f0, 100.0f0, 1.0f0 / 100)
 
 absy = abs(y)
 
@@ -114,6 +107,3 @@ figure()
 plot(absy[:, 1] - absy[:, end])
 
 show()
-
-# println()
-# readline()

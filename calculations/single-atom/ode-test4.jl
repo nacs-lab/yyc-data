@@ -81,5 +81,4 @@ plot(absy[:, end])
 figure()
 plot(absy[:, 1] - absy[:, end])
 
-println()
-readline()
+show()

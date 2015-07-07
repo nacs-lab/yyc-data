@@ -108,5 +108,4 @@ figure()
 plot(ps'[:, 1])
 plot(ps'[:, 2])
 
-println()
-readline()
+show()
