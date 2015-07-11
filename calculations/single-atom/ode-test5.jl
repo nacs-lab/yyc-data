@@ -2,7 +2,6 @@
 
 # Quantum mechanical harmonic oscillator using split operator method
 
-using PyPlot
 # include("ode-common.jl")
 
 immutable HarmonicPotential{T}
@@ -71,7 +70,7 @@ typealias HarmonicHamiltonian{To, Td} Hamiltonian1D{Td, HarmonicPotential{To}}
 call(::Type{HarmonicHamiltonian}, omega, d, c) =
     Hamiltonian1D(d, HarmonicPotential(omega, c))
 
-grid_size = 2001
+grid_size = 2048
 grid_space = 0.01 # * 1000 / (grid_size - 1)
 x_omega = 1π
 
@@ -88,6 +87,8 @@ gc()
 @time t, y = propagate(h, psi_init, 0.0, 100.0, 1.0 / 100)
 
 # exit()
+
+using PyPlot
 
 # 401 x 2000: stable, error -> 2.5e-7, 472ms
 # 401 x 4000: stable, error -> 0.8e-8, 725ms
