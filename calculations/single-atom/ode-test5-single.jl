@@ -3,7 +3,6 @@
 # Quantum mechanical harmonic oscillator using split operator method with
 # Float32 precision
 
-using PyPlot
 # include("ode-common.jl")
 
 immutable HarmonicPotential
@@ -32,8 +31,8 @@ function propagate(H::Hamiltonian1D, y0, t0::Float32, t1::Float32, dt::Float32)
     @inbounds ys[:, 1] = y0
 
     # FFT plan
-    p_fft! = plan_fft!(tmp, 1:1, FFTW.MEASURE)
-    p_ifft! = plan_ifft!(tmp, 1:1, FFTW.MEASURE)
+    p_fft! = plan_fft!(tmp, flags=FFTW.MEASURE)
+    p_ifft! = plan_ifft!(tmp, flags=FFTW.MEASURE)
 
     # Propagators of x and p in it's diagonal form
     # The / 2 here is necessary to get intermediate results
@@ -55,11 +54,11 @@ function propagate(H::Hamiltonian1D, y0, t0::Float32, t1::Float32, dt::Float32)
         for j in 1:nele
             tmp[j] = ys[j, i - 1] * prop_x_2[j]
         end
-        p_fft!(tmp)
+        p_fft! * tmp
         for j in 1:nele
             tmp[j] *= prop_p[j]
         end
-        p_ifft!(tmp)
+        p_ifft! * tmp
         for j in 1:nele
             ys[j, i] = tmp[j] * prop_x_2[j]
         end
@@ -72,7 +71,7 @@ typealias HarmonicHamiltonian Hamiltonian1D{HarmonicPotential}
 call(::Type{HarmonicHamiltonian}, omega, d, c) =
     Hamiltonian1D(d, HarmonicPotential(omega, c))
 
-grid_size = 2001
+grid_size = 2048
 grid_space = 0.01f0 # * 1000 / (grid_size - 1)
 x_omega = 1f0π
 
@@ -87,6 +86,10 @@ println("start")
 @time t, y = propagate(h, psi_init, 0.0f0, 0.2f0, 0.2f0 / 100)
 gc()
 @time t, y = propagate(h, psi_init, 0.0f0, 100.0f0, 1.0f0 / 100)
+
+exit()
+
+using PyPlot
 
 absy = abs(y)
 

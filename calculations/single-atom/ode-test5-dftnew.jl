@@ -86,15 +86,9 @@ println("start")
 gc()
 @time t, y = propagate(h, psi_init, 0.0, 100.0, 1.0 / 100)
 
-# exit()
+exit()
 
 using PyPlot
-
-# 401 x 2000: stable, error -> 2.5e-7, 472ms
-# 401 x 4000: stable, error -> 0.8e-8, 725ms
-
-# 1001 x 0.2 / 2000 (1.0): error -> 2e-11, 1.406
-# 1001 x 0.2 / 4000 (1.0): error -> 7e-13, 2.59s
 
 absy = abs(y)
 
