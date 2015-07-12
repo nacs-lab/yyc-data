@@ -32,7 +32,7 @@ function propagate(H::Hamiltonian1D, y0, t0::Float32, t1::Float32, dt::Float32)
 
     # FFT plan
     p_fft! = plan_fft!(tmp, flags=FFTW.MEASURE)
-    p_ifft! = plan_ifft!(tmp, flags=FFTW.MEASURE)
+    # p_ifft! = plan_ifft!(tmp, flags=FFTW.MEASURE)
 
     # Propagators of x and p in it's diagonal form
     # The / 2 here is necessary to get intermediate results
@@ -58,7 +58,7 @@ function propagate(H::Hamiltonian1D, y0, t0::Float32, t1::Float32, dt::Float32)
         for j in 1:nele
             tmp[j] *= prop_p[j]
         end
-        p_ifft! * tmp
+        p_fft! \ tmp
         for j in 1:nele
             ys[j, i] = tmp[j] * prop_x_2[j]
         end
@@ -87,7 +87,7 @@ println("start")
 gc()
 @time t, y = propagate(h, psi_init, 0.0f0, 100.0f0, 1.0f0 / 100)
 
-exit()
+# exit()
 
 using PyPlot
 
