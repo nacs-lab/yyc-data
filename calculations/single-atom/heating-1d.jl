@@ -187,7 +187,7 @@ end
 ψ0 = gen_ψ0(grid_size, grid_space, x_center)
 
 # H::MagicHarmonic1D{T}, dt::T, dx::T, nstep, nele
-const P = Propagator1D(H, 0.03, grid_space, 2000, grid_size)
+const P = Propagator1D(H, 0.005, grid_space, 10000, grid_size)
 
 println("start")
 
@@ -209,7 +209,7 @@ end
 using PyPlot
 
 figure()
-imshow(img)
+imshow(img[:, 1:10:end])
 colorbar()
 
 # figure()
