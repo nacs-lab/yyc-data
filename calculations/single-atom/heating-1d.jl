@@ -61,7 +61,7 @@ function Propagator1D{T}(H::MagicHarmonic1D{T}, dt::T, dx::T, nstep, nele)
 
     k0 = 2π / (nele * dx)
     @inbounds for i in 1:nele
-        x = i * dx # coordinate
+        x = i * dx - H.center # coordinate
         P_x2[i] = exp(im * H.m * H.ω^2 * x^2 * dt / 4)
 
         k1 = i - 1
@@ -138,12 +138,10 @@ function propagate{T}(P::Propagator1D{T},
             T12 = P.P_σ12[j, i - 1]
             T11 = P.P_σ11[j, i - 1]
             T22 = P.P_σ22[j, i - 1]
-            T21 = conj(T12)
+            T21 = -conj(T12)
 
-            # ψs[2, j, i] = T11 * ψ_e + T12 * ψ_g
-            # ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
-            ψs[2, j, i] = ψ_e
-            ψs[1, j, i] = ψ_g
+            ψs[2, j, i] = T11 * ψ_e + T12 * ψ_g
+            ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
         end
     end
     ψs
@@ -154,27 +152,42 @@ function propagate{T}(P::Propagator1D{T}, ψ0::Matrix{Complex{T}})
     propagate(P, ψ0, ψs)
 end
 
-grid_size = 2048
-grid_space = 0.02e-6
+# Time unit: μs
+# Length unit: μm
+# Frequency unit: MHz
+
+grid_size = 256
+grid_space = 0.01
 
 x_center = (grid_size + 1) * grid_space / 2
 
 # m here is actually m / ħ
-m = 22.98977e-3 / 6.02214129e23 / 1.0545717253362894e-34
+m = 22.98977e-3 / 6.02214129e23 / (1.0545717253362894e-34 * 1e6)
 # (m ω center) (k_emit Γ) (k_drive Ω δ)
-H = MagicHarmonic1D(m, 2π * 200e3, x_center,
-                    2π / 589e-9, 2π * 10e6,
-                    2π / 589e-9, 2π * 5e6, 2π * 5e6)
+H = MagicHarmonic1D(m, 2π * 0.1, x_center,
+                    2π / 0.589, 2π * 10.0,
+                    2π / 0.589, 2π * 10.0, 2π * 0.0)
 
-ψ0 = Array{Complex128}(2, grid_size)
-
-for i in 1:grid_size
-    ψ0[1, i] = exp(-((i * grid_space - x_center + 2e-6) / (589e-9 * 10))^2)
-    ψ0[2, i] = 0
+function gen_ψ0(grid_size, grid_space, x_center)
+    ψ0 = Array{Complex128}(2, grid_size)
+    sum = 0.0
+    @inbounds for i in 1:grid_size
+        ψ = exp(-((i * grid_space - x_center + 0.2) / (0.3))^2)
+        sum += abs2(ψ)
+        ψ0[1, i] = ψ
+        ψ0[2, i] = 0
+    end
+    sum = sqrt(sum)
+    @inbounds for i in 1:grid_size
+        ψ0[1, i] /= sum
+    end
+    ψ0
 end
 
+ψ0 = gen_ψ0(grid_size, grid_space, x_center)
+
 # H::MagicHarmonic1D{T}, dt::T, dx::T, nstep, nele
-const P = Propagator1D(H, 5e-8, grid_space, 10000, grid_size)
+const P = Propagator1D(H, 0.03, grid_space, 2000, grid_size)
 
 println("start")
 
@@ -182,36 +195,32 @@ println("start")
 gc()
 @time ψs = propagate(P, ψ0)
 
-# @profile ψs = propagate(P, ψ0)
-# Profile.print(C=true)
+img = Array{Float64}(grid_size, size(ψs, 3))
 
+for i in 1:size(img, 2)
+    sum = 0.0
+    @inbounds for j in 1:size(img, 1)
+        img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+        sum += img[j, i]
+    end
+    # println((i, sum))
+end
 
-# using PyPlot
+using PyPlot
 
-# img = Array{Float64}(grid_size, size(ψs, 3))
-
-# for i in 1:size(img, 2)
-#     sum = 0.0
-#     for j in 1:size(img, 1)
-#         img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
-#         sum += img[j, i]
-#     end
-#     # println((i, sum))
-# end
+figure()
+imshow(img)
+colorbar()
 
 # figure()
-# imshow(img)
+# imshow(log(log1p(absy[:, 10:end])))
 # colorbar()
 
-# # figure()
-# # imshow(log(log1p(absy[:, 10:end])))
-# # colorbar()
+# figure()
+# plot(absy[:, 1])
+# plot(absy[:, end])
 
-# # figure()
-# # plot(absy[:, 1])
-# # plot(absy[:, end])
+# figure()
+# plot(absy[:, 1] - absy[:, end])
 
-# # figure()
-# # plot(absy[:, 1] - absy[:, end])
-
-# show()
+show()
