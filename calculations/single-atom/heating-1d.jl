@@ -111,6 +111,7 @@ function propagate{T}(P::Propagator1D{T},
                       ψ0::Matrix{Complex{T}}, # 2 x nele
                       ψs::Array{Complex{T}, 3} # 2 x nele x (nstep + 1)
                       )
+    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
     @inbounds for i in 1:P.nele
         ψs[1, i, 1] = ψ0[1, i]
         ψs[2, i, 1] = ψ0[2, i]
@@ -144,6 +145,7 @@ function propagate{T}(P::Propagator1D{T},
             ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
         end
     end
+    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
     ψs
 end
 
