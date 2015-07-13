@@ -112,16 +112,28 @@ function propagate{T}(P::Propagator1D{T},
                       ψs::Array{Complex{T}, 3} # 2 x nele x (nstep + 1)
                       )
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
+    ψ_norm = 0.0
     @inbounds for i in 1:P.nele
-        ψs[1, i, 1] = ψ0[1, i]
-        ψs[2, i, 1] = ψ0[2, i]
+        ψ_g = ψ0[1, i]
+        ψ_e = ψ0[2, i]
+        ψs[1, i, 1] = ψ_g
+        ψs[2, i, 1] = ψ_e
+        ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
     @inbounds for i in 2:(P.nstep + 1)
+        p_decay = 0.0
         for j in 1:P.nele
             p_x2 = P.P_x2[j]
-            P.tmp[1, j] = ψs[1, j, i - 1] * p_x2
-            P.tmp[2, j] = ψs[2, j, i - 1] * p_x2
+            ψ_g = ψs[1, j, i - 1] * p_x2
+            ψ_e = ψs[2, j, i - 1] * p_x2
+            P.tmp[1, j] = ψ_g
+            P.tmp[2, j] = ψ_e
+            p_decay += abs2(ψ_e)
         end
+
+        # TODO: Really do the decay
+        p_decay = p_decay / ψ_norm * P.H.Γ * P.dt
+
         P.p_fft!(P.tmp)
         # P.p_fft! * P.tmp
         for j in 1:P.nele
