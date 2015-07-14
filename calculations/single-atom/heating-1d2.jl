@@ -168,9 +168,9 @@ end
 # i is the time index (1:(nstep + 1))
 # ψ is the current wavefunction
 # accum_type is the type of the wavefunction (X or K basis)
-function propagate{T}(P::SystemPropagator{T},
-                      ψ0::Matrix{Complex{T}}, # 2 x nele
-                      accumulator)
+function propagate{H, T, N}(P::SystemPropagator{H, T, N},
+                            ψ0::Matrix{Complex{T}}, # 2 x nele
+                            accumulator)
     # Disable denormal values
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
     eΓ4 = exp(-P.H.Γ * P.dt / 4)
@@ -184,13 +184,12 @@ function propagate{T}(P::SystemPropagator{T},
         ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
 
-    @inbounds for i in 1:(P.nstep + 1)
+    @fastmath @inbounds for i in 1:(P.nstep + 1)
         ψ_scale = 1 / sqrt(ψ_norm)
         p_decay::T = 0
         for j in 1:P.nele
-            p_x2 = P.P_x2[j] * ψ_scale
-            ψ_g = P.tmp[1, j] * p_x2
-            ψ_e = P.tmp[2, j] * p_x2
+            ψ_g = P.tmp[1, j] * P.P_x2[1][j] * ψ_scale
+            ψ_e = P.tmp[2, j] * P.P_x2[2][j] * ψ_scale
             P.tmp[1, j] = ψ_g
             P.tmp[2, j] = ψ_e
             p_decay += abs2(ψ_e)
@@ -226,19 +225,20 @@ function propagate{T}(P::SystemPropagator{T},
         end
         accumulator(P, i, P.tmp, AccumK)
         P.p_bfft!(P.tmp)
-        # for j in 1:P.nele
-        #     p_x2 = P.P_x2[j]
-        #     ψ_e = P.tmp[2, j] * p_x2 * eΓ4
-        #     ψ_g = P.tmp[1, j] * p_x2
+        for j in 1:P.nele
+            ψ_g = P.tmp[1, j] * P.P_x2[1][j]
+            ψ_e = P.tmp[2, j] * P.P_x2[2][j] * eΓ4
 
-        #     T12 = P.P_σ12[j, i - 1]
-        #     T11 = P.P_σ11[j, i - 1]
-        #     T22 = P.P_σ22[j, i - 1]
-        #     T21 = -conj(T12)
+            # T12 = P.P_σ12[j, i - 1]
+            # T11 = P.P_σ11[j, i - 1]
+            # T22 = P.P_σ22[j, i - 1]
+            # T21 = -conj(T12)
 
-        #     ψs[2, j, i] = (T11 * ψ_e + T12 * ψ_g) * eΓ4
-        #     ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
-        # end
+            # ψ_g, ψ_e = (T22 * ψ_g + T21 * ψ_e), (T11 * ψ_e + T12 * ψ_g)
+
+            ψs[2, j, i] = ψ_e * eΓ4
+            ψs[1, j, i] = ψ_g
+        end
     end
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
 end
