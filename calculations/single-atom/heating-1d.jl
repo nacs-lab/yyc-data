@@ -120,7 +120,19 @@ function propagate{T}(P::Propagator1D{T},
         ψs[2, i, 1] = ψ_e
         ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
+    eΓ4 = exp(-P.H.Γ * P.dt / 4)
     @inbounds for i in 2:(P.nstep + 1)
+        ψ_norm = 0.0
+        for j in 1:P.nele
+            ψ_norm += abs2(ψs[1, j, i - 1]) + abs2(ψs[2, j, i - 1])
+        end
+        ψ_norm = 1 / sqrt(ψ_norm)
+        for j in 1:P.nele
+            ψs[1, j, i - 1] *= ψ_norm
+            ψs[2, j, i - 1] *= ψ_norm
+        end
+        ψ_norm = 1.0
+
         p_decay = 0.0
         for j in 1:P.nele
             p_x2 = P.P_x2[j]
@@ -133,6 +145,17 @@ function propagate{T}(P::Propagator1D{T},
 
         # TODO: Really do the decay
         p_decay = p_decay / ψ_norm * P.H.Γ * P.dt
+        if rand() < p_decay
+            k = rand() > 0.5 ? P.H.k_emit : -P.H.k_emit
+            for j in 1:P.nele
+                ψ_e = P.tmp[2, j]
+                x = j * P.dx # coordinate
+
+                ψs[2, j, i] = 0.0
+                ψs[1, j, i] = ψ_e * exp(im * k * x)
+            end
+            continue
+        end
 
         P.p_fft!(P.tmp)
         # P.p_fft! * P.tmp
@@ -145,7 +168,7 @@ function propagate{T}(P::Propagator1D{T},
         # P.p_ifft! * P.tmp
         for j in 1:P.nele
             p_x2 = P.P_x2[j]
-            ψ_e = P.tmp[2, j] * p_x2
+            ψ_e = P.tmp[2, j] * p_x2 * eΓ4
             ψ_g = P.tmp[1, j] * p_x2
 
             T12 = P.P_σ12[j, i - 1]
@@ -153,7 +176,7 @@ function propagate{T}(P::Propagator1D{T},
             T22 = P.P_σ22[j, i - 1]
             T21 = -conj(T12)
 
-            ψs[2, j, i] = T11 * ψ_e + T12 * ψ_g
+            ψs[2, j, i] = (T11 * ψ_e + T12 * ψ_g) * eΓ4
             ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
         end
     end
@@ -164,6 +187,21 @@ end
 function propagate{T}(P::Propagator1D{T}, ψ0::Matrix{Complex{T}})
     ψs = Array{Complex{T}}(2, P.nele, P.nstep + 1)
     propagate(P, ψ0, ψs)
+end
+
+function propagate2{T}(P::Propagator1D{T}, ψ0::Matrix{Complex{T}}, n=2000)
+    ψs = Array{Complex{T}}(2, P.nele, P.nstep + 1)
+    ψs2 = zeros(T, (2, P.nele, P.nstep + 1))
+    for i in 1:n
+        propagate(P, ψ0, ψs)
+        @inbounds for j in eachindex(ψs)
+            ψs2[j] += abs2(ψs[j])
+        end
+    end
+    @inbounds for j in eachindex(ψs2)
+        ψs2[j] /= n
+    end
+    ψs2
 end
 
 # Time unit: μs
@@ -180,13 +218,13 @@ m = 22.98977e-3 / 6.02214129e23 / (1.0545717253362894e-34 * 1e6)
 # (m ω center) (k_emit Γ) (k_drive Ω δ)
 H = MagicHarmonic1D(m, 2π * 0.1, x_center,
                     2π / 0.589, 2π * 10.0,
-                    2π / 0.589, 2π * 10.0, 2π * 0.0)
+                    2π / 0.589 * 0, 2π * 10.0, 2π * 0.0)
 
 function gen_ψ0(grid_size, grid_space, x_center)
     ψ0 = Array{Complex128}(2, grid_size)
     sum = 0.0
     @inbounds for i in 1:grid_size
-        ψ = exp(-((i * grid_space - x_center + 0.2) / (0.3))^2)
+        ψ = exp(-((i * grid_space - x_center + 0.2) / 0.2)^2)
         sum += abs2(ψ)
         ψ0[1, i] = ψ
         ψ0[2, i] = 0
@@ -205,16 +243,17 @@ const P = Propagator1D(H, 0.005, grid_space, 10000, grid_size)
 
 println("start")
 
-@time ψs = propagate(P, ψ0)
+@time ψs = propagate2(P, ψ0, 2)
 gc()
-@time ψs = propagate(P, ψ0)
+@time ψs = propagate2(P, ψ0)
 
 img = Array{Float64}(grid_size, size(ψs, 3))
 
 for i in 1:size(img, 2)
     sum = 0.0
     @inbounds for j in 1:size(img, 1)
-        img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+        # img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+        img[j, i] = ψs[1, j, i] + ψs[2, j, i]
         sum += img[j, i]
     end
     # println((i, sum))
@@ -226,9 +265,9 @@ figure()
 imshow(img[:, 1:10:end])
 colorbar()
 
-# figure()
-# imshow(log(log1p(absy[:, 10:end])))
-# colorbar()
+figure()
+imshow(log((img[:, 1:10:end])))
+colorbar()
 
 # figure()
 # plot(absy[:, 1])
