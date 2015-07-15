@@ -238,6 +238,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
         accumulate(accumulator, P, i, P.tmp, AccumK)
         P.p_bfft!(P.tmp)
+        ψ_norm = 0
         for j in 1:P.nele
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
             ψ_e = P.tmp[2, j] * P.P_x2[2][j] * eΓ4
@@ -249,7 +250,9 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
 
             # ψ_g, ψ_e = (T22 * ψ_g + T21 * ψ_e), (T11 * ψ_e + T12 * ψ_g)
 
-            P.tmp[2, j] = ψ_e * eΓ4
+            ψ_e = ψ_e * eΓ4
+            ψ_norm += abs2(ψ_g) + abs2(ψ_e)
+            P.tmp[2, j] = ψ_e
             P.tmp[1, j] = ψ_g
         end
     end
