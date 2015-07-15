@@ -197,7 +197,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
 
-    @fastmath @inbounds for i in 1:(P.nstep + 1)
+    @inbounds for i in 1:(P.nstep + 1)
         ψ_scale = 1 / sqrt(ψ_norm)
         p_decay::T = 0
         for j in 1:P.nele
