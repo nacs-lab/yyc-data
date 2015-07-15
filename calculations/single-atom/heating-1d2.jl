@@ -186,7 +186,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
     accum_init(accumulator, P)
     # Disable denormal values
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
-    eΓ4 = exp(-P.H.Γ * P.dt / 4)
+    eΓ4 = exp(-P.H.decay.Γ * P.dt / 4)
 
     ψ_norm::T = 0
     @inbounds for i in 1:P.nele
@@ -249,24 +249,33 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
 
             # ψ_g, ψ_e = (T22 * ψ_g + T21 * ψ_e), (T11 * ψ_e + T12 * ψ_g)
 
-            ψs[2, j, i] = ψ_e * eΓ4
-            ψs[1, j, i] = ψ_g
+            P.tmp[2, j] = ψ_e * eΓ4
+            P.tmp[1, j] = ψ_g
         end
     end
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
 end
 
-type WaveFuncRecorder{T, Acc} <: AbstractAccumulator
+type WaveFuncRecorder{Acc, T} <: AbstractAccumulator
     ψs::Array{Complex{T}, 3}
+    WaveFuncRecorder() = new()
+    WaveFuncRecorder(ψs) = new(ψs)
 end
 
-function accum_init{H, T}(r::WaveFuncRecorder{T}, P::SystemPropagator{H, T})
+function call{H, T, Acc}(::Type{WaveFuncRecorder{Acc}},
+                         P::SystemPropagator{H, T})
+    return WaveFuncRecorder{Acc, T}(Array{Complex{T}}(2, P.nele, P.nstep + 1))
+end
+
+function accum_init{H, T, Acc}(r::WaveFuncRecorder{Acc, T},
+                               P::SystemPropagator{H, T})
     if !isdefined(r, :ψs) || size(r.ψs) != (2, P.nele, P.nstep + 1)
         r.ψs = Array{Complex{T}}(2, P.nele, P.nstep + 1)
     end
+    nothing
 end
 
-@inline function accumulate{H, T, Acc}(r::WaveFuncRecorder{T, Acc},
+@inline function accumulate{H, T, Acc}(r::WaveFuncRecorder{Acc, T},
                                        P::SystemPropagator{H, T}, t_i,
                                        ψ::Matrix{Complex{T}},
                                        accum_type::AccumType)
@@ -276,6 +285,7 @@ end
             r.ψs[2, j, t_i] = ψ[2, j]
         end
     end
+    nothing
 end
 
 # Time unit: μs
@@ -299,3 +309,25 @@ h_system = HSystem(h_trap, o_decay, (o_drive1,))
 grid_size = 256
 grid_space = 0.01
 p_sys = SystemPropagator(h_system, 0.005, grid_space, 10000, grid_size)
+
+
+function gen_ψ0(grid_size, grid_space)
+    x_center = (grid_size + 1) * grid_space / 2
+    ψ0 = Array{Complex128}(2, grid_size)
+    sum = 0.0
+    @inbounds for i in 1:grid_size
+        ψ = exp(-((i * grid_space - x_center + 0.2) / 0.2)^2)
+        sum += abs2(ψ)
+        ψ0[1, i] = ψ
+        ψ0[2, i] = 0
+    end
+    sum = sqrt(sum)
+    @inbounds for i in 1:grid_size
+        ψ0[1, i] /= sum
+    end
+    ψ0
+end
+
+ψ0 = gen_ψ0(grid_size, grid_space)
+
+wf_accum = WaveFuncRecorder{AccumX}(p_sys)
