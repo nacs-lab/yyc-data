@@ -162,7 +162,19 @@ end
 
 @enum AccumType AccumX AccumK
 
-# accumulator is called with accumulator(P, i, ψ, accum_type::AccumType)
+abstract AbstractAccumulator
+
+@inline accum_init(::AbstractAccumulator, ::SystemPropagator) = nothing
+
+function accumulate
+end
+
+# Before the iterations start the accumulator is called with
+#     accum_init(accumulator, P)
+# This should be used to initialize internal states (e.g. buffers).
+#
+# At each iteration accumulator is called with
+#     accumulate(accumulator, P, i, ψ, accum_type::AccumType)
 # Where
 # P is the propagator
 # i is the time index (1:(nstep + 1))
@@ -170,7 +182,8 @@ end
 # accum_type is the type of the wavefunction (X or K basis)
 function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                             ψ0::Matrix{Complex{T}}, # 2 x nele
-                            accumulator)
+                            accumulator::AbstractAccumulator)
+    accum_init(accumulator, P)
     # Disable denormal values
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
     eΓ4 = exp(-P.H.Γ * P.dt / 4)
@@ -203,19 +216,19 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                 P.tmp[2, j] = 0
                 P.tmp[1, j] = ψ_e
             end
-            accumulator(P, i, P.tmp, AccumX)
+            accumulate(accumulator, P, i, P.tmp, AccumX)
             P.p_fft!(P.tmp)
             ψ_scale = 1 / sqrt(T(P.nele))
             for j in 1:P.nele
                 P.tmp[1, j] *= ψ_scale
                 P.tmp[2, j] *= ψ_scale
             end
-            accumulator(P, i, P.tmp, AccumK)
+            accumulate(accumulator, P, i, P.tmp, AccumK)
             P.p_bfft!(P.tmp)
             ψ_norm = T(P.nele)
             continue
         end
-        accumulator(P, i, P.tmp, AccumX)
+        accumulate(accumulator, P, i, P.tmp, AccumX)
         P.p_fft!(P.tmp)
         ψ_scale = 1 / sqrt(T(P.nele))
         for j in 1:P.nele
@@ -223,7 +236,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             P.tmp[1, j] *= p_k
             P.tmp[2, j] *= p_k
         end
-        accumulator(P, i, P.tmp, AccumK)
+        accumulate(accumulator, P, i, P.tmp, AccumK)
         P.p_bfft!(P.tmp)
         for j in 1:P.nele
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
@@ -241,6 +254,28 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
     end
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
+end
+
+type WaveFuncRecorder{T, Acc} <: AbstractAccumulator
+    ψs::Array{Complex{T}, 3}
+end
+
+function accum_init{H, T}(r::WaveFuncRecorder{T}, P::SystemPropagator{H, T})
+    if !isdefined(r, :ψs) || size(r.ψs) != (2, P.nele, P.nstep + 1)
+        r.ψs = Array{Complex{T}}(2, P.nele, P.nstep + 1)
+    end
+end
+
+@inline function accumulate{H, T, Acc}(r::WaveFuncRecorder{T, Acc},
+                                       P::SystemPropagator{H, T}, t_i,
+                                       ψ::Matrix{Complex{T}},
+                                       accum_type::AccumType)
+    @inbounds if Acc == accum_type
+        for j in 1:P.nele
+            r.ψs[1, j, t_i] = ψ[1, j]
+            r.ψs[2, j, t_i] = ψ[2, j]
+        end
+    end
 end
 
 # Time unit: μs
