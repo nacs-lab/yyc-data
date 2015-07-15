@@ -278,14 +278,28 @@ function accum_init{H, T, Acc}(r::WaveFuncRecorder{Acc, T},
     nothing
 end
 
-@inline function accumulate{H, T, Acc}(r::WaveFuncRecorder{Acc, T},
-                                       P::SystemPropagator{H, T}, t_i,
-                                       ψ::Matrix{Complex{T}},
-                                       accum_type::AccumType)
-    @inbounds if Acc == accum_type
+function accumulate{H, T}(r::WaveFuncRecorder{AccumX, T},
+                          P::SystemPropagator{H, T}, t_i,
+                          ψ::Matrix{Complex{T}}, accum_type::AccumType)
+    @inbounds if accum_type == AccumX
         for j in 1:P.nele
             r.ψs[1, j, t_i] = ψ[1, j]
             r.ψs[2, j, t_i] = ψ[2, j]
+        end
+    end
+    nothing
+end
+
+function accumulate{H, T}(r::WaveFuncRecorder{AccumK, T},
+                          P::SystemPropagator{H, T}, t_i,
+                          ψ::Matrix{Complex{T}}, accum_type::AccumType)
+    @inbounds if accum_type == AccumK
+        k_off = P.nele ÷ 2
+        for j in 1:P.nele
+            k = j + k_off
+            k = ifelse(k > P.nele, k - P.nele, k)
+            r.ψs[1, k, t_i] = ψ[1, j]
+            r.ψs[2, k, t_i] = ψ[2, j]
         end
     end
     nothing
