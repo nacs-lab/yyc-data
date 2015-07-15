@@ -218,6 +218,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             end
             accumulate(accumulator, P, i, P.tmp, AccumX)
             P.p_fft!(P.tmp)
+            # P.p_fft! * P.tmp
             ψ_scale = 1 / sqrt(T(P.nele))
             for j in 1:P.nele
                 P.tmp[1, j] *= ψ_scale
@@ -225,11 +226,13 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             end
             accumulate(accumulator, P, i, P.tmp, AccumK)
             P.p_bfft!(P.tmp)
+            # P.p_bfft! * P.tmp
             ψ_norm = T(P.nele)
             continue
         end
         accumulate(accumulator, P, i, P.tmp, AccumX)
         P.p_fft!(P.tmp)
+        # P.p_fft! * P.tmp
         ψ_scale = 1 / sqrt(T(P.nele))
         for j in 1:P.nele
             p_k = P.P_k[j] * ψ_scale
@@ -238,6 +241,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
         accumulate(accumulator, P, i, P.tmp, AccumK)
         P.p_bfft!(P.tmp)
+        # P.p_bfft! * P.tmp
         ψ_norm = 0
         for j in 1:P.nele
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
