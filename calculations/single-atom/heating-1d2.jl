@@ -389,3 +389,39 @@ const wf_k_accum = WaveFuncRecorder{AccumK}(p_sys)
 const wf_accum = wf_x_accum
 const e_accum = EnergyRecorder(p_sys)
 const _accum = e_accum
+
+println("start")
+
+@time propagate(p_sys, ψ0, _accum)
+
+gc()
+@time propagate(p_sys, ψ0, _accum)
+
+# ψs = wf_accum.ψs
+
+# img = Array{Float64}(grid_size, size(ψs, 3))
+
+# for i in 1:size(img, 2)
+#     sum = 0.0
+#     @inbounds for j in 1:size(img, 1)
+#         img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+#         # img[j, i] = ψs[1, j, i] + ψs[2, j, i]
+#         sum += img[j, i]
+#     end
+#     # println((i, sum))
+# end
+
+using PyPlot
+
+# figure()
+# imshow(img[:, 1:10:end])
+# colorbar()
+
+# figure()
+# imshow(log((img[:, 1:10:end])))
+# colorbar()
+
+figure()
+plot(e_accum.Es)
+
+show()
