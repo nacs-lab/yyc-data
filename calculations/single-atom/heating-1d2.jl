@@ -305,6 +305,39 @@ function accumulate{H, T}(r::WaveFuncRecorder{AccumK, T},
     nothing
 end
 
+type EnergyRecorder{T} <: AbstractAccumulator
+    Es::Vector{T}
+end
+
+function call{H, T}(::Type{EnergyRecorder}, P::SystemPropagator{H, T})
+    EnergyRecorder{T}(Array{T}(P.nstep + 1))
+end
+
+function accum_init{H, T}(r::EnergyRecorder{T}, P::SystemPropagator{H, T})
+    fill!(r.Es, T(0))
+    nothing
+end
+
+@inline function accumulate{H, T}(r::EnergyRecorder{T},
+                                  P::SystemPropagator{H, T}, t_i,
+                                  ψ::Matrix{Complex{T}},
+                                  accum_type::AccumType)
+    @inbounds if accum_type == AccumK
+        for j in 1:P.nele
+            r.Es[t_i] += (abs2(ψ[1, j]) + abs2(ψ[2, j])) * P.E_k[j]
+        end
+    else
+        for j in 1:P.nele
+            # Use ground state potential for both, representing the average
+            # potential energy after decay.
+            r.Es[t_i] += (abs2(ψ[1, j]) + abs2(ψ[2, j])) * P.E_x[1][j]
+            # r.Es[t_i] += (abs2(ψ[1, j]) * P.E_x[1][j] +
+            #               abs2(ψ[2, j]) * P.E_x[2][j])
+        end
+    end
+    nothing
+end
+
 # Time unit: μs
 # Length unit: μm
 # Frequency unit: MHz
@@ -347,4 +380,8 @@ end
 
 ψ0 = gen_ψ0(grid_size, grid_space)
 
-wf_accum = WaveFuncRecorder{AccumX}(p_sys)
+const wf_x_accum = WaveFuncRecorder{AccumX}(p_sys)
+const wf_k_accum = WaveFuncRecorder{AccumK}(p_sys)
+const wf_accum = wf_x_accum
+const e_accum = EnergyRecorder(p_sys)
+const _accum = e_accum
