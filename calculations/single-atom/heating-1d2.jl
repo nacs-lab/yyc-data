@@ -240,6 +240,7 @@ end
 abstract AbstractAccumulator
 
 @inline accum_init(::AbstractAccumulator, ::SystemPropagator) = nothing
+@inline accum_finalize(::AbstractAccumulator, ::SystemPropagator) = nothing
 
 function accumulate
 end
@@ -385,6 +386,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
     end
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
+    accum_finalize(accumulator, P)
 end
 
 type WaveFuncRecorder{Acc, T} <: AbstractAccumulator
@@ -554,6 +556,7 @@ if plot_type == PlotWFK || plot_type == PlotWFX
 elseif plot_type == PlotE
     figure()
     plot(_accum.Es)
+    grid()
     ylim(0, ylim()[2] * 1.1)
 end
 show()
