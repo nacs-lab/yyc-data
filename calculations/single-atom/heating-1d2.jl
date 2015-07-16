@@ -522,6 +522,60 @@ function accum_finalize(r::WaveFuncMonteCarloRecorder, P)
     nothing
 end
 
+type EnergyMonteCarloRecorder{T} <: MonteCarloAccumulator
+    Es::Vector{T} # Σ(E) / average
+    Es2::Vector{T} # Σ(E^2) / uncertainty
+    sub_accum::EnergyRecorder{T}
+    count::Int
+    ncycle::Int
+end
+
+function call{T}(::Type{EnergyMonteCarloRecorder},
+                 sub_accum::EnergyRecorder{T}, n)
+    EnergyMonteCarloRecorder{T}(Array{T}(size(sub_accum.Es)),
+                                Array{T}(size(sub_accum.Es)),
+                                sub_accum, 0, n)
+end
+
+function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
+    if length(r.Es2) != P.nstep + 1
+        r.Es = zeros(T, P.nstep + 1)
+        r.Es2 = zeros(T, P.nstep + 1)
+    else
+        fill!(r.Es, 0)
+        fill!(r.Es2, 0)
+    end
+    r.count = 0
+    r.sub_accum, r.ncycle
+end
+
+function accumulate(r::EnergyMonteCarloRecorder,
+                    P::SystemPropagator, sub_accum)
+    @assert size(r.Es) == size(sub_accum.Es)
+    @inbounds for i in eachindex(sub_accum.Es)
+        Es = sub_accum.Es[i]
+        r.Es[i] += Es
+        r.Es2[i] += Es^2
+    end
+    r.count += 1
+    nothing
+end
+
+function accum_finalize(r::EnergyMonteCarloRecorder, P)
+    @assert size(r.Es) == size(r.Es2)
+    @inbounds for i in eachindex(r.Es)
+        Es = r.Es[i] / r.count
+        Es2 = r.Es2[i] / r.count
+        std = (Es2 - Es^2) / r.count
+        # rounding errors can make small std smaller than zero
+        unc = std <= 0 ? zero(std) : sqrt(std)
+        r.Es[i] = Es
+        r.Es2[i] = unc
+    end
+    r.count = 1
+    nothing
+end
+
 # Time unit: μs
 # Length unit: μm
 # Frequency unit: MHz
