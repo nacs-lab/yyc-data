@@ -272,7 +272,7 @@ function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
     # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
     # P_σ21 = -P_σ12'
 
-    exp_θ_t = track.exp_t
+    exp_θ_t = tracker.exp_t
     @inbounds exp_θ_x = cos_drive[idx] + im * sin_drive[idx]
 
     T11 = T22 = cos_dt
@@ -287,9 +287,9 @@ end
     body = Expr(:block)
     resize!(body.args, 2 * N + 1)
     for i in 1:N
-        expr = :(ψ1, ψ2 = do_single_drive(P, P.drive_phase[$i],
-                                            P.sin_drive[$i], P.cos_drive[$i],
-                                            idx, dt, ψ1, ψ2))
+        expr = :((ψ1, ψ2) = do_single_drive(P, P.drive_phase[$i],
+                                              P.sin_drive[$i], P.cos_drive[$i],
+                                              idx, dt / 2, ψ1, ψ2))
         body.args[i] = expr
         body.args[2N + 1 - i] = expr
     end
@@ -376,7 +376,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
             ψ_e = P.tmp[2, j] * P.P_x2[2][j] * eΓ4
 
-            # TODO drive
+            ψ_g, ψ_e = do_all_drives(P, j, P.dt, ψ_g, ψ_e)
 
             ψ_e = ψ_e * eΓ4
             ψ_norm += abs2(ψ_g) + abs2(ψ_e)
