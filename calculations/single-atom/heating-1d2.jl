@@ -514,18 +514,12 @@ end
 # const plot_type = PlotWFK
 const plot_type = PlotE
 
-const wf_x_accum = WaveFuncRecorder{AccumX}(p_sys)
-const wf_k_accum = WaveFuncRecorder{AccumK}(p_sys)
-const e_accum = EnergyRecorder(p_sys)
-
 const _accum = if plot_type == PlotWFX
-    const wf_accum = wf_x_accum
-    wf_accum
+    WaveFuncRecorder{AccumX}(p_sys)
 elseif plot_type == PlotWFK
-    const wf_accum = wf_k_accum
-    wf_accum
+    WaveFuncRecorder{AccumK}(p_sys)
 elseif plot_type == PlotE
-    e_accum
+    EnergyRecorder(p_sys)
 end
 
 println("start")
@@ -537,7 +531,7 @@ gc()
 using PyPlot
 
 if plot_type == PlotWFK || plot_type == PlotWFX
-    ψs = wf_accum.ψs
+    ψs = _accum.ψs
 
     img = Array{Float64}(grid_size, size(ψs, 3))
 
@@ -559,7 +553,7 @@ if plot_type == PlotWFK || plot_type == PlotWFX
     colorbar()
 elseif plot_type == PlotE
     figure()
-    plot(e_accum.Es)
+    plot(_accum.Es)
     ylim(0, ylim()[2] * 1.1)
 end
 show()
