@@ -393,8 +393,8 @@ abstract MonteCarloAccumulator <: AbstractAccumulator
 
 function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                             ψ0::Matrix{Complex{T}}, # 2 x nele
-                            accumulator::MonteCarloAccumulator, n)
-    sub_accum = accum_init(accumulator, P)
+                            accumulator::MonteCarloAccumulator)
+    sub_accum, n = accum_init(accumulator, P)
     for i in 1:n
         propagate(P, ψ0, sub_accum)
         accumulate(accumulator, P, sub_accum)
@@ -485,12 +485,13 @@ type WaveFuncMonteCarloRecorder{Acc, T} <: MonteCarloAccumulator
     ψs2::Array{T, 3}
     sub_accum::WaveFuncRecorder{Acc, T}
     count::Int
+    ncycle::Int
 end
 
 function call{Acc, T}(::Type{WaveFuncMonteCarloRecorder},
-                      sub_accum::WaveFuncRecorder{Acc, T})
+                      sub_accum::WaveFuncRecorder{Acc, T}, n)
     WaveFuncMonteCarloRecorder{Acc, T}(Array{T}(size(sub_accum.ψs)...),
-                                       sub_accum, 0)
+                                       sub_accum, 0, n)
 end
 
 function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
@@ -500,7 +501,7 @@ function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
         fill!(r.ψs2, 0)
     end
     r.count = 0
-    r.sub_accum
+    r.sub_accum, r.ncycle
 end
 
 function accumulate(r::WaveFuncMonteCarloRecorder,
