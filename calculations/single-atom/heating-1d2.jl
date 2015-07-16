@@ -163,6 +163,17 @@ end
     trackers
 end
 
+@generated function update_drives_tracker{H, T, N}(p::SystemPropagator{H, T, N},
+                                                   t::T)
+    body = Expr(:block)
+    resize!(body.args, N + 1)
+    @inbounds for i in 1:N
+        body.args[i] = :(phase_tracker_update(p.drive_phase[$i], t))
+    end
+    body.args[N + 1] = nothing
+    body
+end
+
 function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
                                    nstep, nele)
     tmp = Matrix{Complex{T}}(2, nele) # 2 x nele
@@ -302,6 +313,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         accumulate(accumulator, P, i, P.tmp, AccumK)
         P.p_bfft!(P.tmp)
         # P.p_bfft! * P.tmp
+        update_drives_tracker(P, (i + 1) * P.dt)
         ψ_norm = 0
         for j in 1:P.nele
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
