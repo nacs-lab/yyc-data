@@ -239,8 +239,8 @@ end
 
 abstract AbstractAccumulator
 
-@inline accum_init(::AbstractAccumulator, ::SystemPropagator) = nothing
-@inline accum_finalize(::AbstractAccumulator, ::SystemPropagator) = nothing
+@inline accum_init(::AbstractAccumulator, ::Any) = nothing
+@inline accum_finalize(::AbstractAccumulator, ::Any) = nothing
 
 function accumulate
 end
@@ -478,6 +478,45 @@ end
             #               abs2(ψ[2, j]) * P.E_x[2][j])
         end
     end
+    nothing
+end
+
+type WaveFuncMonteCarloRecorder{Acc, T} <: MonteCarloAccumulator
+    ψs2::Array{T, 3}
+    sub_accum::WaveFuncRecorder{Acc, T}
+    count::Int
+end
+
+function call{Acc, T}(::Type{WaveFuncMonteCarloRecorder},
+                      sub_accum::WaveFuncRecorder{Acc, T})
+    WaveFuncRecorder{Acc, T}(Array{T}(size(sub_accum)...), sub_accum, 0)
+end
+
+function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
+    if size(r.ψs2) != (2, P.nele, P.nstep + 1)
+        r.ψs2 = zeros(T, (2, P.nele, P.nstep + 1))
+    else
+        fill!(r.ψs2, 0)
+    end
+    r.count = 0
+    nothing
+end
+
+function accumulate(r::WaveFuncMonteCarloRecorder,
+                    P::SystemPropagator, sub_accum)
+    @assert size(r.ψs2) == size(sub_accum.ψs)
+    @inbounds for i in eachindex(sub_accum)
+        r.ψs2[i] += sub_accum.ψ[i]
+    end
+    r.count += 1
+    nothing
+end
+
+function accum_finalize(r::WaveFuncMonteCarloRecorder, P)
+    @inbounds for i in eachindex(sub_accum)
+        r.ψs2[i] /= r.count
+    end
+    r.count = 1
     nothing
 end
 
