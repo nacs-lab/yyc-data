@@ -42,12 +42,17 @@ type PhaseTracker{T}
     prev_t::T
 
     total_phase::T
-    sin_t::T
-    cos_t::T
+    exp_t::Complex{T}
+
+    dθ_cached::T
+    sindθ_cache::T
+    cosdθ_cache::T
 end
 
 function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
-    PhaseTracker{T}(drive, T(0), T(0), T(0), T(0), T(0))
+    PhaseTracker{T}(drive, T(0), T(0),
+                    T(0), Complex{T}(0),
+                    T(0), T(0), T(1))
 end
 
 function phase_tracker_init{T}(track::PhaseTracker{T})
@@ -77,8 +82,7 @@ end
 function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
     phase = phase_tracker_next(track, t)
     track.total_phase = (phase + track.drive.δ * t) % 2π
-    track.sin_t = sin(track.total_phase)
-    track.cos_t = cos(track.total_phase)
+    track.exp_t = exp(im * track.total_phase)
     nothing
 end
 
@@ -240,6 +244,44 @@ abstract AbstractAccumulator
 function accumulate
 end
 
+function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
+                         sin_drive, cos_drive, idx, ψ1, ψ2)
+    # Hamiltonian of the spin part is
+    # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
+
+    # Propagator is
+    # P_σ = exp(im H_σ Δt)
+    #     = exp(im Ω (cos(θ_t + θ_x) σ_x +
+    #                 sin(θ_t + θ_x) σ_y) Δt)
+    #     = cos(Ω Δt) + im * (cos(θ_t + θ_x) σ_x +
+    #                         sin(θ_t + θ_x) σ_y) * sin(Ω Δt)
+    #     = cos(Ω Δt) + im cos(θ_t + θ_x) sin(Ω Δt) σ_x +
+    #       im sin(θ_t + θ_x) sin(Ω Δt) σ_y
+    #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
+    #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
+
+    θdt = tracker.drive.Ω * P.dt
+    if tracker.dθ_cached != θdt
+        tracker.sindθ_cache = sin(θdt)
+        tracker.cosdθ_cache = cos(θdt)
+    end
+    sin_dt = tracker.sindθ_cache
+    cos_dt = tracker.cosdθ_cache
+
+    # P_σ11 = P_σ22 = cos(Ω Δt)
+    # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
+    # P_σ21 = -P_σ12'
+
+    exp_θ_t = track.exp_t
+    @inbounds exp_θ_x = cos_drive[idx] + im * sin_drive[idx]
+
+    T11 = T22 = cos_dt
+    T12 = im * exp_θ_t * exp_θ_x * sin_dt
+    T21 = -conj(T12)
+
+    (T22 * ψ2 + T21 * ψ1), (T11 * ψ1 + T12 * ψ2)
+end
+
 # Before the iterations start the accumulator is called with
 #     accum_init(accumulator, P)
 # This should be used to initialize internal states (e.g. buffers).
@@ -319,12 +361,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             ψ_g = P.tmp[1, j] * P.P_x2[1][j]
             ψ_e = P.tmp[2, j] * P.P_x2[2][j] * eΓ4
 
-            # T12 = P.P_σ12[j, i - 1]
-            # T11 = P.P_σ11[j, i - 1]
-            # T22 = P.P_σ22[j, i - 1]
-            # T21 = -conj(T12)
-
-            # ψ_g, ψ_e = (T22 * ψ_g + T21 * ψ_e), (T11 * ψ_e + T12 * ψ_g)
+            # TODO drive
 
             ψ_e = ψ_e * eΓ4
             ψ_norm += abs2(ψ_g) + abs2(ψ_e)
