@@ -40,10 +40,14 @@ type PhaseTracker{T}
     drive::OpticalDrive{T}
     phase::T
     prev_t::T
+
+    total_phase::T
+    sin_t::T
+    cos_t::T
 end
 
 function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
-    PhaseTracker{T}(drive, T(0), T(0))
+    PhaseTracker{T}(drive, T(0), T(0), T(0), T(0), T(0))
 end
 
 function phase_tracker_init{T}(track::PhaseTracker{T})
@@ -66,8 +70,16 @@ function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
     end
     δt = (t - prev_t) / track.drive.τ_θ
     δθ = sqrt(δt) * (rand(T) - 0.5) * π
-    track.phase += δθ
+    track.phase = (track.phase + δθ) % 2π
     track.phase
+end
+
+function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
+    phase = phase_tracker_next(track, t)
+    track.total_phase = (phase + track.drive.δ * t) % 2π
+    track.sin_t = sin(track.total_phase)
+    track.cos_t = cos(track.total_phase)
+    nothing
 end
 
 ##
