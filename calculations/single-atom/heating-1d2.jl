@@ -36,6 +36,37 @@ immutable HSystem{H, T, N}
     drives::NTuple{N, OpticalDrive{T}}
 end
 
+type PhaseTracker{T}
+    drive::OpticalDrive{T}
+    phase::T
+    prev_t::T
+end
+
+function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
+    PhaseTracker{T}(drive, T(0), T(0))
+end
+
+function phase_tracker_init{T}(track::PhaseTracker{T})
+    if isfinite(track.drive.τ_θ)
+        track.phase = rand(T) * 2π
+    else
+        track.phase = 0
+    end
+    track.prev_t = 0
+end
+
+function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
+    prev_t = track.prev_t
+    track.prev_t = t
+    if !isfinite(track.drive.τ_θ)
+        return track.phase
+    end
+    δt = abs(t - prev_t) / track.drive.τ_θ
+    δθ = sqrt(δt) * (rand(T) - 0.5) * π
+    track.phase += δθ
+    track.phase
+end
+
 ##
 # Propagator
 
@@ -422,7 +453,8 @@ using PyPlot
 # imshow(log((img[:, 1:10:end])))
 # colorbar()
 
-figure()
+fig = figure()
 plot(e_accum.Es)
+ylim(0, ylim()[2] * 1.1)
 
 show()
