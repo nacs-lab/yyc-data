@@ -245,8 +245,8 @@ abstract AbstractAccumulator
 function accumulate
 end
 
-function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
-                         sin_drive, cos_drive, idx, dt, ψ1, ψ2)
+@inline function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
+                                 sin_drive, cos_drive, idx, dt, ψ1, ψ2)
     # Hamiltonian of the spin part is
     # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
 
@@ -283,18 +283,24 @@ function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
     (T22 * ψ2 + T21 * ψ1), (T11 * ψ1 + T12 * ψ2)
 end
 
+macro _meta_expr(x)
+    Expr(:meta, x)
+end
+
 @generated function do_all_drives{H, T, N}(P::SystemPropagator{H, T, N},
                                            idx, dt, ψ1, ψ2)
+    @_meta_expr inline
     body = Expr(:block)
-    resize!(body.args, 2 * N + 1)
+    resize!(body.args, 2N + 2)
     for i in 1:N
         expr = :((ψ1, ψ2) = do_single_drive(P, P.drive_phase[$i],
                                               P.sin_drive[$i], P.cos_drive[$i],
                                               idx, dt / 2, ψ1, ψ2))
-        body.args[i] = expr
-        body.args[2N + 1 - i] = expr
+        body.args[i + 1] = expr
+        body.args[2N + 2 - i] = expr
     end
-    body.args[2N + 1] = :(ψ1, ψ2)
+    body.args[1] = Expr(:meta, :inline)
+    body.args[2N + 2] = :(ψ1, ψ2)
     body
 end
 
