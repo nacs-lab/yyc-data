@@ -479,7 +479,7 @@ h_trap = HTrap(m_Na, (ω_g, ω_e))
 # k, Γ
 o_decay = OpticalDecay(2π * 0.589, 2π * 10.0)
 
-# k, Ω, δ
+# k, Ω, δ, τ_θ
 o_drive1 = OpticalDrive(2π * 0.589, 2π * 5.0, 2π * 0.0, 100.0)
 
 h_system = HSystem(h_trap, o_decay, (o_drive1,))
@@ -508,45 +508,58 @@ end
 
 ψ0 = gen_ψ0(grid_size, grid_space)
 
+@enum PlotType PlotWFX PlotWFK PlotE
+
+# const plot_type = PlotWFX
+# const plot_type = PlotWFK
+const plot_type = PlotE
+
 const wf_x_accum = WaveFuncRecorder{AccumX}(p_sys)
 const wf_k_accum = WaveFuncRecorder{AccumK}(p_sys)
-const wf_accum = wf_x_accum
 const e_accum = EnergyRecorder(p_sys)
-const _accum = e_accum
+
+const _accum = if plot_type == PlotWFX
+    const wf_accum = wf_x_accum
+    wf_accum
+elseif plot_type == PlotWFK
+    const wf_accum = wf_k_accum
+    wf_accum
+elseif plot_type == PlotE
+    e_accum
+end
 
 println("start")
 
 @time propagate(p_sys, ψ0, _accum)
-
 gc()
 @time propagate(p_sys, ψ0, _accum)
 
-# ψs = wf_accum.ψs
-
-# img = Array{Float64}(grid_size, size(ψs, 3))
-
-# for i in 1:size(img, 2)
-#     sum = 0.0
-#     @inbounds for j in 1:size(img, 1)
-#         img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
-#         # img[j, i] = ψs[1, j, i] + ψs[2, j, i]
-#         sum += img[j, i]
-#     end
-#     # println((i, sum))
-# end
-
 using PyPlot
 
-# figure()
-# imshow(img[:, 1:10:end])
-# colorbar()
+if plot_type == PlotWFK || plot_type == PlotWFX
+    ψs = wf_accum.ψs
 
-# figure()
-# imshow(log((img[:, 1:10:end])))
-# colorbar()
+    img = Array{Float64}(grid_size, size(ψs, 3))
 
-fig = figure()
-plot(e_accum.Es)
-ylim(0, ylim()[2] * 1.1)
+    for i in 1:size(img, 2)
+        sum = 0.0
+        @inbounds for j in 1:size(img, 1)
+            img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+            # img[j, i] = ψs[1, j, i] + ψs[2, j, i]
+            sum += img[j, i]
+        end
+        # println((i, sum))
+    end
+    figure()
+    imshow(img[:, 1:10:end])
+    colorbar()
 
+    figure()
+    imshow(log((img[:, 1:10:end])))
+    colorbar()
+elseif plot_type == PlotE
+    figure()
+    plot(e_accum.Es)
+    ylim(0, ylim()[2] * 1.1)
+end
 show()
