@@ -245,7 +245,7 @@ function accumulate
 end
 
 function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
-                         sin_drive, cos_drive, idx, ψ1, ψ2)
+                         sin_drive, cos_drive, idx, dt, ψ1, ψ2)
     # Hamiltonian of the spin part is
     # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
 
@@ -260,7 +260,7 @@ function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
     #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
     #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
 
-    θdt = tracker.drive.Ω * P.dt
+    θdt = tracker.drive.Ω * dt
     if tracker.dθ_cached != θdt
         tracker.sindθ_cache = sin(θdt)
         tracker.cosdθ_cache = cos(θdt)
@@ -280,6 +280,21 @@ function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
     T21 = -conj(T12)
 
     (T22 * ψ2 + T21 * ψ1), (T11 * ψ1 + T12 * ψ2)
+end
+
+@generated function do_all_drives{H, T, N}(P::SystemPropagator{H, T, N},
+                                           idx, dt, ψ1, ψ2)
+    body = Expr(:block)
+    resize!(body.args, 2 * N + 1)
+    for i in 1:N
+        expr = :(ψ1, ψ2 = do_single_drive(P, P.drive_phase[$i],
+                                            P.sin_drive[$i], P.cos_drive[$i],
+                                            idx, dt, ψ1, ψ2))
+        body.args[i] = expr
+        body.args[2N + 1 - i] = expr
+    end
+    body.args[2N + 1] = :(ψ1, ψ2)
+    body
 end
 
 # Before the iterations start the accumulator is called with
