@@ -489,7 +489,8 @@ end
 
 function call{Acc, T}(::Type{WaveFuncMonteCarloRecorder},
                       sub_accum::WaveFuncRecorder{Acc, T})
-    WaveFuncRecorder{Acc, T}(Array{T}(size(sub_accum)...), sub_accum, 0)
+    WaveFuncMonteCarloRecorder{Acc, T}(Array{T}(size(sub_accum.ψs)...),
+                                       sub_accum, 0)
 end
 
 function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
@@ -499,21 +500,21 @@ function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
         fill!(r.ψs2, 0)
     end
     r.count = 0
-    nothing
+    r.sub_accum
 end
 
 function accumulate(r::WaveFuncMonteCarloRecorder,
                     P::SystemPropagator, sub_accum)
     @assert size(r.ψs2) == size(sub_accum.ψs)
-    @inbounds for i in eachindex(sub_accum)
-        r.ψs2[i] += sub_accum.ψ[i]
+    @inbounds for i in eachindex(sub_accum.ψs)
+        r.ψs2[i] += abs2(sub_accum.ψs[i])
     end
     r.count += 1
     nothing
 end
 
 function accum_finalize(r::WaveFuncMonteCarloRecorder, P)
-    @inbounds for i in eachindex(sub_accum)
+    @inbounds for i in eachindex(r.ψs2)
         r.ψs2[i] /= r.count
     end
     r.count = 1
