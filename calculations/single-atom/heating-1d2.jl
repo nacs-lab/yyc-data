@@ -95,6 +95,8 @@ immutable SystemPropagator{H, T, N, P, PI}
 
     sin_drive::NTuple{N, Vector{T}} # nele
     cos_drive::NTuple{N, Vector{T}} # nele
+
+    drive_phase::NTuple{N, PhaseTracker{T}}
 end
 
 function get_k_sin_cos{T}(::Type{T}, k, dx, nele)
@@ -135,6 +137,15 @@ end
     end
     body.args[N + 1] = Expr(:tuple, sins, coss)
     body
+end
+
+@generated function get_drives_tracker{H, T, N}(h::HSystem{H, T, N})
+    trackers = Expr(:tuple)
+    resize!(trackers.args, N)
+    @inbounds for i in 1:N
+        trackers.args[i] = :(PhaseTracker(h.drives[$i]))
+    end
+    trackers
 end
 
 function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
@@ -181,6 +192,8 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     sin_decay, cos_decay = get_k_sin_cos(T, h.decay.k, dx, nele)
     sin_drive, cos_drive = get_drives_sin_cos(h, dx, nele)
 
+    phase_drive = get_drives_tracker(h)
+
     # Somehow helps type inference. Might be a typeinf bug or because
     # there's too many parameters
     P = typeof(p_fft!)
@@ -189,7 +202,7 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
                                      tmp, p_fft!, p_bfft!,
                                      E_k, (E_xg, E_xe), P_k, (P_x2g, P_x2e),
                                      sin_decay, cos_decay,
-                                     sin_drive, cos_drive)
+                                     sin_drive, cos_drive, phase_drive)
 end
 
 @enum AccumType AccumX AccumK
