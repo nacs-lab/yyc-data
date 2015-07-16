@@ -576,6 +576,11 @@ function accum_finalize(r::EnergyMonteCarloRecorder, P)
     nothing
 end
 
+call(::Type{MonteCarloAccumulator}, sub_accum::EnergyRecorder, n) =
+    EnergyMonteCarloRecorder(sub_accum, n)
+call(::Type{MonteCarloAccumulator}, sub_accum::WaveFuncRecorder, n) =
+    WaveFuncMonteCarloRecorder(sub_accum, n)
+
 # Time unit: μs
 # Length unit: μm
 # Frequency unit: MHz
@@ -623,8 +628,9 @@ end
 # const plot_type = PlotWFX
 # const plot_type = PlotWFK
 const plot_type = PlotE
+const monte_carlo = 100
 
-const _accum = if plot_type == PlotWFX
+_accum = if plot_type == PlotWFX
     WaveFuncRecorder{AccumX}(p_sys)
 elseif plot_type == PlotWFK
     WaveFuncRecorder{AccumK}(p_sys)
@@ -632,11 +638,15 @@ elseif plot_type == PlotE
     EnergyRecorder(p_sys)
 end
 
+if monte_carlo > 1
+    _accum = MonteCarloAccumulator(_accum, monte_carlo)
+end
+
 println("start")
 
 @time propagate(p_sys, ψ0, _accum)
-gc()
-@time propagate(p_sys, ψ0, _accum)
+# gc()
+# @time propagate(p_sys, ψ0, _accum)
 
 using PyPlot
 
