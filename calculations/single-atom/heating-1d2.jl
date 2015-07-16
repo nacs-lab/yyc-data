@@ -57,11 +57,14 @@ end
 
 function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
     prev_t = track.prev_t
+    if prev_t >= t
+        return track.phase
+    end
     track.prev_t = t
     if !isfinite(track.drive.τ_θ)
         return track.phase
     end
-    δt = abs(t - prev_t) / track.drive.τ_θ
+    δt = (t - prev_t) / track.drive.τ_θ
     δθ = sqrt(δt) * (rand(T) - 0.5) * π
     track.phase += δθ
     track.phase
