@@ -640,31 +640,67 @@ gc()
 
 using PyPlot
 
-if plot_type == PlotWFK || plot_type == PlotWFX
-    ψs = _accum.ψs
+function plot_accum_img(img::Matrix{Float64})
+    xsize, ysize = size(img)
 
-    img = Array{Float64}(grid_size, size(ψs, 3))
+    if xsize > ysize * 3
+        xscale = xsize ÷ (ysize * 2)
+        img = img[1:xscale:end, :]
+    elseif ysize > xsize * 3
+        yscale = ysize ÷ (xsize * 2)
+        img = img[:, 1:yscale:end]
+    end
+
+    figure()
+    imshow(img)
+    colorbar()
+
+    figure()
+    imshow(log(img))
+    colorbar()
+
+    nothing
+end
+
+function plot_accum(accum::WaveFuncRecorder)
+    ψs = accum.ψs
+
+    img = Array{Float64}(size(ψs, 2, 3))
 
     for i in 1:size(img, 2)
-        sum = 0.0
         @inbounds for j in 1:size(img, 1)
             img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
-            # img[j, i] = ψs[1, j, i] + ψs[2, j, i]
-            sum += img[j, i]
         end
-        # println((i, sum))
     end
-    figure()
-    imshow(img[:, 1:10:end])
-    colorbar()
+    plot_accum_img(img)
+end
 
+function plot_accum(accum::WaveFuncMonteCarloRecorder)
+    ψs = accum.ψs2
+
+    img = Array{Float64}(size(ψs, 2, 3))
+
+    for i in 1:size(img, 2)
+        @inbounds for j in 1:size(img, 1)
+            img[j, i] = ψs[1, j, i] + ψs[2, j, i]
+        end
+    end
+    plot_accum_img(img)
+end
+
+function plot_accum(accum::EnergyRecorder)
     figure()
-    imshow(log((img[:, 1:10:end])))
-    colorbar()
-elseif plot_type == PlotE
-    figure()
-    plot(_accum.Es)
+    plot(accum.Es)
     grid()
     ylim(0, ylim()[2] * 1.1)
 end
+
+function plot_accum(accum::EnergyMonteCarloRecorder)
+    figure()
+    errorbar(1:length(accum.Es), accum.Es, accum.Es2)
+    grid()
+    ylim(0, ylim()[2] * 1.1)
+end
+
+plot_accum(_accum)
 show()
