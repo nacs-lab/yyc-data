@@ -389,6 +389,19 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
     accum_finalize(accumulator, P)
 end
 
+abstract MonteCarloAccumulator <: AbstractAccumulator
+
+function propagate{H, T, N}(P::SystemPropagator{H, T, N},
+                            ψ0::Matrix{Complex{T}}, # 2 x nele
+                            accumulator::MonteCarloAccumulator, n)
+    sub_accum = accum_init(accumulator, P)
+    for i in 1:n
+        propagate(P, ψ0, sub_accum)
+        accumulate(accumulator, P, sub_accum)
+    end
+    accum_finalize(accumulator, P)
+end
+
 type WaveFuncRecorder{Acc, T} <: AbstractAccumulator
     ψs::Array{Complex{T}, 3}
     WaveFuncRecorder() = new()
