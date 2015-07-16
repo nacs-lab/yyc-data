@@ -27,6 +27,7 @@ immutable OpticalDrive{T}
     k::T
     Ω::T
     δ::T
+    τ_θ::T
 end
 
 immutable HSystem{H, T, N}
@@ -356,7 +357,7 @@ h_trap = HTrap(m_Na, (ω_g, ω_e))
 o_decay = OpticalDecay(2π * 0.589, 2π * 10.0)
 
 # k, Ω, δ
-o_drive1 = OpticalDrive(2π * 0.589, 2π * 5.0, 2π * 0.0)
+o_drive1 = OpticalDrive(2π * 0.589, 2π * 5.0, 2π * 0.0, 100.0)
 
 h_system = HSystem(h_trap, o_decay, (o_drive1,))
 
