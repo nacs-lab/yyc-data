@@ -349,10 +349,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             P.p_fft!(P.tmp)
             # P.p_fft! * P.tmp
             ψ_scale = 1 / sqrt(T(P.nele))
-            for j in 1:P.nele
-                P.tmp[1, j] *= ψ_scale
-                P.tmp[2, j] *= ψ_scale
-            end
+            scale!(ψ_scale, P.tmp)
             accumulate(accumulator, P, i, P.tmp, AccumK)
             P.p_bfft!(P.tmp)
             # P.p_bfft! * P.tmp
