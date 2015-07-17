@@ -291,16 +291,18 @@ end
                                            idx, dt, ψ1, ψ2)
     @_meta_expr inline
     body = Expr(:block)
-    resize!(body.args, 2N + 2)
+    # resize!(body.args, 2N + 2)
+    resize!(body.args, N + 2)
     for i in 1:N
         expr = :((ψ1, ψ2) = do_single_drive(P, P.drive_phase[$i],
                                               P.sin_drive[$i], P.cos_drive[$i],
-                                              idx, dt / 2, ψ1, ψ2))
+                                              idx, dt, ψ1, ψ2))
         body.args[i + 1] = expr
-        body.args[2N + 2 - i] = expr
+        # body.args[2N + 2 - i] = expr
     end
     body.args[1] = Expr(:meta, :inline)
-    body.args[2N + 2] = :(ψ1, ψ2)
+    # body.args[2N + 2] = :(ψ1, ψ2)
+    body.args[N + 2] = :(ψ1, ψ2)
     body
 end
 
