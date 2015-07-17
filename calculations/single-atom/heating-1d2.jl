@@ -280,7 +280,7 @@ end
     T12 = im * exp_θ_t * exp_θ_x * sin_dt
     T21 = -conj(T12)
 
-    (T22 * ψ2 + T21 * ψ1), (T11 * ψ1 + T12 * ψ2)
+    (T11 * ψ1 + T12 * ψ2), (T22 * ψ2 + T21 * ψ1)
 end
 
 macro _meta_expr(x)
