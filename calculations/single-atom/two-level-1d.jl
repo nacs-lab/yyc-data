@@ -539,7 +539,7 @@ function call{T}(::Type{EnergyMonteCarloRecorder},
                  sub_accum::EnergyRecorder{T}, n)
     EnergyMonteCarloRecorder{T}(Array{T}(size(sub_accum.Es)),
                                 Array{T}(size(sub_accum.Es)),
-                                sub_accum, 0, n)
+                                sub_accum, -1, n)
 end
 
 function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
@@ -556,6 +556,7 @@ end
 
 function accumulate(r::EnergyMonteCarloRecorder,
                     P::SystemPropagator, sub_accum)
+    @assert r.count >= 0
     @assert size(r.Es) == size(sub_accum.Es)
     @inbounds for i in eachindex(sub_accum.Es)
         Es = sub_accum.Es[i]
@@ -567,6 +568,7 @@ function accumulate(r::EnergyMonteCarloRecorder,
 end
 
 function accum_finalize(r::EnergyMonteCarloRecorder, P)
+    @assert r.count >= 0
     @assert size(r.Es) == size(r.Es2)
     @inbounds for i in eachindex(r.Es)
         Es = r.Es[i] / r.count
@@ -577,7 +579,7 @@ function accum_finalize(r::EnergyMonteCarloRecorder, P)
         r.Es[i] = Es
         r.Es2[i] = unc
     end
-    r.count = 1
+    r.count = -1
     nothing
 end
 
