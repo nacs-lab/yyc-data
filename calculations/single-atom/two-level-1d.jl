@@ -183,10 +183,8 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     tmp = Matrix{Complex{T}}(2, nele) # 2 x nele
 
     # FFT plan
-    p_fft! = plan_fft!(tmp, 2, FFTW.MEASURE)
-    p_bfft! = plan_bfft!(tmp, 2, FFTW.MEASURE)
-    # p_fft! = plan_fft!(tmp, 2, flags=FFTW.MEASURE)
-    # p_bfft! = plan_bfft!(tmp, 2, flags=FFTW.MEASURE)
+    p_fft! = plan_fft!(tmp, 2, flags=FFTW.MEASURE)
+    p_bfft! = plan_bfft!(tmp, 2, flags=FFTW.MEASURE)
 
     E_k = Vector{T}(nele)
     E_xg = Vector{T}(nele)
@@ -354,19 +352,16 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                 P.tmp[1, j] = ψ_e
             end
             accumulate(accumulator, P, i, P.tmp, AccumX)
-            P.p_fft!(P.tmp)
-            # P.p_fft! * P.tmp
+            P.p_fft! * P.tmp
             ψ_scale = 1 / sqrt(T(P.nele))
             scale!(ψ_scale, P.tmp)
             accumulate(accumulator, P, i, P.tmp, AccumK)
-            P.p_bfft!(P.tmp)
-            # P.p_bfft! * P.tmp
+            P.p_bfft! * P.tmp
             ψ_norm = T(P.nele)
             continue
         end
         accumulate(accumulator, P, i, P.tmp, AccumX)
-        P.p_fft!(P.tmp)
-        # P.p_fft! * P.tmp
+        P.p_fft! * P.tmp
         ψ_scale = 1 / sqrt(T(P.nele))
         for j in 1:P.nele
             p_k = P.P_k[j] * ψ_scale
@@ -374,8 +369,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             P.tmp[2, j] *= p_k
         end
         accumulate(accumulator, P, i, P.tmp, AccumK)
-        P.p_bfft!(P.tmp)
-        # P.p_bfft! * P.tmp
+        P.p_bfft! * P.tmp
         update_drives_tracker(P, (i + 1) * P.dt)
         ψ_norm = 0
         for j in 1:P.nele
