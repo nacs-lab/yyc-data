@@ -65,9 +65,10 @@ end
 
 println("start")
 
-@time propagate(p_sys, ψ0, _accum)
-# gc()
+precompile(propagate, tuple(Base.typesof(p_sys, ψ0, _accum).parameters...))
 # @time propagate(p_sys, ψ0, _accum)
+gc()
+@time propagate(p_sys, ψ0, _accum)
 
 using PyPlot
 
