@@ -65,7 +65,7 @@ end
 
 println("start")
 
-precompile(propagate, tuple(Base.typesof(p_sys, ψ0, _accum).parameters...))
+@time precompile(propagate, tuple(Base.typesof(p_sys, ψ0, _accum).parameters...))
 # @time propagate(p_sys, ψ0, _accum)
 gc()
 @time propagate(p_sys, ψ0, _accum)
@@ -73,4 +73,5 @@ gc()
 using PyPlot
 
 plot_accum(_accum)
+
 show()
