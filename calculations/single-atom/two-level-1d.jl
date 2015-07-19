@@ -567,7 +567,7 @@ function accum_finalize(r::EnergyMonteCarloRecorder, P)
     @inbounds for i in eachindex(r.Es)
         Es = r.Es[i] / r.count
         Es2 = r.Es2[i] / r.count
-        std = (Es2 - Es^2) / r.count
+        std = (Es2 - Es^2) / (r.count - 1)
         # rounding errors can make small std smaller than zero
         unc = std <= 0 ? zero(std) : sqrt(std)
         r.Es[i] = Es
@@ -581,3 +581,67 @@ call(::Type{MonteCarloAccumulator}, sub_accum::EnergyRecorder, n) =
     EnergyMonteCarloRecorder(sub_accum, n)
 call(::Type{MonteCarloAccumulator}, sub_accum::WaveFuncRecorder, n) =
     WaveFuncMonteCarloRecorder(sub_accum, n)
+
+function plot_accum_img(img::Matrix{Float64})
+    xsize, ysize = size(img)
+
+    if xsize > ysize * 3
+        xscale = xsize ÷ (ysize * 2)
+        img = img[1:xscale:end, :]
+    elseif ysize > xsize * 3
+        yscale = ysize ÷ (xsize * 2)
+        img = img[:, 1:yscale:end]
+    end
+
+    figure()
+    imshow(img)
+    colorbar()
+    title("\$\\delta = $δ\$")
+
+    figure()
+    imshow(log(img))
+    colorbar()
+
+    nothing
+end
+
+function plot_accum(accum::WaveFuncRecorder)
+    ψs = accum.ψs
+
+    img = Array{Float64}(size(ψs, 2, 3))
+
+    for i in 1:size(img, 2)
+        @inbounds for j in 1:size(img, 1)
+            img[j, i] = abs2(ψs[1, j, i]) + abs2(ψs[2, j, i])
+        end
+    end
+    plot_accum_img(img)
+end
+
+function plot_accum(accum::WaveFuncMonteCarloRecorder)
+    ψs = accum.ψs2
+
+    img = Array{Float64}(size(ψs, 2, 3))
+
+    for i in 1:size(img, 2)
+        @inbounds for j in 1:size(img, 1)
+            img[j, i] = ψs[1, j, i] + ψs[2, j, i]
+        end
+    end
+    plot_accum_img(img)
+end
+
+function plot_accum(accum::EnergyRecorder)
+    figure()
+    plot(accum.Es)
+    grid()
+    ylim(0, ylim()[2] * 1.1)
+end
+
+function plot_accum(accum::EnergyMonteCarloRecorder)
+    figure()
+    errorbar(1:length(accum.Es), accum.Es, accum.Es2)
+    grid()
+    ylim(0, ylim()[2] * 1.1)
+    title("\$\\delta = $δ\$")
+end
