@@ -338,7 +338,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                             accumulator::AbstractAccumulator)
     accum_init(accumulator, P)
     # Disable denormal values
-    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
+    set_zero_subnormals(true)
     eΓ4 = exp(-P.H.decay.Γ * P.dt / 4)
     init_drives_tracker(P)
 
@@ -403,7 +403,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             P.tmp[1, j] = ψ_g
         end
     end
-    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
+    set_zero_subnormals(false)
     accum_finalize(accumulator, P)
 end
 
