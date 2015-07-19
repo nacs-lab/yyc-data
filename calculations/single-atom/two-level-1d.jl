@@ -62,6 +62,14 @@ function phase_tracker_init{T}(track::PhaseTracker{T})
         track.phase = 0
     end
     track.prev_t = 0
+    track.total_phase = track.phase
+    track.exp_t = exp(im * track.total_phase)
+
+    track.dθ_cached = 0
+    track.sindθ_cache = 0
+    track.cosdθ_cache = 1
+
+    track
 end
 
 function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
