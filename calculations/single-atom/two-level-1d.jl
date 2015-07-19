@@ -175,6 +175,16 @@ end
     trackers
 end
 
+@generated function init_drives_tracker{H, T, N}(p::SystemPropagator{H, T, N})
+    body = Expr(:block)
+    resize!(body.args, N + 1)
+    @inbounds for i in 1:N
+        body.args[i] = :(phase_tracker_init(p.drive_phase[$i]))
+    end
+    body.args[N + 1] = nothing
+    body
+end
+
 @generated function update_drives_tracker{H, T, N}(p::SystemPropagator{H, T, N},
                                                    t::T)
     body = Expr(:block)
@@ -330,6 +340,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
     # Disable denormal values
     ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
     eΓ4 = exp(-P.H.decay.Γ * P.dt / 4)
+    init_drives_tracker(P)
 
     ψ_norm::T = 0
     @inbounds for i in 1:P.nele
