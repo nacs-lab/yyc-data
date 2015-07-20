@@ -362,13 +362,29 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             p_decay += abs2(ψ_e)
         end
         if rand() < p_decay * P.H.decay.Γ * P.dt
-            ksign = rand() > 0.5 ? 1im : -1im
+            decay_direction = rand()
+            ksign = if decay_direction < 0.25
+                1im
+            elseif decay_direction < 0.75
+                0im
+            else
+                -1im
+            end
             ψ_scale = 1 / sqrt(p_decay)
-            for j in 1:P.nele
-                ψ_e = P.tmp[2, j]
-                ψ_e *= (P.cos_decay[j] + ksign * P.sin_decay[j]) * ψ_scale
-                P.tmp[2, j] = 0
-                P.tmp[1, j] = ψ_e
+            if ksign == 0
+                for j in 1:P.nele
+                    ψ_e = P.tmp[2, j]
+                    ψ_e *= ψ_scale
+                    P.tmp[2, j] = 0
+                    P.tmp[1, j] = ψ_e
+                end
+            else
+                for j in 1:P.nele
+                    ψ_e = P.tmp[2, j]
+                    ψ_e *= (P.cos_decay[j] + ksign * P.sin_decay[j]) * ψ_scale
+                    P.tmp[2, j] = 0
+                    P.tmp[1, j] = ψ_e
+                end
             end
             accumulate(accumulator, P, i, P.tmp, AccumX)
             P.p_fft! * P.tmp
