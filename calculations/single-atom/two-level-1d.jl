@@ -89,7 +89,7 @@ end
 
 function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
     phase = phase_tracker_next(track, t)
-    track.total_phase = (phase + track.drive.δ * t) % 2π
+    track.total_phase = (phase - track.drive.δ * t) % 2π
     track.exp_t = exp(im * track.total_phase)
     nothing
 end
