@@ -2,8 +2,6 @@
 
 # Quantum mechanical harmonic oscillator using split operator method
 
-# include("ode-common.jl")
-
 immutable HarmonicPotential{T}
     omega::T
     center::T
@@ -30,8 +28,8 @@ function propagate(H::Hamiltonian1D, y0, t0, t1, dt)
     @inbounds ys[:, 1] = y0
 
     # FFT plan
-    p_fft! = plan_fft!(tmp, 1:1, FFTW.MEASURE)
-    p_ifft! = plan_ifft!(tmp, 1:1, FFTW.MEASURE)
+    p_fft! = plan_fft!(tmp, flags=FFTW.MEASURE)
+    p_ifft! = plan_ifft!(tmp, flags=FFTW.MEASURE)
 
     # Propagators of x and p in it's diagonal form
     # The / 2 here is necessary to get intermediate results
@@ -53,11 +51,11 @@ function propagate(H::Hamiltonian1D, y0, t0, t1, dt)
         for j in 1:nele
             tmp[j] = ys[j, i - 1] * prop_x_2[j]
         end
-        p_fft!(tmp)
+        p_fft! * tmp
         for j in 1:nele
             tmp[j] *= prop_p[j]
         end
-        p_ifft!(tmp)
+        p_ifft! * tmp
         for j in 1:nele
             ys[j, i] = tmp[j] * prop_x_2[j]
         end
@@ -89,12 +87,6 @@ gc()
 # exit()
 
 using PyPlot
-
-# 401 x 2000: stable, error -> 2.5e-7, 472ms
-# 401 x 4000: stable, error -> 0.8e-8, 725ms
-
-# 1001 x 0.2 / 2000 (1.0): error -> 2e-11, 1.406
-# 1001 x 0.2 / 4000 (1.0): error -> 7e-13, 2.59s
 
 absy = abs(y)
 

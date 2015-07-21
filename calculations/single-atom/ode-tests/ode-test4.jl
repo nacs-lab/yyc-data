@@ -22,7 +22,7 @@ function call(h::Hamiltonian1D, t, y, ydot)
     @inbounds for i in 1:len
         ydot[i] = y[i]
     end
-    y_fft!(ydot)
+    y_fft! * ydot
     k0 = 2π / (len * h.d)
     @inbounds for i in 1:len
         k1 = i - 1
@@ -30,7 +30,7 @@ function call(h::Hamiltonian1D, t, y, ydot)
         k = ifelse(k1 + k2 <= 0, k1, k2) * k0
         ydot[i] = ydot[i] * k^2
     end
-    y_ifft!(ydot)
+    y_ifft! * ydot
     @inbounds for i in 1:len
         x = i * h.d # coordinate
         v = h.p(x) * y[i] # potential term
@@ -50,8 +50,8 @@ x_omega = 5π
 x_center = (grid_size + 1) * grid_space / 2
 psi_init = complex(exp(-linspace(-2.5 * x_center, 1.5 * x_center, grid_size).^2))
 
-const y_fft! = plan_fft!(copy(psi_init), 1:1, FFTW.MEASURE)
-const y_ifft! = plan_ifft!(copy(psi_init), 1:1, FFTW.MEASURE)
+const y_fft! = plan_fft!(copy(psi_init), flags=FFTW.MEASURE)
+const y_ifft! = plan_ifft!(copy(psi_init), flags=FFTW.MEASURE)
 
 h = HarmonicHamiltonian(x_omega, grid_space, x_center)
 
@@ -61,12 +61,6 @@ gc()
 @time t, y = solve_ode(0.0, psi_init, h, 1.0, 0.2 / 4000)
 
 # exit()
-
-# 401 x 2000: stable, error -> 2.5e-7, 472ms
-# 401 x 4000: stable, error -> 0.8e-8, 725ms
-
-# 1001 x 0.2 / 2000 (1.0): error -> 2e-11, 1.406
-# 1001 x 0.2 / 4000 (1.0): error -> 7e-13, 2.59s
 
 absy = abs(y)
 
