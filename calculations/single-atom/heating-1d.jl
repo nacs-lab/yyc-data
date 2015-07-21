@@ -51,10 +51,8 @@ function Propagator1D{T}(H::MagicHarmonic1D{T}, dt::T, dx::T, nstep, nele)
     tmp = Matrix{Complex{T}}(2, nele)
 
     # FFT plan
-    p_fft! = plan_fft!(tmp, 2, FFTW.MEASURE)
-    p_ifft! = plan_ifft!(tmp, 2, FFTW.MEASURE)
-    # p_fft! = plan_fft!(tmp, 2, flags=FFTW.MEASURE)
-    # p_ifft! = plan_ifft!(tmp, 2, flags=FFTW.MEASURE)
+    p_fft! = plan_fft!(tmp, 2, flags=FFTW.MEASURE)
+    p_ifft! = plan_ifft!(tmp, 2, flags=FFTW.MEASURE)
 
     P_k = Vector{Complex{T}}(nele)
     P_x2 = Vector{Complex{T}}(nele)
@@ -111,7 +109,8 @@ function propagate{T}(P::Propagator1D{T},
                       ψ0::Matrix{Complex{T}}, # 2 x nele
                       ψs::Array{Complex{T}, 3} # 2 x nele x (nstep + 1)
                       )
-    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 1)
+    # Disable denormal values
+    set_zero_subnormals(true)
     ψ_norm = 0.0
     @inbounds for i in 1:P.nele
         ψ_g = ψ0[1, i]
@@ -157,15 +156,13 @@ function propagate{T}(P::Propagator1D{T},
             continue
         end
 
-        P.p_fft!(P.tmp)
-        # P.p_fft! * P.tmp
+        P.p_fft! * P.tmp
         for j in 1:P.nele
             p_k = P.P_k[j]
             P.tmp[1, j] *= p_k
             P.tmp[2, j] *= p_k
         end
-        P.p_ifft!(P.tmp)
-        # P.p_ifft! * P.tmp
+        P.p_ifft! * P.tmp
         for j in 1:P.nele
             p_x2 = P.P_x2[j]
             ψ_e = P.tmp[2, j] * p_x2 * eΓ4
@@ -180,7 +177,7 @@ function propagate{T}(P::Propagator1D{T},
             ψs[1, j, i] = T22 * ψ_g + T21 * ψ_e
         end
     end
-    ccall(:jl_zero_subnormals, UInt8, (UInt8,), 0)
+    set_zero_subnormals(false)
     ψs
 end
 
