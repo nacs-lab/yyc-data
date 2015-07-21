@@ -8,22 +8,24 @@ include("two-level-1d.jl")
 
 # m here is actually m / ħ
 m_Na = 22.98977e-3 / 6.02214129e23 / (1.0545717253362894e-34 * 1e6)
-ω_g = 2π * 0.2 # f = 100kHz
-ω_e = 2π * -0.8 # f = 100kHz
+ω_g = 2π * 0.2 # f = 200kHz
+ω_e = 2π * 0.2 # f = 200kHz
 h_trap = HTrap(m_Na, (ω_g, ω_e))
 
+λ_res = 0.589
+
 # k, Γ
-o_decay = OpticalDecay(2π / 0.589, 2π * 10.0)
+o_decay = OpticalDecay(2π / λ_res, 2π * 10.0)
 
 # k, Ω, δ, τ_θ
 δ = -2π * 5.0
 Ω = 2π * 2.5
-o_drive1 = OpticalDrive(2π / 0.589, Ω, δ, 1000.0)
-o_drive2 = OpticalDrive(-2π / 0.589, Ω, δ, 1000.0)
+o_drive1 = OpticalDrive(2π / λ_res, Ω, δ, 1000.0)
+o_drive2 = OpticalDrive(-2π / λ_res, Ω, δ, 1000.0)
 
 h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2))
 
-grid_size = 1024
+grid_size = 512
 grid_space = 0.005
 p_sys = SystemPropagator(h_system, 0.005, grid_space, 40000, grid_size)
 
@@ -34,7 +36,7 @@ function gen_ψ0(grid_size, grid_space)
     ψ0 = Array{Complex128}(2, grid_size)
     sum = 0.0
     @inbounds for i in 1:grid_size
-        ψ = exp(-((i * grid_space - x_center + 1.0) / 0.2)^2)
+        ψ = exp(-((i * grid_space - x_center + 0.5) / 0.2)^2)
         sum += abs2(ψ)
         ψ0[1, i] = ψ
         ψ0[2, i] = 0
@@ -50,9 +52,9 @@ end
 
 @enum PlotType PlotWFX PlotWFK PlotE
 
-# const plot_type = PlotWFX
+const plot_type = PlotWFX
 # const plot_type = PlotWFK
-const plot_type = PlotE
+# const plot_type = PlotE
 const monte_carlo = 100
 
 _accum = if plot_type == PlotWFX
