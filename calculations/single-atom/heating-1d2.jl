@@ -8,15 +8,15 @@ include("two-level-1d.jl")
 
 # m here is actually m / ħ
 m_Na = 22.98977e-3 / 6.02214129e23 / (1.0545717253362894e-34 * 1e6)
-ω_g = 2π * 0.1 # f = 100kHz
-ω_e = 2π * 0.1 # f = 100kHz
+ω_g = 2π * 0.2 # f = 100kHz
+ω_e = 2π * -0.8 # f = 100kHz
 h_trap = HTrap(m_Na, (ω_g, ω_e))
 
 # k, Γ
 o_decay = OpticalDecay(2π / 0.589, 2π * 10.0)
 
 # k, Ω, δ, τ_θ
-δ = 2π * 5.0
+δ = -2π * 5.0
 Ω = 2π * 2.5
 o_drive1 = OpticalDrive(2π / 0.589, Ω, δ, 1000.0)
 o_drive2 = OpticalDrive(-2π / 0.589, Ω, δ, 1000.0)
@@ -27,6 +27,7 @@ grid_size = 1024
 grid_space = 0.005
 p_sys = SystemPropagator(h_system, 0.005, grid_space, 40000, grid_size)
 
+plot_title = "\$\\omega_e = $ω_e\$, \$\\omega_g = $ω_g\$"
 
 function gen_ψ0(grid_size, grid_space)
     x_center = (grid_size + 1) * grid_space / 2
@@ -76,5 +77,6 @@ gc()
 using PyPlot
 
 plot_accum(_accum)
+title(plot_title)
 
 show()

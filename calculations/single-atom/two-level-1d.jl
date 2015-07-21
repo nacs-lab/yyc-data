@@ -631,11 +631,10 @@ function plot_accum_img(img::Matrix{Float64})
     figure()
     imshow(img)
     colorbar()
-    title("\$\\delta = $δ\$")
 
-    figure()
-    imshow(log(img))
-    colorbar()
+    # figure()
+    # imshow(log(img))
+    # colorbar()
 
     nothing
 end
@@ -678,5 +677,4 @@ function plot_accum(accum::EnergyMonteCarloRecorder)
     errorbar(1:length(accum.Es), accum.Es, accum.Es2)
     grid()
     ylim(0, ylim()[2] * 1.1)
-    title("\$\\delta = $δ\$")
 end
