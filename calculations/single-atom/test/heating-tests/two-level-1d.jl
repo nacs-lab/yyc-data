@@ -57,7 +57,7 @@ end
 
 function phase_tracker_init{T}(track::PhaseTracker{T})
     if isfinite(track.drive.τ_θ)
-        track.phase = rand(T) * 2π
+        track.phase = rand(T) * T(2π)
     else
         track.phase = 0
     end
@@ -82,14 +82,14 @@ function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
         return track.phase
     end
     δt = (t - prev_t) / track.drive.τ_θ
-    δθ = sqrt(δt) * (rand(T) - 0.5) * π
-    track.phase = (track.phase + δθ) % 2π
+    δθ = sqrt(δt) * (rand(T) - T(0.5)) * π
+    track.phase = (track.phase + δθ) % T(2π)
     track.phase
 end
 
 function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
     phase = phase_tracker_next(track, t)
-    track.total_phase = (phase - track.drive.δ * t) % 2π
+    track.total_phase = (phase - track.drive.δ * t) % T(2π)
     track.exp_t = exp(im * track.total_phase)
     nothing
 end
@@ -307,17 +307,14 @@ end
                                            idx, dt, ψ1, ψ2)
     @_meta_expr inline
     body = Expr(:block)
-    # resize!(body.args, 2N + 2)
     resize!(body.args, N + 2)
     for i in 1:N
         expr = :((ψ1, ψ2) = do_single_drive(P, P.drive_phase[$i],
                                               P.sin_drive[$i], P.cos_drive[$i],
                                               idx, dt, ψ1, ψ2))
         body.args[i + 1] = expr
-        # body.args[2N + 2 - i] = expr
     end
     body.args[1] = Expr(:meta, :inline)
-    # body.args[2N + 2] = :(ψ1, ψ2)
     body.args[N + 2] = :(ψ1, ψ2)
     body
 end
@@ -363,9 +360,9 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
         if rand() < p_decay * P.H.decay.Γ * P.dt
             decay_direction = rand()
-            ksign = if decay_direction < 0.25
+            ksign = if decay_direction < T(0.25)
                 1im
-            elseif decay_direction < 0.75
+            elseif decay_direction < T(0.75)
                 0im
             else
                 -1im
