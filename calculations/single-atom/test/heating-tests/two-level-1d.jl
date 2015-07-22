@@ -12,7 +12,7 @@ end
 
 @inline function get_potential(h::HTrap, x, idx)
     ω = h.ω[idx]
-    h.m * ω^2 * x^2 / 2
+    sign(ω) * h.m * ω^2 * x^2 / 2
 end
 @inline function get_kinetic(h::HTrap, k)
     k^2 / (2 * h.m)
