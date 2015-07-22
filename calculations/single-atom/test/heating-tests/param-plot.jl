@@ -39,7 +39,7 @@
 
         # k, Ω, δ, τ_θ
         δ = -2π * 5.0
-        Ω = 2π * 1.0
+        Ω = 2π * 2.5
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
 
