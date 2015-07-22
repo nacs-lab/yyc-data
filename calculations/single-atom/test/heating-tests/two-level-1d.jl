@@ -625,7 +625,7 @@ function plot_accum_img(img::Matrix{Float64})
         img = img[:, 1:yscale:end]
     end
 
-    figure()
+    # figure()
     imshow(img)
     colorbar()
 
@@ -663,14 +663,14 @@ function plot_accum(accum::WaveFuncMonteCarloRecorder)
 end
 
 function plot_accum(accum::EnergyRecorder)
-    figure()
+    # figure()
     plot(accum.Es)
     grid()
     ylim(0, ylim()[2] * 1.1)
 end
 
 function plot_accum(accum::EnergyMonteCarloRecorder)
-    figure()
+    # figure()
     errorbar(1:length(accum.Es), accum.Es, accum.Es2)
     grid()
     ylim(0, ylim()[2] * 1.1)
