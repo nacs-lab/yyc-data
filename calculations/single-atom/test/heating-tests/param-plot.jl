@@ -1,8 +1,6 @@
 #!/usr/bin/julia -f
 
 @everywhere begin
-    # include(joinpath(dirname(@__FILE__), "two-level-1d.jl"))
-
     # Time unit: μs
     # Length unit: μm
     # Frequency unit: MHz
@@ -11,7 +9,7 @@
         ψ0 = Array{Complex64}(2, grid_size)
         sum = 0.0
         @inbounds for i in 1:grid_size
-            ψ = exp(-((i * grid_space - x_center + 0.5f0 * 0) / 0.2f0)^2)
+            ψ = exp(-((i * grid_space - x_center + 0.8f0) / 0.2f0)^2)
             sum += abs2(ψ)
             ψ0[1, i] = ψ
             ψ0[2, i] = 0
@@ -38,7 +36,7 @@
         o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 10.0)
 
         # k, Ω, δ, τ_θ
-        δ = -2π * 5.0 * 6
+        δ = -2π * 5.0 * 12
         Ω = 2π * 2.5
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
