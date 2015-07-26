@@ -70,3 +70,19 @@ end
     Amplitude2D{T}(p, amp)
 
 Base.abs2(amp::Amplitude2D) = abs2(amp.x) + abs2(amp.y)
+
+immutable Drive{K, Amp} # Amp::Amplitude3D
+    function Drive()
+        kx = K.(1)::Real
+        ky = K.(2)::Real
+        kz = K.(3)::Real
+        typeassert(Amp, Amplitude3D)
+        k = kx^2 + ky^2 + kz^2
+        amp = abs2(Amp)
+        kamp = sqrt(k * amp)
+        k_dot_amp = kx * amp.x + ky * amp.y + kz * amp.z
+        @assert k_dot_amp < kamp * 1e-5 string("Wave vector and amplitude ",
+                                               "must be orthogonal")
+        new()
+    end
+end
