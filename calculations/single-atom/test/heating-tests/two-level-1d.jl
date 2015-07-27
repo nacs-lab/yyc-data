@@ -319,17 +319,20 @@ end
     body
 end
 
+@enum DecayType DecayNone DecayLeft DecayRight DecayMiddle
+
 # Before the iterations start the accumulator is called with
 #     accum_init(accumulator, P)
 # This should be used to initialize internal states (e.g. buffers).
 #
 # At each iteration accumulator is called with
-#     accumulate(accumulator, P, i, ψ, accum_type::AccumType)
+#     accumulate(accumulator, P, i, ψ, accum_type::AccumType, decay)
 # Where
 # P is the propagator
 # i is the time index (1:(nstep + 1))
 # ψ is the current wavefunction
 # accum_type is the type of the wavefunction (X or K basis)
+# decay::DecayType is the type of the decay (and whether or not it happened)
 function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                             ψ0::Matrix{Complex{T}}, # 2 x nele
                             accumulator::AbstractAccumulator)
@@ -360,12 +363,15 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         end
         if rand() < p_decay * P.H.decay.Γ * P.dt
             decay_direction = rand()
-            ksign = if decay_direction < T(0.25)
-                1im
+            if decay_direction < T(0.25)
+                ksign = 1im
+                decay_type = DecayRight
             elseif decay_direction < T(0.75)
-                0im
+                ksign = 0im
+                decay_type = DecayMiddle
             else
-                -1im
+                ksign = -1im
+                decay_type = DecayLeft
             end
             ψ_scale = 1 / sqrt(p_decay)
             if ksign == 0
@@ -383,16 +389,16 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                     P.tmp[1, j] = ψ_e
                 end
             end
-            accumulate(accumulator, P, i, P.tmp, AccumX)
+            accumulate(accumulator, P, i, P.tmp, AccumX, decay_type)
             P.p_fft! * P.tmp
             ψ_scale = 1 / sqrt(T(P.nele))
             scale!(ψ_scale, P.tmp)
-            accumulate(accumulator, P, i, P.tmp, AccumK)
+            accumulate(accumulator, P, i, P.tmp, AccumK, decay_type)
             P.p_bfft! * P.tmp
             ψ_norm = T(P.nele)
             continue
         end
-        accumulate(accumulator, P, i, P.tmp, AccumX)
+        accumulate(accumulator, P, i, P.tmp, AccumX, DecayNone)
         P.p_fft! * P.tmp
         ψ_scale = 1 / sqrt(T(P.nele))
         for j in 1:P.nele
@@ -400,7 +406,7 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             P.tmp[1, j] *= p_k
             P.tmp[2, j] *= p_k
         end
-        accumulate(accumulator, P, i, P.tmp, AccumK)
+        accumulate(accumulator, P, i, P.tmp, AccumK, DecayNone)
         P.p_bfft! * P.tmp
         update_drives_tracker(P, (i + 1) * P.dt)
         ψ_norm = 0
@@ -454,7 +460,7 @@ end
 
 function accumulate{H, T}(r::WaveFuncRecorder{AccumX, T},
                           P::SystemPropagator{H, T}, t_i,
-                          ψ::Matrix{Complex{T}}, accum_type::AccumType)
+                          ψ::Matrix{Complex{T}}, accum_type::AccumType, decay)
     @inbounds if accum_type == AccumX
         for j in 1:P.nele
             r.ψs[1, j, t_i] = ψ[1, j]
@@ -466,7 +472,7 @@ end
 
 function accumulate{H, T}(r::WaveFuncRecorder{AccumK, T},
                           P::SystemPropagator{H, T}, t_i,
-                          ψ::Matrix{Complex{T}}, accum_type::AccumType)
+                          ψ::Matrix{Complex{T}}, accum_type::AccumType,decay)
     @inbounds if accum_type == AccumK
         k_off = P.nele ÷ 2
         for j in 1:P.nele
@@ -481,21 +487,26 @@ end
 
 type EnergyRecorder{T} <: AbstractAccumulator
     Es::Vector{T}
+    e_thresh::T
+    t_esc::T
+    dt::T
 end
 
-function call{H, T}(::Type{EnergyRecorder}, P::SystemPropagator{H, T})
-    EnergyRecorder{T}(Array{T}(P.nstep + 1))
+function call{H, T}(::Type{EnergyRecorder}, P::SystemPropagator{H, T},
+                    e_thresh)
+    EnergyRecorder{T}(Array{T}(P.nstep + 1), e_thresh, 0, P.dt)
 end
 
 function accum_init{H, T}(r::EnergyRecorder{T}, P::SystemPropagator{H, T})
     fill!(r.Es, T(0))
+    r.t_esc = T(0)
     nothing
 end
 
 @inline function accumulate{H, T}(r::EnergyRecorder{T},
                                   P::SystemPropagator{H, T}, t_i,
                                   ψ::Matrix{Complex{T}},
-                                  accum_type::AccumType)
+                                  accum_type::AccumType, decay)
     @inbounds if accum_type == AccumK
         for j in 1:P.nele
             r.Es[t_i] += (abs2(ψ[1, j]) + abs2(ψ[2, j])) * P.E_k[j]
@@ -508,6 +519,16 @@ end
             # r.Es[t_i] += (abs2(ψ[1, j]) * P.E_x[1][j] +
             #               abs2(ψ[2, j]) * P.E_x[2][j])
         end
+    end
+    if r.Es[t_i] > r.e_thresh && r.t_esc == 0
+        r.t_esc = t_i * P.dt
+    end
+    nothing
+end
+
+function accum_finalize{H, T}(r::EnergyRecorder{T}, P::SystemPropagator{H, T})
+    if r.t_esc == 0
+        r.t_esc = P.dt * P.nstep
     end
     nothing
 end
@@ -556,6 +577,8 @@ end
 type EnergyMonteCarloRecorder{T} <: MonteCarloAccumulator
     Es::Vector{T} # Σ(E) / average
     Es2::Vector{T} # Σ(E^2) / uncertainty
+    t_esc::T # Σ(t_esc) / average
+    t_esc2::T # Σ(t_esc^2) / uncertainty
     sub_accum::EnergyRecorder{T}
     count::Int
     ncycle::Int
@@ -565,7 +588,7 @@ function call{T}(::Type{EnergyMonteCarloRecorder},
                  sub_accum::EnergyRecorder{T}, n)
     EnergyMonteCarloRecorder{T}(Array{T}(size(sub_accum.Es)),
                                 Array{T}(size(sub_accum.Es)),
-                                sub_accum, -1, n)
+                                0, 0, sub_accum, -1, n)
 end
 
 function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
@@ -576,6 +599,8 @@ function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
         fill!(r.Es, 0)
         fill!(r.Es2, 0)
     end
+    r.t_esc = 0
+    r.t_esc2 = 0
     r.count = 0
     r.sub_accum, r.ncycle
 end
@@ -589,6 +614,8 @@ function accumulate(r::EnergyMonteCarloRecorder,
         r.Es[i] += Es
         r.Es2[i] += Es^2
     end
+    r.t_esc += sub_accum.t_esc
+    r.t_esc2 += sub_accum.t_esc^2
     r.count += 1
     nothing
 end
@@ -605,6 +632,13 @@ function accum_finalize(r::EnergyMonteCarloRecorder, P)
         r.Es[i] = Es
         r.Es2[i] = unc
     end
+    t_esc = r.t_esc / r.count
+    t_esc2 = r.t_esc2 / r.count
+    t_std = (t_esc2 - t_esc^2) / (r.count - 1)
+    # rounding errors can make small std smaller than zero
+    t_unc = t_std <= 0 ? zero(t_std) : sqrt(t_std)
+    r.t_esc = t_esc
+    r.t_esc2 = t_unc
     r.count = -1
     nothing
 end
@@ -671,7 +705,8 @@ end
 
 function plot_accum(accum::EnergyMonteCarloRecorder)
     # figure()
-    errorbar(1:length(accum.Es), accum.Es, accum.Es2)
+    println((accum.t_esc, accum.t_esc2))
+    errorbar((1:length(accum.Es)) * accum.sub_accum.dt, accum.Es, accum.Es2)
     grid()
     ylim(0, ylim()[2] * 1.1)
 end

@@ -28,6 +28,7 @@ h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2))
 grid_size = 512
 grid_space = 0.005f0
 p_sys = SystemPropagator(h_system, 0.005f0, grid_space, 40000, grid_size)
+e_thresh = (maximum(p_sys.E_k) + maximum(p_sys.E_x[1])) / 4
 
 plot_title = "\$\\omega_e = $ω_e\$, \$\\omega_g = $ω_g\$"
 
@@ -52,9 +53,9 @@ end
 
 @enum PlotType PlotWFX PlotWFK PlotE
 
-const plot_type = PlotWFX
+# const plot_type = PlotWFX
 # const plot_type = PlotWFK
-# const plot_type = PlotE
+const plot_type = PlotE
 const monte_carlo = 100
 
 _accum = if plot_type == PlotWFX
@@ -62,7 +63,7 @@ _accum = if plot_type == PlotWFX
 elseif plot_type == PlotWFK
     WaveFuncRecorder{AccumK}(p_sys)
 elseif plot_type == PlotE
-    EnergyRecorder(p_sys)
+    EnergyRecorder(p_sys, e_thresh)
 end
 
 if monte_carlo > 1
