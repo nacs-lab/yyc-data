@@ -98,66 +98,54 @@ immutable Drive{Amp, T} # Amp::Amplitude3D
     ϕ0::T
     τ_θ::T
     function Drive(k, δ, ϕ0, τ_θ)
+        typeassert(Amp, Amplitude3D{T})
         new(k, δ, ϕ0, τ_θ)
     end
 end
 
-type PhaseTracker{T}
-    drive::OpticalDrive{T}
-    phase::T
-    prev_t::T
+"""
+Keep track of the phase (and other parameters) that describes the evolution
+and time dependent interaction between an optical drive an a transition
+"""
+type PhaseTracker{Amp, T}
+    drive::Drive{Amp, T}
+    Ω::T # Product of the amplitude and the dipole moment
 
-    total_phase::T
+    phase::T
     exp_t::Complex{T}
 
-    dθ_cached::T
-    sindθ_cache::T
-    cosdθ_cache::T
+    sindθ::T
+    cosdθ::T
 end
 
-function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
-    PhaseTracker{T}(drive, T(0), T(0),
-                    T(0), Complex{T}(0),
-                    T(0), T(0), T(1))
-end
+call{Amp, T}(::Type{PhaseTracker}, drive::Drive{Amp, T}, Ω) =
+    PhaseTracker{Amp, T}(drive, Ω, 0, 0, 0, 1)
 
-function phase_tracker_init{T}(track::PhaseTracker{T})
-    if isfinite(track.drive.τ_θ)
-        track.phase = rand(T) * T(2π)
+function init_phase{Amp, T}(track::PhaseTracker{Amp, T})
+    if isfinite(track.drive.ϕ0)
+        track.phase = track.drive.ϕ0
     else
-        track.phase = 0
+        track.phase = rand(T) * T(2π)
     end
-    track.prev_t = 0
-    track.total_phase = track.phase
-    track.exp_t = exp(im * track.total_phase)
+    track.exp_t = exp(im * track.phase)
 
-    track.dθ_cached = 0
-    track.sindθ_cache = 0
-    track.cosdθ_cache = 1
+    track.sindθ = 0
+    track.cosdθ = 1
 
     track
 end
 
-function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
-    prev_t = track.prev_t
-    if prev_t >= t
-        return track.phase
+function update_phase{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
+    if isfinite(track.drive.τ_θ)
+        δτ = dt / track.drive.τ_θ
+        track.phase += sqrt(δτ) * (rand(T) - T(0.5)) * π
     end
-    track.prev_t = t
-    if !isfinite(track.drive.τ_θ)
-        return track.phase
-    end
-    δt = (t - prev_t) / track.drive.τ_θ
-    δθ = sqrt(δt) * (rand(T) - T(0.5)) * π
-    track.phase = (track.phase + δθ) % T(2π)
-    track.phase
-end
+    track.phase = (track.phase - track.drive.δ * dt) % T(2π)
+    track.exp_t = exp(im * track.total)
 
-function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
-    phase = phase_tracker_next(track, t)
-    track.total_phase = (phase - track.drive.δ * t) % T(2π)
-    track.exp_t = exp(im * track.total_phase)
-    nothing
+    θdt = tracker.Ω * dt
+    tracker.sindθ = sin(θdt)
+    tracker.cosdθ = cos(θdt)
 end
 
 end
