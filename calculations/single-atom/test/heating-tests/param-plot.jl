@@ -36,19 +36,19 @@
         o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 10.0)
 
         # k, Ω, δ, τ_θ
-        δ = -2π * 0.0
-        Ω = 2π * ratio
+        δ = 2π * ratio
+        Ω = 2π * 2.0
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
 
         h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2))
-        h_system = HSystem(h_trap, o_decay, (o_drive1,))
+        # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
         grid_size = 512
         grid_space = 0.005f0
         p_sys = SystemPropagator(h_system, 0.005f0, grid_space,
-                                 600000, grid_size)
+                                 50000, grid_size)
         e_thresh = (maximum(p_sys.E_k) + maximum(p_sys.E_x[1])) / 4
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
@@ -61,7 +61,8 @@ end
 
 println("start")
 
-ratios = linspace(0.5, 2, 4) * 1.25
+ratios = linspace(-20f0, 17.5f0, 16)
+xax_name = "Detuning (MHz)"
 @time accums = pmap(run, ratios)
 
 using PyPlot
@@ -74,7 +75,7 @@ figure()
 final_e = Float32[_accum.Es[end] for _accum in accums]
 final_e2 = Float32[_accum.Es2[end] for _accum in accums]
 errorbar(ratios, final_e, final_e2)
-xlabel("Rabi frequency")
+xlabel(xax_name)
 ylabel("Final energy")
 grid()
 ylim(0, ylim()[2])
@@ -83,8 +84,8 @@ figure()
 t_esc = Float32[_accum.t_esc for _accum in accums]
 t_esc2 = Float32[_accum.t_esc2 for _accum in accums]
 errorbar(ratios, t_esc, t_esc2)
-xlabel("Rabi frequency")
-ylabel("Escape time")
+xlabel(xax_name)
+ylabel("Escape time (us)")
 grid()
 ylim(0, ylim()[2])
 
@@ -92,7 +93,7 @@ figure()
 pcount = Float32[_accum.pcount for _accum in accums]
 pcount2 = Float32[_accum.pcount2 for _accum in accums]
 errorbar(ratios, pcount, pcount2)
-xlabel("Rabi frequency")
+xlabel(xax_name)
 ylabel("Photon count")
 grid()
 ylim(0, ylim()[2])
