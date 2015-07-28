@@ -705,8 +705,11 @@ end
 
 function plot_accum(accum::EnergyMonteCarloRecorder)
     # figure()
-    println((accum.t_esc, accum.t_esc2))
+    @printf("Escape time: %.2f±%.2f", accum.t_esc, accum.t_esc2)
     errorbar((1:length(accum.Es)) * accum.sub_accum.dt, accum.Es, accum.Es2)
+    axvline(x=accum.t_esc, color="r")
+    axvline(x=accum.t_esc-accum.t_esc2, color="b", linestyle="--")
+    axvline(x=accum.t_esc+accum.t_esc2, color="b", linestyle="--")
     grid()
     ylim(0, ylim()[2] * 1.1)
 end
