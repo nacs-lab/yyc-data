@@ -490,16 +490,18 @@ type EnergyRecorder{T} <: AbstractAccumulator
     e_thresh::T
     t_esc::T
     dt::T
+    pcount::T
 end
 
 function call{H, T}(::Type{EnergyRecorder}, P::SystemPropagator{H, T},
                     e_thresh)
-    EnergyRecorder{T}(Array{T}(P.nstep + 1), e_thresh, 0, P.dt)
+    EnergyRecorder{T}(Array{T}(P.nstep + 1), e_thresh, 0, P.dt, 0)
 end
 
 function accum_init{H, T}(r::EnergyRecorder{T}, P::SystemPropagator{H, T})
     fill!(r.Es, T(0))
-    r.t_esc = T(0)
+    r.t_esc = 0
+    r.pcount = 0
     nothing
 end
 
@@ -520,8 +522,14 @@ end
             #               abs2(ψ[2, j]) * P.E_x[2][j])
         end
     end
-    if r.Es[t_i] > r.e_thresh && r.t_esc == 0
-        r.t_esc = t_i * P.dt
+    if r.t_esc == 0
+        if decay != DecayNone && accum_type == AccumK
+            # Don't double count...
+            r.pcount += 1
+        end
+        if r.Es[t_i] > r.e_thresh
+            r.t_esc = t_i * P.dt
+        end
     end
     nothing
 end
@@ -579,6 +587,8 @@ type EnergyMonteCarloRecorder{T} <: MonteCarloAccumulator
     Es2::Vector{T} # Σ(E^2) / uncertainty
     t_esc::T # Σ(t_esc) / average
     t_esc2::T # Σ(t_esc^2) / uncertainty
+    pcount::T # Σ(pcount) / average
+    pcount2::T # Σ(pcount^2) / uncertainty
     sub_accum::EnergyRecorder{T}
     count::Int
     ncycle::Int
@@ -588,7 +598,7 @@ function call{T}(::Type{EnergyMonteCarloRecorder},
                  sub_accum::EnergyRecorder{T}, n)
     EnergyMonteCarloRecorder{T}(Array{T}(size(sub_accum.Es)),
                                 Array{T}(size(sub_accum.Es)),
-                                0, 0, sub_accum, -1, n)
+                                0, 0, 0, 0, sub_accum, -1, n)
 end
 
 function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
@@ -601,6 +611,8 @@ function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
     end
     r.t_esc = 0
     r.t_esc2 = 0
+    r.pcount = 0
+    r.pcount2 = 0
     r.count = 0
     r.sub_accum, r.ncycle
 end
@@ -616,29 +628,29 @@ function accumulate(r::EnergyMonteCarloRecorder,
     end
     r.t_esc += sub_accum.t_esc
     r.t_esc2 += sub_accum.t_esc^2
+    r.pcount += sub_accum.pcount
+    r.pcount2 += sub_accum.pcount^2
     r.count += 1
     nothing
+end
+
+function sum2average(s, s2, count)
+    avg = s / count
+    avg2 = s2 / count
+    std = (avg2 - avg^2) / (count - 1)
+    # rounding errors can make small std smaller than zero
+    unc = std <= 0 ? zero(std) : sqrt(std)
+    avg, unc
 end
 
 function accum_finalize(r::EnergyMonteCarloRecorder, P)
     @assert r.count >= 0
     @assert size(r.Es) == size(r.Es2)
     @inbounds for i in eachindex(r.Es)
-        Es = r.Es[i] / r.count
-        Es2 = r.Es2[i] / r.count
-        std = (Es2 - Es^2) / (r.count - 1)
-        # rounding errors can make small std smaller than zero
-        unc = std <= 0 ? zero(std) : sqrt(std)
-        r.Es[i] = Es
-        r.Es2[i] = unc
+        r.Es[i], r.Es2[i] = sum2average(r.Es[i], r.Es2[i], r.count)
     end
-    t_esc = r.t_esc / r.count
-    t_esc2 = r.t_esc2 / r.count
-    t_std = (t_esc2 - t_esc^2) / (r.count - 1)
-    # rounding errors can make small std smaller than zero
-    t_unc = t_std <= 0 ? zero(t_std) : sqrt(t_std)
-    r.t_esc = t_esc
-    r.t_esc2 = t_unc
+    r.t_esc, r.t_esc2 = sum2average(r.t_esc, r.t_esc2, r.count)
+    r.pcount, r.pcount2 = sum2average(r.pcount, r.pcount2, r.count)
     r.count = -1
     nothing
 end
@@ -705,7 +717,8 @@ end
 
 function plot_accum(accum::EnergyMonteCarloRecorder)
     # figure()
-    @printf("Escape time: %.2f±%.2f", accum.t_esc, accum.t_esc2)
+    @printf("Escape time: %.2f±%.2f\n", accum.t_esc, accum.t_esc2)
+    @printf("Photon Emitted: %.2f±%.2f\n", accum.pcount, accum.pcount2)
     errorbar((1:length(accum.Es)) * accum.sub_accum.dt, accum.Es, accum.Es2)
     axvline(x=accum.t_esc, color="r")
     axvline(x=accum.t_esc-accum.t_esc2, color="b", linestyle="--")
