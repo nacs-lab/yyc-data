@@ -48,7 +48,7 @@
         grid_size = 512
         grid_space = 0.005f0
         p_sys = SystemPropagator(h_system, 0.005f0, grid_space,
-                                 300000, grid_size)
+                                 600000, grid_size)
         e_thresh = (maximum(p_sys.E_k) + maximum(p_sys.E_x[1])) / 4
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
@@ -61,7 +61,7 @@ end
 
 println("start")
 
-ratios = linspace(0.5, 4, 8) * 1.25
+ratios = linspace(0.5, 2, 4) * 1.25
 @time accums = pmap(run, ratios)
 
 using PyPlot
