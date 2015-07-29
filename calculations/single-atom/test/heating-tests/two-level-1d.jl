@@ -87,10 +87,13 @@ function phase_tracker_next{T}(track::PhaseTracker{T}, t::T)
     track.phase
 end
 
-function phase_tracker_update{T}(track::PhaseTracker{T}, t::T)
+function phase_tracker_update{T}(track::PhaseTracker{T}, t::T, dt::T)
     phase = phase_tracker_next(track, t)
     track.total_phase = (phase - track.drive.δ * t) % T(2π)
     track.exp_t = exp(im * track.total_phase)
+    θdt = track.drive.Ω * dt
+    track.sindθ_cache = sin(θdt)
+    track.cosdθ_cache = cos(θdt)
     nothing
 end
 
@@ -185,12 +188,12 @@ end
     body
 end
 
-@generated function update_drives_tracker{H, T, N}(p::SystemPropagator{H, T, N},
-                                                   t::T)
+@generated function update_drives_tracker{N, T}(drive_phase::NTuple{N},
+                                                t::T, dt::T)
     body = Expr(:block)
     resize!(body.args, N + 1)
     @inbounds for i in 1:N
-        body.args[i] = :(phase_tracker_update(p.drive_phase[$i], t))
+        body.args[i] = :(phase_tracker_update(drive_phase[$i], t, dt))
     end
     body.args[N + 1] = nothing
     body
@@ -261,7 +264,7 @@ abstract AbstractAccumulator
 function accumulate
 end
 
-@inline function do_single_drive(P::SystemPropagator, tracker::PhaseTracker,
+@inline function do_single_drive(tracker::PhaseTracker,
                                  sin_drive, cos_drive, idx, dt, ψ1, ψ2)
     # Hamiltonian of the spin part is
     # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
@@ -277,11 +280,6 @@ end
     #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
     #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
 
-    θdt = tracker.drive.Ω * dt
-    if tracker.dθ_cached != θdt
-        tracker.sindθ_cache = sin(θdt)
-        tracker.cosdθ_cache = cos(θdt)
-    end
     sin_dt = tracker.sindθ_cache
     cos_dt = tracker.cosdθ_cache
 
@@ -303,15 +301,15 @@ macro _meta_expr(x)
     Expr(:meta, x)
 end
 
-@generated function do_all_drives{H, T, N}(P::SystemPropagator{H, T, N},
-                                           idx, dt, ψ1, ψ2)
+@generated function do_all_drives{N}(drive_phase::NTuple{N},
+                                     sin_drive::NTuple{N},
+                                     cos_drive::NTuple{N}, idx, dt, ψ1, ψ2)
     @_meta_expr inline
     body = Expr(:block)
     resize!(body.args, N + 2)
     for i in 1:N
-        expr = :((ψ1, ψ2) = do_single_drive(P, P.drive_phase[$i],
-                                              P.sin_drive[$i], P.cos_drive[$i],
-                                              idx, dt, ψ1, ψ2))
+        expr = :((ψ1, ψ2) = do_single_drive(drive_phase[$i], sin_drive[$i],
+                                              cos_drive[$i], idx, dt, ψ1, ψ2))
         body.args[i + 1] = expr
     end
     body.args[1] = Expr(:meta, :inline)
@@ -342,12 +340,22 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
     eΓ4 = exp(-P.H.decay.Γ * P.dt / 4)
     init_drives_tracker(P)
 
+    dt = P.dt
+    tmp = P.tmp
+    P_x2 = P.P_x2
+    P_k = P.P_k
+    drive_phase = P.drive_phase
+    sin_drive = P.sin_drive
+    cos_drive = P.cos_drive
+    cos_decay = P.cos_decay
+    sin_decay = P.sin_decay
+
     ψ_norm::T = 0
     @inbounds for i in 1:P.nele
         ψ_g = ψ0[1, i]
         ψ_e = ψ0[2, i]
-        P.tmp[1, i] = ψ_g
-        P.tmp[2, i] = ψ_e
+        tmp[1, i] = ψ_g
+        tmp[2, i] = ψ_e
         ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
 
@@ -355,13 +363,13 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         ψ_scale = 1 / sqrt(ψ_norm)
         p_decay::T = 0
         for j in 1:P.nele
-            ψ_g = P.tmp[1, j] * P.P_x2[1][j] * ψ_scale
-            ψ_e = P.tmp[2, j] * P.P_x2[2][j] * ψ_scale
-            P.tmp[1, j] = ψ_g
-            P.tmp[2, j] = ψ_e
+            ψ_g = tmp[1, j] * P_x2[1][j] * ψ_scale
+            ψ_e = tmp[2, j] * P_x2[2][j] * ψ_scale
+            tmp[1, j] = ψ_g
+            tmp[2, j] = ψ_e
             p_decay += abs2(ψ_e)
         end
-        if rand() < p_decay * P.H.decay.Γ * P.dt
+        if rand() < p_decay * P.H.decay.Γ * dt
             decay_direction = rand()
             if decay_direction < T(0.25)
                 ksign = 1im
@@ -376,50 +384,51 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             ψ_scale = 1 / sqrt(p_decay)
             if ksign == 0
                 for j in 1:P.nele
-                    ψ_e = P.tmp[2, j]
+                    ψ_e = tmp[2, j]
                     ψ_e *= ψ_scale
-                    P.tmp[2, j] = 0
-                    P.tmp[1, j] = ψ_e
+                    tmp[2, j] = 0
+                    tmp[1, j] = ψ_e
                 end
             else
                 for j in 1:P.nele
-                    ψ_e = P.tmp[2, j]
-                    ψ_e *= (P.cos_decay[j] + ksign * P.sin_decay[j]) * ψ_scale
-                    P.tmp[2, j] = 0
-                    P.tmp[1, j] = ψ_e
+                    ψ_e = tmp[2, j]
+                    ψ_e *= (cos_decay[j] + ksign * sin_decay[j]) * ψ_scale
+                    tmp[2, j] = 0
+                    tmp[1, j] = ψ_e
                 end
             end
-            accumulate(accumulator, P, i, P.tmp, AccumX, decay_type)
-            P.p_fft! * P.tmp
+            accumulate(accumulator, P, i, tmp, AccumX, decay_type)
+            P.p_fft! * tmp
             ψ_scale = 1 / sqrt(T(P.nele))
-            scale!(ψ_scale, P.tmp)
-            accumulate(accumulator, P, i, P.tmp, AccumK, decay_type)
-            P.p_bfft! * P.tmp
+            scale!(ψ_scale, tmp)
+            accumulate(accumulator, P, i, tmp, AccumK, decay_type)
+            P.p_bfft! * tmp
             ψ_norm = T(P.nele)
             continue
         end
-        accumulate(accumulator, P, i, P.tmp, AccumX, DecayNone)
-        P.p_fft! * P.tmp
+        accumulate(accumulator, P, i, tmp, AccumX, DecayNone)
+        P.p_fft! * tmp
         ψ_scale = 1 / sqrt(T(P.nele))
         for j in 1:P.nele
-            p_k = P.P_k[j] * ψ_scale
-            P.tmp[1, j] *= p_k
-            P.tmp[2, j] *= p_k
+            p_k = P_k[j] * ψ_scale
+            tmp[1, j] *= p_k
+            tmp[2, j] *= p_k
         end
-        accumulate(accumulator, P, i, P.tmp, AccumK, DecayNone)
-        P.p_bfft! * P.tmp
-        update_drives_tracker(P, (i + 1) * P.dt)
+        accumulate(accumulator, P, i, tmp, AccumK, DecayNone)
+        P.p_bfft! * tmp
+        update_drives_tracker(drive_phase, (i + 1) * dt, dt)
         ψ_norm = 0
         for j in 1:P.nele
-            ψ_g = P.tmp[1, j] * P.P_x2[1][j]
-            ψ_e = P.tmp[2, j] * P.P_x2[2][j] * eΓ4
+            ψ_g = tmp[1, j] * P_x2[1][j]
+            ψ_e = tmp[2, j] * P_x2[2][j] * eΓ4
 
-            ψ_g, ψ_e = do_all_drives(P, j, P.dt, ψ_g, ψ_e)
+            ψ_g, ψ_e = do_all_drives(drive_phase, sin_drive, cos_drive,
+                                       j, dt, ψ_g, ψ_e)
 
             ψ_e = ψ_e * eΓ4
             ψ_norm += abs2(ψ_g) + abs2(ψ_e)
-            P.tmp[2, j] = ψ_e
-            P.tmp[1, j] = ψ_g
+            tmp[2, j] = ψ_e
+            tmp[1, j] = ψ_g
         end
     end
     set_zero_subnormals(false)
