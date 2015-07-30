@@ -540,11 +540,11 @@ end
             Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * E_k[j]
         end
     else
-        E_x = P.E_x
+        E_x = P.E_x[1]
         @simd for j in 1:P.nele
             # Use ground state potential for both, representing the average
             # potential energy after decay.
-            Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * E_x[1][j]
+            Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * E_x[j]
             # r.Es[t_i] += (abs2(ψ[j, 1]) * P.E_x[1][j] +
             #               abs2(ψ[j, 2]) * P.E_x[2][j])
         end
