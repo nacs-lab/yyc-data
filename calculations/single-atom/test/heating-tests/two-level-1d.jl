@@ -485,13 +485,14 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             # P_σ21 = -P_σ12'
 
             exp_θ_t = tracker.exp_t
+            T11 = T22 = cos_dt
+            T_pre = im * exp_θ_t * sin_dt
             @simd for j in 1:P.nele
                 ψ_g = sotmp[j, 1]
                 ψ_e = sotmp[j, 2]
                 exp_θ_x = Complex(coss[j], sins[j])
 
-                T11 = T22 = cos_dt
-                T12 = im * exp_θ_t * exp_θ_x * sin_dt
+                T12 = T_pre * exp_θ_x
                 T21 = -conj(T12)
 
                 sotmp[j, 1] = T11 * ψ_g + T12 * ψ_e
