@@ -236,9 +236,9 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     E_xg = Vector{T}(nele)
     E_xe = Vector{T}(nele)
 
-    P_k = convert(SoArray, Vector{Complex{T}}(nele))
-    P_x2g = convert(SoArray, Vector{Complex{T}}(nele))
-    P_x2e = convert(SoArray, Vector{Complex{T}}(nele))
+    P_k = SoArray(Complex{T}, nele)
+    P_x2g = SoArray(Complex{T}, nele)
+    P_x2e = SoArray(Complex{T}, nele)
 
     k0 = 2π / (nele * dx)
     nele_2 = nele ÷ 2
