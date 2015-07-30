@@ -1,5 +1,31 @@
 #!/usr/bin/julia -f
 
+using SoArrays
+
+typealias ComplexSoArray{T,N} SoArray{Complex{T},N,NTuple{2,Array{T,N}}}
+typealias ComplexSoVector{T} ComplexSoArray{T,1}
+typealias ComplexSoMatrix{T} ComplexSoArray{T,2}
+
+@inline function Base.unsafe_copy!{T,N}(dest::ComplexSoArray{T,N},
+                                        src::Array{Complex{T},N})
+    len = length(src)
+    BLAS.blascopy!(len, Ptr{T}(pointer(src)), 2,
+                   pointer(dest.arrays[1]), 1)
+    BLAS.blascopy!(len, Ptr{T}(pointer(src)) + sizeof(T), 2,
+                   pointer(dest.arrays[2]), 1)
+    dest
+end
+
+@inline function Base.unsafe_copy!{T,N}(dest::Array{Complex{T},N},
+                                        src::ComplexSoArray{T,N})
+    len = length(src)
+    BLAS.blascopy!(len, pointer(src.arrays[1]), 1,
+                   Ptr{T}(pointer(dest)), 2)
+    BLAS.blascopy!(len, pointer(src.arrays[2]), 1,
+                   Ptr{T}(pointer(dest)) + sizeof(T), 2)
+    dest
+end
+
 # 1D harmonic trap (non-magic wavelength) using Monte Carlo
 
 ##
@@ -105,7 +131,8 @@ immutable SystemPropagator{H, T, N, P, PI}
     nstep::Int
     nele::Int
 
-    tmp::Matrix{Complex{T}} # 2 x nele
+    tmp::Matrix{Complex{T}} # nele x 2
+    sotmp::ComplexSoMatrix{T} # nele x 2
     p_fft!::P
     p_bfft!::PI
 
@@ -114,8 +141,8 @@ immutable SystemPropagator{H, T, N, P, PI}
     E_x::NTuple{2, Vector{T}} # nele
 
     # Propagator
-    P_k::Vector{Complex{T}} # nele
-    P_x2::NTuple{2, Vector{Complex{T}}} # nele
+    P_k::ComplexSoVector{T} # nele
+    P_x2::NTuple{2, ComplexSoVector{T}} # nele
 
     # Phase factors
     sin_decay::Vector{T} # nele
@@ -199,19 +226,19 @@ end
 
 function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
                                    nstep, nele)
-    tmp = Matrix{Complex{T}}(2, nele) # 2 x nele
+    tmp = Matrix{Complex{T}}(nele, 2) # nele x 2
 
     # FFT plan
-    p_fft! = plan_fft!(tmp, 2, flags=FFTW.MEASURE)
-    p_bfft! = plan_bfft!(tmp, 2, flags=FFTW.MEASURE)
+    p_fft! = plan_fft!(tmp, 1, flags=FFTW.MEASURE)
+    p_bfft! = plan_bfft!(tmp, 1, flags=FFTW.MEASURE)
 
     E_k = Vector{T}(nele)
     E_xg = Vector{T}(nele)
     E_xe = Vector{T}(nele)
 
-    P_k = Vector{Complex{T}}(nele)
-    P_x2g = Vector{Complex{T}}(nele)
-    P_x2e = Vector{Complex{T}}(nele)
+    P_k = convert(SoArray, Vector{Complex{T}}(nele))
+    P_x2g = convert(SoArray, Vector{Complex{T}}(nele))
+    P_x2e = convert(SoArray, Vector{Complex{T}}(nele))
 
     k0 = 2π / (nele * dx)
     nele_2 = nele ÷ 2
@@ -246,7 +273,8 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     P = typeof(p_fft!)
     PI = typeof(p_bfft!)
     SystemPropagator{H, T, N, P, PI}(h, dt, dx, nstep, nele,
-                                     tmp, p_fft!, p_bfft!,
+                                     tmp, convert(SoArray, tmp),
+                                     p_fft!, p_bfft!,
                                      E_k, (E_xg, E_xe), P_k, (P_x2g, P_x2e),
                                      sin_decay, cos_decay,
                                      sin_drive, cos_drive, phase_drive)
@@ -332,6 +360,7 @@ end
 function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                             ψ0::Matrix{Complex{T}}, # 2 x nele
                             accumulator::AbstractAccumulator)
+    # @code_llvm propagate(P, ψ0, accumulator)
     accum_init(accumulator, P)
     # Disable denormal values
     set_zero_subnormals(true)
@@ -340,7 +369,9 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
 
     dt = P.dt
     tmp = P.tmp
-    P_x2 = P.P_x2
+    sotmp = P.sotmp
+    P_x2_1 = P.P_x2[1]
+    P_x2_2 = P.P_x2[2]
     P_k = P.P_k
     drive_phase = P.drive_phase
     sin_drive = P.sin_drive
@@ -352,19 +383,19 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
     @inbounds for i in 1:P.nele
         ψ_g = ψ0[1, i]
         ψ_e = ψ0[2, i]
-        tmp[1, i] = ψ_g
-        tmp[2, i] = ψ_e
+        sotmp[i, 1] = ψ_g
+        sotmp[i, 2] = ψ_e
         ψ_norm += abs2(ψ_g) + abs2(ψ_e)
     end
 
     @inbounds for i in 1:(P.nstep + 1)
         ψ_scale = 1 / sqrt(ψ_norm)
         p_decay::T = 0
-        for j in 1:P.nele
-            ψ_g = tmp[1, j] * P_x2[1][j] * ψ_scale
-            ψ_e = tmp[2, j] * P_x2[2][j] * ψ_scale
-            tmp[1, j] = ψ_g
-            tmp[2, j] = ψ_e
+        @simd for j in 1:P.nele
+            ψ_g = sotmp[j, 1] * P_x2_1[j] * ψ_scale
+            ψ_e = sotmp[j, 2] * P_x2_2[j] * ψ_scale
+            sotmp[j, 1] = ψ_g
+            sotmp[j, 2] = ψ_e
             p_decay += abs2(ψ_e)
         end
         if rand() < p_decay * P.H.decay.Γ * dt
@@ -381,52 +412,60 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             end
             ψ_scale = 1 / sqrt(p_decay)
             if ksign == 0
-                for j in 1:P.nele
-                    ψ_e = tmp[2, j]
+                @simd for j in 1:P.nele
+                    ψ_e = sotmp[j, 2]
                     ψ_e *= ψ_scale
-                    tmp[2, j] = 0
-                    tmp[1, j] = ψ_e
+                    sotmp[j, 2] = 0
+                    sotmp[j, 1] = ψ_e
                 end
             else
-                for j in 1:P.nele
-                    ψ_e = tmp[2, j]
+                @simd for j in 1:P.nele
+                    ψ_e = sotmp[j, 2]
                     ψ_e *= (cos_decay[j] + ksign * sin_decay[j]) * ψ_scale
-                    tmp[2, j] = 0
-                    tmp[1, j] = ψ_e
+                    sotmp[j, 2] = 0
+                    sotmp[j, 1] = ψ_e
                 end
             end
+            Base.unsafe_copy!(tmp, sotmp)
             accumulate(accumulator, P, i, tmp, AccumX, decay_type)
             P.p_fft! * tmp
             ψ_scale = 1 / sqrt(T(P.nele))
             scale!(ψ_scale, tmp)
             accumulate(accumulator, P, i, tmp, AccumK, decay_type)
-            P.p_bfft! * tmp
-            ψ_norm = T(P.nele)
+            # P.p_bfft! * tmp
+            # ψ_norm = T(P.nele)
+            ψ_norm = T(1)
             continue
         end
+        Base.unsafe_copy!(tmp, sotmp)
         accumulate(accumulator, P, i, tmp, AccumX, DecayNone)
         P.p_fft! * tmp
         ψ_scale = 1 / sqrt(T(P.nele))
-        for j in 1:P.nele
+        @simd for j in 1:P.nele
             p_k = P_k[j] * ψ_scale
-            tmp[1, j] *= p_k
-            tmp[2, j] *= p_k
+            tmp[j, 1] *= p_k
+            tmp[j, 2] *= p_k
         end
         accumulate(accumulator, P, i, tmp, AccumK, DecayNone)
         P.p_bfft! * tmp
         update_drives_tracker(drive_phase, (i + 1) * dt, dt)
+        Base.unsafe_copy!(sotmp, tmp)
         ψ_norm = 0
-        for j in 1:P.nele
-            ψ_g = tmp[1, j] * P_x2[1][j]
-            ψ_e = tmp[2, j] * P_x2[2][j] * eΓ4
+        @simd for j in 1:P.nele
+            sotmp[j, 1] = sotmp[j, 1] * P_x2_1[j]
+            sotmp[j, 2] = sotmp[j, 2] * P_x2_2[j] * eΓ4
+        end
+        @simd for j in 1:P.nele
+            ψ_g = sotmp[j, 1]
+            ψ_e = sotmp[j, 2]
 
             ψ_g, ψ_e = do_all_drives(drive_phase, sin_drive, cos_drive,
                                        j, dt, ψ_g, ψ_e)
 
-            ψ_e = ψ_e * eΓ4
+            ψ_e *= eΓ4
             ψ_norm += abs2(ψ_g) + abs2(ψ_e)
-            tmp[2, j] = ψ_e
-            tmp[1, j] = ψ_g
+            sotmp[j, 2] = ψ_e
+            sotmp[j, 1] = ψ_g
         end
     end
     set_zero_subnormals(false)
@@ -470,8 +509,8 @@ function accumulate{H, T}(r::WaveFuncRecorder{AccumX, T},
                           ψ::Matrix{Complex{T}}, accum_type::AccumType, decay)
     @inbounds if accum_type == AccumX
         for j in 1:P.nele
-            r.ψs[1, j, t_i] = ψ[1, j]
-            r.ψs[2, j, t_i] = ψ[2, j]
+            r.ψs[1, j, t_i] = ψ[j, 1]
+            r.ψs[2, j, t_i] = ψ[j, 2]
         end
     end
     nothing
@@ -485,8 +524,8 @@ function accumulate{H, T}(r::WaveFuncRecorder{AccumK, T},
         for j in 1:P.nele
             k = j + k_off
             k = ifelse(k > P.nele, k - P.nele, k)
-            r.ψs[1, k, t_i] = ψ[1, j]
-            r.ψs[2, k, t_i] = ψ[2, j]
+            r.ψs[1, k, t_i] = ψ[j, 1]
+            r.ψs[2, k, t_i] = ψ[j, 2]
         end
     end
     nothing
@@ -518,15 +557,15 @@ end
                                   accum_type::AccumType, decay)
     @inbounds if accum_type == AccumK
         for j in 1:P.nele
-            r.Es[t_i] += (abs2(ψ[1, j]) + abs2(ψ[2, j])) * P.E_k[j]
+            r.Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * P.E_k[j]
         end
     else
         for j in 1:P.nele
             # Use ground state potential for both, representing the average
             # potential energy after decay.
-            r.Es[t_i] += (abs2(ψ[1, j]) + abs2(ψ[2, j])) * P.E_x[1][j]
-            # r.Es[t_i] += (abs2(ψ[1, j]) * P.E_x[1][j] +
-            #               abs2(ψ[2, j]) * P.E_x[2][j])
+            r.Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * P.E_x[1][j]
+            # r.Es[t_i] += (abs2(ψ[j, 1]) * P.E_x[1][j] +
+            #               abs2(ψ[j, 2]) * P.E_x[2][j])
         end
     end
     if r.t_esc == 0
