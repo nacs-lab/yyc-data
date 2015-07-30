@@ -290,59 +290,6 @@ abstract AbstractAccumulator
 function accumulate
 end
 
-@inline function do_single_drive(tracker::PhaseTracker,
-                                 sin_drive, cos_drive, idx, dt, ψ1, ψ2)
-    # Hamiltonian of the spin part is
-    # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
-
-    # Propagator is
-    # P_σ = exp(im H_σ Δt)
-    #     = exp(im Ω (cos(θ_t + θ_x) σ_x +
-    #                 sin(θ_t + θ_x) σ_y) Δt)
-    #     = cos(Ω Δt) + im * (cos(θ_t + θ_x) σ_x +
-    #                         sin(θ_t + θ_x) σ_y) * sin(Ω Δt)
-    #     = cos(Ω Δt) + im cos(θ_t + θ_x) sin(Ω Δt) σ_x +
-    #       im sin(θ_t + θ_x) sin(Ω Δt) σ_y
-    #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
-    #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
-
-    sin_dt = tracker.sindθ_cache
-    cos_dt = tracker.cosdθ_cache
-
-    # P_σ11 = P_σ22 = cos(Ω Δt)
-    # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
-    # P_σ21 = -P_σ12'
-
-    exp_θ_t = tracker.exp_t
-    @inbounds exp_θ_x = cos_drive[idx] + im * sin_drive[idx]
-
-    T11 = T22 = cos_dt
-    T12 = im * exp_θ_t * exp_θ_x * sin_dt
-    T21 = -conj(T12)
-
-    (T11 * ψ1 + T12 * ψ2), (T22 * ψ2 + T21 * ψ1)
-end
-
-macro _meta_expr(x)
-    Expr(:meta, x)
-end
-
-@generated function do_all_drives{N}(drive_phase::NTuple{N},
-                                     sin_drive::NTuple{N},
-                                     cos_drive::NTuple{N}, idx, dt, ψ1, ψ2)
-    @_meta_expr inline
-    body = Expr(:block)
-    resize!(body.args, N + 2)
-    for i in 1:N
-        expr = :((ψ1, ψ2) = do_single_drive(drive_phase[$i], sin_drive[$i],
-                                              cos_drive[$i], idx, dt, ψ1, ψ2))
-        body.args[i + 1] = expr
-    end
-    body.args[1] = Expr(:meta, :inline)
-    body.args[N + 2] = :(ψ1, ψ2)
-    body
-end
-
 @enum DecayType DecayNone DecayLeft DecayRight DecayMiddle
 
 # Before the iterations start the accumulator is called with
@@ -426,8 +373,8 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
                     sotmp[j, 1] = ψ_e
                 end
             end
+            accumulate(accumulator, P, i, sotmp, AccumX, decay_type)
             Base.unsafe_copy!(tmp, sotmp)
-            accumulate(accumulator, P, i, tmp, AccumX, decay_type)
             P.p_fft! * tmp
             ψ_scale = 1 / sqrt(T(P.nele))
             scale!(ψ_scale, tmp)
@@ -437,8 +384,8 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             ψ_norm = T(1)
             continue
         end
+        accumulate(accumulator, P, i, sotmp, AccumX, DecayNone)
         Base.unsafe_copy!(tmp, sotmp)
-        accumulate(accumulator, P, i, tmp, AccumX, DecayNone)
         P.p_fft! * tmp
         ψ_scale = 1 / sqrt(T(P.nele))
         @simd for j in 1:P.nele
@@ -538,7 +485,7 @@ end
 
 function accumulate{H, T}(r::WaveFuncRecorder{AccumX, T},
                           P::SystemPropagator{H, T}, t_i,
-                          ψ::Matrix{Complex{T}}, accum_type::AccumType, decay)
+                          ψ, accum_type::AccumType, decay)
     @inbounds if accum_type == AccumX
         for j in 1:P.nele
             r.ψs[1, j, t_i] = ψ[j, 1]
@@ -550,7 +497,7 @@ end
 
 function accumulate{H, T}(r::WaveFuncRecorder{AccumK, T},
                           P::SystemPropagator{H, T}, t_i,
-                          ψ::Matrix{Complex{T}}, accum_type::AccumType,decay)
+                          ψ, accum_type::AccumType,decay)
     @inbounds if accum_type == AccumK
         k_off = P.nele ÷ 2
         for j in 1:P.nele
@@ -585,17 +532,19 @@ end
 
 @inline function accumulate{H, T}(r::EnergyRecorder{T},
                                   P::SystemPropagator{H, T}, t_i,
-                                  ψ::Matrix{Complex{T}},
-                                  accum_type::AccumType, decay)
+                                  ψ, accum_type::AccumType, decay)
+    Es = r.Es
     @inbounds if accum_type == AccumK
-        for j in 1:P.nele
-            r.Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * P.E_k[j]
+        E_k = P.E_k
+        @simd for j in 1:P.nele
+            Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * E_k[j]
         end
     else
-        for j in 1:P.nele
+        E_x = P.E_x
+        @simd for j in 1:P.nele
             # Use ground state potential for both, representing the average
             # potential energy after decay.
-            r.Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * P.E_x[1][j]
+            Es[t_i] += (abs2(ψ[j, 1]) + abs2(ψ[j, 2])) * E_x[1][j]
             # r.Es[t_i] += (abs2(ψ[j, 1]) * P.E_x[1][j] +
             #               abs2(ψ[j, 2]) * P.E_x[2][j])
         end
@@ -605,7 +554,7 @@ end
             # Don't double count...
             r.pcount += 1
         end
-        if r.Es[t_i] > r.e_thresh
+        if Es[t_i] > r.e_thresh
             r.t_esc = t_i * P.dt
         end
     end
