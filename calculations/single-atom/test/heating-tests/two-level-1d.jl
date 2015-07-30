@@ -44,7 +44,6 @@ type PhaseTracker{T}
     total_phase::T
     exp_t::Complex{T}
 
-    dθ_cached::T
     sindθ_cache::T
     cosdθ_cache::T
 end
@@ -52,7 +51,7 @@ end
 function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
     PhaseTracker{T}(drive, T(0), T(0),
                     T(0), Complex{T}(0),
-                    T(0), T(0), T(1))
+                    T(0), T(1))
 end
 
 function phase_tracker_init{T}(track::PhaseTracker{T})
@@ -65,7 +64,6 @@ function phase_tracker_init{T}(track::PhaseTracker{T})
     track.total_phase = track.phase
     track.exp_t = exp(im * track.total_phase)
 
-    track.dθ_cached = 0
     track.sindθ_cache = 0
     track.cosdθ_cache = 1
 
