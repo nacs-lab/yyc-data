@@ -451,21 +451,52 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         update_drives_tracker(drive_phase, (i + 1) * dt, dt)
         Base.unsafe_copy!(sotmp, tmp)
         ψ_norm = 0
+        eΓ2 = (eΓ4^2)
         @simd for j in 1:P.nele
-            sotmp[j, 1] = sotmp[j, 1] * P_x2_1[j]
-            sotmp[j, 2] = sotmp[j, 2] * P_x2_2[j] * eΓ4
-        end
-        @simd for j in 1:P.nele
-            ψ_g = sotmp[j, 1]
-            ψ_e = sotmp[j, 2]
-
-            ψ_g, ψ_e = do_all_drives(drive_phase, sin_drive, cos_drive,
-                                       j, dt, ψ_g, ψ_e)
-
-            ψ_e *= eΓ4
-            ψ_norm += abs2(ψ_g) + abs2(ψ_e)
-            sotmp[j, 2] = ψ_e
+            ψ_g = sotmp[j, 1] * P_x2_1[j]
+            ψ_e = sotmp[j, 2] * P_x2_2[j] * eΓ2
             sotmp[j, 1] = ψ_g
+            sotmp[j, 2] = ψ_e
+            ψ_norm += abs2(ψ_g) + abs2(ψ_e)
+        end
+        for k in 1:N
+            tracker = drive_phase[k]
+            sins = sin_drive[k]
+            coss = cos_drive[k]
+            # Hamiltonian of the spin part is
+            # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
+
+            # Propagator is
+            # P_σ = exp(im H_σ Δt)
+            #     = exp(im Ω (cos(θ_t + θ_x) σ_x +
+            #                 sin(θ_t + θ_x) σ_y) Δt)
+            #     = cos(Ω Δt) + im * (cos(θ_t + θ_x) σ_x +
+            #                         sin(θ_t + θ_x) σ_y) * sin(Ω Δt)
+            #     = cos(Ω Δt) + im cos(θ_t + θ_x) sin(Ω Δt) σ_x +
+            #       im sin(θ_t + θ_x) sin(Ω Δt) σ_y
+            #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
+            #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
+
+            sin_dt = tracker.sindθ_cache
+            cos_dt = tracker.cosdθ_cache
+
+            # P_σ11 = P_σ22 = cos(Ω Δt)
+            # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
+            # P_σ21 = -P_σ12'
+
+            exp_θ_t = tracker.exp_t
+            @simd for j in 1:P.nele
+                ψ_g = sotmp[j, 1]
+                ψ_e = sotmp[j, 2]
+                exp_θ_x = Complex(coss[j], sins[j])
+
+                T11 = T22 = cos_dt
+                T12 = im * exp_θ_t * exp_θ_x * sin_dt
+                T21 = -conj(T12)
+
+                sotmp[j, 1] = T11 * ψ_g + T12 * ψ_e
+                sotmp[j, 2] = T22 * ψ_e + T21 * ψ_g
+            end
         end
     end
     set_zero_subnormals(false)
@@ -703,6 +734,7 @@ end
 
 call(::Type{MonteCarloAccumulator}, sub_accum::EnergyRecorder, n) =
     EnergyMonteCarloRecorder(sub_accum, n)
+
 call(::Type{MonteCarloAccumulator}, sub_accum::WaveFuncRecorder, n) =
     WaveFuncMonteCarloRecorder(sub_accum, n)
 
