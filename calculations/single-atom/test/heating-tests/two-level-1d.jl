@@ -1,8 +1,8 @@
 #!/usr/bin/julia -f
 
-using SoArrays
+using StructsOfArrays
 
-typealias ComplexSoArray{T,N} SoArray{Complex{T},N,NTuple{2,Array{T,N}}}
+typealias ComplexSoArray{T,N} StructOfArrays{Complex{T},N,NTuple{2,Array{T,N}}}
 typealias ComplexSoVector{T} ComplexSoArray{T,1}
 typealias ComplexSoMatrix{T} ComplexSoArray{T,2}
 
@@ -236,9 +236,9 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     E_xg = Vector{T}(nele)
     E_xe = Vector{T}(nele)
 
-    P_k = SoArray(Complex{T}, nele)
-    P_x2g = SoArray(Complex{T}, nele)
-    P_x2e = SoArray(Complex{T}, nele)
+    P_k = StructOfArrays(Complex{T}, nele)
+    P_x2g = StructOfArrays(Complex{T}, nele)
+    P_x2e = StructOfArrays(Complex{T}, nele)
 
     k0 = 2π / (nele * dx)
     nele_2 = nele ÷ 2
@@ -273,7 +273,7 @@ function SystemPropagator{H, T, N}(h::HSystem{H, T, N}, dt::T, dx::T,
     P = typeof(p_fft!)
     PI = typeof(p_bfft!)
     SystemPropagator{H, T, N, P, PI}(h, dt, dx, nstep, nele,
-                                     tmp, convert(SoArray, tmp),
+                                     tmp, convert(StructOfArrays, tmp),
                                      p_fft!, p_bfft!,
                                      E_k, (E_xg, E_xe), P_k, (P_x2g, P_x2e),
                                      sin_decay, cos_decay,
@@ -348,13 +348,13 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
         if rand() < p_decay * P.H.decay.Γ * dt
             decay_direction = rand()
             if decay_direction < T(0.25)
-                ksign = 1im
+                ksign = 1
                 decay_type = DecayRight
             elseif decay_direction < T(0.75)
-                ksign = 0im
+                ksign = 0
                 decay_type = DecayMiddle
             else
-                ksign = -1im
+                ksign = -1
                 decay_type = DecayLeft
             end
             ψ_scale = 1 / sqrt(p_decay)
@@ -368,7 +368,8 @@ function propagate{H, T, N}(P::SystemPropagator{H, T, N},
             else
                 @simd for j in 1:P.nele
                     ψ_e = sotmp[j, 2]
-                    ψ_e *= (cos_decay[j] + ksign * sin_decay[j]) * ψ_scale
+                    ψ_e *= Complex(cos_decay[j],
+                                    ksign * sin_decay[j]) * ψ_scale
                     sotmp[j, 2] = 0
                     sotmp[j, 1] = ψ_e
                 end
@@ -648,10 +649,13 @@ function accumulate(r::EnergyMonteCarloRecorder,
                     P::SystemPropagator, sub_accum)
     @assert r.count >= 0
     @assert size(r.Es) == size(sub_accum.Es)
-    @inbounds for i in eachindex(sub_accum.Es)
-        Es = sub_accum.Es[i]
-        r.Es[i] += Es
-        r.Es2[i] += Es^2
+    sub_Es = sub_accum.Es
+    r_Es = r.Es
+    r_Es2 = r.Es2
+    @inbounds @simd for i in eachindex(sub_Es)
+        Es = sub_Es[i]
+        r_Es[i] += Es
+        r_Es2[i] += Es^2
     end
     r.t_esc += sub_accum.t_esc
     r.t_esc2 += sub_accum.t_esc^2
