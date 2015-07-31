@@ -6,6 +6,8 @@ module Optical
 
 using ..Utils
 
+export Amplitude3D, Drive, PhaseTracker, init_phase, update_phase
+
 # Amplitude
 
 """
@@ -79,8 +81,10 @@ function update_phase{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
         phase += sqrt(δτ) * (rand(T) - T(0.5)) * π
     end
     phase = (phase - drive.δ * dt) % T(2π)
-    track.exp_t = exp(im * phase)
+    exp_t = exp(im * phase)
+    track.exp_t = exp_t
     track.phase = phase
+    (phase, exp_t)
 end
 
 end
