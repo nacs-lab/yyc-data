@@ -79,4 +79,11 @@ function sum2average(s, s2, count)
     avg, unc
 end
 
+"""
+Cross product of two vectors
+"""
+Base.cross{T1<:Number,T2<:Number}(a::NTuple{3,T1}, b::NTuple{3,T2}) =
+    (a[2] * b[3] - a[3] * b[2], a[3] * b[1] - a[1] * b[3],
+     a[1] * b[2] - a[2] * b[1])
+
 end
