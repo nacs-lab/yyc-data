@@ -63,6 +63,12 @@ end
 call{Amp, T}(::Type{PhaseTracker}, drive::Drive{Amp, T}) =
     PhaseTracker{Amp, T}(drive, 0, 0)
 
+"""
+Initialize the phase tracker. This reset the phase to it's initial value,
+which will be ϕ0, if it is a finite number and random otherwise. end
+
+This needs to be done before every iteration.
+"""
 function init_phase{Amp, T}(track::PhaseTracker{Amp, T})
     if isfinite(track.drive.ϕ0)
         track.phase = track.drive.ϕ0
@@ -73,6 +79,10 @@ function init_phase{Amp, T}(track::PhaseTracker{Amp, T})
     track
 end
 
+"""
+Forward propagate the phase by dt, returns the phase and the exponential
+of the phase
+"""
 function update_phase{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
     drive = track.drive
     phase = track.phase
