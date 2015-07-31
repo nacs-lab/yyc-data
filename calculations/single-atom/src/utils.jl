@@ -4,7 +4,14 @@
 
 module Utils
 
+# Structure of Arrays
+
+# Helper types and functions to help using them with complex numbers
+# and with array of structures format.
+
 using StructsOfArrays
+
+export StructOfArrays, SoCArray, SoCVector, SoCMatrix
 
 typealias SoCArray{T,N} StructOfArrays{Complex{T},N,NTuple{2,Array{T,N}}}
 typealias SoCVector{T} SoCArray{T,1}
@@ -30,6 +37,11 @@ end
     dest
 end
 
+export TrigCache
+
+"""
+Store pre-compute values of sin's and cos's on the grid points
+"""
 immutable TrigCache{T}
     sins::Vector{T}
     coss::Vector{T}
@@ -47,10 +59,17 @@ end
 
 TrigCache{T}(θs::AbstractArray{T}) = TrigCache{T}(θs)
 
+export @meta_expr
+
 macro meta_expr(x)
     Expr(:meta, x)
 end
 
+export sum2average
+
+"""
+Convert from Σ(x) and Σ(x²) to the average and uncertainty of average
+"""
 function sum2average(s, s2, count)
     avg = s / count
     avg2 = s2 / count
