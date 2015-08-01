@@ -64,7 +64,7 @@ TrigCache{T}(θs::AbstractArray{T}) = TrigCache{T}(θs)
 export @meta_expr
 
 macro meta_expr(x)
-    Expr(:meta, x)
+    Expr(:meta, esc(x))
 end
 
 export sum2average
