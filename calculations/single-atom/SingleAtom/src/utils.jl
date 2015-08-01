@@ -119,6 +119,16 @@ end
                                             vec1.z - vec2.z)
 
 """
+Left scalar product
+"""
+*{T<:Number}(s::T, vec::Vec3D) = Vec3D(s * vec.x, s * vec.y, s * vec.z)
+
+"""
+Right scalar product
+"""
+*{T<:Number}(vec::Vec3D, s::T) = Vec3D(vec.x * s, vec.y * s, vec.z * s)
+
+"""
 Cross product of two 3D vectors
 """
 Base.cross{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
