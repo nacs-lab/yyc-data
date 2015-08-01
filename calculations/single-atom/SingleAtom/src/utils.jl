@@ -131,14 +131,13 @@ Right scalar product
 """
 Cross product of two 3D vectors
 """
-Base.cross{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
+Base.cross(a::Vec3D, b::Vec3D) =
     Vec3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
 
 """
 Dot product of two 3D vectors
 """
-*{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
-    a.x * b.x + a.y * b.y + a.z * b.z
+*(a::Vec3D, b::Vec3D) = a.x * b.x + a.y * b.y + a.z * b.z
 
 @inline Base.abs2(vec::Vec3D) = abs2(vec.x) + abs2(vec.y) + abs2(vec.z)
 @inline Base.abs(vec::Vec3D) = sqrt(abs2(vec))
