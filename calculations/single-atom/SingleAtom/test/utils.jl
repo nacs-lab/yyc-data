@@ -116,6 +116,11 @@ let
     @test -e_x == Vec3D(-1.0, 0.0, 0.0)
     @test -e_y == Vec3D(0.0, -1.0, 0.0)
     @test -e_z == Vec3D(0.0, 0.0, -1.0)
+
+    # Difference
+    @test e_x - e_y == Vec3D(1.0, -1.0, 0.0)
+    @test e_y - e_z == Vec3D(0.0, 1.0, -1.0)
+    @test e_z - e_x == Vec3D(-1.0, 0.0, 1.0)
 end
 
 end
