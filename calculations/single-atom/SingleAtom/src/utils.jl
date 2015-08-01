@@ -4,6 +4,8 @@
 
 module Utils
 
+import Base: *
+
 # Structure of Arrays
 
 # Helper types and functions to help using them with complex numbers
@@ -80,10 +82,27 @@ function sum2average(s, s2, count)
 end
 
 """
-Cross product of two vectors
+A 3D vector
 """
-Base.cross{T1<:Number,T2<:Number}(a::NTuple{3,T1}, b::NTuple{3,T2}) =
-    (a[2] * b[3] - a[3] * b[2], a[3] * b[1] - a[1] * b[3],
-     a[1] * b[2] - a[2] * b[1])
+immutable Vec3D{T<:Number}
+    x::T
+    y::T
+    z::T
+end
+
+"""
+Cross product of two 3D vectors
+"""
+Base.cross{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
+    Vec3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
+
+"""
+Dot product of two 3D vectors
+"""
+*{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
+    a.x * b.x + a.y * b.y + a.z * b.z
+
+@inline Base.abs2(vec::Vec3D) = abs2(vec.x) + abs2(vec.y) + abs2(vec.z)
+@inline Base.abs(vec::Vec3D) = sqrt(abs2(vec))
 
 end
