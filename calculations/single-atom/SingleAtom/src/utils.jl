@@ -4,7 +4,7 @@
 
 module Utils
 
-import Base: *, -, +, ==
+import Base: *, /, \, -, +, ==
 
 # Structure of Arrays
 
@@ -119,14 +119,24 @@ end
                                             vec1.z - vec2.z)
 
 """
-Left scalar product
+Left multiply by scalar
 """
 *{T<:Number}(s::T, vec::Vec3D) = Vec3D(s * vec.x, s * vec.y, s * vec.z)
 
 """
-Right scalar product
+Right multiply by scalar
 """
 *{T<:Number}(vec::Vec3D, s::T) = Vec3D(vec.x * s, vec.y * s, vec.z * s)
+
+"""
+Divide by scalar
+"""
+/{T<:Number}(vec::Vec3D, s::T) = Vec3D(vec.x / s, vec.y / s, vec.z / s)
+
+"""
+Divide by scalar
+"""
+\{T<:Number}(s::T, vec::Vec3D) = Vec3D(s \ vec.x, s \ vec.y, s \ vec.z)
 
 """
 Cross product of two 3D vectors

@@ -125,6 +125,9 @@ let
     # Scalar product
     @test -1.0 * e_x + 2 * e_y + e_z * 3.0 == Vec3D(-1.0, 2.0, 3.0)
 
+    # Scalar product
+    @test e_x / -1 + 0.5 \ e_y + e_z / (1 / 3) == Vec3D(-1.0, 2.0, 3.0)
+
     @test e_x × e_y == e_z
     @test e_y × e_z == e_x
     @test e_z × e_x == e_y
