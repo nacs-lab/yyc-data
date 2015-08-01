@@ -65,4 +65,12 @@ end
 @test macroexpand(:(@meta_expr inline)) == Expr(:meta, :inline)
 @test macroexpand(:(@meta_expr noinline)) == Expr(:meta, :noinline)
 
+# sum2average
+# count == 1 should make the uncertainty undefined
+@test isequal(sum2average(1.0, 1.0, 1), (1.0, NaN))
+# rounding error in Σ(x²) shouldn't throw error
+@test sum2average(2.0, 2.0 - 0.01, 2) == (1.0, 0.0)
+
+@test_approx_eq [sum2average(6.0, 14.0, 3)...] [2.0, sqrt(1 / 3)]
+
 end
