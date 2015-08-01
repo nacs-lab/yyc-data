@@ -6,6 +6,8 @@ module Optical
 
 using ..Utils
 
+import Base: *
+
 export Amplitude3D, Drive, PhaseTracker, init_phase, update_phase
 
 # Amplitude
@@ -21,6 +23,18 @@ end
 
 @inline Base.abs2(amp::Amplitude3D) = abs2(amp.x) + abs2(amp.y) + abs2(amp.z)
 @inline Base.abs(amp::Amplitude3D) = sqrt(abs2(amp))
+
+@inline *{T}(amp1::Amplitude3D{T}, amp2::NTuple{3,T}) =
+    amp1.x * amp2[1] + amp1.y * amp2[2] + amp1.z * amp2[3]
+
+@inline *{T}(amp2::NTuple{3,T}, amp1::Amplitude3D{T}) =
+    amp1.x * amp2[1] + amp1.y * amp2[2] + amp1.z * amp2[3]
+
+Base.cross{T}(amp1::Amplitude3D{T}, amp2::NTuple{3,T}) =
+    (amp1.x, amp1.y, amp1.z) × amp2
+
+Base.cross{T}(amp2::NTuple{3,T}, amp1::Amplitude3D{T}) =
+    amp2 × (amp1.x, amp1.y, amp1.z)
 
 """
 Optical drive. Parameters determines
