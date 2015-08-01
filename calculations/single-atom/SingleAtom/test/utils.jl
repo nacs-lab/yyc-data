@@ -138,6 +138,9 @@ let
     @test e_z * e_z == 1.0
 
     @test 2.0 * e_x * e_x == 2.0
+
+    @test abs2(Vec3D{Complex128}(1.0im, 1.0, 0)) == 2.0
+    @test abs(Vec3D{Complex128}(1.0im, 1.0, 0)) == sqrt(2.0)
 end
 
 end
