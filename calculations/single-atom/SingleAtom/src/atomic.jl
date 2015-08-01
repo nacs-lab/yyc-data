@@ -46,12 +46,12 @@ end
 
 *(amp::Vec3D, ax_trans::Tuple{Vec3D,TransitionType}) = ax_trans * amp
 
-###
-# Internal states of the atom
-
+"""
+An optical dipole transition
+"""
 immutable Transition{T,Pol} # Pol::TransitionType
-    k::T # wave vector
-    Γ::T # Line width
+    k::T # wave vector (projected on the axis)
+    Γ::T # Line width / decay rate
     α::T # Dipole moment
 end
 
