@@ -4,7 +4,7 @@
 
 module Utils
 
-import Base: *
+import Base: *, -, +, ==
 
 # Structure of Arrays
 
@@ -81,6 +81,8 @@ function sum2average(s, s2, count)
     avg, unc
 end
 
+export Vec3D
+
 """
 A 3D vector
 """
@@ -89,6 +91,13 @@ immutable Vec3D{T<:Number}
     y::T
     z::T
 end
+
+@inline (==)(vec1::Vec3D, vec2::Vec3D) =
+    vec1.x == vec2.x && vec1.y == vec2.y && vec1.z == vec2.z
+
+@inline Base.isequal(vec1::Vec3D, vec2::Vec3D) =
+    (isequal(vec1.x, vec2.x) && isequal(vec1.y, vec2.y) &&
+     isequal(vec1.z, vec2.z))
 
 """
 Cross product of two 3D vectors

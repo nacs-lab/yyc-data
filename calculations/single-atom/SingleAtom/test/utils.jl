@@ -73,4 +73,34 @@ end
 
 @test_approx_eq [sum2average(6.0, 14.0, 3)...] [2.0, sqrt(1 / 3)]
 
+# Vec3D
+
+let
+    e_x = Vec3D(1.0, 0.0, 0.0)
+    e_y = Vec3D(0.0, 1.0, 0.0)
+    e_z = Vec3D(0.0, 0.0, 1.0)
+
+    # == and isequal
+    @test e_x == e_x
+    @test e_y == e_y
+    @test e_z == e_z
+    @test e_x === e_x
+    @test e_y === e_y
+    @test e_z === e_z
+    @test isequal(e_x, e_x)
+    @test isequal(e_y, e_y)
+    @test isequal(e_z, e_z)
+
+    @test e_x != e_y
+    @test e_y != e_z
+    @test e_x != e_z
+
+    # ==, isqual and NaN, ±0.0
+    @test Vec3D(NaN, 0.0, 0.0) != Vec3D(NaN, 0.0, 0.0)
+    @test !(Vec3D(NaN, 0.0, 0.0) == Vec3D(NaN, 0.0, 0.0))
+    @test isequal(Vec3D(NaN, 0.0, 0.0), Vec3D(NaN, 0.0, 0.0))
+    @test Vec3D(1.0, -0.0, 0.0) == Vec3D(1.0, 0.0, -0.0)
+    @test Vec3D(1.0, -0.0, 0.0) !== Vec3D(1.0, 0.0, -0.0)
+end
+
 end
