@@ -100,6 +100,22 @@ end
      isequal(vec1.z, vec2.z))
 
 """
+Sum of 3D vectors
+"""
+@generated function +(vecs::Vec3D...)
+    @meta_expr inline
+    len = length(vecs)
+    quote
+        $(Expr(:meta, :inline))
+        Vec3D(+($([:(vecs[$i].x) for i in 1:len]...)),
+              +($([:(vecs[$i].y) for i in 1:len]...)),
+              +($([:(vecs[$i].z) for i in 1:len]...)))
+    end
+end
+
+@inline -(vec::Vec3D) = Vec3D(-vec.x, -vec.y, -vec.z)
+
+"""
 Cross product of two 3D vectors
 """
 Base.cross{T1<:Number,T2<:Number}(a::Vec3D{T1}, b::Vec3D{T2}) =
