@@ -11,4 +11,6 @@ export Vec3D
 include("optical.jl")
 using .Optical
 
+include("atomic.jl")
+
 end
