@@ -2,3 +2,4 @@
 
 include("utils.jl")
 include("optical.jl")
+include("atomic.jl")
