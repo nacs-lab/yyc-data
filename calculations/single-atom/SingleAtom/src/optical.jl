@@ -6,35 +6,9 @@ module Optical
 
 using ..Utils
 
-import Base: *
-
-export Amplitude3D, Drive, PhaseTracker, init_phase, update_phase
+export Drive, PhaseTracker, init_phase!, update_phase!
 
 # Amplitude
-
-"""
-3D amplitude of an optical beam
-"""
-immutable Amplitude3D{T<:Real}
-    x::Complex{T}
-    y::Complex{T}
-    z::Complex{T}
-end
-
-@inline Base.abs2(amp::Amplitude3D) = abs2(amp.x) + abs2(amp.y) + abs2(amp.z)
-@inline Base.abs(amp::Amplitude3D) = sqrt(abs2(amp))
-
-@inline *{T}(amp1::Amplitude3D{T}, amp2::NTuple{3,T}) =
-    amp1.x * amp2[1] + amp1.y * amp2[2] + amp1.z * amp2[3]
-
-@inline *{T}(amp2::NTuple{3,T}, amp1::Amplitude3D{T}) =
-    amp1.x * amp2[1] + amp1.y * amp2[2] + amp1.z * amp2[3]
-
-Base.cross{T}(amp1::Amplitude3D{T}, amp2::NTuple{3,T}) =
-    (amp1.x, amp1.y, amp1.z) × amp2
-
-Base.cross{T}(amp2::NTuple{3,T}, amp1::Amplitude3D{T}) =
-    amp2 × (amp1.x, amp1.y, amp1.z)
 
 """
 Optical drive. Parameters determines
@@ -43,24 +17,24 @@ Optical drive. Parameters determines
 
 * Amplitude (including polarization)
 """
-immutable Drive{Amp,T} # Amp::Amplitude3D
+immutable Drive{Amp,T} # Amp::Vec3D{Complex{T}}
     k::T
     δ::T
     ϕ0::T
     τ_θ::T
     @inline function Drive(k, δ, ϕ0, τ_θ)
-        typeassert(Amp, Amplitude3D{T})
+        Base.typeassert(Amp, Vec3D{Complex{T}})
         new(k, δ, ϕ0, τ_θ)
     end
 end
 
-@generated function call{Amp}(::Type{Drive{Amp}}, k, δ, ϕ0, τ_θ)
-    @meta_expr(inline)
-    amp_type = typeof(Amp::Amplitude3D)
-    T = amp_type.parameters[1]
+@inline get_drive_type{T}(::Vec3D{Complex{T}}) = T
+
+@generated function call{Amp}(::Type{Drive{Amp}}, args...)
+    @meta_expr inline
     quote
         $(Expr(:meta, :inline))
-        Drive{Amp,$T}(k, δ, ψ0, τ_θ)
+        Drive{Amp,$(get_drive_type(Amp))}(args...)
     end
 end
 
@@ -75,7 +49,7 @@ type PhaseTracker{Amp, T}
 end
 
 call{Amp, T}(::Type{PhaseTracker}, drive::Drive{Amp, T}) =
-    PhaseTracker{Amp, T}(drive, 0, 0)
+    PhaseTracker{Amp, T}(drive, 0, 1)
 
 """
 Initialize the phase tracker. This reset the phase to it's initial value,
@@ -83,7 +57,7 @@ which will be ϕ0, if it is a finite number and random otherwise. end
 
 This needs to be done before every iteration.
 """
-function init_phase{Amp, T}(track::PhaseTracker{Amp, T})
+function init_phase!{Amp, T}(track::PhaseTracker{Amp, T})
     if isfinite(track.drive.ϕ0)
         track.phase = track.drive.ϕ0
     else
@@ -97,7 +71,7 @@ end
 Forward propagate the phase by dt, returns the phase and the exponential
 of the phase
 """
-function update_phase{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
+function update_phase!{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
     drive = track.drive
     phase = track.phase
     if isfinite(drive.τ_θ)
