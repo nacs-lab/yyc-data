@@ -90,9 +90,13 @@ export MotionSystem
 # MotionSystem
 
 immutable MotionSystem{Ax,T,PotIdxs,Intern<:InternStates,Pots,Dris}
+    # Ax:
+    #     The quantization axis of the atom
+    # PotIdxs:
+    #     Potential indexes into the potentials Tuple for each internal states
     mass::T
-    intern::Intern
-    potentials::Pots
+    intern::Intern # Internal states
+    potentials::Pots # Collections of potentials
     drives::Dris
 end
 
