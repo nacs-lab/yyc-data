@@ -46,13 +46,90 @@ end
 
 *(amp::Vec3D, ax_trans::Tuple{Vec3D,TransitionType}) = ax_trans * amp
 
+export Transition
+
 """
 An optical dipole transition
 """
-immutable Transition{T,Pol} # Pol::TransitionType
+immutable Transition{Pol,T} # Pol::TransitionType
     k::T # wave vector (projected on the axis)
     Γ::T # Line width / decay rate
     α::T # Dipole moment
+end
+
+@inline call{Pol,T}(::Type{Transition{Pol}}, args::T...) =
+    Transition{Pol,T}(args...)
+
+export AtomBuilder, add_state!, add_transition!
+
+immutable AtomBuilder{T}
+    states::Vector{Pair{Symbol,T}} # Array of name=>energy
+    transitions::Dict{NTuple{2,Int},Transition{ANY,T}} # Dict of transitions
+    AtomBuilder() = new(Vector{Pair{Symbol,T}}(),
+                        Dict{NTuple{2,Int},Transition{ANY,T}}())
+end
+
+function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
+    name = symbol(_name)
+    energy = T(_energy)
+    @inbounds for i in 1:length(builder.states)
+        if builder.states[i].first == name
+            throw(ArgumentError("name $name already exist at index $i"))
+        end
+    end
+    push!(builder.states, name=>energy)
+    builder
+end
+
+function add_transition!{Pol,T}(builder::AtomBuilder{T}, _from, _to,
+                                transition::Transition{Pol,T})
+    from = symbol(_from)
+    to = symbol(_to)
+    from == to && throw(ArgumentError(string("The transition should be ",
+                                             "between different states")))
+    from_i = 0
+    to_i = 0
+    @inbounds for i in 1:length(builder.states)
+        if builder.states[i].first == from
+            from_i = i
+        elseif builder.states[i].first == to
+            to_i = i
+        end
+    end
+    from_i == 0 && throw(ArgumentError("Invalid 'from' state: $_from"))
+    to_i == 0 && throw(ArgumentError("Invalid 'to' state: $_to"))
+    d = builder.transitions
+    if (from_i, to_i) in keys(d) || (to_i, from_i) in keys(d)
+        throw(ArgumentError("Transition $_to => $_from already exist"))
+    end
+    d[(from_i, to_i)] = transition
+    builder
+end
+
+export InternStates
+
+immutable InternStates{Names,N,T,Trans,TransLevels}
+    # Names::NTuple{N,Symbol}:
+    #     Names of the states
+    # Trans::NTuple{M,Transition{Pol::TransitionType,T}}
+    #     Types of the transitions
+    # TransLevels::NTuple{M,NTuple{2,Int}}
+    #     The level pairs corresponding to each transition
+    energies::NTuple{N,T}
+    transitions::Trans
+end
+
+function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
+    Names = (Symbol[state.first for state in builder.states]...)
+    energies = (T[state.second for state in builder.states]...)
+    Nstates = length(Names)
+    transition_pairs = collect(builder.transitions)
+    transitions = (Transition{ANY,T}[trans_pair.second
+                                     for trans_pair in transition_pairs]...)
+    Trans = typeof(transitions)
+    TransLevels = (NTuple{2,Int}[trans_pair.first
+                                 for trans_pair in transition_pairs]...)
+    InternStates{Names,Nstates,T,Trans,TransLevels}(energies, transitions)
 end
 
 end

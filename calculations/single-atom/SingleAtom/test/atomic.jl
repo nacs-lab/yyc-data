@@ -26,4 +26,22 @@ let
     @test_approx_eq (k1, Trans_σ⁻) * amp_σ⁻ 1.0
 end
 
+let
+    builder = AtomBuilder{Float32}()
+    add_state!(builder, :(G, 0, 0), 0)
+    add_state!(builder, :(E, 1, -1), -1)
+    add_state!(builder, :(E, 1, 0), 0)
+    add_state!(builder, :(E, 1, 1), 1)
+
+    add_transition!(builder, :(G, 0, 0), :(E, 1, -1),
+                    Transition{Trans_σ⁻}(0.5f0, 10f0, 1f0))
+    add_transition!(builder, :(G, 0, 0), :(E, 1, 0),
+                    Transition{Trans_π}(0.5f0, 10f0, 1f0))
+    add_transition!(builder, :(G, 0, 0), :(E, 1, 1),
+                    Transition{Trans_σ⁺}(0.5f0, 10f0, 1f0))
+
+    atom = InternStates(builder)
+    @test isbits(atom)
+end
+
 end
