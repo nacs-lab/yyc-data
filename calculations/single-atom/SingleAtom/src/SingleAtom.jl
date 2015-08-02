@@ -18,4 +18,6 @@ export Transition
 export AtomBuilder, add_state!, add_transition!
 export InternStates
 
+include("system.jl")
+
 end

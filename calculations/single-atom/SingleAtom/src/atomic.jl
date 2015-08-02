@@ -69,33 +69,32 @@ immutable AtomBuilder{T}
                         Dict{NTuple{2,Int},Transition{ANY,T}}())
 end
 
-function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
+function get_state_id(builder::AtomBuilder, _name)
     name = symbol(_name)
-    energy = T(_energy)
+    name, get_state_id(builder, name)
+end
+
+function get_state_id(builder::AtomBuilder, name::Symbol)
     @inbounds for i in 1:length(builder.states)
-        if builder.states[i].first == name
-            throw(ArgumentError("name $name already exist at index $i"))
-        end
+        builder.states[i].first == name && return i
     end
+    return 0
+end
+
+function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
+    name, id = get_state_id(builder, _name)
+    id == 0 || throw(ArgumentError("name $name already exist at index $id"))
+    energy = T(_energy)
     push!(builder.states, name=>energy)
     builder
 end
 
 function add_transition!{Pol,T}(builder::AtomBuilder{T}, _from, _to,
                                 transition::Transition{Pol,T})
-    from = symbol(_from)
-    to = symbol(_to)
+    from, from_i = get_state_id(builder, _from)
+    to, to_i = get_state_id(builder, _to)
     from == to && throw(ArgumentError(string("The transition should be ",
                                              "between different states")))
-    from_i = 0
-    to_i = 0
-    @inbounds for i in 1:length(builder.states)
-        if builder.states[i].first == from
-            from_i = i
-        elseif builder.states[i].first == to
-            to_i = i
-        end
-    end
     from_i == 0 && throw(ArgumentError("Invalid 'from' state: $_from"))
     to_i == 0 && throw(ArgumentError("Invalid 'to' state: $_to"))
     d = builder.transitions
@@ -118,6 +117,8 @@ immutable InternStates{Names,N,T,Trans,TransLevels}
     energies::NTuple{N,T}
     transitions::Trans
 end
+
+@inline num_states{Names,N}(::InternStates{Names,N}) = N
 
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state.first for state in builder.states]...)

@@ -1,5 +1,11 @@
 #!/usr/bin/julia -f
 
-include("utils.jl")
-include("optical.jl")
-include("atomic.jl")
+function run_test(fname)
+    println("Testing $fname")
+    include(fname)
+end
+
+run_test("utils.jl")
+run_test("optical.jl")
+run_test("atomic.jl")
+run_test("system.jl")
