@@ -20,4 +20,6 @@ export InternStates
 
 include("system.jl")
 
+include("propagate.jl")
+
 end
