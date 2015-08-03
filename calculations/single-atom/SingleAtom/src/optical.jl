@@ -38,6 +38,9 @@ end
     end
 end
 
+call{Amp,T}(::Type{TrigCache}, drive::Drive{Amp,T}, xs) =
+    TrigCache{T}(xs .* drive.k)
+
 """
 Keep track of the temporal phase evolution of an optical drive
 """

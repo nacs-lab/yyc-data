@@ -60,6 +60,9 @@ end
 @inline call{Pol,T}(::Type{Transition{Pol}}, args::T...) =
     Transition{Pol,T}(args...)
 
+call{Pol,T}(::Type{TrigCache}, trans::Transition{Pol,T}, xs) =
+    TrigCache{T}(xs .* trans.k)
+
 export AtomBuilder, add_state!, add_transition!
 
 immutable AtomBuilder{T}

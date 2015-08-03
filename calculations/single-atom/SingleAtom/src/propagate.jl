@@ -4,6 +4,7 @@ module Propagate
 
 using ..Utils
 using ..System
+import ..Optical
 
 immutable HMotionCache{T,N}
     E_k::Vector{T}
@@ -56,5 +57,53 @@ end
         HMotionCache{$T,$NPots}(E_k, P_k, E_x, P_x2)
     end
 end
+
+# Optical cache
+
+immutable OpticalCache{T,NDri,NDec,Tra}
+    drives::NTuple{NDri,TrigCache{T}}
+    decays::NTuple{NDec,TrigCache{T}}
+    trackers::Tra
+end
+
+@inline function call{T,NDri,NDec,Tra}(::Type{OpticalCache{T,NDri,NDec}},
+                                       drives, decays, trackers::Tra)
+    OpticalCache{T,NDri,NDec,Tra}(drives, decays, trackers)
+end
+
+@generated function OpticalCache{M<:MotionSystem}(sys::M, _dx, _dt, nele)
+    T = System.get_value_type(M)
+    NDri = length(System.get_drive_types(M))
+    NDec = length(System.get_transition_types(M))
+
+    init_expr = quote
+        dx = $T(_dx)
+        dt = $T(_dt)
+        nele_2 = nele ÷ 2
+        xs = ((1:nele) - nele_2) * dx
+    end
+
+    calc_drives = quote
+        drives = ($([:(TrigCache(sys.drives[$i], xs)) for i in 1:NDri]...),)
+    end
+    calc_decays = quote
+        decays = ($([:(TrigCache(sys.intern.transitions[$i], xs))
+                     for i in 1:NDec]...),)
+    end
+    calc_trackers = quote
+        trackers = ($([:(Optical.PhaseTracker(sys.drives[$i]))
+                       for i in 1:NDri]...),)
+    end
+
+    quote
+        $init_expr
+        $calc_drives
+        $calc_decays
+        $calc_trackers
+        OpticalCache{$T,$NDri,$NDec}(drives,decays,trackers)
+    end
+end
+
+# Coupling cache
 
 end

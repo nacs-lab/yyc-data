@@ -31,6 +31,7 @@ let
     atom = MotionSystem(Vec3D(1f0, 0f0, 0f0), 10, builder)
 
     motion_cache = Propagate.HMotionCache(atom, 1f-1, 1f-1, 8)
+    optical_cache = Propagate.OpticalCache(atom, 1f-1, 1f-1, 8)
 end
 
 end
