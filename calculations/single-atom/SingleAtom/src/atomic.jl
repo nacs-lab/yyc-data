@@ -118,7 +118,8 @@ immutable InternStates{Names,N,T,Trans,TransLevels}
     transitions::Trans
 end
 
-@inline num_states{Names,N}(::InternStates{Names,N}) = N
+@generated num_states{T<:InternStates}(::Type{T}) = T.parameters[2]::Int
+@inline num_states{T<:InternStates}(::T) = num_states(T)
 
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state.first for state in builder.states]...)
