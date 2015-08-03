@@ -13,19 +13,19 @@ immutable HMotionCache{T,N}
     P_x2::NTuple{N,SoCVector{T}}
 end
 
-@generated function HMotionCache{Ax,T,PotIdxs,Intern,Pots,Dris
-    }(sys::MotionSystem{Ax,T,PotIdxs,Intern,Pots,Dris}, _dx, _dt, nele)
-    NPots = length(Pots.parameters)
+@generated function HMotionCache{M<:MotionSystem}(sys::M, _dx, _dt, nele)
+    NPots = length(System.get_potential_types(M))
+    T = System.get_value_type(M)
     init_expr = quote
-        dx = T(_dx)
-        dt = T(_dt)
+        dx = $T(_dx)
+        dt = $T(_dt)
         m = sys.mass
-        k0 = T(2π) / (nele * dx)
+        k0 = $T(2π) / (nele * dx)
         nele_2 = nele ÷ 2
-        E_k = Vector{T}(nele)
-        P_k = StructOfArrays(Complex{T}, nele)
-        E_x = ($([:(Vector{T}(nele)) for i in 1:NPots]...),)
-        P_x2 = ($([:(StructOfArrays(Complex{T}, nele)) for i in 1:NPots]...),)
+        E_k = Vector{$T}(nele)
+        P_k = StructOfArrays(Complex{$T}, nele)
+        E_x = ($([:(Vector{$T}(nele)) for i in 1:NPots]...),)
+        P_x2 = ($([:(StructOfArrays(Complex{$T}, nele)) for i in 1:NPots]...),)
     end
     calc_k = quote
         @inbounds for i in 1:nele
@@ -53,7 +53,7 @@ end
         $init_expr
         $calc_k
         $calc_x
-        HMotionCache{T,$NPots}(E_k, P_k, E_x, P_x2)
+        HMotionCache{$T,$NPots}(E_k, P_k, E_x, P_x2)
     end
 end
 

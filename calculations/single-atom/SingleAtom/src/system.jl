@@ -105,6 +105,14 @@ end
 call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
     MotionSystem{ax}(mass, builder)
 
+@generated get_value_type{T<:MotionSystem}(::Type{T}) = T.parameters[2]
+
+@generated get_drive_types{T<:MotionSystem}(::Type{T}) =
+    (T.parameters[6].parameters...)
+
+@generated get_potential_types{T<:MotionSystem}(::Type{T}) =
+    (T.parameters[5].parameters...)
+
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})
     mass = T(_mass)
