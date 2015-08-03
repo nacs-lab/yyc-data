@@ -32,6 +32,7 @@ let
 
     motion_cache = Propagate.HMotionCache(atom, 1f-1, 1f-1, 8)
     optical_cache = Propagate.OpticalCache(atom, 1f-1, 1f-1, 8)
+    coupling_cache = Propagate.CouplingCache(atom, 1f-1, 1f-1, 8)
 end
 
 end

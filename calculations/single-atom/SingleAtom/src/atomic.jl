@@ -63,6 +63,9 @@ end
 call{Pol,T}(::Type{TrigCache}, trans::Transition{Pol,T}, xs) =
     TrigCache{T}(xs .* trans.k)
 
+@generated get_transition_type{T<:Transition}(::Type{T}) =
+    T.parameters[1]::TransitionType
+
 export AtomBuilder, add_state!, add_transition!
 
 immutable AtomBuilder{T}

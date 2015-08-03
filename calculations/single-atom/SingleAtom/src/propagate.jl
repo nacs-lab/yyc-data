@@ -4,6 +4,7 @@ module Propagate
 
 using ..Utils
 using ..System
+using ..Atomic
 import ..Optical
 
 immutable HMotionCache{T,N}
@@ -100,10 +101,100 @@ end
         $calc_drives
         $calc_decays
         $calc_trackers
-        OpticalCache{$T,$NDri,$NDec}(drives,decays,trackers)
+        OpticalCache{$T,$NDri,$NDec}(drives, decays, trackers)
     end
 end
 
 # Coupling cache
+
+"""
+Discribes the strength of a drive on a certain transition.
+Determined by the drive, the transition and the quantization axis
+"""
+immutable Coupling{T}
+    Ω::T # Rabi rate
+    sindθ::T # sin(Ω dt)
+    cosdθ::T # cos(Ω dt)
+end
+
+immutable CouplingCache{T,N,Idxs}
+    # Idxs:
+    #     Tuple of (drive_id, transition_id)
+    couplings::NTuple{N,Coupling{T}}
+end
+
+immutable DriveCoupling{T}
+    amp::T
+    overlap_σ⁺::T
+    overlap_σ⁻::T
+    overlap_π::T
+
+    couple_σ⁺::Bool
+    couple_σ⁻::Bool
+    couple_π::Bool
+
+    function DriveCoupling(ax::Vec3D{T}, _amp::Vec3D)
+        abs_amp = abs(_amp)
+        amp = _amp / abs_amp
+        overlap_σ⁺ = (ax, Trans_σ⁺) * amp
+        overlap_σ⁻ = (ax, Trans_σ⁻) * amp
+        overlap_π = (ax, Trans_π) * amp
+
+        new(abs_amp, overlap_σ⁺, overlap_σ⁻, overlap_π,
+            overlap_σ⁺ >= 1e-3, overlap_σ⁻ >= 1e-3, overlap_π >= 1e-3)
+    end
+end
+
+Base.getindex(cpl::DriveCoupling, trans::TransitionType) = if trans == Trans_σ⁺
+    (cpl.couple_σ⁺, cpl.overlap_σ⁺)
+elseif trans == Trans_σ⁻
+    (cpl.couple_σ⁻, cpl.overlap_σ⁻)
+else
+    (cpl.couple_π, cpl.overlap_π)
+end
+
+@generated function CouplingCache{M<:MotionSystem}(sys::M, _dx, _dt, nele)
+    T = System.get_value_type(M)
+    idxs = NTuple{2,Int}[]
+    _couplings = Expr[]
+
+    init_expr = quote
+        dt = $T(_dt)
+        intern = sys.intern
+        transitions = intern.transitions
+    end
+
+    Tdrives = System.get_drive_types(M)
+    Ttrans = System.get_transition_types(M)
+    Ax = System.get_quant_axis(M)
+
+    for i in 1:length(Tdrives)
+        Tdrive = Tdrives[i]
+        drive_amp = Optical.get_drive_amplitude(Tdrive)
+        cpl = DriveCoupling{T}(Ax, drive_amp)
+        for j in 1:length(Ttrans)
+            Ttran = Ttrans[j]
+            has_couple, overlap = cpl[Atomic.get_transition_type(Ttran)]
+            has_couple || continue
+            amp_eff = overlap * cpl.amp
+            push!(idxs, (i, j))
+            ex = quote
+                Ω = $amp_eff * transitions[$j].α
+                dθ = Ω * dt
+                sindθ = sin(dθ)
+                cosdθ = cos(dθ)
+                Coupling{$T}(Ω, sindθ, cosdθ)
+            end
+            push!(_couplings, Expr(:let, ex))
+        end
+    end
+
+    N = length(idxs)
+    Idxs = (idxs...)
+    quote
+        $init_expr
+        CouplingCache{$T,$N,$Idxs}(($(_couplings...),))
+    end
+end
 
 end

@@ -28,6 +28,8 @@ immutable Drive{Amp,T} # Amp::Vec3D{Complex{T}}
     end
 end
 
+@generated get_drive_amplitude{T<:Drive}(::Type{T}) = T.parameters[1]::Vec3D
+
 @inline get_drive_type{T}(::Vec3D{Complex{T}}) = T
 
 @generated function call{Amp}(::Type{Drive{Amp}}, args...)
