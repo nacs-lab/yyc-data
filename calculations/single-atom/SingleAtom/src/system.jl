@@ -9,6 +9,9 @@ using ..Atomic
 using ..Optical
 using ..Utils
 
+import ..Atomic: add_state!, add_transition!, get_state_id
+import ..Atomic: num_states, get_transition_types
+
 export AbstractPotential, HarmonicPotential, ZeroPotential
 export get_potential, get_kinetic
 
@@ -55,14 +58,14 @@ immutable SystemBuilder{T}
                                   Vector{Drive{ANY,Union{T,Complex{T}}}}())
 end
 
-@inline Atomic.add_state!(builder::SystemBuilder, args...) =
-    Atomic.add_state!(builder.atom, args...)
+@inline add_state!(builder::SystemBuilder, args...) =
+    add_state!(builder.atom, args...)
 
-@inline Atomic.add_transition!(builder::SystemBuilder, args...) =
-    Atomic.add_transition!(builder.atom, args...)
+@inline add_transition!(builder::SystemBuilder, args...) =
+    add_transition!(builder.atom, args...)
 
-@inline Atomic.get_state_id(builder::SystemBuilder, args...) =
-    Atomic.get_state_id(builder.atom, args...)
+@inline get_state_id(builder::SystemBuilder, args...) =
+    get_state_id(builder.atom, args...)
 
 @inline function add_potential!{T}(builder::SystemBuilder{T},
                                    p::AbstractPotential{T})
@@ -71,7 +74,7 @@ end
 
 @inline function add_potential!{T}(builder::SystemBuilder{T},
                                    p::AbstractPotential{T}, _name)
-    name, id = Atomic.get_state_id(builder, _name)
+    name, id = get_state_id(builder, _name)
     id == 0 && throw(ArgumentError("Invalid state: $_name"))
     if id in keys(builder.potentials)
         throw(ArgumentError("Potential of state $_name already set"))
@@ -111,18 +114,17 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 @generated get_potential_types{T<:MotionSystem}(::Type{T}) =
     (T.parameters[5].parameters...)
 
-@generated Atomic.num_states{T<:MotionSystem}(::Type{T}) =
-    Atomic.num_states(T.parameters[4])
+@generated num_states{T<:MotionSystem}(::Type{T}) = num_states(T.parameters[4])
 
-@generated Atomic.get_transition_types{T<:MotionSystem}(::Type{T}) =
-    Atomic.get_transition_types(T.parameters[4])
+@generated get_transition_types{T<:MotionSystem}(::Type{T}) =
+    get_transition_types(T.parameters[4])
 
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})
     mass = T(_mass)
     intern = InternStates(builder.atom)
     Intern = typeof(intern)
-    N = Atomic.num_states(intern)
+    N = num_states(intern)
 
     _pots = Vector{AbstractPotential{T}}()
     _pot_map = Dict{AbstractPotential{T},Int}()
