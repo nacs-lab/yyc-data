@@ -32,13 +32,15 @@ immutable HarmonicPotential{T} <: AbstractPotential{T}
     ω::T
 end
 
-@inline get_potential{T}(h::HarmonicPotential{T}, m::T, x::T) =
-    m * h.ω^2 * x^2 / 2
+@inline function get_potential{T}(h::HarmonicPotential{T}, m::T, x::T)
+    ω = h.ω
+    sign(ω) * m * h.ω^2 * x^2 / 2
+end
 
 immutable ZeroPotential{T} <: AbstractPotential{T}
 end
 
-@inline get_potential{T}(h::HarmonicPotential{T}, m::T, x::T) = T(0)
+@inline get_potential{T}(h::ZeroPotential{T}, m::T, x::T) = T(0)
 
 export SystemBuilder, add_state!, add_transition!, add_potential!, add_drive!
 
