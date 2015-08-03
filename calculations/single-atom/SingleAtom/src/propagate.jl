@@ -197,9 +197,7 @@ end
     end
 end
 
-immutable SystemPropagator{Sys<:MotionSystem,T,Mc<:HMotionCache,
-    Oc<:OpticalCache,Cc<:CouplingCache,P,PI}
-
+immutable SystemPropagator{Sys,T,Mc,Oc,Cc,P,PI}
     sys::Sys
 
     dt::T
