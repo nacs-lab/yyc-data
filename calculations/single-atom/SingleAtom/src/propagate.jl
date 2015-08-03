@@ -197,4 +197,50 @@ end
     end
 end
 
+immutable SystemPropagator{Sys<:MotionSystem,T,Mc<:HMotionCache,
+    Oc<:OpticalCache,Cc<:CouplingCache,P,PI}
+
+    sys::Sys
+
+    dt::T
+    dx::T
+    nstep::Int
+    nele::Int
+
+    motion::Mc
+    optical::Oc
+    coupling::Cc
+
+    tmp::Matrix{Complex{T}} # nele x nstates
+    sotmp::SoCMatrix{T} # nele x nstates
+
+    p_fft!::P
+    p_bfft!::PI
+end
+
+function SystemPropagator{Sys<:MotionSystem}(sys::Sys, _dt, _dx, nstep, nele)
+    T = System.get_value_type(Sys)
+    dt = T(_dt)
+    dx = T(_dx)
+
+    motion = HMotionCache(sys, dx, dt, nele)
+    Mc = typeof(motion)
+    optical = OpticalCache(sys, dx, dt, nele)
+    Oc = typeof(optical)
+    coupling = CouplingCache(sys, dx, dt, nele)
+    Cc = typeof(coupling)
+
+    nstates = System.num_states(Sys)
+    tmp = Matrix{Complex{T}}(nele, nstates)
+    sotmp = convert(StructOfArrays, tmp)
+
+    p_fft! = plan_fft!(tmp, 1, flags=FFTW.MEASURE)
+    p_bfft! = plan_bfft!(tmp, 1, flags=FFTW.MEASURE)
+    P = typeof(p_fft!)
+    PI = typeof(p_bfft!)
+    SystemPropagator{Sys,T,Mc,Oc,Cc,P,PI}(sys, dt, dx, nstep, nele, motion,
+                                          optical, coupling, tmp, sotmp,
+                                          p_fft!, p_bfft!)
+end
+
 end
