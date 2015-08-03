@@ -110,7 +110,7 @@ export InternStates
 immutable InternStates{Names,N,T,Trans,TransLevels}
     # Names::NTuple{N,Symbol}:
     #     Names of the states
-    # Trans::NTuple{M,Transition{Pol::TransitionType,T}}
+    # Trans::Type{NTuple{M,Transition{Pol::TransitionType,T}}}
     #     Types of the transitions
     # TransLevels::NTuple{M,NTuple{2,Int}}
     #     The level pairs corresponding to each transition
@@ -120,6 +120,9 @@ end
 
 @generated num_states{T<:InternStates}(::Type{T}) = T.parameters[2]::Int
 @inline num_states{T<:InternStates}(::T) = num_states(T)
+
+@generated get_transition_types{T<:InternStates}(::Type{T}) =
+    (T.parameters[4].parameters...)
 
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state.first for state in builder.states]...)

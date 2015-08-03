@@ -24,9 +24,7 @@ function get_potential end
 """
 Get the kinetic energy
 """
-@inline function get_kinetic{T}(m::T, k::T)
-    k^2 / (2 * m)
-end
+@inline get_kinetic{T}(m::T, k::T) = k^2 / (2 * m)
 
 immutable HarmonicPotential{T} <: AbstractPotential{T}
     ω::T
@@ -112,6 +110,12 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 
 @generated get_potential_types{T<:MotionSystem}(::Type{T}) =
     (T.parameters[5].parameters...)
+
+@generated Atomic.num_states{T<:MotionSystem}(::Type{T}) =
+    Atomic.num_states(T.parameters[4])
+
+@generated Atomic.get_transition_types{T<:MotionSystem}(::Type{T}) =
+    Atomic.get_transition_types(T.parameters[4])
 
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})

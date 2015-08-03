@@ -1,5 +1,7 @@
 #!/usr/bin/julia -f
 
+using SingleAtom
+
 function run_test(fname)
     println("Testing $fname")
     include(fname)
