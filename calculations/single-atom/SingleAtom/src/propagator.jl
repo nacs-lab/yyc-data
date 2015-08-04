@@ -241,4 +241,6 @@ function SystemPropagator{Sys<:MotionSystem}(sys::Sys, _dt, _dx, nstep, nele)
                                           p_fft!, p_bfft!)
 end
 
+include("propagate.jl")
+
 end
