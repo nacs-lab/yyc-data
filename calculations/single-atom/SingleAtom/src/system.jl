@@ -122,6 +122,8 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 @generated get_transition_pairs{T<:MotionSystem}(::Type{T}) =
     get_transition_pairs(T.parameters[4])
 
+@generated get_potential_idxs{T<:MotionSystem}(::Type{T}) = T.parameters[3]
+
 @generated get_quant_axis{T<:MotionSystem}(::Type{T}) = T.parameters[1]
 
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})

@@ -30,7 +30,8 @@ let
 
     atom = MotionSystem(Vec3D(1f0, 0f0, 0f0), 10, builder)
 
-    propagator = Propagate.SystemPropagator(atom, 1f-1, 1f-1, 100, 8)
+    P = Propagate.SystemPropagator(atom, 1f-1, 1f-1, 100, 8)
+    Propagate.propagate_x1(P.sys, P.sotmp, P.motion.P_x2, 1f0, P.nele)
 end
 
 end

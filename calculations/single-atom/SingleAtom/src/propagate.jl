@@ -59,6 +59,11 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     nele = P.nele
 
     motion_cache = P.motion
+    E_k = motion_cache.E_k
+    P_k = motion_cache.P_k
+    E_x = motion_cache.E_x
+    P_x2 = motion_cache.P_x2
+
     optical_cache = P.optical
     coupling_cache = P.coupling
 
@@ -82,8 +87,57 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     end
 
     @inbounds for i in 1:(nstep + 1)
+        propagate_x1(sys, sotmp, P_x2, 1 / sqrt(ψ_norm), nele)
     end
 
     set_zero_subnormals(false)
     measure_finalize(measure, P)
+end
+
+@generated function propagate_x1{Sys,N,T}(sys::Sys, sotmp,
+                                          P_x2::NTuple{N}, ψ_scale::T, nele)
+    @meta_expr inline
+    P_x2_vars = [gensym(:P_x2) for i in 1:N]
+    P_x2_ele_vars = [gensym(:P_x2_ele) for i in 1:N]
+    nstates = System.num_states(Sys)
+    ψ_vars = [gensym(:ψ) for i in 1:nstates]
+    p_vars = [gensym(:p) for i in 1:nstates]
+
+    transitions = System.get_transition_pairs(Sys)
+    to_states = Int[]
+    for (from, to) in transitions
+        to in to_states || push!(to_states, to)
+    end
+
+    init_ex = quote
+        $([:($(P_x2_vars[i]) = P_x2[$i]) for i in 1:N]...)
+        $([:($(p_vars[i])::$T = 0) for i in to_states]...)
+    end
+
+    pot_idxs = System.get_potential_idxs(Sys)
+
+    loop_ex = quote
+        @simd for j in 1:nele
+            # Load the X phase factor. Scale the phase factor since there's
+            # less of them compare to the number of states
+            $([:($(P_x2_ele_vars[i]) = $(P_x2_vars[i])[j] * ψ_scale)
+               for i in 1:N]...)
+
+            # update the wave function
+            $([:($(ψ_vars[i]) = sotmp[j, $i] * $(P_x2_ele_vars[pot_idxs[i]]);
+                 sotmp[j, $i] = $(ψ_vars[i]))
+               for i in 1:nstates]...)
+
+            $([:($(p_vars[i]) += abs2($(ψ_vars[i]))) for i in to_states]...)
+        end
+    end
+
+    quote
+        @meta_expr inline
+        @inbounds begin
+            $init_ex
+            $loop_ex
+        end
+        ($([p_vars[i] for i in to_states]...),)
+    end
 end

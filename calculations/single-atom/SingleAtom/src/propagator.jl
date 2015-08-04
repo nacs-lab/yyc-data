@@ -7,15 +7,18 @@ using ..System
 using ..Atomic
 import ..Optical
 
-immutable HMotionCache{T,N}
+immutable HMotionCache{T,N,NState}
     E_k::Vector{T}
     P_k::SoCVector{T}
 
     E_x::NTuple{N,Vector{T}}
     P_x2::NTuple{N,SoCVector{T}}
+
+    P_Es::NTuple{NState,Complex{T}}
 end
 
 @generated function HMotionCache{M<:MotionSystem}(sys::M, _dx, _dt, nele)
+    nstates = System.num_states(M)
     NPots = length(System.get_potential_types(M))
     T = System.get_value_type(M)
     init_expr = quote
@@ -37,7 +40,7 @@ end
 
             e_k = get_kinetic(m, k)
             E_k[i] = e_k
-            P_k[i] = exp(im * e_k * dt)
+            P_k[i] = exp((1im) * e_k * dt)
         end
     end
     e_temps = [gensym() for i in 1:NPots]
@@ -47,15 +50,20 @@ end
             $([:($(e_temps[i]) = get_potential(sys.potentials[$i], m, x))
                for i in 1:NPots]...)
             $([:(E_x[$i][i] = $(e_temps[i])) for i in 1:NPots]...)
-            $([:(P_x2[$i][i] = exp(im * dt / 2 * $(e_temps[i])))
+            $([:(P_x2[$i][i] = exp((1im) * dt / 2 * $(e_temps[i])))
                for i in 1:NPots]...)
         end
+    end
+    calc_es = quote
+        energies = sys.intern.energies
+        P_Es = ($([:(exp((1im) * dt * energies[$i])) for i in 1:nstates]...),)
     end
     quote
         $init_expr
         $calc_k
         $calc_x
-        HMotionCache{$T,$NPots}(E_k, P_k, E_x, P_x2)
+        $calc_es
+        HMotionCache{$T,$NPots,$nstates}(E_k, P_k, E_x, P_x2, P_Es)
     end
 end
 
