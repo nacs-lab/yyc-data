@@ -130,6 +130,8 @@ end
 @generated get_transition_types{T<:InternStates}(::Type{T}) =
     (T.parameters[4].parameters...)
 
+@generated get_transition_pairs{T<:InternStates}(::Type{T}) = T.parameters[5]
+
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state.first for state in builder.states]...)
     energies = (T[state.second for state in builder.states]...)

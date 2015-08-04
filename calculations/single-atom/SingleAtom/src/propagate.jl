@@ -74,14 +74,14 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
 
     ψ_norm::T = 0
     @inbounds for j in 1:nstates
-        @simd for i in 1:P.nele
+        @simd for i in 1:nele
             ψ = ψ0[i, j]
             sotmp[i, j] = ψ
             ψ_norm += abs2(ψ)
         end
     end
 
-    @inbounds for i in 1:(P.nstep + 1)
+    @inbounds for i in 1:(nstep + 1)
     end
 
     set_zero_subnormals(false)

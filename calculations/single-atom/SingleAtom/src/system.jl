@@ -10,7 +10,7 @@ using ..Optical
 using ..Utils
 
 import ..Atomic: add_state!, add_transition!, get_state_id
-import ..Atomic: num_states, get_transition_types
+import ..Atomic: num_states, get_transition_types, get_transition_pairs
 
 export AbstractPotential, HarmonicPotential, ZeroPotential
 export get_potential, get_kinetic
@@ -118,6 +118,9 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 
 @generated get_transition_types{T<:MotionSystem}(::Type{T}) =
     get_transition_types(T.parameters[4])
+
+@generated get_transition_pairs{T<:MotionSystem}(::Type{T}) =
+    get_transition_pairs(T.parameters[4])
 
 @generated get_quant_axis{T<:MotionSystem}(::Type{T}) = T.parameters[1]
 
