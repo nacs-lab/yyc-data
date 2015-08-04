@@ -32,15 +32,10 @@ using SingleAtom
     soa_run = quote
         unsafe_copy!(soary, ary)
         @inbounds @simd for i in 1:nele
-            $([:($(var_names[j]) = soary[i, $j]) for j in 1:N]...)
             factor2i = sofactor2[i]
-            $([:($(eff_factors[j]) = factor2i * $(splat_factors[j]))
-               for j in 1:N]...)
-            # This should work but is not because of a missing tbaa_const
-            # node according to Jameson
-            # $([:($(eff_factors[j]) = factor2i * factors.($j))
-            #    for j in 1:N]...)
-            $([:(soary[i, $j] = $(var_names[j]) * $(eff_factors[j]))
+            $([:($(eff_factors[j]) = factor2i * $(splat_factors[j]);
+                 $(var_names[j]) = soary[i, $j];
+                 soary[i, $j] = $(var_names[j]) * $(eff_factors[j]))
                for j in 1:N]...)
         end
         unsafe_copy!(ary, soary)
@@ -62,24 +57,24 @@ end
 
 get_factors(n) = (map(x->exp(im * x), linspace(0f0, 10f0, n))...)
 
-test_scale(64, get_factors(5))
-test_scale(64, get_factors(10))
+# test_scale(64, get_factors(5))
+# test_scale(64, get_factors(10))
 test_scale(64, get_factors(24))
 println()
-test_scale(128, get_factors(5))
-test_scale(128, get_factors(10))
+# test_scale(128, get_factors(5))
+# test_scale(128, get_factors(10))
 test_scale(128, get_factors(24))
 println()
-test_scale(256, get_factors(5))
-test_scale(256, get_factors(10))
+# test_scale(256, get_factors(5))
+# test_scale(256, get_factors(10))
 test_scale(256, get_factors(24))
 println()
-test_scale(512, get_factors(5))
-test_scale(512, get_factors(10))
+# test_scale(512, get_factors(5))
+# test_scale(512, get_factors(10))
 test_scale(512, get_factors(24))
 println()
-test_scale(1024, get_factors(5))
-test_scale(1024, get_factors(10))
+# test_scale(1024, get_factors(5))
+# test_scale(1024, get_factors(10))
 test_scale(1024, get_factors(24))
 
 # @code_llvm test_scale(128, get_factors(2), 100000)
