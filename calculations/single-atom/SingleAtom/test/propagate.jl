@@ -31,7 +31,19 @@ let
     atom = MotionSystem(Vec3D(1f0, 0f0, 0f0), 10, builder)
 
     P = Propagate.SystemPropagator(atom, 1f-1, 1f-1, 100, 8)
-    Propagate.propagate_x1(P.sys, P.sotmp, P.motion.P_x2, 1f0, P.nele)
+    ps_excited = Propagate.propagate_x1(P.sys, P.sotmp, P.motion.P_x2, 1f0,
+                                        P.nele)
+    measure = Propagate.DummyMeasure()
+    Propagate.propagate_jump(P, P.sys, P.sotmp, P.nele, ps_excited,
+                             P.dt, measure, 1)
+    # @code_warntype Propagate.propagate_jump(P, P.sys, P.sotmp, P.nele,
+    #                                         ps_excited, P.dt, measure, 1)
+    # @code_llvm Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
+    #                                        ps_excited[1], P.dt, measure,
+    #                                        1, Val{2}(), Val{1}(), Val{1}())
+    # @code_warntype Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
+    #                                            ps_excited[1], P.dt, measure,
+    #                                            1, Val{2}(), Val{1}(), Val{1}())
 end
 
 end

@@ -29,6 +29,11 @@ abstract AbstractMeasure
 
 function measure_snapshot end
 
+immutable DummyMeasure
+end
+
+@inline measure_snapshot(::DummyMeasure, args...) = nothing
+
 @enum DecayType DecayNone DecayLeft DecayRight DecayMiddle
 
 # Before the iterations start the measure is called with
@@ -101,8 +106,8 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     measure_finalize(measure, P)
 end
 
-@generated function propagate_x1{Sys,N,T}(sys::Sys, sotmp,
-                                          P_x2::NTuple{N}, ψ_scale::T, nele)
+@generated function propagate_x1{Sys,N,T}(sys::Sys, sotmp, P_x2::NTuple{N},
+                                          ψ_scale::T, nele)
     @meta_expr inline
     P_x2_vars = [gensym(:P_x2) for i in 1:N]
     P_x2_ele_vars = [gensym(:P_x2_ele) for i in 1:N]
@@ -193,14 +198,16 @@ end
     end
 
     for i in 1:ntrans
-        (from, to) = transitions[i]
+        # This is a little confusing, the from, to of the decay is the
+        # opposite of the one for the transition
+        (to, from) = transitions[i]
         do_decay = quote
             p_accum += $(p_decay[i])
             if p_accum >= p_r_scale
                 p_excited = ps_excited[$(trans_states_idx[i])]
                 propagate_do_jump(P, sys, sotmp, nele, p_excited, dt, measure,
                                   iteration, $(Val{from}()), $(Val{to}()),
-                                  $(Val{i}()), transitions[$i])
+                                  $(Val{i}()))
                 return true
             end
         end
@@ -218,9 +225,11 @@ end
     end
 end
 
-@generated function propagate_do_jump{Sys,T,From,To,TransId,Trans
+@generated function propagate_do_jump{Sys,T,From,To,TransId
     }(P, sys::Sys, sotmp, nele, p_excited, dt::T, measure, iteration,
-      ::Val{From}, ::Val{To}, ::Val{TransId}, trans::Trans)
+      _from::Val{From}, _to::Val{To}, _transid::Val{TransId})
+
+    Trans = System.get_transition_types(Sys)[TransId]
 
     nstates = System.num_states(Sys)
     ψ_vars = [gensym(:ψ) for i in 1:nstates]
@@ -235,6 +244,7 @@ end
         decay_cache = P.optical.decays[$TransId]
         sin_decay = decay_cache.sins
         cos_decay = decay_cache.coss
+        tmp = P.tmp
     end
 
     # Calculate the probabilities
@@ -249,12 +259,12 @@ end
 
     # Decide the direction and really do the decay
     do_decay_ex = quote
-        ψ_scale = 1 / sqrt(p_excited)
+        ψ_scale::$T = 1 / sqrt(p_excited)
         if decay_dir > $(2 * p_ax)
             # Off axis decay
             decay_type = DecayMiddle
-            @simd for j in 1:nele
-                $([:($(ψ_vars[i])::T = 0) for i in 1:nstates]...)
+            @inbounds @simd for j in 1:nele
+                $([:($(ψ_vars[i]) = Complex{T}(0)) for i in 1:nstates]...)
                 $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
                 $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
             end
@@ -266,8 +276,8 @@ end
                 ksign = -1
                 decay_type = DecayLeft
             end
-            @simd for j in 1:nele
-                $([:($(ψ_vars[i])::T = 0) for i in 1:nstates]...)
+            @inbounds @simd for j in 1:nele
+                $([:($(ψ_vars[i]) = Complex{T}(0)) for i in 1:nstates]...)
                 $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
                 $(ψ_vars[To]) *= Complex(cos_decay[j], ksign * sin_decay[j])
                 $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
@@ -283,8 +293,6 @@ end
         ψ_scale = 1 / sqrt(T(nele))
         scale!(ψ_scale, tmp)
         measure_snapshot(measure, P, iteration, tmp, SnapshotK, decay_type)
-        # p_bfft! * tmp
-        # ψ_norm = T(nele)
     end
 
     quote
