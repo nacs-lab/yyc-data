@@ -228,6 +228,7 @@ end
 @generated function propagate_do_jump{Sys,T,From,To,TransId
     }(P, sys::Sys, sotmp, nele, p_excited, dt::T, measure, iteration,
       _from::Val{From}, _to::Val{To}, _transid::Val{TransId})
+    # Giving the arguments a name because of JuliaLang/julia#12474
 
     Trans = System.get_transition_types(Sys)[TransId]
 
