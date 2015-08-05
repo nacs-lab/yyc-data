@@ -92,6 +92,7 @@ export MotionSystem
 
 # MotionSystem
 
+# The atom is moving along the x-axis
 immutable MotionSystem{Ax,T,PotIdxs,Intern<:InternStates,Pots,Dris}
     # Ax:
     #     The quantization axis of the atom

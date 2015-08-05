@@ -2,6 +2,9 @@
 
 import ..Optical: init_phase!, update_phase!
 
+using ..Atomic
+using ..Atomic: get_transition_type
+
 @generated function init_phase!{T,NDri}(opt::OpticalCache{T,NDri})
     quote
         trackers = opt.trackers
@@ -87,7 +90,11 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     end
 
     @inbounds for i in 1:(nstep + 1)
-        propagate_x1(sys, sotmp, P_x2, 1 / sqrt(ψ_norm), nele)
+        ps_excited = propagate_x1(sys, sotmp, P_x2, 1 / sqrt(ψ_norm), nele)
+        if propagate_jump(P, sys, sotmp, nele, ps_excited, dt, measure, i)
+            ψ_norm = 1
+            continue
+        end
     end
 
     set_zero_subnormals(false)
@@ -139,5 +146,152 @@ end
             $loop_ex
         end
         ($([p_vars[i] for i in to_states]...),)
+    end
+end
+
+@generated function propagate_jump{Sys,T}(P, sys::Sys, sotmp, nele, ps_excited,
+                                          dt::T, measure, iteration)
+    @meta_expr inline
+    nstates = System.num_states(Sys)
+    transitions = System.get_transition_pairs(Sys)
+    ntrans = length(transitions)
+    trans_states_idx = Vector{Int}(ntrans)
+    to_states = Int[]
+    for i in 1:ntrans
+        (from, to) = transitions[i]
+        to in to_states || push!(to_states, to)
+        trans_states_idx[i] = findin(to_states, to)[1]
+    end
+    p_decay = [gensym(:p) for i in 1:ntrans]
+
+    init_ex = quote
+        intern = sys.intern
+        transitions = intern.transitions
+    end
+
+    # Compute total probability
+    prob_ex = quote
+        $([:($(p_decay[i]) = (ps_excited[$(trans_states_idx[i])] *
+                              transitions[$i].Γ * dt))
+           for i in 1:ntrans]...)
+        p_decay_total_lin = +($([p_decay[i] for i in 1:ntrans]...))
+        p_decay_total = 1 - exp(-p_decay_total_lin)
+    end
+
+    # Make dicision
+    decide_ex = quote
+        p_r = rand(T)
+        if p_r >= p_decay_total
+            return false
+        end
+    end
+
+    # Compute thresholds
+    decay_ex = quote
+        p_r_scale = p_r * p_decay_total_lin / p_decay_total
+        p_accum::T = 0
+    end
+
+    for i in 1:ntrans
+        (from, to) = transitions[i]
+        do_decay = quote
+            p_accum += $(p_decay[i])
+            if p_accum >= p_r_scale
+                p_excited = ps_excited[$(trans_states_idx[i])]
+                propagate_do_jump(P, sys, sotmp, nele, p_excited, dt, measure,
+                                  iteration, $(Val{from}()), $(Val{to}()),
+                                  $(Val{i}()), transitions[$i])
+                return true
+            end
+        end
+        push!(decay_ex.args, do_decay)
+    end
+
+    quote
+        $init_ex
+        $prob_ex
+        $decide_ex
+        $decay_ex
+
+        # In case there's some rounding error
+        return false
+    end
+end
+
+@generated function propagate_do_jump{Sys,T,From,To,TransId,Trans
+    }(P, sys::Sys, sotmp, nele, p_excited, dt::T, measure, iteration,
+      ::Val{From}, ::Val{To}, ::Val{TransId}, trans::Trans)
+
+    nstates = System.num_states(Sys)
+    ψ_vars = [gensym(:ψ) for i in 1:nstates]
+
+    ax = System.get_quant_axis(Sys)
+    cos²θ = (ax * Vec3D(1, 0, 0))^2 / abs2(ax)
+    sin²θ = 1 - cos²θ
+
+    init_ex = quote
+        decay_dir = rand($T)
+        p_fft! = P.p_fft!
+        decay_cache = P.optical.decays[$TransId]
+        sin_decay = decay_cache.sins
+        cos_decay = decay_cache.coss
+    end
+
+    # Calculate the probabilities
+    trans_pol = get_transition_type(Trans)
+    # Propability of on axis and off axis emission relative to the
+    # quantization axes
+    p_ax::T = trans_pol == Trans_π ? 0.1 : 0.2
+    p_offax::T = 1 - 2 * p_ax
+
+    # convert to lab axis
+    p_ax = p_ax * cos²θ + p_offax / 2 * sin²θ
+
+    # Decide the direction and really do the decay
+    do_decay_ex = quote
+        ψ_scale = 1 / sqrt(p_excited)
+        if decay_dir > $(2 * p_ax)
+            # Off axis decay
+            decay_type = DecayMiddle
+            @simd for j in 1:nele
+                $([:($(ψ_vars[i])::T = 0) for i in 1:nstates]...)
+                $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
+                $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
+            end
+        else
+            if decay_dir < $p_ax
+                ksign = 1
+                decay_type = DecayRight
+            else
+                ksign = -1
+                decay_type = DecayLeft
+            end
+            @simd for j in 1:nele
+                $([:($(ψ_vars[i])::T = 0) for i in 1:nstates]...)
+                $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
+                $(ψ_vars[To]) *= Complex(cos_decay[j], ksign * sin_decay[j])
+                $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
+            end
+        end
+    end
+
+    # Do the post decay measure
+    post_measure_ex = quote
+        measure_snapshot(measure, P, iteration, sotmp, SnapshotX, decay_type)
+        Base.unsafe_copy!(tmp, sotmp)
+        p_fft! * tmp
+        ψ_scale = 1 / sqrt(T(nele))
+        scale!(ψ_scale, tmp)
+        measure_snapshot(measure, P, iteration, tmp, SnapshotK, decay_type)
+        # p_bfft! * tmp
+        # ψ_norm = T(nele)
+    end
+
+    quote
+        $init_ex
+        $do_decay_ex
+        $post_measure_ex
+
+        nothing
     end
 end
