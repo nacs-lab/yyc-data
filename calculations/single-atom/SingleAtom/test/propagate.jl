@@ -40,10 +40,10 @@ let
     #                                         ps_excited, P.dt, measure, 1)
     # @code_llvm Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
     #                                        ps_excited[1], P.dt, measure,
-    #                                        1, Val{2}(), Val{1}(), Val{1}())
+    #                                        1, Val{1}())
     # @code_warntype Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
     #                                            ps_excited[1], P.dt, measure,
-    #                                            1, Val{2}(), Val{1}(), Val{1}())
+    #                                            1, Val{1}())
 end
 
 end

@@ -158,12 +158,12 @@ end
                                           dt::T, measure, iteration)
     @meta_expr inline
     nstates = System.num_states(Sys)
-    transitions = System.get_transition_pairs(Sys)
-    ntrans = length(transitions)
+    transition_pairs = System.get_transition_pairs(Sys)
+    ntrans = length(transition_pairs)
     trans_states_idx = Vector{Int}(ntrans)
     to_states = Int[]
     for i in 1:ntrans
-        (from, to) = transitions[i]
+        (from, to) = transition_pairs[i]
         to in to_states || push!(to_states, to)
         trans_states_idx[i] = findin(to_states, to)[1]
     end
@@ -198,16 +198,12 @@ end
     end
 
     for i in 1:ntrans
-        # This is a little confusing, the from, to of the decay is the
-        # opposite of the one for the transition
-        (to, from) = transitions[i]
         do_decay = quote
             p_accum += $(p_decay[i])
             if p_accum >= p_r_scale
                 p_excited = ps_excited[$(trans_states_idx[i])]
                 propagate_do_jump(P, sys, sotmp, nele, p_excited, dt, measure,
-                                  iteration, $(Val{from}()), $(Val{to}()),
-                                  $(Val{i}()))
+                                  iteration, $(Val{i}()))
                 return true
             end
         end
@@ -225,12 +221,16 @@ end
     end
 end
 
-@generated function propagate_do_jump{Sys,T,From,To,TransId
-    }(P, sys::Sys, sotmp, nele, p_excited, dt::T, measure, iteration,
-      _from::Val{From}, _to::Val{To}, _transid::Val{TransId})
+@generated function propagate_do_jump{Sys,T,TransId}(P, sys::Sys, sotmp, nele,
+                                                     p_excited, dt::T, measure,
+                                                     iteration,
+                                                     _transid::Val{TransId})
     # Giving the arguments a name because of JuliaLang/julia#12474
 
     Trans = System.get_transition_types(Sys)[TransId]
+    # This is a little confusing, the (from, to) of the decay is the
+    # opposite of the one for the transition
+    To, From = System.get_transition_pairs(Sys)[TransId]
 
     nstates = System.num_states(Sys)
     ψ_vars = [gensym(:ψ) for i in 1:nstates]
