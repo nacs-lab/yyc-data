@@ -71,6 +71,7 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     P_k = motion_cache.P_k
     E_x = motion_cache.E_x
     P_x2 = motion_cache.P_x2
+    P_Es = motion_cache.P_Es
 
     optical_cache = P.optical
     coupling_cache = P.coupling
@@ -100,10 +101,37 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
             ψ_norm = 1
             continue
         end
+        measure_snapshot(measure, P, i, sotmp, SnapshotX, DecayNone)
+        Base.unsafe_copy!(tmp, sotmp)
+        p_fft! * tmp
+        Base.unsafe_copy!(sotmp, tmp)
+        propagate_k(sys, sotmp, P_k, P_Es, 1 / sqrt(T(nele)), nele)
     end
 
     set_zero_subnormals(false)
     measure_finalize(measure, P)
+end
+
+@generated function propagate_k{Sys,T}(sys::Sys, sotmp, P_k, P_Es,
+                                       ψ_scale::T, nele)
+    @meta_expr inline
+    nstates = System.num_states(Sys)
+    P_Es_vars = [gensym(:P_Es) for i in 1:nstates]
+    init_ex = quote
+        $([:($(P_Es_vars[i]) = P_Es[$i]) for i in 1:nstates]...)
+    end
+    execute_ex = quote
+        @inbounds @simd for j in 1:nele
+            p_k = P_k[j] * ψ_scale
+            $([:(sotmp[j, $i] *= p_k * $(P_Es_vars[i])) for i in 1:N]...)
+        end
+    end
+    quote
+        @meta_expr inline
+        $init_ex
+        $execute_ex
+        nothing
+    end
 end
 
 @generated function propagate_x1{Sys,N,T}(sys::Sys, sotmp, P_x2::NTuple{N},
