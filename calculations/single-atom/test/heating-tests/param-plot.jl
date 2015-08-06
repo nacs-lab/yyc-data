@@ -27,7 +27,7 @@
         m_Na = Float32(22.98977e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.2) # f = 200kHz
-        ω_e = ω_g
+        ω_e = ω_g * ratio
         h_trap = HTrap{Float32}(m_Na, (ω_g, ω_e))
 
         λ_res = Float32(0.589)
@@ -36,7 +36,7 @@
         o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 10.0)
 
         # k, Ω, δ, τ_θ
-        δ = 2π * ratio
+        δ = 2π * 5.0
         Ω = 2π * 5.0
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
@@ -61,8 +61,8 @@ end
 
 println("start")
 
-ratios = linspace(-20f0, 17.5f0, 16)
-xax_name = "Detuning (MHz)"
+ratios = linspace(0, 7, 8)
+xax_name = "Trapping Depth ratio"
 @time accums = pmap(run, ratios)
 
 using PyPlot
