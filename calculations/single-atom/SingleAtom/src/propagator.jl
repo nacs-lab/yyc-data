@@ -15,6 +15,7 @@ immutable HMotionCache{T,N,NState}
     P_x2::NTuple{N,SoCVector{T}}
 
     P_Es::NTuple{NState,Complex{T}}
+    P_Γs::NTuple{NState,T}
 end
 
 @generated function HMotionCache{M<:MotionSystem}(sys::M, _dx, _dt, nele)
@@ -58,12 +59,26 @@ end
         energies = sys.intern.energies
         P_Es = ($([:(exp((1im) * dt * energies[$i])) for i in 1:nstates]...),)
     end
+    transition_pairs = System.get_transition_pairs(M)
+    ntrans = length(transition_pairs)
+    nstates = System.num_states(M)
+    decay_rate = Any[[:($T(0))] for i in 1:nstates]
+    for i in 1:ntrans
+        (from, to) = transition_pairs[i]
+        push!(decay_rate[to], :(transitions[$i].Γ))
+    end
+    calc_γs = quote
+        transitions = sys.intern.transitions
+        P_Γs = ($([:(exp(-dt / 2 * +($(decay_rate[i]...))))
+                    for i in 1:nstates]...),)
+    end
     quote
         $init_expr
         $calc_k
         $calc_x
         $calc_es
-        HMotionCache{$T,$NPots,$nstates}(E_k, P_k, E_x, P_x2, P_Es)
+        $calc_γs
+        HMotionCache{$T,$NPots,$nstates}(E_k, P_k, E_x, P_x2, P_Es, P_Γs)
     end
 end
 
