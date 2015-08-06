@@ -123,7 +123,7 @@ end
     execute_ex = quote
         @inbounds @simd for j in 1:nele
             p_k = P_k[j] * ψ_scale
-            $([:(sotmp[j, $i] *= p_k * $(P_Es_vars[i])) for i in 1:N]...)
+            $([:(sotmp[j, $i] *= p_k * $(P_Es_vars[i])) for i in 1:nstates]...)
         end
     end
     quote

@@ -44,6 +44,8 @@ let
     # @code_warntype Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
     #                                            ps_excited[1], P.dt, measure,
     #                                            1, Val{1}())
+    Propagate.propagate_k(P.sys, P.sotmp, P.motion.P_k, P.motion.P_Es,
+                          1f0, P.nele)
 end
 
 end
