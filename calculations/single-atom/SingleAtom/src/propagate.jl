@@ -106,6 +106,11 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
         p_fft! * tmp
         Base.unsafe_copy!(sotmp, tmp)
         propagate_k(sys, sotmp, P_k, P_Es, 1 / sqrt(T(nele)), nele)
+        measure_snapshot(measure, P, i, sotmp, SnapshotK, DecayNone)
+        Base.unsafe_copy!(tmp, sotmp)
+        p_bfft! * tmp
+        Base.unsafe_copy!(sotmp, tmp)
+        update_phase!(optical_cache, dt)
     end
 
     set_zero_subnormals(false)
