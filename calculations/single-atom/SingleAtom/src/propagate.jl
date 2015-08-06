@@ -72,6 +72,7 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     E_x = motion_cache.E_x
     P_x2 = motion_cache.P_x2
     P_Es = motion_cache.P_Es
+    P_Γs = motion_cache.P_Γs
 
     optical_cache = P.optical
     coupling_cache = P.coupling
@@ -111,10 +112,66 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
         p_bfft! * tmp
         Base.unsafe_copy!(sotmp, tmp)
         update_phase!(optical_cache, dt)
+        ψ_norm = propagate_x2(sys, sotmp, P_x2, P_Γs, nele)
     end
 
     set_zero_subnormals(false)
     measure_finalize(measure, P)
+end
+
+@generated function propagate_x2{Sys,N,T}(sys::Sys, sotmp,
+                                          P_x2::NTuple{N,SoCVector{T}},
+                                          P_Γs, nele)
+    # We need to apply the phase factors of P_x2 and also the incoherent part
+    # of the transformation. Therefore we need to figure out what states can
+    # decay and how fast are they decaying.
+    @meta_expr inline
+    transition_pairs = System.get_transition_pairs(Sys)
+    ntrans = length(transition_pairs)
+    nstates = System.num_states(Sys)
+    to_states = Int[]
+    for i in 1:ntrans
+        (from, to) = transition_pairs[i]
+        to in to_states || push!(to_states, to)
+    end
+    p_vars = [gensym(:p) for i in 1:nstates]
+
+    P_x2_vars = [gensym(:P_x2) for i in 1:N]
+    init_ex = quote
+        $([:($(P_x2_vars[i]) = P_x2[$i]) for i in 1:N]...)
+        $([:($(p_vars[i]) = P_Γs[$i]) for i in to_states]...)
+        ψ_norm::T = 0
+    end
+
+    P_x2_ele_vars = [gensym(:P_x2_ele) for i in 1:N]
+    ψ_vars = [gensym(:ψ) for i in 1:nstates]
+
+    pot_idxs = System.get_potential_idxs(Sys)
+
+    # TODO try split loops
+    loop_ex = quote
+        @simd for j in 1:nele
+            # Load the X phase factor
+            $([:($(P_x2_ele_vars[i]) = $(P_x2_vars[i])[j]) for i in 1:N]...)
+
+            # update the wave function
+            $([:($(ψ_vars[i]) = sotmp[j, $i] * $(P_x2_ele_vars[pot_idxs[i]]))
+               for i in 1:nstates]...)
+            $([:($(ψ_vars[i]) *= $(p_vars[i])) for i in to_states]...)
+            $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
+
+            ψ_norm += +($([:(abs2($(ψ_vars[i]))) for i in 1:nstates]...))
+        end
+    end
+
+    quote
+        @meta_expr inline
+        @inbounds begin
+            $init_ex
+            $loop_ex
+        end
+        ψ_norm
+    end
 end
 
 @generated function propagate_k{Sys,T}(sys::Sys, sotmp, P_k, P_Es,

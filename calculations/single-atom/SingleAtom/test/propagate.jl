@@ -46,6 +46,7 @@ let
     #                                            1, Val{1}())
     Propagate.propagate_k(P.sys, P.sotmp, P.motion.P_k, P.motion.P_Es,
                           1f0, P.nele)
+    Propagate.propagate_x2(P.sys, P.sotmp, P.motion.P_x2, P.motion.P_Γs, P.nele)
 end
 
 end
