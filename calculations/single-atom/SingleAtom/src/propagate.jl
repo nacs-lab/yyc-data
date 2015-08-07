@@ -29,7 +29,7 @@ abstract AbstractMeasure
 
 function measure_snapshot end
 
-immutable DummyMeasure
+immutable DummyMeasure <: AbstractMeasure
 end
 
 @inline measure_snapshot(::DummyMeasure, args...) = nothing
