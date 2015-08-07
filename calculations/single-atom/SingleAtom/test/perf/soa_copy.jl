@@ -103,7 +103,7 @@ function print_strs_aligned(strs, max_len)
     end
 end
 
-function test_nele(nele, _ndims, nloop=10_000)
+function test_nele(nele, _ndims, nloop)
     ts = [test_scale(nele, get_factors(ndim), nloop) for ndim in _ndims]
     ndims_str = [@sprintf("%d", ndim) for ndim in _ndims]
     taos_str = [@sprintf("%.2e", ts[i][1]) for i in 1:length(_ndims)]
