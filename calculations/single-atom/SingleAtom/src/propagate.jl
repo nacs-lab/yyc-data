@@ -113,10 +113,80 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
         Base.unsafe_copy!(sotmp, tmp)
         update_phase!(optical_cache, dt)
         ψ_norm = propagate_x2(sys, sotmp, P_x2, P_Γs, nele)
+        propagate_drive(sys, sotmp, nele, optical_cache, coupling_cache)
     end
 
     set_zero_subnormals(false)
     measure_finalize(measure, P)
+end
+
+@generated function propagate_drive{
+    Sys,T,N,Idxs}(sys::Sys, sotmp, nele, optical_cache,
+                  coupling_cache::CouplingCache{T,N,Idxs})
+    drive_ids = ([drive_id for (drive_id, trans_id) in Idxs]...)
+    transition_pairs = System.get_transition_pairs(Sys)
+    trans_coupling_pairs = ([transition_pairs[trans_id]
+                             for (drive_id, trans_id) in Idxs]...)
+    init_ex = quote
+        drive_ids = $drive_ids
+        trans_coupling_pairs = $trans_coupling_pairs
+        trackers = optical_cache.trackers
+        drive_trigcaches = optical_cache.drives
+        couplings = coupling_cache.couplings
+    end
+    drive_ex = quote
+        @inbounds for k in 1:N
+            drive_id = drive_ids[k]
+            tracker = trackers[drive_id]
+            sins = drive_trigcaches[drive_id].sins
+            coss = drive_trigcaches[drive_id].coss
+            # Hamiltonian of the spin part is
+            # H_σ = Ω (cos(θ_t + θ_x) σ_x + sin(θ_t + θ_x) σ_y)
+
+            # Propagator is
+            # P_σ = exp(im H_σ Δt)
+            #     = exp(im Ω (cos(θ_t + θ_x) σ_x +
+            #                 sin(θ_t + θ_x) σ_y) Δt)
+            #     = cos(Ω Δt) + im * (cos(θ_t + θ_x) σ_x +
+            #                         sin(θ_t + θ_x) σ_y) * sin(Ω Δt)
+            #     = cos(Ω Δt) + im cos(θ_t + θ_x) sin(Ω Δt) σ_x +
+            #       im sin(θ_t + θ_x) sin(Ω Δt) σ_y
+            #     = [cos(Ω Δt), im exp(im(θ_t + θ_x)) sin(Ω Δt)
+            #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
+
+            coupling = couplings[k]
+            sin_dt = coupling.sindθ
+            cos_dt = coupling.cosdθ
+
+            # P_σ11 = P_σ22 = cos(Ω Δt)
+            # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
+            # P_σ21 = -P_σ12'
+
+            exp_θ_t = tracker.exp_t
+            T11 = T22 = cos_dt
+            T_pre = (1im) * exp_θ_t * sin_dt
+
+            from, to = trans_coupling_pairs[k]
+
+            @simd for j in 1:nele
+                ψ_g = sotmp[j, from]
+                ψ_e = sotmp[j, to]
+                exp_θ_x = Complex(coss[j], sins[j])
+
+                T12 = T_pre * exp_θ_x
+                T21 = -conj(T12)
+
+                sotmp[j, from] = T11 * ψ_g + T12 * ψ_e
+                sotmp[j, to] = T22 * ψ_e + T21 * ψ_g
+            end
+        end
+    end
+    quote
+        $init_ex
+        $drive_ex
+
+        nothing
+    end
 end
 
 @generated function propagate_x2{Sys,N,T}(sys::Sys, sotmp,
