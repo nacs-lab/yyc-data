@@ -27,6 +27,14 @@ using SingleAtom
                for j in 1:N]...)
         end
     end
+    aos_split_run = quote
+        @inbounds for j in 1:$N
+            splat_factor = factors[j]
+            for i in 1:nele
+                ary[i, j] *= sofactor2[i] * splat_factor
+            end
+        end
+    end
     soa_run = quote
         unsafe_copy!(soary, ary)
         @inbounds @simd for i in 1:nele
@@ -38,6 +46,23 @@ using SingleAtom
         end
         unsafe_copy!(ary, soary)
     end
+    soa_split_run = quote
+        unsafe_copy!(soary, ary)
+        @inbounds for j in 1:2:$(N - 1)
+            splat_factor = factors[j]
+            @simd for i in 1:nele
+                soary[i, j] *= sofactor2[i] * splat_factor
+                soary[i, j + 1] *= sofactor2[i] * splat_factor
+            end
+        end
+        @inbounds if $N % 2 != 0
+            splat_factor = factors[$N]
+            @simd for i in 1:nele
+                soary[i, $N] *= sofactor2[i] * splat_factor
+            end
+        end
+        unsafe_copy!(ary, soary)
+    end
     quote
         $init_ex
         $rand_ex
@@ -46,9 +71,17 @@ using SingleAtom
         end
         $rand_ex
         t2 = @elapsed for n in 1:nloop
+            $aos_split_run
+        end
+        $rand_ex
+        t3 = @elapsed for n in 1:nloop
             $soa_run
         end
-        t1 / nloop, t2 / nloop
+        $rand_ex
+        t4 = @elapsed for n in 1:nloop
+            $soa_split_run
+        end
+        t1 / nloop, t2 / nloop, t3 / nloop, t4 / nloop
     end
 end
 
@@ -74,21 +107,32 @@ function test_nele(nele, _ndims, nloop=10_000)
     ts = [test_scale(nele, get_factors(ndim), nloop) for ndim in _ndims]
     ndims_str = [@sprintf("%d", ndim) for ndim in _ndims]
     taos_str = [@sprintf("%.2e", ts[i][1]) for i in 1:length(_ndims)]
-    tsoa_str = [@sprintf("%.2e", ts[i][2]) for i in 1:length(_ndims)]
-    max_len = maximum(length, [ndims_str; taos_str; tsoa_str])
+    taos_split_str = [@sprintf("%.2e", ts[i][2]) for i in 1:length(_ndims)]
+    tsoa_str = [@sprintf("%.2e", ts[i][3]) for i in 1:length(_ndims)]
+    tsoa_split_str = [@sprintf("%.2e", ts[i][4]) for i in 1:length(_ndims)]
+    max_len = maximum(length, [ndims_str; taos_str; taos_split_str;
+                               tsoa_str; tsoa_split_str])
     println("* `nele=$nele`")
     println()
-    print("|      ndim| ")
+    print("|            ndim| ")
     print_strs_aligned(ndims_str, max_len)
     println("|")
-    println("|----------|", ("-" ^ (max_len + 1) * "|") ^ length(_ndims))
+    println("|----------------|", ("-" ^ (max_len + 1) * "|") ^ length(_ndims))
 
-    print("|Time (AoS)| ")
+    print("|Time       (AoS)| ")
     print_strs_aligned(taos_str, max_len)
     println("|")
 
-    print("|Time (SoA)| ")
+    print("|Time (AoS split)| ")
+    print_strs_aligned(taos_split_str, max_len)
+    println("|")
+
+    print("|Time       (SoA)| ")
     print_strs_aligned(tsoa_str, max_len)
+    println("|")
+
+    print("|Time (SoA split)| ")
+    print_strs_aligned(tsoa_split_str, max_len)
     println("|")
     println()
 end
