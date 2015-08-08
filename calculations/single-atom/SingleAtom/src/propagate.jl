@@ -266,10 +266,7 @@ end
 @generated function propagate_x1{Sys,N,T}(sys::Sys, sotmp, P_x2::NTuple{N},
                                           ψ_scale::T, nele)
     @meta_expr inline
-    P_x2_vars = [gensym(:P_x2) for i in 1:N]
-    P_x2_ele_vars = [gensym(:P_x2_ele) for i in 1:N]
     nstates = System.num_states(Sys)
-    ψ_vars = [gensym(:ψ) for i in 1:nstates]
     p_vars = [gensym(:p) for i in 1:nstates]
 
     transitions = System.get_transition_pairs(Sys)
@@ -277,27 +274,35 @@ end
     for (from, to) in transitions
         to in to_states || push!(to_states, to)
     end
+    sort_to_states = sort(to_states)
+    none_to_states = Int[]
+    for i in 1:nstates
+        i in to_states || push!(none_to_states, i)
+    end
 
     init_ex = quote
-        $([:($(P_x2_vars[i]) = P_x2[$i]) for i in 1:N]...)
-        $([:($(p_vars[i])::$T = 0) for i in to_states]...)
+        $([:($(p_vars[i])::$T = 0) for i in sort_to_states]...)
     end
 
     pot_idxs = System.get_potential_idxs(Sys)
 
     loop_ex = quote
-        @simd for j in 1:nele
-            # Load the X phase factor. Scale the phase factor since there's
-            # less of them compare to the number of states
-            $([:($(P_x2_ele_vars[i]) = $(P_x2_vars[i])[j] * ψ_scale)
-               for i in 1:N]...)
-
-            # update the wave function
-            $([:($(ψ_vars[i]) = sotmp[j, $i] * $(P_x2_ele_vars[pot_idxs[i]]);
-                 sotmp[j, $i] = $(ψ_vars[i]))
-               for i in 1:nstates]...)
-
-            $([:($(p_vars[i]) += abs2($(ψ_vars[i]))) for i in to_states]...)
+        for i in ($(sort_to_states...),)
+            p_x2_single = P_x2[$pot_idxs[i]] * ψ_scale
+            p_var::$T = 0
+            @simd for j in 1:nele
+                ψ = sotmp[j, i] * p_x2_single[j]
+                sotmp[j, i] = ψ
+                p_var += abs2(ψ)
+            end
+            $([:(i == $i && ($(p_vars[i]) = p_var))
+               for i in sort_to_states]...)
+        end
+        for i in ($(none_to_states...),)
+            p_x2_single = P_x2[$pot_idxs[i]] * ψ_scale
+            @simd for j in 1:nele
+                sotmp[j, i] *= p_x2_single[j]
+            end
         end
     end
 
