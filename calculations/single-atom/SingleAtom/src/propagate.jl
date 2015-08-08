@@ -291,10 +291,10 @@ end
 
     loop_ex = quote
         for i in ($(sort_to_states...),)
-            p_x2_single = P_x2[$pot_idxs[i]] * ψ_scale
+            p_x2_single = P_x2[$pot_idxs[i]]
             p_var::$T = 0
             @simd for j in 1:nele
-                ψ = sotmp[j, i] * p_x2_single[j]
+                ψ = sotmp[j, i] * p_x2_single[j] * ψ_scale
                 sotmp[j, i] = ψ
                 p_var += abs2(ψ)
             end
@@ -302,9 +302,9 @@ end
                for i in sort_to_states]...)
         end
         for i in ($(none_to_states...),)
-            p_x2_single = P_x2[$pot_idxs[i]] * ψ_scale
+            p_x2_single = P_x2[$pot_idxs[i]]
             @simd for j in 1:nele
-                sotmp[j, i] *= p_x2_single[j]
+                sotmp[j, i] *= p_x2_single[j] * ψ_scale
             end
         end
     end
