@@ -163,21 +163,24 @@ end
             # P_σ21 = -P_σ12'
 
             exp_θ_t = tracker.exp_t
-            T11 = T22 = cos_dt
+            T11 = cos_dt
             T_pre = (1im) * exp_θ_t * sin_dt
 
             from, to = trans_coupling_pairs[k]
 
             @simd for j in 1:nele
+                # This is a tight loop with complicated operations.
+                # It is important to make sure this is as simple as possible
+                # so that we don't run out of registers and spill anything
+                # to the stack
                 ψ_g = sotmp[j, from]
                 ψ_e = sotmp[j, to]
                 exp_θ_x = Complex(coss[j], sins[j])
 
                 T12 = T_pre * exp_θ_x
-                T21 = -conj(T12)
 
                 sotmp[j, from] = T11 * ψ_g + T12 * ψ_e
-                sotmp[j, to] = T22 * ψ_e + T21 * ψ_g
+                sotmp[j, to] = T11 * ψ_e - conj(T12) * ψ_g
             end
         end
     end
@@ -427,6 +430,8 @@ end
             # Off axis decay
             decay_type = DecayMiddle
             @inbounds @simd for j in 1:nele
+                # This unrolled inner loop should be cheap since
+                # most of the operations are zeroing
                 $([:($(ψ_vars[i]) = Complex{T}(0)) for i in 1:nstates]...)
                 $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
                 $([:(sotmp[j, $i] = $(ψ_vars[i])) for i in 1:nstates]...)
@@ -440,6 +445,8 @@ end
                 decay_type = DecayLeft
             end
             @inbounds @simd for j in 1:nele
+                # This unrolled inner loop should be cheap since
+                # most of the operations are zeroing
                 $([:($(ψ_vars[i]) = Complex{T}(0)) for i in 1:nstates]...)
                 $(ψ_vars[To]) = sotmp[j, $From] * ψ_scale
                 $(ψ_vars[To]) *= Complex(cos_decay[j], ksign * sin_decay[j])
