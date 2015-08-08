@@ -248,19 +248,16 @@ end
                                        ψ_scale::T, nele)
     @meta_expr inline
     nstates = System.num_states(Sys)
-    P_Es_vars = [gensym(:P_Es) for i in 1:nstates]
-    init_ex = quote
-        $([:($(P_Es_vars[i]) = P_Es[$i]) for i in 1:nstates]...)
-    end
     execute_ex = quote
-        @inbounds @simd for j in 1:nele
-            p_k = P_k[j] * ψ_scale
-            $([:(sotmp[j, $i] *= p_k * $(P_Es_vars[i])) for i in 1:nstates]...)
+        @inbounds for i in 1:$nstates
+            p_E = P_Es[i] * ψ_scale
+            @simd for j in 1:nele
+                sotmp[j, i] *= P_k[j] * p_E
+            end
         end
     end
     quote
         @meta_expr inline
-        $init_ex
         $execute_ex
         nothing
     end
