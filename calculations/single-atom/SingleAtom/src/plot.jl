@@ -28,12 +28,12 @@ function plot_measure(measure::WaveFuncMeasure)
     ψs = measure.ψs
 
     nstates, = size(ψs, 2)
-    img = Array{Float64}(size(ψs, 1, 3))
+    img = zeros(Float64, size(ψs, 1, 3))
 
     @inbounds for i in 1:size(img, 2)
         for k in 1:nstates
             @simd for j in 1:size(img, 1)
-                img[j, i] = abs2(ψs[j, k, i])
+                img[j, i] += abs2(ψs[j, k, i])
             end
         end
     end
@@ -44,12 +44,12 @@ function plot_measure(measure::WaveFuncMonteCarloMeasure)
     ψs = measure.ψs2
 
     nstates, = size(ψs, 2)
-    img = Array{Float64}(size(ψs, 1, 3))
+    img = zeros(Float64, size(ψs, 1, 3))
 
     @inbounds for i in 1:size(img, 2)
         for k in 1:nstates
             @simd for j in 1:size(img, 1)
-                img[j, i] = ψs[j, k, i]
+                img[j, i] += ψs[j, k, i]
             end
         end
     end
