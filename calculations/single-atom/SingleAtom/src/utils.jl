@@ -102,16 +102,18 @@ end
 """
 Sum of 3D vectors
 """
-@generated function +(vecs::Vec3D...)
+@generated function +(vec1::Vec3D, vecs::Vec3D...)
     @meta_expr inline
     len = length(vecs)
     quote
         $(Expr(:meta, :inline))
-        Vec3D(+($([:(vecs[$i].x) for i in 1:len]...)),
-              +($([:(vecs[$i].y) for i in 1:len]...)),
-              +($([:(vecs[$i].z) for i in 1:len]...)))
+        Vec3D(+(vec1.x, $([:(vecs[$i].x) for i in 1:len]...)),
+              +(vec1.y, $([:(vecs[$i].y) for i in 1:len]...)),
+              +(vec1.z, $([:(vecs[$i].z) for i in 1:len]...)))
     end
 end
+
++(vec::Vec3D) = vec
 
 @inline -(vec::Vec3D) = Vec3D(-vec.x, -vec.y, -vec.z)
 
