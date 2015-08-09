@@ -36,14 +36,6 @@ let
     measure = Propagate.DummyMeasure()
     Propagate.propagate_jump(P, P.sys, P.sotmp, P.nele, ps_excited,
                              P.dt, measure, 1)
-    # @code_warntype Propagate.propagate_jump(P, P.sys, P.sotmp, P.nele,
-    #                                         ps_excited, P.dt, measure, 1)
-    # @code_llvm Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
-    #                                        ps_excited[1], P.dt, measure,
-    #                                        1, Val{1}())
-    # @code_warntype Propagate.propagate_do_jump(P, P.sys, P.sotmp, P.nele,
-    #                                            ps_excited[1], P.dt, measure,
-    #                                            1, Val{1}())
     Propagate.propagate_k(P.sys, P.sotmp, P.motion.P_k, P.motion.P_Es,
                           1f0, P.nele)
     Propagate.propagate_x2(P.sys, P.sotmp, P.motion.P_x2, P.motion.P_Γs, P.nele)
