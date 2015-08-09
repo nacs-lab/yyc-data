@@ -23,9 +23,9 @@ function call{Sys,T,ST}(::Type{WaveFuncMeasure{ST}}, P::SystemPropagator{Sys,T})
                                          P.nstep + 1))
 end
 
-function measure_snapshot(r::WaveFuncMeasure{SnapshotX},
-                          P::SystemPropagator, t_i, ψ,
-                          shot_type::SnapshotType, decay)
+function measure_snapshot{Sys}(r::WaveFuncMeasure{SnapshotX},
+                               P::SystemPropagator{Sys}, t_i, ψ,
+                               shot_type::SnapshotType, decay)
     @inbounds if shot_type == SnapshotX
         nstates = System.num_states(Sys)
         nele = P.nele
@@ -39,9 +39,9 @@ function measure_snapshot(r::WaveFuncMeasure{SnapshotX},
     nothing
 end
 
-function measure_snapshot(r::WaveFuncMeasure{SnapshotK},
-                          P::SystemPropagator, t_i, ψ,
-                          shot_type::SnapshotType, decay)
+function measure_snapshot{Sys}(r::WaveFuncMeasure{SnapshotK},
+                               P::SystemPropagator{Sys}, t_i, ψ,
+                               shot_type::SnapshotType, decay)
     @inbounds if accum_type == AccumK
         nstates = System.num_states(Sys)
         nele = P.nele
@@ -70,9 +70,9 @@ end
 
 function call{Sys,T}(::Type{EnergyMeasure}, P::SystemPropagator{Sys,T},
                      base_state, e_thresh)
-    state_id = System.get_state_id(base_state)
+    state_name, state_id = System.get_state_id(P.sys, base_state)
     pot_idxs = System.get_potential_idxs(Sys)
-    pot_id = pot_ids[state_id]
+    pot_id = pot_idxs[state_id]
     EnergyMeasure{T}(Array{T}(P.nstep + 1), e_thresh, P.dt, pot_id,
                      Ref(T(0)), Ref(T(0)))
 end
@@ -83,9 +83,9 @@ function measure_init{T}(r::EnergyMeasure{T}, P::SystemPropagator)
     nothing
 end
 
-@inline function measure_snapshot{T}(r::EnergyMeasure{T},
-                                     P::SystemPropagator, t_i, ψ,
-                                     shot_type::SnapshotType, decay)
+@inline function measure_snapshot{Sys,T}(r::EnergyMeasure{T},
+                                         P::SystemPropagator{Sys}, t_i, ψ,
+                                         shot_type::SnapshotType, decay)
     Es = r.Es
     nele = P.nele
     nstates = System.num_states(Sys)

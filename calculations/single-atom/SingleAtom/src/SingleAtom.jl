@@ -10,6 +10,7 @@ export Vec3D
 
 include("optical.jl")
 using .Optical
+export Drive
 
 include("atomic.jl")
 using .Atomic
@@ -19,6 +20,11 @@ export AtomBuilder, add_state!, add_transition!
 export InternStates
 
 include("system.jl")
+using .System
+export AbstractPotential, HarmonicPotential, ZeroPotential
+export get_potential, get_kinetic
+export SystemBuilder, add_state!, add_transition!, add_potential!, add_drive!
+export MotionSystem
 
 include("propagator.jl")
 using .Propagate

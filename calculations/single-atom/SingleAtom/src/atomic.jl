@@ -77,14 +77,14 @@ end
 
 function get_state_id(builder::AtomBuilder, _name)
     name = symbol(_name)
-    name, get_state_id(builder, name)
+    get_state_id(builder, name)
 end
 
 function get_state_id(builder::AtomBuilder, name::Symbol)
     @inbounds for i in 1:length(builder.states)
-        builder.states[i].first == name && return i
+        builder.states[i].first == name && return (name, i)
     end
-    return 0
+    name, 0
 end
 
 function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
@@ -134,14 +134,14 @@ end
 
 function get_state_id(intern::InternStates, _name)
     name = symbol(_name)
-    name, get_state_id(intern, name)
+    get_state_id(intern, name)
 end
 
 function get_state_id{Names}(::InternStates{Names}, name::Symbol)
     @inbounds for i in 1:length(Names)
-        Names[i] == name && return i
+        Names[i] == name && return (name, i)
     end
-    return 0
+    name, 0
 end
 
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
