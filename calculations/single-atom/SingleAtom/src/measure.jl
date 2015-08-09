@@ -78,6 +78,7 @@ function call{Sys,T}(::Type{EnergyMeasure}, P::SystemPropagator{Sys,T},
 end
 
 function measure_init{T}(r::EnergyMeasure{T}, P::SystemPropagator)
+    fill!(r.Es, 0)
     r.t_esc[] = 0
     r.pcount[] = 0
     nothing
