@@ -135,8 +135,8 @@ end
 
 function call{ST,T}(::Type{WaveFuncMonteCarloMeasure},
                     sub_measure::WaveFuncMeasure{ST,T}, n)
-    WaveFuncMonteCarloMeasure{Acc, T}(Array{T}(size(sub_accum.ψs)...),
-                                      sub_measure, Ref(0), n)
+    WaveFuncMonteCarloMeasure{ST,T}(Array{T}(size(sub_measure.ψs)...),
+                                    sub_measure, Ref(0), n)
 end
 
 function measure_init(r::WaveFuncMonteCarloMeasure, P)
