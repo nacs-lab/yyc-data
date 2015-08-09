@@ -6,7 +6,6 @@ using Base.Test
 using SingleAtom
 using SingleAtom.System
 using SingleAtom.Optical
-using SingleAtom.Propagate
 
 let
     builder = SystemBuilder{Float32}()
@@ -30,10 +29,10 @@ let
 
     atom = MotionSystem(Vec3D(1f0, 0f0, 0f0), 10, builder)
 
-    P = Propagate.SystemPropagator(atom, 1f-1, 1f-1, 100, 8)
+    P = SystemPropagator(atom, 1f-1, 1f-1, 100, 8)
     ps_excited = Propagate.propagate_x1(P.sys, P.sotmp, P.motion.P_x2, 1f0,
                                         P.nele)
-    measure = Propagate.DummyMeasure()
+    measure = DummyMeasure()
     Propagate.propagate_jump(P, P.sys, P.sotmp, P.nele, ps_excited,
                              P.dt, measure, 1)
     Propagate.propagate_k(P.sys, P.sotmp, P.motion.P_k, P.motion.P_Es,
@@ -41,7 +40,7 @@ let
     Propagate.propagate_x2(P.sys, P.sotmp, P.motion.P_x2, P.motion.P_Γs, P.nele)
     Propagate.propagate_drive(P.sys, P.sotmp, P.nele, P.optical, P.coupling)
 
-    Propagate.propagate(P, Propagate.StaticSetup(P.sotmp), measure)
+    propagate(P, StaticSetup(P.sotmp), measure)
 end
 
 end

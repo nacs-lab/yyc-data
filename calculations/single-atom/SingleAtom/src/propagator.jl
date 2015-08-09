@@ -7,6 +7,12 @@ using ..System
 using ..Atomic
 import ..Optical
 
+export SystemPropagator, AbstractMeasure, DummyMeasure, MonteCarloMeasure
+export AbstractSetup, StaticSetup, propagate
+
+export SnapshotType, SnapshotX, SnapshotK
+export DecayType, DecayNone, DecayLeft, DecayRight, DecayMiddle
+
 immutable HMotionCache{T,N,NState}
     E_k::Vector{T}
     P_k::SoCVector{T}

@@ -21,5 +21,10 @@ export InternStates
 include("system.jl")
 
 include("propagator.jl")
+using .Propagate
+export SystemPropagator, AbstractMeasure, DummyMeasure, MonteCarloMeasure
+export AbstractSetup, StaticSetup, propagate, Propagate
+export SnapshotType, SnapshotX, SnapshotK
+export DecayType, DecayNone, DecayLeft, DecayRight, DecayMiddle
 
 end
