@@ -32,4 +32,8 @@ using .Measure
 export WaveFuncMeasure, EnergyMeasure
 export WaveFuncMonteCarloMeasure, EnergyMonteCarloMeasure
 
+include("plot.jl")
+using .Plotting
+export plot_measure
+
 end
