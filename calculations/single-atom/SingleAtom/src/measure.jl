@@ -224,10 +224,10 @@ end
 
 function measure_finalize(r::EnergyMonteCarloMeasure, P)
     @inbounds for i in eachindex(r.Es)
-        r.Es[i], r.Es2[i] = sum2average(r.Es[i], r.Es2[i], r.count)
+        r.Es[i], r.Es2[i] = sum2average(r.Es[i], r.Es2[i], r.count[])
     end
-    sum2average!(r.t_esc)
-    sum2average!(r.pcount)
+    sum2average!(r.t_esc, r.count[])
+    sum2average!(r.pcount, r.count[])
     r.count[] = -1
     nothing
 end

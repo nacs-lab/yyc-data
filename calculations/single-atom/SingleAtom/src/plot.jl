@@ -63,13 +63,14 @@ function plot_measure(measure::EnergyMeasure)
 end
 
 function plot_measure(measure::EnergyMonteCarloMeasure)
-    @printf("Escape time: %.2f±%.2f\n", measure.t_esc, measure.t_esc2)
-    @printf("Photon Emitted: %.2f±%.2f\n", measure.pcount, measure.pcount2)
+    @printf("Escape time: %.2f±%.2f\n", measure.t_esc.v, measure.t_esc.v2)
+    @printf("Photon Emitted: %.2f±%.2f\n", measure.pcount.v,
+            measure.pcount.v2)
     errorbar((1:length(measure.Es)) * measure.sub_measure.dt,
              measure.Es, measure.Es2)
-    axvline(x=measure.t_esc, color="r")
-    axvline(x=measure.t_esc - measure.t_esc2, color="b", linestyle="--")
-    axvline(x=measure.t_esc + measure.t_esc2, color="b", linestyle="--")
+    axvline(x=measure.t_esc.v, color="r")
+    axvline(x=measure.t_esc.v - measure.t_esc.v2, color="b", linestyle="--")
+    axvline(x=measure.t_esc.v + measure.t_esc.v2, color="b", linestyle="--")
     grid()
     ylim(0, ylim()[2] * 1.1)
 end
