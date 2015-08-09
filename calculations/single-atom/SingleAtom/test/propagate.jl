@@ -49,7 +49,7 @@ let
     Propagate.propagate_x2(P.sys, P.sotmp, P.motion.P_x2, P.motion.P_Γs, P.nele)
     Propagate.propagate_drive(P.sys, P.sotmp, P.nele, P.optical, P.coupling)
 
-    Propagate.propagate(P, P.tmp, measure)
+    Propagate.propagate(P, Propagate.StaticSetup(P.sotmp), measure)
 end
 
 end

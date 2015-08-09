@@ -6,7 +6,9 @@ using ..Atomic
 using ..Atomic: get_transition_type
 
 @generated function init_phase!{T,NDri}(opt::OpticalCache{T,NDri})
+    @meta_expr inline
     quote
+        @meta_expr inline
         trackers = opt.trackers
         $([:(init_phase!(trackers[$i])) for i in 1:NDri]...)
         opt
@@ -14,7 +16,9 @@ using ..Atomic: get_transition_type
 end
 
 @generated function update_phase!{T,NDri}(opt::OpticalCache{T,NDri}, dt::T)
+    @meta_expr inline
     quote
+        @meta_expr inline
         trackers = opt.trackers
         ($([:(update_phase!(trackers[$i], dt)) for i in 1:NDri]...),)
     end
@@ -36,6 +40,30 @@ end
 
 @enum DecayType DecayNone DecayLeft DecayRight DecayMiddle
 
+abstract AbstractSetup
+
+function setup_init end
+
+immutable StaticSetup{Ary} <: AbstractSetup
+    ψ0::Ary # nele x nstates
+end
+
+@inline function setup_init{Ary,Sys,T}(P::SystemPropagator{Sys,T},
+                                       setup::StaticSetup{Ary}, sotmp)
+    nstates = System.num_states(Sys)
+    nele = P.nele
+    ψ_norm::T = 0
+    ψ0 = setup.ψ0
+    @inbounds for j in 1:nstates
+        @simd for i in 1:nele
+            ψ = ψ0[i, j]
+            sotmp[i, j] = ψ
+            ψ_norm += abs2(ψ)
+        end
+    end
+    ψ_norm
+end
+
 # Before the iterations start the measure is called with
 #     measure_init(measure, P)
 # This should be used to initialize internal states (e.g. buffers).
@@ -52,8 +80,7 @@ end
 # After the iteration measure_finalize(measure, P) is called to finish up
 # the measurement
 function propagate{Sys,T}(P::SystemPropagator{Sys,T},
-                          ψ0::AbstractMatrix{Complex{T}}, # nele x nstates
-                          measure::AbstractMeasure)
+                          setup::AbstractSetup, measure::AbstractMeasure)
     measure_init(measure, P)
     # Disable denormal values
     set_zero_subnormals(true)
@@ -62,14 +89,11 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     sys = P.sys
 
     dt = P.dt
-    dx = P.dx
     nstep = P.nstep
     nele = P.nele
 
     motion_cache = P.motion
-    E_k = motion_cache.E_k
     P_k = motion_cache.P_k
-    E_x = motion_cache.E_x
     P_x2 = motion_cache.P_x2
     P_Es = motion_cache.P_Es
     P_Γs = motion_cache.P_Γs
@@ -82,19 +106,11 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
 
     p_fft! = P.p_fft!
     p_bfft! = P.p_bfft!
-    nstates = System.num_states(Sys)
 
     # Initialization
     init_phase!(optical_cache)
-
-    ψ_norm::T = 0
-    @inbounds for j in 1:nstates
-        @simd for i in 1:nele
-            ψ = ψ0[i, j]
-            sotmp[i, j] = ψ
-            ψ_norm += abs2(ψ)
-        end
-    end
+    ψ_norm::T = setup_init(P, setup, sotmp)
+    inv_sqrt_nele = 1 / sqrt(T(nele))
 
     @inbounds for i in 1:(nstep + 1)
         ps_excited = propagate_x1(sys, sotmp, P_x2, 1 / sqrt(ψ_norm), nele)
@@ -106,7 +122,7 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
         Base.unsafe_copy!(tmp, sotmp)
         p_fft! * tmp
         Base.unsafe_copy!(sotmp, tmp)
-        propagate_k(sys, sotmp, P_k, P_Es, 1 / sqrt(T(nele)), nele)
+        propagate_k(sys, sotmp, P_k, P_Es, inv_sqrt_nele, nele)
         measure_snapshot(measure, P, i, sotmp, SnapshotK, DecayNone)
         Base.unsafe_copy!(tmp, sotmp)
         p_bfft! * tmp
@@ -123,6 +139,7 @@ end
 @generated function propagate_drive{
     Sys,T,N,Idxs}(sys::Sys, sotmp, nele, optical_cache,
                   coupling_cache::CouplingCache{T,N,Idxs})
+    @meta_expr inline
     drive_ids = ([drive_id for (drive_id, trans_id) in Idxs]...)
     transition_pairs = System.get_transition_pairs(Sys)
     trans_coupling_pairs = ([transition_pairs[trans_id]
@@ -162,9 +179,8 @@ end
             # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
             # P_σ21 = -P_σ12'
 
-            exp_θ_t = tracker.exp_t
             T11 = cos_dt
-            T_pre = (1im) * exp_θ_t * sin_dt
+            T_pre = (1im) * tracker.exp_t * sin_dt
 
             from, to = trans_coupling_pairs[k]
 
@@ -185,6 +201,7 @@ end
         end
     end
     quote
+        @meta_expr inline
         $init_ex
         $drive_ex
 
@@ -378,6 +395,7 @@ end
     end
 
     quote
+        @meta_expr inline
         $init_ex
         $prob_ex
         $decide_ex
