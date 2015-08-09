@@ -42,7 +42,7 @@ end
 function measure_snapshot{Sys}(r::WaveFuncMeasure{SnapshotK},
                                P::SystemPropagator{Sys}, t_i, ψ,
                                shot_type::SnapshotType, decay)
-    @inbounds if accum_type == AccumK
+    @inbounds if shot_type == SnapshotK
         nstates = System.num_states(Sys)
         nele = P.nele
         ψs = r.ψs
@@ -128,27 +128,27 @@ end
 
 immutable WaveFuncMonteCarloMeasure{ST,T} <: MonteCarloMeasure
     ψs2::Array{T,3}
-    sub_accum::WaveFuncMeasure{ST,T}
+    sub_measure::WaveFuncMeasure{ST,T}
     count::Base.RefValue{Int}
     ncycle::Int
 end
 
 function call{ST,T}(::Type{WaveFuncMonteCarloMeasure},
-                    sub_accum::WaveFuncMeasure{ST,T}, n)
+                    sub_measure::WaveFuncMeasure{ST,T}, n)
     WaveFuncMonteCarloMeasure{Acc, T}(Array{T}(size(sub_accum.ψs)...),
-                                      sub_accum, Ref(0), n)
+                                      sub_measure, Ref(0), n)
 end
 
 function measure_init(r::WaveFuncMonteCarloMeasure, P)
     fill!(r.ψs2, 0)
     r.count[] = 0
-    r.sub_accum, r.ncycle
+    r.sub_measure, r.ncycle
 end
 
 function measure_snapshot(r::WaveFuncMonteCarloMeasure,
-                          P::SystemPropagator, sub_accum)
-    @inbounds @simd for i in eachindex(sub_accum.ψs)
-        r.ψs2[i] += abs2(sub_accum.ψs[i])
+                          P::SystemPropagator, sub_measure)
+    @inbounds @simd for i in eachindex(sub_measure.ψs)
+        r.ψs2[i] += abs2(sub_measure.ψs[i])
     end
     r.count[] += 1
     nothing
@@ -185,16 +185,16 @@ immutable EnergyMonteCarloMeasure{T} <: MonteCarloMeasure
     t_esc::UncVal{T}
     pcount::UncVal{T}
     count::Base.RefValue{Int}
-    sub_accum::EnergyMeasure{T}
+    sub_measure::EnergyMeasure{T}
     ncycle::Int
 end
 
 function call{T}(::Type{EnergyMonteCarloMeasure},
-                 sub_accum::EnergyMeasure{T}, n)
-    EnergyMonteCarloMeasure{T}(Array{T}(size(sub_accum.Es)),
-                               Array{T}(size(sub_accum.Es)),
+                 sub_measure::EnergyMeasure{T}, n)
+    EnergyMonteCarloMeasure{T}(Array{T}(size(sub_measure.Es)),
+                               Array{T}(size(sub_measure.Es)),
                                UncVal{T}(), UncVal{T}(), Ref(-1),
-                               sub_accum, n)
+                               sub_measure, n)
 end
 
 function measure_init{T}(r::EnergyMonteCarloMeasure{T}, P)
@@ -203,12 +203,12 @@ function measure_init{T}(r::EnergyMonteCarloMeasure{T}, P)
     fill!(r.t_esc, 0)
     fill!(r.pcount, 0)
     r.count[] = 0
-    r.sub_accum, r.ncycle
+    r.sub_measure, r.ncycle
 end
 
 function measure_snapshot(r::EnergyMonteCarloMeasure, P::SystemPropagator,
-                          sub_accum)
-    sub_Es = sub_accum.Es
+                          sub_measure)
+    sub_Es = sub_measure.Es
     r_Es = r.Es
     r_Es2 = r.Es2
     @inbounds @simd for i in eachindex(sub_Es)
@@ -216,8 +216,8 @@ function measure_snapshot(r::EnergyMonteCarloMeasure, P::SystemPropagator,
         r_Es[i] += Es
         r_Es2[i] += Es^2
     end
-    add_value!(r.t_esc, sub_accum.t_esc[])
-    add_value!(r.pcount, sub_accum.pcount[])
+    add_value!(r.t_esc, sub_measure.t_esc[])
+    add_value!(r.pcount, sub_measure.pcount[])
     r.count[] += 1
     nothing
 end
@@ -232,10 +232,10 @@ function measure_finalize(r::EnergyMonteCarloMeasure, P)
     nothing
 end
 
-call(::Type{MonteCarloMeasure}, sub_accum::EnergyMeasure, n) =
-    EnergyMonteCarloMeasure(sub_accum, n)
+call(::Type{MonteCarloMeasure}, sub_measure::EnergyMeasure, n) =
+    EnergyMonteCarloMeasure(sub_measure, n)
 
-call(::Type{MonteCarloMeasure}, sub_accum::WaveFuncMeasure, n) =
-    WaveFuncMonteCarloMeasure(sub_accum, n)
+call(::Type{MonteCarloMeasure}, sub_measure::WaveFuncMeasure, n) =
+    WaveFuncMonteCarloMeasure(sub_measure, n)
 
 end
