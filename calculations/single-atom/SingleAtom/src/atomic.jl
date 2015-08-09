@@ -132,6 +132,18 @@ end
 
 @generated get_transition_pairs{T<:InternStates}(::Type{T}) = T.parameters[5]
 
+function get_state_id(intern::InternStates, _name)
+    name = symbol(_name)
+    name, get_state_id(intern, name)
+end
+
+function get_state_id{Names}(::InternStates{Names}, name::Symbol)
+    @inbounds for i in 1:length(Names)
+        Names[i] == name && return i
+    end
+    return 0
+end
+
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state.first for state in builder.states]...)
     energies = (T[state.second for state in builder.states]...)

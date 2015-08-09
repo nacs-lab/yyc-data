@@ -127,6 +127,9 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 
 @generated get_quant_axis{T<:MotionSystem}(::Type{T}) = T.parameters[1]
 
+@inline get_state_id(sys::MotionSystem, args...) =
+    get_state_id(sys.intern, args...)
+
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})
     mass = T(_mass)
