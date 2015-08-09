@@ -493,3 +493,15 @@ end
         nothing
     end
 end
+
+abstract MonteCarloMeasure <: AbstractMeasure
+
+function propagate{Sys,T}(P::SystemPropagator{Sys,T}, setup::AbstractSetup,
+                          measure::MonteCarloMeasure)
+    sub_measure, n = measure_init(measure, P)
+    for i in 1:n
+        propagate(P, setup, sub_measure)
+        measure_snapshot(measure, P, sub_measure)
+    end
+    measure_finalize(measure, P)
+end
