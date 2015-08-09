@@ -9,6 +9,9 @@ using ..Propagate
 using ..System
 import ..Propagate: measure_init, measure_finalize, measure_snapshot, setup_init
 
+export WaveFuncMeasure, EnergyMeasure
+export WaveFuncMonteCarloMeasure, EnergyMonteCarloMeasure
+
 immutable WaveFuncMeasure{ST,T} <: AbstractMeasure
     ψs::SoCArray{T,3} # nele x nstates x (nstep + 1)
     WaveFuncMeasure(ψs) = new(ψs)

@@ -28,5 +28,8 @@ export SnapshotType, SnapshotX, SnapshotK
 export DecayType, DecayNone, DecayLeft, DecayRight, DecayMiddle
 
 include("measure.jl")
+using .Measure
+export WaveFuncMeasure, EnergyMeasure
+export WaveFuncMonteCarloMeasure, EnergyMonteCarloMeasure
 
 end
