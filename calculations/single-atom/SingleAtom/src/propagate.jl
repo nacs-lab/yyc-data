@@ -363,7 +363,7 @@ end
         $([:($(p_decay[i]) = (ps_excited[$(trans_states_idx[i])] *
                               transitions[$i].Γ * dt))
            for i in 1:ntrans]...)
-        p_decay_total_lin = +($([p_decay[i] for i in 1:ntrans]...))
+        p_decay_total_lin = +($T(0), $([p_decay[i] for i in 1:ntrans]...))
         p_decay_total = 1 - exp(-p_decay_total_lin)
     end
 
