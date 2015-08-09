@@ -27,4 +27,6 @@ export AbstractSetup, StaticSetup, propagate, Propagate
 export SnapshotType, SnapshotX, SnapshotK
 export DecayType, DecayNone, DecayLeft, DecayRight, DecayMiddle
 
+include("measure.jl")
+
 end
