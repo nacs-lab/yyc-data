@@ -7,7 +7,7 @@ module Measure
 using ..Utils
 using ..Propagate
 using ..System
-import ..Propagate: measure_init, measure_finalize, measure_shapshot, setup_init
+import ..Propagate: measure_init, measure_finalize, measure_snapshot, setup_init
 
 immutable WaveFuncMeasure{ST,T} <: AbstractMeasure
     ψs::SoCArray{T,3} # nele x nstates x (nstep + 1)
@@ -124,7 +124,7 @@ end
 
 immutable WaveFuncMonteCarloMeasure{ST,T} <: MonteCarloMeasure
     ψs2::Array{T,3}
-    sub_accum::WaveFuncMeasure{St,T}
+    sub_accum::WaveFuncMeasure{ST,T}
     count::Base.RefValue{Int}
     ncycle::Int
 end
@@ -164,7 +164,8 @@ type UncVal{T}
     UncVal(v=0, v2=0) = new(v, v2)
 end
 
-sum2average!(u::UncVal, count) = (u.v, u.v2 = sum2average(u.v, u.v2, count))
+sum2average!(u::UncVal, count) =
+    u.v, u.v2 = sum2average(u.v, u.v2, count)
 
 Base.fill!(u::UncVal, v) = (u.v = u.v2 = v)
 
