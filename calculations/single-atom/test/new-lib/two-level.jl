@@ -15,8 +15,8 @@ k_res = Float32(2π / λ_res)
 Γ_Na = Float32(2π * 10f0)
 
 builder = SystemBuilder{Float32}()
-add_state!(builder, :G, 0)
-add_state!(builder, :E, 0)
+add_state!(builder, :G, :G, 0)
+add_state!(builder, :E, :E, 0)
 add_potential!(builder, HarmonicPotential(ω_g), :G)
 add_potential!(builder, HarmonicPotential(ω_e), :E)
 
@@ -26,10 +26,10 @@ add_transition!(builder, :G, :E, Transition{Trans_σ⁺}(k_res, Γ_Na, 1f0))
 Ω = 2π * 1.25
 
 add_drive!(builder, Drive{Vec3D{Complex64}(0, Ω, 0)}(k_res, δ,
-                                                     NaN, 1000.0))
+                                                     NaN, 1000.0), :G, :E)
 
 add_drive!(builder, Drive{Vec3D{Complex64}(0, Ω, 0)}(-k_res, δ,
-                                                     NaN, 1000.0))
+                                                     NaN, 1000.0), :G, :E)
 
 sys = MotionSystem(Vec3D(1f0, 0f0, 0f0), m_Na, builder)
 

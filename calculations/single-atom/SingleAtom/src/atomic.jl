@@ -69,9 +69,11 @@ call{Pol,T}(::Type{TrigCache}, trans::Transition{Pol,T}, xs) =
 export AtomBuilder, add_state!, add_transition!
 
 immutable AtomBuilder{T}
-    states::Vector{Tuple{Symbol,T}} # Array of name=>energy
+    state_grps::Vector{Symbol}
+    states::Vector{Tuple{Symbol,T,Int}} # Array of (name, energy, grp_id)
     transitions::Dict{NTuple{2,Int},Transition{ANY,T}} # Dict of transitions
-    AtomBuilder() = new(Vector{Pair{Symbol,T}}(),
+    AtomBuilder() = new(Vector{Symbol}(),
+                        Vector{Pair{Symbol,T}}(),
                         Dict{NTuple{2,Int},Transition{ANY,T}}())
 end
 
@@ -87,11 +89,28 @@ function get_state_id(builder::AtomBuilder, name::Symbol)
     name, 0
 end
 
-function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
+function get_state_grp_id(builder::AtomBuilder, _grp)
+    grp = symbol(_grp)
+    get_state_grp_id(builder, grp)
+end
+
+function get_state_grp_id(builder::AtomBuilder, grp::Symbol)
+    @inbounds for i in 1:length(builder.state_grps)
+        builder.state_grps[i] == grp && return (grp, i)
+    end
+    grp, 0
+end
+
+function add_state!{T}(builder::AtomBuilder{T}, _name, _grp, _energy)
     name, id = get_state_id(builder, _name)
     id == 0 || throw(ArgumentError("name $name already exist at index $id"))
+    grp, gid = get_state_grp_id(builder, _grp)
+    if gid == 0
+        push!(builder.state_grps, grp)
+        gid = length(builder.state_grps)
+    end
     energy = T(_energy)
-    push!(builder.states, (name, energy))
+    push!(builder.states, (name, energy, gid))
     builder
 end
 
@@ -113,13 +132,17 @@ end
 
 export InternStates
 
-immutable InternStates{Names,N,T,Trans,TransLevels}
+immutable InternStates{Names,N,T,Trans,TransLevels,Grps,StateGids}
     # Names::NTuple{N,Symbol}:
     #     Names of the states
     # Trans::Type{NTuple{M,Transition{Pol::TransitionType,T}}}
     #     Types of the transitions
     # TransLevels::NTuple{M,NTuple{2,Int}}
     #     The level pairs corresponding to each transition
+    # Grps::NTuple{GN,Symbol}:
+    #     Names of the groups
+    # StateGids::NTuple{N,Int}:
+    #     Group ID of each states
     energies::NTuple{N,T}
     transitions::Trans
 end
@@ -144,6 +167,8 @@ function get_state_id{Names}(::InternStates{Names}, name::Symbol)
     name, 0
 end
 
+@generated get_state_gids{T<:InternStates}(::Type{T}) = T.parameters[7]
+
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state[1] for state in builder.states]...)
     energies = (T[state[2] for state in builder.states]...)
@@ -154,7 +179,12 @@ function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Trans = typeof(transitions)
     TransLevels = (NTuple{2,Int}[trans_pair.first
                                  for trans_pair in transition_pairs]...)
-    InternStates{Names,Nstates,T,Trans,TransLevels}(energies, transitions)
+
+    Grps = (Symbol[grp for grp in builder.state_grps]...)
+    StateGids = (Int[state[3] for state in builder.states]...)
+
+    InternStates{Names,Nstates,T,Trans,TransLevels,Grps,StateGids}(energies,
+                                                                   transitions)
 end
 
 end

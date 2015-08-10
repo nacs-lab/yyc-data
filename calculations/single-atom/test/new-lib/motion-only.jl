@@ -11,7 +11,7 @@ m_Na = Float32(22.98977e-3 / 6.02214129e23 / (1.0545717253362894e-34 * 1e6))
 ω_g = Float32(2π * 0.2) # f = 200kHz
 
 builder = SystemBuilder{Float32}()
-add_state!(builder, :G, 0)
+add_state!(builder, :G, :G, 0)
 add_potential!(builder, HarmonicPotential(ω_g), :G)
 
 sys = MotionSystem(Vec3D(1f0, 0f0, 0f0), m_Na, builder)

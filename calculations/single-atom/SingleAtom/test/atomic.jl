@@ -28,10 +28,10 @@ end
 
 let
     builder = AtomBuilder{Float32}()
-    add_state!(builder, :(G, 0, 0), 0)
-    add_state!(builder, :(E, 1, -1), -1)
-    add_state!(builder, :(E, 1, 0), 0)
-    add_state!(builder, :(E, 1, 1), 1)
+    add_state!(builder, :(G, 0, 0), :G, 0)
+    add_state!(builder, :(E, 1, -1), :E, -1)
+    add_state!(builder, :(E, 1, 0), :E, 0)
+    add_state!(builder, :(E, 1, 1), :E, 1)
 
     add_transition!(builder, :(G, 0, 0), :(E, 1, -1),
                     Transition{Trans_σ⁻}(0.5f0, 10f0, 1f0))

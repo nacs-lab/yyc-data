@@ -9,8 +9,9 @@ using ..Atomic
 using ..Optical
 using ..Utils
 
-import ..Atomic: add_state!, add_transition!, get_state_id
+import ..Atomic: add_state!, add_transition!, get_state_id, get_state_grp_id
 import ..Atomic: num_states, get_transition_types, get_transition_pairs
+import ..Atomic: get_state_gids
 
 export AbstractPotential, HarmonicPotential, ZeroPotential
 export get_potential, get_kinetic
@@ -51,7 +52,7 @@ immutable SystemBuilder{T}
     atom::AtomBuilder{T}
     potentials::Dict{Int,AbstractPotential{T}} # Dict of potentials
     default_potential::Ref{AbstractPotential{T}}
-    drives::Vector{Union{Drive{ANY,Complex{T}},Drive{ANY,T}}}
+    drives::Vector{Tuple{Union{Drive{ANY,Complex{T}},Drive{ANY,T}},Int,Int}}
     @inline SystemBuilder() = new(AtomBuilder{T}(),
                                   Dict{Int,AbstractPotential{T}}(),
                                   Ref{AbstractPotential{T}}(ZeroPotential{T}()),
@@ -66,6 +67,9 @@ end
 
 @inline get_state_id(builder::SystemBuilder, args...) =
     get_state_id(builder.atom, args...)
+
+@inline get_state_grp_id(builder::SystemBuilder, args...) =
+    get_state_grp_id(builder.atom, args...)
 
 @inline function add_potential!{T}(builder::SystemBuilder{T},
                                    p::AbstractPotential{T})
@@ -83,8 +87,15 @@ end
     builder
 end
 
-@inline function add_drive!(builder::SystemBuilder, drive)
-    push!(builder.drives, drive)
+@inline function add_drive!(builder::SystemBuilder, drive, _from_grp, _to_grp)
+    from_grp, from_id = get_state_grp_id(builder, _from_grp)
+    to_grp, to_id = get_state_grp_id(builder, _to_grp)
+    from_id == to_id && throw(ArgumentError(string("The drive should be ",
+                                                   "between different ",
+                                                   "state groups")))
+    from_id == 0 && throw(ArgumentError("Invalid 'from' state group: $_from_grp"))
+    to_id == 0 && throw(ArgumentError("Invalid 'to' state group: $_to_grp"))
+    push!(builder.drives, (drive, from_id, to_id))
     builder
 end
 
@@ -93,11 +104,13 @@ export MotionSystem
 # MotionSystem
 
 # The atom is moving along the x-axis
-immutable MotionSystem{Ax,T,PotIdxs,Intern<:InternStates,Pots,Dris}
+immutable MotionSystem{Ax,T,PotIdxs,Intern<:InternStates,Pots,Dris,DriGrps}
     # Ax:
     #     The quantization axis of the atom
     # PotIdxs:
     #     Potential indexes into the potentials Tuple for each internal states
+    # DriGrps:
+    #     State groups id for each drive
     mass::T
     intern::Intern # Internal states
     potentials::Pots # Collections of potentials
@@ -120,6 +133,9 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 @generated get_transition_types{T<:MotionSystem}(::Type{T}) =
     get_transition_types(T.parameters[4])
 
+@generated get_state_gids{T<:MotionSystem}(::Type{T}) =
+    get_state_gids(T.parameters[4])
+
 @generated get_transition_pairs{T<:MotionSystem}(::Type{T}) =
     get_transition_pairs(T.parameters[4])
 
@@ -129,6 +145,9 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 
 @inline get_state_id(sys::MotionSystem, args...) =
     get_state_id(sys.intern, args...)
+
+@generated get_drive_gids{T<:MotionSystem}(::Type{T}) = T.parameters[7]
+
 
 function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})
@@ -155,11 +174,13 @@ function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
     end
     potentials = (_pots...)
     Pots = typeof(potentials)
-    drives = (builder.drives...)
+    drives = ([drive[1] for drive in builder.drives]...)
     Dris = typeof(drives)
     PotIdxs = (_pot_idxs...)
-    MotionSystem{Ax,T,PotIdxs,Intern,Pots,Dris}(mass, intern,
-                                                potentials, drives)
+    DriGrps = (NTuple{2,Int}[(drive[2], drive[3])
+                             for drive in builder.drives]...)
+    MotionSystem{Ax,T,PotIdxs,Intern,Pots,Dris,DriGrps}(mass, intern,
+                                                        potentials, drives)
 end
 
 end

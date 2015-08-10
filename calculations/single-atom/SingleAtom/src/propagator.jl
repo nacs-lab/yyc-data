@@ -195,13 +195,24 @@ end
 
     Tdrives = System.get_drive_types(M)
     Ttrans = System.get_transition_types(M)
+    trans_pairs = System.get_transition_pairs(M)
     Ax = System.get_quant_axis(M)
 
+    drive_gids = System.get_drive_gids(M)
+    state_gids = System.get_state_gids(M)
+
     for i in 1:length(Tdrives)
+        drive_from, drive_to = drive_gids[i]
         Tdrive = Tdrives[i]
         drive_amp = Optical.get_drive_amplitude(Tdrive)
         cpl = DriveCoupling{T}(Ax, drive_amp)
         for j in 1:length(Ttrans)
+            from_id, to_id = trans_pairs[j]
+            from_grp = state_gids[from_id]
+            to_grp = state_gids[to_id]
+            ((from_grp, to_grp) == (drive_from, drive_to) ||
+             (from_grp, to_grp) == (drive_to, drive_from)) || continue
+
             Ttran = Ttrans[j]
             has_couple, overlap = cpl[Atomic.get_transition_type(Ttran)]
             has_couple || continue
