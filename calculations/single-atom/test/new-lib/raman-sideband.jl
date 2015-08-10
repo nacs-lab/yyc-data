@@ -48,7 +48,7 @@ e_thresh = (maximum(P.motion.E_k) + maximum(P.motion.E_x[1])) / 4
 
 function gen_ψ0(grid_size, grid_space)
     x_center = (grid_size + 1) * grid_space / 2
-    # Two states only
+    # Three states only
     ψ0 = StructOfArrays(Complex64, grid_size, 3)
     sum = 0.0
     @inbounds for i in 1:grid_size
