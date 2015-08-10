@@ -69,7 +69,7 @@ call{Pol,T}(::Type{TrigCache}, trans::Transition{Pol,T}, xs) =
 export AtomBuilder, add_state!, add_transition!
 
 immutable AtomBuilder{T}
-    states::Vector{Pair{Symbol,T}} # Array of name=>energy
+    states::Vector{Tuple{Symbol,T}} # Array of name=>energy
     transitions::Dict{NTuple{2,Int},Transition{ANY,T}} # Dict of transitions
     AtomBuilder() = new(Vector{Pair{Symbol,T}}(),
                         Dict{NTuple{2,Int},Transition{ANY,T}}())
@@ -82,7 +82,7 @@ end
 
 function get_state_id(builder::AtomBuilder, name::Symbol)
     @inbounds for i in 1:length(builder.states)
-        builder.states[i].first == name && return (name, i)
+        builder.states[i][1] == name && return (name, i)
     end
     name, 0
 end
@@ -91,7 +91,7 @@ function add_state!{T}(builder::AtomBuilder{T}, _name, _energy)
     name, id = get_state_id(builder, _name)
     id == 0 || throw(ArgumentError("name $name already exist at index $id"))
     energy = T(_energy)
-    push!(builder.states, name=>energy)
+    push!(builder.states, (name, energy))
     builder
 end
 
@@ -145,8 +145,8 @@ function get_state_id{Names}(::InternStates{Names}, name::Symbol)
 end
 
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
-    Names = (Symbol[state.first for state in builder.states]...)
-    energies = (T[state.second for state in builder.states]...)
+    Names = (Symbol[state[1] for state in builder.states]...)
+    energies = (T[state[2] for state in builder.states]...)
     Nstates = length(Names)
     transition_pairs = collect(builder.transitions)
     transitions = (Transition{ANY,T}[trans_pair.second
