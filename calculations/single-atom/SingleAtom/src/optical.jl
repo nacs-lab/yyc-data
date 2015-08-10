@@ -46,15 +46,17 @@ call{Amp,T}(::Type{TrigCache}, drive::Drive{Amp,T}, xs) =
 """
 Keep track of the temporal phase evolution of an optical drive
 """
-type PhaseTracker{Amp, T}
-    drive::Drive{Amp, T}
+type PhaseTracker{T}
+    δ::T
+    ϕ0::T
+    τ_θ::T
 
     phase::T
     exp_t::Complex{T}
 end
 
-call{Amp, T}(::Type{PhaseTracker}, drive::Drive{Amp, T}) =
-    PhaseTracker{Amp, T}(drive, 0, 1)
+call{Amp,T}(::Type{PhaseTracker}, drive::Drive{Amp,T}) =
+    PhaseTracker{T}(drive.δ, drive.ϕ0, drive.τ_θ, 0, 1)
 
 """
 Initialize the phase tracker. This reset the phase to it's initial value,
@@ -62,10 +64,10 @@ which will be ϕ0, if it is a finite number and random otherwise. end
 
 This needs to be done before every iteration.
 """
-@inline function init_phase!{Amp, T}(track::PhaseTracker{Amp, T})
+@inline function init_phase!{T}(track::PhaseTracker{T})
     # force inline to avoid jlcall signature
-    if isfinite(track.drive.ϕ0)
-        track.phase = track.drive.ϕ0
+    if isfinite(track.ϕ0)
+        track.phase = track.ϕ0
     else
         track.phase = rand(T) * T(2π)
     end
@@ -77,14 +79,13 @@ end
 Forward propagate the phase by dt, returns the phase and the exponential
 of the phase
 """
-@inline function update_phase!{Amp, T}(track::PhaseTracker{Amp, T}, dt::T)
-    drive = track.drive
+@inline function update_phase!{T}(track::PhaseTracker{T}, dt::T)
     phase = track.phase
-    if isfinite(drive.τ_θ)
-        δτ = dt / drive.τ_θ
+    if isfinite(track.τ_θ)
+        δτ = dt / track.τ_θ
         phase += sqrt(δτ) * (rand(T) - T(0.5)) * π
     end
-    phase = (phase - drive.δ * dt) % T(2π)
+    phase = (phase - track.δ * dt) % T(2π)
     exp_t = exp(im * phase)
     track.exp_t = exp_t
     track.phase = phase

@@ -11,10 +11,10 @@ let
 
     # Deterministic phase tracker
     drive1 = Drive{amp}(0.5, 1, 0, Inf)
-    @test isa(drive1, Drive{amp, Float32})
+    @test isa(drive1, Drive{amp,Float32})
 
     tracker1 = PhaseTracker(drive1)
-    @test isa(tracker1, PhaseTracker{amp, Float32})
+    @test isa(tracker1, PhaseTracker{Float32})
 
     for i in 1:4
         init_phase!(tracker1)
@@ -26,10 +26,10 @@ let
 
     # Random phase tracker
     drive2 = Drive{amp}(0.5, 1, NaN, 100)
-    @test isa(drive2, Drive{amp, Float32})
+    @test isa(drive2, Drive{amp,Float32})
 
     tracker2 = PhaseTracker(drive2)
-    @test isa(tracker2, PhaseTracker{amp, Float32})
+    @test isa(tracker2, PhaseTracker{Float32})
 
     phases = [init_phase!(tracker2).phase for i in 1:100]
     max_phase = maximum(phases)
