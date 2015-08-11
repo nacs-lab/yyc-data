@@ -384,8 +384,10 @@ end
     for i in 1:ntrans
         do_decay = quote
             p_accum += $(p_decay[i])
-            if p_accum >= p_r_scale
-                p_excited = ps_excited[$(trans_states_idx[i])]
+            p_excited = ps_excited[$(trans_states_idx[i])]
+            # Filter out small excited state make sure that we don't get
+            # accidentally killed by a rounding error or something like that
+            if p_excited >= 1e-5 && p_accum >= p_r_scale
                 propagate_do_jump(P, sys, sotmp, nele, p_excited, dt, measure,
                                   iteration, $(Val{i}()))
                 return true
