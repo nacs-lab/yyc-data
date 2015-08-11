@@ -86,7 +86,7 @@ of the phase
         phase += sqrt(δτ) * (rand(T) - T(0.5)) * π
     end
     phase = (phase - track.δ * dt) % T(2π)
-    exp_t = exp(im * phase)
+    exp_t = Complex(cos(phase), sin(phase))
     track.exp_t = exp_t
     track.phase = phase
     (phase, exp_t)
