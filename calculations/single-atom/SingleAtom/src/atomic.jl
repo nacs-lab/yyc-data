@@ -169,6 +169,8 @@ end
 
 @generated get_state_gids{T<:InternStates}(::Type{T}) = T.parameters[7]
 
+@generated get_state_names{T<:InternStates}(::Type{T}) = T.parameters[1]
+
 function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
     Names = (Symbol[state[1] for state in builder.states]...)
     energies = (T[state[2] for state in builder.states]...)

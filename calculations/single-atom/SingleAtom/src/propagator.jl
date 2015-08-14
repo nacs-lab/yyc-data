@@ -200,6 +200,7 @@ end
 
     drive_gids = System.get_drive_gids(M)
     state_gids = System.get_state_gids(M)
+    # snames = System.get_state_names(M)
 
     for i in 1:length(Tdrives)
         drive_from, drive_to = drive_gids[i]
@@ -218,6 +219,9 @@ end
             has_couple || continue
             amp_eff = overlap * cpl.amp
             push!(idxs, (i, j))
+
+            # println((i, j, snames[from_id], snames[to_id]))
+
             ex = quote
                 Ω = $amp_eff * transitions[$j].α
                 dθ = Ω * dt
@@ -228,6 +232,7 @@ end
             push!(_couplings, Expr(:let, ex))
         end
     end
+    # println()
 
     N = length(idxs)
     Idxs = (idxs...)
