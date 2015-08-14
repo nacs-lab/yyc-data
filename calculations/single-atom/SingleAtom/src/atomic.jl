@@ -16,32 +16,55 @@ end JuliaLang/julia#12419
 """
 TransitionType
 
+function try_get_y{T}(x::Vec3D{T}, z0::Vec3D{T})
+    y0 = z0 × x
+    if abs2(y0) < 0.2
+        return Vec3D{T}(0, 0, 0)
+    end
+    y0 / abs(y0)
+end
+
+"""
+Return (x, y, z) that form a Cartesian coordinate. Satisfying
+x × y ∥ z
+y × z ∥ x
+z × x ∥ y
+and the result is repeatable for certain x
+"""
+function get_coordinate{T}(x::Vec3D{T})
+    y = try_get_y(x, Vec3D{T}(1, 0, 0))
+    if abs2(y) < 0.5
+        y = try_get_y(x, Vec3D{T}(0, 1, 0))
+        if abs2(y) < 0.5
+            y = try_get_y(x, Vec3D{T}(0, 0, 1))
+            @assert abs2(y) >= 0.5
+        end
+    end
+    (x, y, x × y)
+end
+
 """
 Overlap of a drive with a dipole transition
 """
-function *(ax_trans::Tuple{Vec3D,TransitionType}, amp::Vec3D)
+function *{T}(ax_trans::Tuple{Vec3D{T},TransitionType}, amp::Vec3D)
+    # Isn't type stable for Integer vector for now
+
     # A = a * π + b * σ⁺ + c * σ⁻
     ax = ax_trans[1]
     trans = ax_trans[2]
     ax_scale = 1 / abs(ax)
     norm_ax = ax * ax_scale
     if trans == Trans_π
-        # ax ⋅ π = 1
-        # ax ⋅ σ⁺ = 0
-        # ax ⋅ σ⁻ = 0
-        return abs(norm_ax * amp)
+        return complex(norm_ax * amp)
     end
-    # TODO figure out the sign of σ⁺ and σ⁻
-    # ax × π = 0
-    # ax × σ⁺ = i σ⁺
-    # ax × σ⁻ = -i σ⁻
-    trans_diff = norm_ax × amp # i (σ⁺ - σ⁻)
-    # ax × (ax × π) = 0
-    # ax × (ax × σ⁺) = -σ⁺
-    # ax × (ax × σ⁻) = -σ⁻
-    trans_amp = norm_ax × trans_diff # -(σ⁺ + σ⁻)
-    σ_sign = ifelse(trans == Trans_σ⁺, -1im, 1im)
-    return abs(trans_diff + σ_sign * trans_amp) / 2
+    (e_x, e_y, e_z) = get_coordinate(norm_ax)
+    if trans == Trans_σ⁺
+        e₊ = (e_y + im * e_z) / sqrt(T(2))
+        return e₊ * amp
+    else
+        e₋ = (e_y - im * e_z) / sqrt(T(2))
+        return e₋ * amp
+    end
 end
 
 *(amp::Vec3D, ax_trans::Tuple{Vec3D,TransitionType}) = ax_trans * amp

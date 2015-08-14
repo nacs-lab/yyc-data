@@ -15,15 +15,15 @@ let
 
     @test (k1, Trans_σ⁺) * amp_π == 0
     @test (k1, Trans_σ⁺) * amp_σ⁻ == 0
-    @test_approx_eq (k1, Trans_σ⁺) * amp_σ⁺ 1.0
+    @test_approx_eq abs((k1, Trans_σ⁺) * amp_σ⁺) 1.0
 
     @test (k1, Trans_π) * amp_σ⁻ == 0
     @test (k1, Trans_π) * amp_σ⁺ == 0
-    @test_approx_eq (k1, Trans_π) * amp_π 1.0
+    @test_approx_eq abs((k1, Trans_π) * amp_π) 1.0
 
     @test (k1, Trans_σ⁻) * amp_σ⁺ == 0
     @test (k1, Trans_σ⁻) * amp_π == 0
-    @test_approx_eq (k1, Trans_σ⁻) * amp_σ⁻ 1.0
+    @test_approx_eq abs((k1, Trans_σ⁻) * amp_σ⁻) 1.0
 end
 
 let

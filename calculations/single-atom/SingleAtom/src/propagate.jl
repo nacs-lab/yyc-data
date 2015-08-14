@@ -172,15 +172,15 @@ end
             #        im exp(-im(θ_t + θ_x)) sin(Ω Δt), cos(Ω Δt)]
 
             coupling = couplings[k]
-            sin_dt = coupling.sindθ
-            cos_dt = coupling.cosdθ
+            P_off = coupling.P_off
+            P_diag = coupling.P_diag
 
             # P_σ11 = P_σ22 = cos(Ω Δt)
             # P_σ12 = im exp(im θ_t) exp(im θ_x) sin(Ω Δt)
             # P_σ21 = -P_σ12'
 
-            T11 = cos_dt
-            T_pre = (1im) * tracker.exp_t * sin_dt
+            T11 = P_diag
+            T_pre = tracker.exp_t * P_off
 
             from, to = trans_coupling_pairs[k]
 

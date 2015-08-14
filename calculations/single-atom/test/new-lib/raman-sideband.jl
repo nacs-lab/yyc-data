@@ -35,8 +35,8 @@ add_drive!(builder, Drive{Vec3D{Complex64}(0, 2π * 0.05, 0)}(k_res, -ω_g, NaN,
 add_drive!(builder, Drive{Vec3D{Complex64}(0, Ω, 0)}(-k_res, 0, NaN, 1000.0),
            :G2, :E)
 
-add_drive!(builder, Drive{Vec3D{Complex64}(0, 0.3Ω, 0)}(-k_res, 0, NaN, 1000.0),
-           :G1, :E)
+# add_drive!(builder, Drive{Vec3D{Complex64}(0, 0.3Ω, 0)}(-k_res, 0, NaN, 1000.0),
+#            :G1, :E)
 
 # add_drive!(builder, Drive{Vec3D{Complex64}(0, Ω, 0)}(0, 0, NaN, 1000.0),
 #            :G2, :E)

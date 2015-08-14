@@ -141,9 +141,9 @@ Discribes the strength of a drive on a certain transition.
 Determined by the drive, the transition and the quantization axis
 """
 immutable Coupling{T}
-    Ω::T # Rabi rate
-    sindθ::T # sin(Ω dt)
-    cosdθ::T # cos(Ω dt)
+    P_off::Complex{T} # i * e^(iϕ) * sin(Ω dt)
+    P_diag::T # cos(Ω dt)
+    # Where ϕ is the initial phase of the coupling, Ω is the Rabi frequency
 end
 
 immutable CouplingCache{T,N,Idxs}
@@ -154,9 +154,9 @@ end
 
 immutable DriveCoupling{T}
     amp::T
-    overlap_σ⁺::T
-    overlap_σ⁻::T
-    overlap_π::T
+    overlap_σ⁺::Complex{T}
+    overlap_σ⁻::Complex{T}
+    overlap_π::Complex{T}
 
     couple_σ⁺::Bool
     couple_σ⁻::Bool
@@ -170,7 +170,8 @@ immutable DriveCoupling{T}
         overlap_π = (ax, Trans_π) * amp
 
         new(abs_amp, overlap_σ⁺, overlap_σ⁻, overlap_π,
-            overlap_σ⁺ >= 1e-3, overlap_σ⁻ >= 1e-3, overlap_π >= 1e-3)
+            abs(overlap_σ⁺) >= 1e-3, abs(overlap_σ⁻) >= 1e-3,
+            abs(overlap_π) >= 1e-3)
     end
 end
 
@@ -224,10 +225,11 @@ end
 
             ex = quote
                 Ω = $amp_eff * transitions[$j].α
-                dθ = Ω * dt
+                expϕ0 = sign(Ω)
+                dθ = abs(Ω) * dt
                 sindθ = sin(dθ)
                 cosdθ = cos(dθ)
-                Coupling{$T}(Ω, sindθ, cosdθ)
+                Coupling{$T}(((1im) * expϕ0) * sindθ, cosdθ)
             end
             push!(_couplings, Expr(:let, ex))
         end
