@@ -58,20 +58,20 @@ add_transition!(builder, :(G, 1), :(E, -1),
 δ = 2π * -10f0
 
 # plot_title = "\$\\sigma^+, \\sigma^-, \\delta = $δ\$"
-# pol1 = Vec3D{Complex64}(0, Ω, im * Ω) / sqrt(2f0)
-# pol2 = Vec3D{Complex64}(0, Ω, -im * Ω) / sqrt(2f0)
-
-# plot_title = "\$\\sigma^+, \\sigma^+, \\delta = $δ\$"
-# pol1 = Vec3D{Complex64}(0, Ω, im * Ω) / sqrt(2f0)
+# pol1 = Vec3D{Complex64}(0, Ω, -im * Ω) / sqrt(2f0)
 # pol2 = Vec3D{Complex64}(0, Ω, im * Ω) / sqrt(2f0)
 
-plot_title = "lin\$\\parallel\$lin, \$\\delta = $δ\$"
-pol1 = Vec3D{Complex64}(0, Ω, 0)
-pol2 = Vec3D{Complex64}(0, Ω, 0)
+# plot_title = "\$\\sigma^+, \\sigma^+, \\delta = $δ\$"
+# pol1 = Vec3D{Complex64}(0, Ω, -im * Ω) / sqrt(2f0)
+# pol2 = Vec3D{Complex64}(0, Ω, -im * Ω) / sqrt(2f0)
 
-# plot_title = "lin\$\\perp\$lin, \$\\delta = $δ\$"
+# plot_title = "lin\$\\parallel\$lin, \$\\delta = $δ\$"
 # pol1 = Vec3D{Complex64}(0, Ω, 0)
-# pol2 = Vec3D{Complex64}(0, 0, Ω)
+# pol2 = Vec3D{Complex64}(0, Ω, 0)
+
+plot_title = "lin\$\\perp\$lin, \$\\delta = $δ\$"
+pol1 = Vec3D{Complex64}(0, Ω, 0)
+pol2 = Vec3D{Complex64}(0, 0, Ω)
 
 add_drive!(builder, Drive{pol1}(k_res, δ, NaN, 1000.0), :G, :E)
 add_drive!(builder, Drive{pol2}(-k_res, δ, NaN, 1000.0), :G, :E)
