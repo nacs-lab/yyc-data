@@ -144,34 +144,15 @@ end
         soary = convert(StructOfArrays, ary)
         factor2 = exp(rand(T, nele) * im)
         sofactor2 = convert(StructOfArrays, factor2)
-        $([:($(splat_factors[j]) = factors[$j]) for j in 1:N]...)
     end
     var_names = [gensym(:ele) for i in 1:N]
     eff_factors = [gensym(:factor) for i in 1:N]
-    soa_run = quote
-        unsafe_copy!(soary, ary)
-        @inbounds @simd for i in 1:nele
-            factor2i = sofactor2[i]
-            $([:($(eff_factors[j]) = factor2i * $(splat_factors[j]);
-                 $(var_names[j]) = soary[i, $j];
-                 soary[i, $j] = $(var_names[j]) * $(eff_factors[j]))
-               for j in 1:N]...)
-        end
-        unsafe_copy!(ary, soary)
-    end
     soa_split_run = quote
         unsafe_copy!(soary, ary)
-        @inbounds for j in 1:2:$(N - 1)
+        @inbounds for j in 1:$N
             splat_factor = factors[j]
             @simd for i in 1:nele
                 soary[i, j] *= sofactor2[i] * splat_factor
-                soary[i, j + 1] *= sofactor2[i] * splat_factor
-            end
-        end
-        @inbounds if $N % 2 != 0
-            splat_factor = factors[$N]
-            @simd for i in 1:nele
-                soary[i, $N] *= sofactor2[i] * splat_factor
             end
         end
         unsafe_copy!(ary, soary)
@@ -179,14 +160,16 @@ end
     quote
         $init_ex
 
-        $soa_run
+        # $soa_run
         $soa_split_run
 
         nothing
     end
 end
 
-@code_llvm test_scale2(128, get_factors(2), 100000)
+Base.code_llvm_raw(test_scale2, Base.typesof(128, get_factors(2), 100000))
+
+exit()
 
 test_nele(64, [1, 3, 10, 30], 200_000)
 test_nele(128, [1, 3, 10, 30], 100_000)
