@@ -39,6 +39,39 @@ end
     dest
 end
 
+typealias BitsT32 Union{Float32,Int32,UInt32}
+
+@inline function Base.unsafe_copy!{T<:BitsT32,N}(dest::SoCArray{T,N},
+                                                 src::Array{Complex{T},N})
+    len = length(src)
+    dest_ptr1 = Ptr{UInt32}(pointer(dest.arrays[1]))
+    dest_ptr2 = Ptr{UInt32}(pointer(dest.arrays[2]))
+    src_ptr = Ptr{UInt64}(pointer(src))
+    @inbounds @simd for i in 1:len
+        src_v = unsafe_load(src_ptr, i)
+        dest_v1 = src_v % UInt32
+        dest_v2 = (src_v >> 32) % UInt32
+        unsafe_store!(dest_ptr1, dest_v1, i)
+        unsafe_store!(dest_ptr2, dest_v2, i)
+    end
+    dest
+end
+
+@inline function Base.unsafe_copy!{T<:BitsT32,N}(dest::Array{Complex{T},N},
+                                                 src::SoCArray{T,N})
+    len = length(dest)
+    src_ptr1 = Ptr{UInt32}(pointer(src.arrays[1]))
+    src_ptr2 = Ptr{UInt32}(pointer(src.arrays[2]))
+    dest_ptr = Ptr{UInt64}(pointer(dest))
+    @inbounds @simd for i in 1:len
+        src_v1 = unsafe_load(src_ptr1, i)
+        src_v2 = UInt64(unsafe_load(src_ptr2, i))
+        dest_v = (src_v2 << 32) | src_v1
+        unsafe_store!(dest_ptr, dest_v, i)
+    end
+    dest
+end
+
 export TrigCache
 
 """
