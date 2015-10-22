@@ -113,6 +113,7 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
     inv_sqrt_nele = 1 / sqrt(T(nele))
 
     @inbounds for i in 1:(nstep + 1)
+        update_phase!(optical_cache, dt)
         ps_excited = propagate_x1(sys, sotmp, P_x2, 1 / sqrt(ψ_norm), nele)
         if propagate_jump(P, sys, sotmp, nele, ps_excited, dt, measure, i)
             ψ_norm = 1
@@ -127,7 +128,6 @@ function propagate{Sys,T}(P::SystemPropagator{Sys,T},
         Base.unsafe_copy!(tmp, sotmp)
         p_bfft! * tmp
         Base.unsafe_copy!(sotmp, tmp)
-        update_phase!(optical_cache, dt)
         ψ_norm = propagate_x2(sys, sotmp, P_x2, P_Γs, nele)
         propagate_drive(sys, sotmp, nele, optical_cache, coupling_cache)
     end
