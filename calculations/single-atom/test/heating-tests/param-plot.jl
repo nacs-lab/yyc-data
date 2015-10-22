@@ -65,6 +65,8 @@ ratios = linspace(0, 7, 8)
 xax_name = "Trapping Depth ratio"
 @time accums = pmap(run, ratios)
 
+exit()
+
 using PyPlot
 
 for _accum in accums
