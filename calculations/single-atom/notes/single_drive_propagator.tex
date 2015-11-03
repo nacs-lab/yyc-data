@@ -195,32 +195,61 @@
 \parindent=0pt
 \begin{document}
 
-With $0$ energy different between the ground and excited state, the Hamiltonian
-with a single drive of detuning $\delta_0$ is
+\section{Goal}
+In the simulation of the single atom in a potential driven by multiple laser
+field, we need to compute the effect of optical drive on the atom. This is
+typically done in textbook by going to the rotating frame (co-rotating with the
+laser field) in which the Hamiltonian is time independent. However, this does
+not work in general if there are multiple laser drive frequencies. Additionally,
+we would like to evaluate each drive individually (doing it otherwise requires
+matrix exponentiation of a large time dependent matrix) so each drive needs to
+be evaluated on top of the transformation due to internal and potential
+energies (since these should be evaluated once instead of for each drive).
+Therefore, the goal of this note is to derive the local propagator which
+describe the evolution on top of trivial part due to the energy of each
+state.
+
+\section{Math}
+
+With $\varepsilon$ energy different between the ground and excited state, the
+Hamiltonian with a single drive of detuning $\delta_0$ is ($\hbar = 1$)
 
 \eqar{
-  H=&\Omega\paren{\cos(\delta_0t+\phi_0)\sigma_x+\sin(\delta_0t+\phi_0)\sigma_y}
+  H=&\frac\varepsilon2\sigma_z + \Omega\paren{\cos(\delta_0t+\phi_0)\sigma_x+\sin(\delta_0t+\phi_0)\sigma_y}
 }
 
-Schroedinger equation
+Our goal is to derive $T'$ such that the wave function at time $t$,
+
+\eqar{
+  |\psi\rangle_t=&T_0T'|\psi\rangle_0
+}
+
+where $|\psi\rangle_0$ is the initial state and $T_0\equiv\ue^{-\ui\sigma_z\varepsilon t/2}$ is the trivial part of the propagator.\\
+
+In order to do this, we follow the textbook procedure of going into the rotating frame and transform the propagator for the time independent equation back to our original basis. We start from Schroedinger equation
 
 \eqar{
   \ui\partial_t|\psi\rangle=&H|\psi\rangle
 }
 
-Do transformation $|\psi\rangle=U|\psi'\rangle$, where $U=\ue^{\ui\sigma_z(\omega't+\phi')}$
+We can go to a rotating frame by doing the transformation
+$|\psi\rangle=U|\psi'\rangle$, where $U=\ue^{\ui\sigma_z(\omega't+\phi')}$ with the
+parameters $\omega'$ and $\phi'$ which we will determine later.
 
 \eqar{
   \ui\partial_t\paren{U|\psi'\rangle}=&HU|\psi'\rangle\\
   \ui\partial_t|\psi'\rangle=&U^\dagger HU|\psi'\rangle-\ui U^\dagger\paren{\partial_t U}|\psi'\rangle\\
   U^\dagger\paren{\partial_t U}=&\ui\sigma_z\omega'U^\dagger U\\
   =&\ui\sigma_z\omega'\\
-  \ui\partial_t|\psi'\rangle=&U^\dagger HU|\psi'\rangle+\sigma_z\omega'|\psi'\rangle
+  \ui\partial_t|\psi'\rangle=&U^\dagger HU|\psi'\rangle
+  +\sigma_z\omega'|\psi'\rangle
 }
 
-For $U^\dagger HU$
+For the $U^\dagger HU$ term, we have,
 
 \eqar{
+  \sqr{U, \sigma_z}=&0
+  \intertext{And,}
   &\ue^{-\ui\sigma_z\varphi}\paren{\cos\theta\sigma_x+\sin\theta\sigma_y}\ue^{\ui\sigma_z\varphi}\\
   =&\ue^{-\ui\sigma_z\varphi}\paren{\cos\theta\sigma_x+\sin\theta\sigma_y}\paren{\cos\varphi+\ui\sigma_z\sin\varphi}\\
   =&\ue^{-\ui\sigma_z\varphi}\paren{\sigma_x\cos\theta\cos\varphi-\sigma_x\sin\theta\sin\varphi+\sigma_y\cos\theta\sin\varphi+\sigma_y\sin\theta\cos\varphi}\\
@@ -229,38 +258,46 @@ For $U^\dagger HU$
   =&\sigma_x\cos\varphi\cos\paren{\theta+\varphi}-\sigma_x\sin\varphi\sin\paren{\theta+\varphi}+\sigma_y\sin\varphi\cos\paren{\theta+\varphi}+\sigma_y\cos\varphi\sin\paren{\theta+\varphi}\\
   =&\sigma_x\cos\paren{\theta+2\varphi}+\sigma_y\sin\paren{\theta+2\varphi}
 }
-For $\omega'=-\dfrac{\delta_0}{2}$ and $\phi'=-\dfrac{\phi_0}{2}$
+We can see that if we have $\omega'=-\dfrac{\delta_0}{2}$ and
+$\phi'=-\dfrac{\phi_0}{2}$, we can cancel out the time dependent phase in the
+Hamiltonian,
 \eqar{
   U=&\exp\paren{-\frac{\ui\sigma_z}2\paren{\delta_0t+\phi_0}}\\
-  \ui\partial_t|\psi'\rangle=&\paren{\Omega \sigma_x-\frac{\delta_0}{2}\sigma_z}|\psi'\rangle
+  \ui\partial_t|\psi'\rangle=&\paren{\Omega \sigma_x+\frac{\varepsilon-\delta_0}2\sigma_z}|\psi'\rangle
 }
-Integrate this equation
+We can get the propagator in the rotatin frame by integrating this equation.
+Let $\delta'\equiv\delta_0-\varepsilon$ be the real detuning (instead of
+$\delta_0$, the detuning relative to some arbitrary reference energy),
 \eqar{
-  |\psi'\rangle_t=&\exp\paren{-\ui\paren{\Omega \sigma_x-\frac{\delta_0}{2}\sigma_z}t}|\psi'\rangle_0\\
-  =&\exp\paren{-\ui t\sqrt{\Omega^2+\frac{\delta_0^2}{4}}\frac{2\Omega \sigma_x-\delta_0\sigma_z}{\sqrt{4\Omega^2+\delta_0^2}}}|\psi'\rangle_0
-  \intertext{Let $\Omega'=\sqrt{\Omega^2+\dfrac{\delta_0^2}{4}}$}
-  |\psi'\rangle_t=&\exp\paren{-\ui\Omega't\frac{2\Omega\sigma_x-\delta_0\sigma_z}{2\Omega'}}|\psi'\rangle_0\\
-  =&\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta_0\sigma_z}{2\Omega'}\sin\Omega't}|\psi'\rangle_0
+  |\psi'\rangle_t=&\exp\paren{-\ui\paren{\Omega \sigma_x-\frac{\delta'}{2}\sigma_z}t}|\psi'\rangle_0\\
+  =&\exp\paren{-\ui t\sqrt{\Omega^2+\frac{\delta'^2}{4}}\frac{2\Omega \sigma_x-\delta'\sigma_z}{\sqrt{4\Omega^2+\delta'^2}}}|\psi'\rangle_0
+  \intertext{Let $\Omega'=\sqrt{\Omega^2+\dfrac{\delta'^2}{4}}$}
+  |\psi'\rangle_t=&\exp\paren{-\ui\Omega't\frac{2\Omega\sigma_x-\delta'\sigma_z}{2\Omega'}}|\psi'\rangle_0\\
+  =&\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta'\sigma_z}{2\Omega'}\sin\Omega't}|\psi'\rangle_0
 }
-Transform back to the original basis,
+This is our propagator in the rotating frame. We can now transform it back to
+the original basis,
 \eqar{
-  &|\psi\rangle_t\\
-  =&U_t|\psi'\rangle_t\\
-  =&U_t\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta_0\sigma_z}{2\Omega'}\sin\Omega't}U_0^\dagger|\psi\rangle_0\\
-  =&\exp\paren{-\frac{\ui\sigma_z}2\paren{\delta_0t+\phi_0}}\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta_0\sigma_z}{2\Omega'}\sin\Omega't}\exp\paren{\frac{\ui\sigma_z}2\phi_0}|\psi\rangle_0\\
-  =&\exp\paren{-\frac{\ui\delta_0t}2\sigma_z}\exp\paren{-\frac{\ui\sigma_z}2\phi_0}\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta_0\sigma_z}{2\Omega'}\sin\Omega't}\exp\paren{\frac{\ui\sigma_z}2\phi_0}|\psi\rangle_0\\
-  =&\exp\paren{-\frac{\ui\delta_0t}2\sigma_z}\paren{\cos\Omega't-\ui\frac{2\Omega\paren{\sigma_x\cos\phi_0+\sigma_y\sin\phi_0}-\delta_0\sigma_z}{2\Omega'}\sin\Omega't}|\psi\rangle_0\\
+  |\psi\rangle_t=&U_t|\psi'\rangle_t\\
+  =&U_t\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta'\sigma_z}{2\Omega'}\sin\Omega't}U_0^\dagger|\psi\rangle_0
+  \intertext{The full time propagator $T=T_0T'$}
+  T=&\exp\paren{-\frac{\ui\sigma_z}2\paren{\delta_0t+\phi_0}}\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta'\sigma_z}{2\Omega'}\sin\Omega't}\exp\paren{\frac{\ui\sigma_z}2\phi_0}\\
+  =&\exp\paren{-\frac{\ui\delta_0t}2\sigma_z}\exp\paren{-\frac{\ui\sigma_z}2\phi_0}\paren{\cos\Omega't-\ui\frac{2\Omega\sigma_x-\delta'\sigma_z}{2\Omega'}\sin\Omega't}\exp\paren{\frac{\ui\sigma_z}2\phi_0}\\
+  =&\exp\paren{-\frac{\ui\delta_0t}2\sigma_z}\paren{\cos\Omega't-\ui\frac{2\Omega\paren{\sigma_x\cos\phi_0+\sigma_y\sin\phi_0}-\delta'\sigma_z}{2\Omega'}\sin\Omega't}
+  \intertext{And the effective time propagator we want,}
+  T'=&T_0^\dagger T\\
+  =&\exp\paren{-\frac{\ui\delta't}2\sigma_z}\paren{\cos\Omega't+\ui\frac{\delta'\sigma_z}{2\Omega'}\sin\Omega't-\ui\frac{\Omega}{\Omega'}\paren{\sigma_x\cos\phi_0+\sigma_y\sin\phi_0}\sin\Omega't}\\
   =&\begin{pmatrix}
-    \ue^{-\ui\delta_0t/2}&0\\
-    0&\ue^{\ui\delta_0t/2}
+    \exp\paren{-\ui\dfrac{\delta't}2}&0\\
+    0&\exp\paren{\ui\dfrac{\delta't}2}
   \end{pmatrix}\begin{pmatrix}
-    \cos\Omega't+\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't&-\ui\dfrac{\Omega}{\Omega'}\ue^{-\ui\phi_0}\sin\Omega't\\
-    -\ui\dfrac{\Omega}{\Omega'}\ue^{\ui\phi_0}\sin\Omega't&\cos\Omega't-\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't
-  \end{pmatrix}|\psi\rangle_0\\
+    \cos\Omega't+\dfrac{\ui\delta'}{2\Omega'}\sin\Omega't&-\ui\dfrac{\Omega}{\Omega'}\ue^{-\ui\phi_0}\sin\Omega't\\
+    -\ui\dfrac{\Omega}{\Omega'}\ue^{\ui\phi_0}\sin\Omega't&\cos\Omega't-\dfrac{\ui\delta'}{2\Omega'}\sin\Omega't
+  \end{pmatrix}\\
   =&\begin{pmatrix}
-    \ue^{-\ui\delta_0t/2}\paren{\cos\Omega't+\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't}&-\ui\dfrac{\Omega}{\Omega'}\ue^{-\ui\paren{\delta_0t/2+\phi_0}}\sin\Omega't\\
-    -\ui\dfrac{\Omega}{\Omega'}\ue^{\ui\paren{\delta_0t/2+\phi_0}}\sin\Omega't&\ue^{\ui\delta_0t/2}\paren{\cos\Omega't-\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't}
-  \end{pmatrix}|\psi\rangle_0
+    \exp\paren{-\ui\dfrac{\delta't}2}\paren{\cos\Omega't+\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't}&-\ui\dfrac{\Omega}{\Omega'}\ue^{-\ui\phi_0}\exp\paren{-\ui\dfrac{\delta't}2}\sin\Omega't\\
+    -\ui\dfrac{\Omega}{\Omega'}\ue^{\ui\phi_0}\exp\paren{\ui\dfrac{\delta't}2}\sin\Omega't&\exp\paren{\ui\dfrac{\delta't}2}\paren{\cos\Omega't-\dfrac{\ui\delta_0}{2\Omega'}\sin\Omega't}
+  \end{pmatrix}
 }
 
 
