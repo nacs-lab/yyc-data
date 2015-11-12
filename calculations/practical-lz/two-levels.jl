@@ -12,15 +12,27 @@ abstract AbstractMeasure
 
 function measure_snapshot end
 
-# Propagate function
-function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
-                    measure::AbstractMeasure, ϕ₀=0f0)
-    # @assert size(y0) == (2,)
-    measure_snapshot(measure, y0, 1)
-    @inbounds for i in 1:nsteps
-        # Update drive state
-        update_dt(drive, dt)
+abstract AbstractPhaseTracker
 
+type PhaseTracker <: AbstractPhaseTracker
+    ϕ::Float32
+end
+
+@inline get_phase(tracker::PhaseTracker) = tracker.ϕ
+@inline update_phase(tracker::PhaseTracker, ϕ) = (tracker.ϕ = ϕ; nothing)
+
+immutable DummyPhaseTracker <: AbstractPhaseTracker
+    ϕ::Float32
+end
+
+@inline get_phase(tracker::DummyPhaseTracker) = tracker.ϕ
+@inline update_phase(::DummyPhaseTracker, ϕ) = nothing
+
+function internal_propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
+                             measure::AbstractMeasure,
+                             tracker::AbstractPhaseTracker)
+    ϕ = ϕ₀ = get_phase(tracker)
+    @inbounds for i in 1:nsteps
         # original parameters
         δ = get_detuning(drive)::Real
         Ω = get_rabi(drive)::Real
@@ -52,8 +64,20 @@ function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
         y0[1] = y_1′ * y_scale
         y0[2] = y_2′ * y_scale
         measure_snapshot(measure, y0, i + 1)
+
+        # Update drive state
+        update_dt(drive, dt)
     end
+    update_phase(tracker, ϕ)
     y0
+end
+
+# Propagate function
+function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
+                    measure::AbstractMeasure, ϕ₀=0f0)
+    @assert size(y0) == (2,)
+    measure_snapshot(measure, y0, 1)
+    internal_propagate!(y0, drive, dt, nsteps, measure, DummyPhaseTracker(ϕ₀))
 end
 
 # Constant drive
