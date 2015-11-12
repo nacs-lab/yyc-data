@@ -46,8 +46,11 @@ function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
         T21 = Complex(imag(T21′), -real(T21′))
         T12 = Complex(-imag(T21′), -real(T21′))
 
-        y0[1] = muladd(T12, y_2, T11 * y_1)
-        y0[2] = muladd(T21, y_1, T22 * y_2)
+        y_1′ = muladd(T12, y_2, T11 * y_1)
+        y_2′ = muladd(T21, y_1, T22 * y_2)
+        y_scale = 1 / sqrt(abs2(y_1) + abs2(y_2))
+        y0[1] = y_1′ * y_scale
+        y0[2] = y_2′ * y_scale
         measure_snapshot(measure, y0, i + 1)
     end
     y0
