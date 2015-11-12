@@ -14,7 +14,7 @@ function measure_snapshot end
 
 # Propagate function
 function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
-                    measure::AbstractMeasure)
+                    measure::AbstractMeasure, ϕ₀=0f0)
     # @assert size(y0) == (2,)
     measure_snapshot(measure, y0, 1)
     @inbounds for i in 1:nsteps
@@ -24,7 +24,7 @@ function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
         # original parameters
         δ = get_detuning(drive)::Real
         Ω = get_rabi(drive)::Real
-        ϕ₀ = get_phase(drive)::Real
+        ϕ = get_phase(drive)::Real + ϕ₀
 
         # derived values
         δ′ = δ
@@ -35,7 +35,7 @@ function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
         @fastmath cosΩ = cos(Ωt)
         @fastmath sinΩ = sin(Ωt)
         @fastmath expδ = Complex(cos(δt_2), sin(δt_2))
-        @fastmath expϕ = Complex(cos(ϕ₀), sin(ϕ₀))
+        @fastmath expϕ = Complex(cos(ϕ), sin(ϕ))
 
         y_1 = y0[1]
         y_2 = y0[2]
@@ -61,7 +61,7 @@ immutable ConstDrive <: AbstractDrive
     δ::Float32
     Ω::Float32
     ϕ::typeof(Ref(1f0))
-    ConstDrive(δ, Ω, ϕ₀=0f0) = new(δ, Ω, Ref(Float32(ϕ₀)))
+    ConstDrive(δ, Ω) = new(δ, Ω, Ref(0f0))
 end
 
 @inline update_dt(drive::ConstDrive, dt) = drive.ϕ[] += dt * drive.δ
@@ -74,9 +74,8 @@ immutable LZDrive <: AbstractDrive
     δ0::Float32
     dδ::Float32
     Ω::Float32
-    ϕ₀::Float32
     t::typeof(Ref(1f0))
-    LZDrive(δ0, dδ, Ω, ϕ₀=0f0) = new(δ0, dδ, Ω, ϕ₀, Ref(0f0))
+    LZDrive(δ0, dδ, Ω) = new(δ0, dδ, Ω, Ref(0f0))
 end
 
 @inline update_dt(drive::LZDrive, dt) = drive.t[] += dt
