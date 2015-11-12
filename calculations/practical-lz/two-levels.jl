@@ -69,6 +69,24 @@ end
 @inline get_rabi(drive::ConstDrive) = drive.Ω
 @inline get_phase(drive::ConstDrive) = drive.ϕ[]
 
+# LZ drive
+immutable LZDrive <: AbstractDrive
+    δ0::Float32
+    dδ::Float32
+    Ω::Float32
+    ϕ₀::Float32
+    t::typeof(Ref(1f0))
+    LZDrive(δ0, dδ, Ω, ϕ₀=0f0) = new(δ0, dδ, Ω, ϕ₀, Ref(0f0))
+end
+
+@inline update_dt(drive::LZDrive, dt) = drive.t[] += dt
+@inline get_detuning(drive::LZDrive) = muladd(drive.dδ, drive.t[], drive.δ0)
+@inline get_rabi(drive::LZDrive) = drive.Ω
+@inline function get_phase(drive::LZDrive)
+    t = drive.t[]
+    t * muladd(drive.dδ / 2, t, drive.δ0)
+end
+
 # Full measure
 
 immutable FullMeasure <: AbstractMeasure
