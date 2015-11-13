@@ -33,6 +33,7 @@ function internal_propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
                              tracker::AbstractPhaseTracker)
     ϕ = ϕ₀ = get_phase(tracker)
     @inbounds for i in 1:nsteps
+        update_dt(drive, i == 1 ? dt / 2 : dt)
         # original parameters
         δ = get_detuning(drive)::Real
         Ω = get_rabi(drive)::Real
@@ -64,10 +65,8 @@ function internal_propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
         y0[1] = y_1′ * y_scale
         y0[2] = y_2′ * y_scale
         measure_snapshot(measure, y0, i + 1)
-
-        # Update drive state
-        update_dt(drive, dt)
     end
+    update_dt(drive, dt / 2)
     update_phase(tracker, ϕ)
     y0
 end
@@ -78,6 +77,39 @@ function propagate!(y0::Vector, drive::AbstractDrive, dt, nsteps,
     @assert size(y0) == (2,)
     measure_snapshot(measure, y0, 1)
     internal_propagate!(y0, drive, dt, nsteps, measure, DummyPhaseTracker(ϕ₀))
+end
+
+immutable OffsetMeasure{T<:AbstractMeasure} <: AbstractMeasure
+    measure::T
+    offset::typeof(Ref(0))
+end
+
+@inline function measure_snapshot(measure::OffsetMeasure, y, idx)
+    measure_snapshot(measure.measure, y, idx + measure.offset[])
+end
+
+@generated function propagate!{N}(y0::Vector, drives::NTuple{N,Pair{Int}},
+                                  dt, measure::AbstractMeasure, ϕ₀=0f0)
+    body = quote
+        @assert size(y0) == (2,)
+        offset_measure = OffsetMeasure(measure, Ref(0))
+        tracker = PhaseTracker(ϕ₀)
+        measure_snapshot(measure, y0, 1)
+    end
+    for i in 1:N
+        ex = quote
+            let
+                nsteps = drives[$i].first
+                drive = drives[$i].second
+                internal_propagate!(y0, drive, dt, nsteps,
+                                    offset_measure, tracker)
+                offset_measure.offset[] += nsteps
+            end
+        end
+        push!(body.args, ex)
+    end
+    push!(body.args, :y0)
+    body
 end
 
 # Constant drive
