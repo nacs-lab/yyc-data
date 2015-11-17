@@ -1,0 +1,85 @@
+#!/usr/bin/julia -f
+
+module Drive
+
+# Abstract interface for the drive
+abstract AbstractDrive{T<:AbstractFloat}
+
+function getδ end
+function getΩ end
+getϕ₀{T}(::AbstractDrive{T}) = zero(T)
+
+# Phase tracker
+type DriveTracker{T<:AbstractFloat}
+    δ::T
+    ϕ::T
+    DriveTracker() = new(zero(T), zero(T))
+end
+
+# Update the current phase and detuning
+function update{T}(tracker::DriveTracker{T}, drive::AbstractDrive{T},
+                   dt::T, t::T, tlen::T, vold::T)
+    t1 = muladd(T(-0.8872983346207417), dt, t)
+    t2 = muladd(T(-0.5), dt, t)
+    t3 = muladd(T(-0.1127016653792583), dt, t)
+    δ1 = getδ(drive, t1, tlen, vold)
+    δ2 = getδ(drive, t2, tlen, vold)
+    δ3 = getδ(drive, t3, tlen, vold)
+    δ = getδ(drive, t, tlen, vold)
+    dϕ = muladd(T(0.2777777777777778), δ1 + δ3,
+                T(0.4444444444444444) * δ2) * dt
+    tracker.ϕ += dϕ
+    tracker.δ = δ
+    nothing
+end
+
+getδ{T}(tracker::DriveTracker{T}, ::AbstractDrive{T}, ::T, ::T, ::T) = tracker.δ
+getΩ{T}(::DriveTracker{T}, drive::AbstractDrive{T}, t::T, tlen::T, vold::T) =
+    getΩ(drive, t, tlen, vold)
+getϕ{T}(tracker::DriveTracker{T}) = tracker.ϕ
+
+# Constant drive
+immutable ConstDrive{T<:AbstractFloat} <: AbstractDrive{T}
+    δ::T
+    Ω::T
+    ConstDrive(δ, Ω) = new(δ, Ω)
+end
+ConstDrive{T<:AbstractFloat}(δ::T, Ω::T) = ConstDrive{T}(δ, Ω)
+getδ{T}(drive::ConstDrive{T}, ::T, ::T, ::T) = drive.δ
+getΩ{T}(drive::ConstDrive{T}, ::T, ::T, ::T) = drive.Ω
+
+# Some more efficient specialization for the phase tracker
+@inline function update{T}(tracker::DriveTracker{T}, drive::ConstDrive{T},
+                           dt::T, ::T, ::T, ::T)
+    tracker.ϕ += drive.δ * dt
+    tracker.δ = drive.δ
+    nothing
+end
+getδ{T}(::DriveTracker{T}, drive::ConstDrive{T}, ::T, ::T, ::T) = drive.δ
+
+immutable LinearRampDrive{T<:AbstractFloat} <: AbstractDrive{T}
+    δ0::T
+    δ1::T
+    Ω0::T
+    Ω1::T
+    LinearRampDrive(δ0, δ1, Ω0, Ω1=Ω0) = new(δ0, δ1, Ω0, Ω1)
+end
+LinearRampDrive{T<:AbstractFloat}(δ0::T, δ1::T, Ω0::T, Ω1::T=Ω0) =
+    LinearRampDrive{T}(δ0, δ1, Ω0, Ω1)
+getδ{T}(drive::LinearRampDrive{T}, t::T, len::T, ::T) =
+    (drive.δ0 * (len - t) + drive.δ1 * t) / len
+getΩ{T}(drive::LinearRampDrive{T}, t::T, len::T, ::T) =
+    (drive.Ω0 * (len - t) + drive.Ω1 * t) / len
+
+immutable RampToDrive{T<:AbstractFloat} <: AbstractDrive{T}
+    δ::T
+    Ω::T
+    RampToDrive(δ, Ω) = new(δ, Ω)
+end
+RampToDrive{T<:AbstractFloat}(δ::T, Ω::T) = RampToDrive{T}(δ, Ω)
+getδ{T}(drive::RampToDrive{T}, t::T, len::T, vold::T) =
+    (vold * (len - t) + drive.δ * t) / len
+getΩ{T}(drive::RampToDrive{T}, t::T, len::T, vold::T) =
+    (vold * (len - t) + drive.Ω * t) / len
+
+end
