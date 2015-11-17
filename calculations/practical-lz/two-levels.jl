@@ -155,22 +155,51 @@ end
     nothing
 end
 
+immutable DummyMeasure <: AbstractMeasure
+end
+
+@inline function measure_snapshot(::DummyMeasure, y, idx)
+    nothing
+end
+
 function main()
-    nsteps = 1000
     y0 = Complex64[1, 0]
-    drive = ConstDrive(5f0, 0.5f0)
-    measure = FullMeasure(nsteps)
-    @code_llvm propagate!(y0, drive, 1f-2, nsteps, measure)
-    @time propagate!(y0, drive, 1f-2, nsteps, measure)
+    lz_nsteps = 5000
+    measure = FullMeasure(lz_nsteps * 2)
+    drive = LZDrive(-10f0, 2f-2, 0.3f-1)
+    @time propagate!(y0, drive, 1f-1, lz_nsteps * 2, measure)
     measure.ys
 end
 
-const ys = main()
-println(size(Float32[ys[2, i] for i in 1:size(ys, 2)]))
+function final_value(f_c, δf, t, Ω, nsteps)
+    f_start = f_c - δf / 2
+    df = δf / t
+    drive = LZDrive(f_start, df, Ω)
+    y0 = Complex64[1, 0]
+    measure = DummyMeasure()
+    dt = t / nsteps
+    propagate!(y0, drive, dt, nsteps, measure)
+    abs2(y0[2])
+end
+
+function gen_curve()
+    Ω = 3f0
+    δf = 10f0
+    t = 1f3
+    nsteps = 10_000
+
+    f_cs = linspace(-40f0, 0f0, 4000)
+    f_cs, [final_value(f_c, δf, t, Ω, nsteps) for f_c in f_cs]
+end
+
+@time const f_cs, finals = gen_curve()
 
 using PyPlot
 
 figure()
-plot(Float32[ys[1, i] for i in 1:size(ys, 2)], "g-")
-plot(Float32[ys[2, i] for i in 1:size(ys, 2)], "r-")
+plot(f_cs, finals)
+xlabel("Final frequency")
+ylabel("Excited state populateion")
+grid()
+# savefig("normal_lz.png")
 show()
