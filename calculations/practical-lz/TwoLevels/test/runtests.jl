@@ -1,3 +1,4 @@
 #!/usr/bin/julia -f
 
 include("drive.jl")
+include("measure.jl")
