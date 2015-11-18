@@ -1,6 +1,6 @@
 #!/usr/bin/julia -f
 
-module Drive
+module Drives
 
 # Abstract interface for the drive
 abstract AbstractDrive{T<:AbstractFloat}

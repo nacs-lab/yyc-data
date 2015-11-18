@@ -3,13 +3,13 @@
 module TwoLevels
 
 include("drive.jl")
-import .Drive: AbstractDrive, getδ, getΩ, getϕ₀
-import .Drive: DriveTracker, update, getϕ
-import .Drive: ConstDrive, LinearRampDrive, RampToDrive
+import .Drives: AbstractDrive, getδ, getΩ, getϕ₀
+import .Drives: DriveTracker, update, getϕ
+import .Drives: ConstDrive, LinearRampDrive, RampToDrive
 
 include("measure.jl")
-import .Measure: AbstractMeasure, measure_snapshot
-import .Measure: MeasureWrapper, MeasureList
-import .Measure: DummyMeasure, FullMeasure
+import .Measures: AbstractMeasure, measure_snapshot
+import .Measures: MeasureWrapper, MeasureList
+import .Measures: DummyMeasure, FullMeasure
 
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/julia -f
 
-module Measure
+module Measures
 
 abstract AbstractMeasure{T}
 
