@@ -4,11 +4,13 @@ module TestDrive
 
 using Base.Test
 
+info("Test Drive")
+
 import TwoLevels: AbstractDrive, getδ, getΩ, getϕ₀
 import TwoLevels: DriveTracker, update, getϕ
 import TwoLevels: ConstDrive, LinearRampDrive, RampToDrive
 
-info("Test ConstDrive")
+info("  Test ConstDrive")
 let
     drive = ConstDrive(1f0, 2f0)
     @test getδ(drive, 0f0, 1f0, 10f0) === 1f0
@@ -26,7 +28,7 @@ let
     @test getϕ(tracker) === 1f0 * 0.1f0 * 2
 end
 
-info("Test LinearRampDrive")
+info("  Test LinearRampDrive")
 let
     drive = LinearRampDrive(1f0, 2f0, -3f0, -4f0)
     @test getδ(drive, 1f0, 2f0, 10f0)::Float32 ≈ 1.5f0
@@ -44,7 +46,7 @@ let
     @test getϕ(tracker)::Float32 ≈ 0.22f0
 end
 
-info("Test RampToDrive")
+info("  Test RampToDrive")
 let
     drive = RampToDrive(-2f0, 4f0)
     @test getδ(drive, 1f0, 2f0, -1f0)::Float32 ≈ -1.5f0
