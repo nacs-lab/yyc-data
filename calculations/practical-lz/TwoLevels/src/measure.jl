@@ -2,18 +2,17 @@
 
 module Measure
 
-abstract AbstractMeasure
+abstract AbstractMeasure{T}
 
 function measure_snapshot end
 
-immutable DummyMeasure <: AbstractMeasure
+immutable DummyMeasure{T} <: AbstractMeasure{T}
 end
 
-@inline function measure_snapshot(::DummyMeasure, y, idx, t)
-    nothing
-end
+@inline measure_snapshot(::DummyMeasure, y, idx, t) = nothing
 
-function _measure_wrapper{T}(measure, y::Vector{T}, idx::Int, t::T)
+function _measure_wrapper{T}(measure::AbstractMeasure{T}, y::Vector{T},
+                             idx::Int, t::T)
     measure_snapshot(measure, y, idx, t)
     nothing
 end
@@ -22,17 +21,19 @@ end
 # The overhead of calling a wrapped AbstractMeasure is roughly two function
 # calls and a GC frame push and pop (plus no inlining). This is measured to be
 # ~4-5ns on my laptop.
-immutable MeasureWrapper{T} <: AbstractMeasure
+immutable MeasureWrapper{T} <: AbstractMeasure{T}
     fptr::Ptr{Void}
     pmeasure::Ptr{Void} # To avoid the UndefRef check
-    measure # For GC root
-    function MeasureWrapper{M}(measure::M)
+    measure::AbstractMeasure{T} # For GC root
+    function MeasureWrapper(measure::AbstractMeasure{T})
+        M = typeof(measure)
         fptr = cfunction(_measure_wrapper, Void,
                          Tuple{Ref{M},Ref{Vector{T}},Int,T})
         # This is not compatible with moving GC
         new(fptr, pointer_from_objref(measure), measure)
     end
 end
+MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 
 @inline function measure_snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
                                      idx::Int, t::T)
@@ -43,7 +44,7 @@ end
           wrapper.pmeasure, y, idx, t)
 end
 
-type MeasureList{T} <: AbstractMeasure
+type MeasureList{T} <: AbstractMeasure{T}
     cur_measure::MeasureWrapper{T}
     tidx_max::Int
     tidx_offset::Int
@@ -55,7 +56,7 @@ type MeasureList{T} <: AbstractMeasure
     dt::T
     function MeasureList(measures, dt)
         # TODO verify if the measures list is valid
-        dummy_measure = MeasureWrapper{T}(DummyMeasure())
+        dummy_measure = MeasureWrapper{T}(DummyMeasure{T}())
         new(dummy_measure, 0, 0, zero(T), isempty(measures) ? 0 : 1,
             measures, dummy_measure, dt)
     end

@@ -9,8 +9,8 @@ info("Test Measure")
 
 info("  Test MeasureWrapper performance")
 function perf_wrapper()
-    dummy_measure = DummyMeasure()
-    wrapped_measure = MeasureWrapper{Float32}(dummy_measure)
+    dummy_measure = DummyMeasure{Float32}()
+    wrapped_measure = MeasureWrapper(dummy_measure)
     n = 100_000_000
     y = Float32[1, 2]
     dt = 1f-3
@@ -29,12 +29,12 @@ perf_wrapper()
 
 info("  Test MeasureList performance")
 function perf_list()
-    dummy_measure = DummyMeasure()
+    dummy_measure = DummyMeasure{Float32}()
     TM = Pair{Tuple{Int,Int},MeasureWrapper{Float32}}
-    measures = TM[(1, 10_000)=>MeasureWrapper{Float32}(dummy_measure),
-                  (20_000, 30_000)=>MeasureWrapper{Float32}(dummy_measure),
-                  (50_000, 3_000_000)=>MeasureWrapper{Float32}(dummy_measure),
-                  (5_000_000, 90_000_000)=>MeasureWrapper{Float32}(dummy_measure)]
+    measures = TM[(1, 10_000)=>MeasureWrapper(dummy_measure),
+                  (20_000, 30_000)=>MeasureWrapper(dummy_measure),
+                  (50_000, 3_000_000)=>MeasureWrapper(dummy_measure),
+                  (5_000_000, 90_000_000)=>MeasureWrapper(dummy_measure)]
     dt = 1f-3
     measure_list = MeasureList{Float32}(measures, dt)
     n = 100_000_000
