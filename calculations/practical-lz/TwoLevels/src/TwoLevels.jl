@@ -9,6 +9,6 @@ import .Drive: ConstDrive, LinearRampDrive, RampToDrive
 
 include("measure.jl")
 import .Measure: AbstractMeasure, measure_snapshot
-import .Measure: DummyMeasure, MeasureWrapper
+import .Measure: DummyMeasure, MeasureWrapper, MeasureList
 
 end
