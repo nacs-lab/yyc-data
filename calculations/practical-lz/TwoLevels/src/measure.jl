@@ -92,4 +92,15 @@ end
                      t - list.t_offset)
 end
 
+immutable FullMeasure{T} <: AbstractMeasure{T}
+    ys::Matrix{T}
+    FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
+end
+
+@inline function measure_snapshot(measure::FullMeasure, y, idx, t)
+    @inbounds measure.ys[1, idx] = abs2(y[1])
+    @inbounds measure.ys[2, idx] = abs2(y[2])
+    nothing
+end
+
 end
