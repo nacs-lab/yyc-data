@@ -14,6 +14,7 @@ end
 abstract AbstractMeasure{T}
 
 function snapshot end
+reset(::AbstractMeasure) = nothing
 
 immutable DummyMeasure{T} <: AbstractMeasure{T}
     DummyMeasure() = new()
@@ -49,6 +50,7 @@ immutable MeasureWrapper{T} <: AbstractMeasure{T}
         MeasureWrapper(M{T}(idxs, dt, args...))
 end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
+reset(wrapper::MeasureWrapper) = reset(wrapper.measure)
 
 @inline function snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
                              idx::Int, t::T)
@@ -82,6 +84,16 @@ type MeasureList{T} <: AbstractMeasure{T}
         dummy_measure = MeasureWrapper{T}(DummyMeasure{T}())
         new(dummy_measure, 0, 0, zero(T), isempty(measures) ? 0 : 1,
             measures, dummy_measure, dt)
+    end
+end
+function reset{T}(list::MeasureList{T})
+    list.cur_measure = list.dummy_measure
+    list.tidx_max = 0
+    list.tidx_offset = 0
+    list.t_offset = zero(T)
+    list.next_measure = isempty(list.measures) ? 0 : 1
+    @inbounds for ((imin, imax), m) in list.measures
+        reset(m)
     end
 end
 

@@ -84,6 +84,9 @@ function Measures.snapshot(c::CountMeasure, y, idx, t)
     c.n += 1
     @assert idx == c.n
 end
+function Measures.reset(c::CountMeasure)
+    c.n = 0
+end
 function test_list()
     TM = Pair{Tuple{Int,Int},MeasureWrapper{Float32}}
     measures = TM[(1, 10_000)=>MeasureWrapper(CountMeasure{Float32}()),
@@ -103,6 +106,10 @@ function test_list()
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
     for ((imin, imax), m) in measures
         @test imax - imin + 1 == m.measure.n
+    end
+    Measures.reset(measure_list)
+    for ((imin, imax), m) in measures
+        @test m.measure.n == 0
     end
 end
 test_list()
