@@ -79,7 +79,8 @@ type CountMeasure{T} <: AbstractMeasure{T}
     n::Int
     imin::Int
     imax::Int
-    CountMeasure(idxs, dt) = new(0, first(idxs), last(idxs))
+    idx::Int
+    CountMeasure(idxs, dt, idx=1) = new(0, first(idxs), last(idxs), idx)
 end
 function Measures.snapshot(c::CountMeasure, y, idx, t)
     c.n += 1
@@ -90,9 +91,9 @@ function Measures.reset(c::CountMeasure)
 end
 function test_list()
     measures = Any[(1, 10_000)=>CountMeasure,
-                   (20_000, 30_000)=>CountMeasure,
-                   (50_000, 3_000_000)=>CountMeasure,
-                   (5_000_000, 90_000_000)=>CountMeasure]
+                   (20_000, 30_000)=>(CountMeasure, 2),
+                   (50_000, 3_000_000)=>(CountMeasure, 3),
+                   (5_000_000, 90_000_000)=>(CountMeasure, 4)]
     dt = 1f-3
     n = 100_000_000
     measure_list = MeasureList{Float32}(1:n, dt, measures)
@@ -104,8 +105,9 @@ function test_list()
         Measures.snapshot(measure_list, y, i, i * dt)
     end
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
-    for ((imin, imax), m) in measure_list
+    for (i, ((imin, imax), m)) in enumerate(measure_list)
         measure = m.measure::CountMeasure{Float32}
+        @test i == measure.idx
         @test imin == measure.imin
         @test imax == measure.imax
         @test imax - imin + 1 == measure.n
