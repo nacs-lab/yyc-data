@@ -19,7 +19,7 @@ reset(::AbstractMeasure) = nothing
 immutable DummyMeasure{T} <: AbstractMeasure{T}
     DummyMeasure() = new()
     # Standard builder interface
-    DummyMeasure(idxs, dt) = DummyMeasure()
+    DummyMeasure(idxs, dt) = DummyMeasure{T}()
 end
 
 @inline snapshot(::DummyMeasure, y, idx, t) = nothing
@@ -45,9 +45,9 @@ immutable MeasureWrapper{T} <: AbstractMeasure{T}
     end
     # Standard builder interface
     MeasureWrapper(idxs, dt, measure::AbstractMeasure{T}) =
-        MeasureWrapper(measure)
+        MeasureWrapper{T}(measure)
     MeasureWrapper{M<:AbstractMeasure}(idxs, dt, ::Type{M}, args...) =
-        MeasureWrapper(M{T}(idxs, dt, args...))
+        MeasureWrapper{T}(M{T}(idxs, dt, args...))
 end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 reset(wrapper::MeasureWrapper) = reset(wrapper.measure)
@@ -69,6 +69,18 @@ function verify_measure_list{T}(measures::MeasuresVector{T})
     end
 end
 
+function to_measure_list_item{T}(::Type{T}, _idxs, imin, imax, dt, m::ANY)
+    idxs = _idxs[imin]:_idxs[imax]
+    if isa(m, MeasureWrapper{T})
+        return m::MeasureWrapper{T}
+    elseif isa(m, AbstractMeasure{T})
+        return MeasureWrapper{T}(m)::MeasureWrapper{T}
+    elseif isa(m, DataType) && (m::DataType) <: AbstractMeasure
+        return MeasureWrapper{T}(idxs, dt, m)::MeasureWrapper{T}
+    end
+    return MeasureWrapper{T}(idxs, dt, m...)::MeasureWrapper{T}
+end
+
 type MeasureList{T} <: AbstractMeasure{T}
     cur_measure::MeasureWrapper{T}
     tidx_max::Int
@@ -85,6 +97,11 @@ type MeasureList{T} <: AbstractMeasure{T}
         new(dummy_measure, 0, 0, zero(T), isempty(measures) ? 0 : 1,
             measures, dummy_measure, dt)
     end
+    MeasureList(idxs, dt, measures) =
+        MeasureList{T}([Pair((imin::Int, imax::Int),
+                             to_measure_list_item(T, idxs, imin, imax,
+                                                  dt, m)::MeasureWrapper{T})
+                        for ((imin, imax), m) in measures], dt)
 end
 function reset{T}(list::MeasureList{T})
     list.cur_measure = list.dummy_measure
@@ -96,6 +113,11 @@ function reset{T}(list::MeasureList{T})
         reset(m)
     end
 end
+Base.getindex(list::MeasureList, idx) = list.measures[idx]
+Base.length(list::MeasureList) = length(list.measures)
+Base.start(list::MeasureList) = start(list.measures)
+Base.next(list::MeasureList, idx) = next(list.measures, idx)
+Base.done(list::MeasureList, idx) = done(list.measures, idx)
 
 @noinline function measure_list_update(list, idx)
     list.tidx_offset = idx - 1
@@ -129,7 +151,7 @@ immutable FullMeasure{T} <: AbstractMeasure{T}
     ys::Matrix{T}
     FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
     # Standard builder interface
-    FullMeasure(idxs, dt) = FullMeasure(length(idxs))
+    FullMeasure(idxs, dt) = FullMeasure{T}(length(idxs))
 end
 
 @inline function snapshot(measure::FullMeasure, y, idx, t)

@@ -33,14 +33,13 @@ perf_wrapper()
 info("  Test MeasureList performance")
 function perf_list()
     dummy_measure = DummyMeasure{Float32}()
-    TM = Pair{Tuple{Int,Int},MeasureWrapper{Float32}}
-    measures = TM[(1, 10_000)=>MeasureWrapper(dummy_measure),
-                  (20_000, 30_000)=>MeasureWrapper(dummy_measure),
-                  (50_000, 3_000_000)=>MeasureWrapper(dummy_measure),
-                  (5_000_000, 90_000_000)=>MeasureWrapper(dummy_measure)]
+    measures = Any[(1, 10_000)=>DummyMeasure,
+                   (20_000, 30_000)=>DummyMeasure,
+                   (50_000, 3_000_000)=>DummyMeasure,
+                   (5_000_000, 90_000_000)=>DummyMeasure]
     dt = 1f-3
-    measure_list = MeasureList{Float32}(measures, dt)
     n = 100_000_000
+    measure_list = MeasureList{Float32}(1:n, dt, measures)
     y = Float32[1, 2]
 
     # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
@@ -78,7 +77,9 @@ perf_full()
 info("  Test MeasureList")
 type CountMeasure{T} <: AbstractMeasure{T}
     n::Int
-    CountMeasure() = new(0)
+    imin::Int
+    imax::Int
+    CountMeasure(idxs, dt) = new(0, first(idxs), last(idxs))
 end
 function Measures.snapshot(c::CountMeasure, y, idx, t)
     c.n += 1
@@ -88,14 +89,13 @@ function Measures.reset(c::CountMeasure)
     c.n = 0
 end
 function test_list()
-    TM = Pair{Tuple{Int,Int},MeasureWrapper{Float32}}
-    measures = TM[(1, 10_000)=>MeasureWrapper(CountMeasure{Float32}()),
-                  (20_000, 30_000)=>MeasureWrapper(CountMeasure{Float32}()),
-                  (50_000, 3_000_000)=>MeasureWrapper(CountMeasure{Float32}()),
-                  (5_000_000, 90_000_000)=>MeasureWrapper(CountMeasure{Float32}())]
+    measures = Any[(1, 10_000)=>CountMeasure,
+                   (20_000, 30_000)=>CountMeasure,
+                   (50_000, 3_000_000)=>CountMeasure,
+                   (5_000_000, 90_000_000)=>CountMeasure]
     dt = 1f-3
-    measure_list = MeasureList{Float32}(measures, dt)
     n = 100_000_000
+    measure_list = MeasureList{Float32}(1:n, dt, measures)
     y = Float32[1, 2]
 
     # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
@@ -104,12 +104,16 @@ function test_list()
         Measures.snapshot(measure_list, y, i, i * dt)
     end
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
-    for ((imin, imax), m) in measures
-        @test imax - imin + 1 == m.measure.n
+    for ((imin, imax), m) in measure_list
+        measure = m.measure::CountMeasure{Float32}
+        @test imin == measure.imin
+        @test imax == measure.imax
+        @test imax - imin + 1 == measure.n
     end
     Measures.reset(measure_list)
-    for ((imin, imax), m) in measures
-        @test m.measure.n == 0
+    for ((imin, imax), m) in measure_list
+        measure = m.measure::CountMeasure{Float32}
+        @test measure.n == 0
     end
 end
 test_list()
