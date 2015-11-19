@@ -2,6 +2,15 @@
 
 module Measures
 
+if VERSION >= v"0.5.0-dev+1297"
+    @inline assume(x::Bool) =
+        Base.llvmcall(("declare void @llvm.assume(i1)",
+                       """call void @llvm.assume(i1 %0)
+                       ret void"""), Void, Tuple{Bool}, x)
+else
+    @inline assume(x::Bool) = nothing
+end
+
 abstract AbstractMeasure{T}
 
 function measure_snapshot end
@@ -23,7 +32,7 @@ end
 # ~4-5ns on my laptop.
 immutable MeasureWrapper{T} <: AbstractMeasure{T}
     fptr::Ptr{Void}
-    measure::AbstractMeasure{T} # For GC root
+    measure
     function MeasureWrapper(measure::AbstractMeasure{T})
         M = typeof(measure)
         fptr = cfunction(_measure_wrapper, Void,
@@ -35,10 +44,9 @@ MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 
 @inline function measure_snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
                                      idx::Int, t::T)
-    # This let LLVM optimize out the jl_throw when fptr is NULL
-    # Should be replaced with `llvm.assume` once I upgrade my julia version
-    wrapper.fptr == C_NULL && return
-    ccall(wrapper.fptr, Void, (Any, Any, Int, T), wrapper.measure, y, idx, t)
+    fptr = wrapper.fptr
+    assume(fptr != C_NULL)
+    ccall(fptr, Void, (Any, Any, Int, T), wrapper.measure, y, idx, t)
 end
 
 type MeasureList{T} <: AbstractMeasure{T}

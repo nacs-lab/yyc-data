@@ -21,11 +21,12 @@ function perf_wrapper()
     #     measure_snapshot(dummy_measure, y, i, i * dt)
     # end
     # @code_llvm measure_snapshot(wrapped_measure, y, 0, 0 * dt)
+    # @code_native measure_snapshot(wrapped_measure, y, 0, 0 * dt)
     measure_snapshot(wrapped_measure, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
         measure_snapshot(wrapped_measure, y, i, i * dt)
     end
-    info(@sprintf("    Time per measure: %.1fns", t / n * 1e9))
+    info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
 end
 perf_wrapper()
 
@@ -47,7 +48,7 @@ function perf_list()
     t = @elapsed for i in 2:(n + 1)
         measure_snapshot(measure_list, y, i, i * dt)
     end
-    info(@sprintf("    Time per measure: %.1fns", t / n * 1e9))
+    info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
 end
 perf_list()
 
@@ -65,12 +66,12 @@ function perf_full()
     t = @elapsed for i in 2:(n + 1)
         measure_snapshot(full_measure, y, i, i * dt)
     end
-    info(@sprintf("    Time per full measure: %.1fns", t / n * 1e9))
+    info(@sprintf("    Time per full measure: %.2fns", t / n * 1e9))
     measure_snapshot(wrapped_measure, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
         measure_snapshot(wrapped_measure, y, i, i * dt)
     end
-    info(@sprintf("    Time per wrapped full measure: %.1fns", t / n * 1e9))
+    info(@sprintf("    Time per wrapped full measure: %.2fns", t / n * 1e9))
 end
 perf_full()
 
@@ -99,7 +100,7 @@ function test_list()
     t = @elapsed for i in 2:(n + 1)
         measure_snapshot(measure_list, y, i, i * dt)
     end
-    info(@sprintf("    Time per measure: %.1fns", t / n * 1e9))
+    info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
     for ((imin, imax), m) in measures
         @test imax - imin + 1 == m.measure.n
     end
