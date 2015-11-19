@@ -23,14 +23,12 @@ end
 # ~4-5ns on my laptop.
 immutable MeasureWrapper{T} <: AbstractMeasure{T}
     fptr::Ptr{Void}
-    pmeasure::Ptr{Void} # To avoid the UndefRef check
     measure::AbstractMeasure{T} # For GC root
     function MeasureWrapper(measure::AbstractMeasure{T})
         M = typeof(measure)
         fptr = cfunction(_measure_wrapper, Void,
                          Tuple{Ref{M},Ref{Vector{T}},Int,T})
-        # This is not compatible with moving GC
-        new(fptr, pointer_from_objref(measure), measure)
+        new(fptr, measure)
     end
 end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
@@ -40,8 +38,7 @@ MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
     # This let LLVM optimize out the jl_throw when fptr is NULL
     # Should be replaced with `llvm.assume` once I upgrade my julia version
     wrapper.fptr == C_NULL && return
-    ccall(wrapper.fptr, Void, (Ptr{Void}, Any, Int, T),
-          wrapper.pmeasure, y, idx, t)
+    ccall(wrapper.fptr, Void, (Any, Any, Int, T), wrapper.measure, y, idx, t)
 end
 
 type MeasureList{T} <: AbstractMeasure{T}
