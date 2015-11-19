@@ -57,6 +57,16 @@ MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
     ccall(fptr, Void, (Any, Any, Int, T), wrapper.measure, y, idx, t)
 end
 
+typealias MeasuresVector{T} Vector{Pair{Tuple{Int,Int},MeasureWrapper{T}}}
+
+function verify_measure_list{T}(measures::MeasuresVector{T})
+    prev_imax = 0
+    @inbounds for ((imin, imax), m) in measures
+        imin <= prev_imax && ArgumentError("Overlapping measures")
+        imax < imin && ArgumentError("Measure of negative length")
+    end
+end
+
 type MeasureList{T} <: AbstractMeasure{T}
     cur_measure::MeasureWrapper{T}
     tidx_max::Int
@@ -64,11 +74,11 @@ type MeasureList{T} <: AbstractMeasure{T}
     t_offset::T
     next_measure::Int
     # Following fields should not be mutated
-    measures::Vector{Pair{Tuple{Int,Int},MeasureWrapper{T}}}
+    measures::MeasuresVector{T}
     dummy_measure::MeasureWrapper{T}
     dt::T
-    function MeasureList(measures, dt)
-        # TODO verify if the measures list is valid
+    function MeasureList(measures::MeasuresVector{T}, dt)
+        verify_measure_list(measures)
         dummy_measure = MeasureWrapper{T}(DummyMeasure{T}())
         new(dummy_measure, 0, 0, zero(T), isempty(measures) ? 0 : 1,
             measures, dummy_measure, dt)
