@@ -16,6 +16,9 @@ abstract AbstractMeasure{T}
 function measure_snapshot end
 
 immutable DummyMeasure{T} <: AbstractMeasure{T}
+    DummyMeasure() = new()
+    # Standard builder interface
+    DummyMeasure(idxs, dt) = DummyMeasure()
 end
 
 @inline measure_snapshot(::DummyMeasure, y, idx, t) = nothing
@@ -39,6 +42,11 @@ immutable MeasureWrapper{T} <: AbstractMeasure{T}
                          Tuple{Ref{M},Ref{Vector{T}},Int,T})
         new(fptr, measure)
     end
+    # Standard builder interface
+    MeasureWrapper(idxs, dt, measure::AbstractMeasure{T}) =
+        MeasureWrapper(measure)
+    MeasureWrapper{M<:AbstractMeasure}(idxs, dt, ::Type{M}, args...) =
+        MeasureWrapper(M{T}(idxs, dt, args...))
 end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 
@@ -100,6 +108,8 @@ end
 immutable FullMeasure{T} <: AbstractMeasure{T}
     ys::Matrix{T}
     FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
+    # Standard builder interface
+    FullMeasure(idxs, dt) = FullMeasure(length(idxs))
 end
 
 @inline function measure_snapshot(measure::FullMeasure, y, idx, t)
