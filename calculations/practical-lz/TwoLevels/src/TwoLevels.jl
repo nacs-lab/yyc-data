@@ -8,7 +8,7 @@ import .Drives: DriveTracker, update, getϕ
 import .Drives: ConstDrive, LinearRampDrive, RampToDrive
 
 include("measure.jl")
-import .Measures: AbstractMeasure, measure_snapshot
+import .Measures: AbstractMeasure
 import .Measures: MeasureWrapper, MeasureList
 import .Measures: DummyMeasure, FullMeasure
 

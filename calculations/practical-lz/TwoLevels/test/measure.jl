@@ -3,7 +3,7 @@
 module TestMeasure
 
 using Base.Test
-import TwoLevels: AbstractMeasure, measure_snapshot
+import TwoLevels: AbstractMeasure, Measures
 import TwoLevels: MeasureWrapper, MeasureList
 import TwoLevels: DummyMeasure, FullMeasure
 
@@ -18,13 +18,13 @@ function perf_wrapper()
     dt = 1f-3
 
     # @time for i in 1:n
-    #     measure_snapshot(dummy_measure, y, i, i * dt)
+    #     Measures.snapshot(dummy_measure, y, i, i * dt)
     # end
-    # @code_llvm measure_snapshot(wrapped_measure, y, 0, 0 * dt)
-    # @code_native measure_snapshot(wrapped_measure, y, 0, 0 * dt)
-    measure_snapshot(wrapped_measure, y, 1, 1 * dt)
+    # @code_llvm Measures.snapshot(wrapped_measure, y, 0, 0 * dt)
+    # @code_native Measures.snapshot(wrapped_measure, y, 0, 0 * dt)
+    Measures.snapshot(wrapped_measure, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
-        measure_snapshot(wrapped_measure, y, i, i * dt)
+        Measures.snapshot(wrapped_measure, y, i, i * dt)
     end
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
 end
@@ -43,10 +43,10 @@ function perf_list()
     n = 100_000_000
     y = Float32[1, 2]
 
-    # @code_llvm measure_snapshot(measure_list, y, 0, 0 * dt)
-    measure_snapshot(measure_list, y, 1, 1 * dt)
+    # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
+    Measures.snapshot(measure_list, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
-        measure_snapshot(measure_list, y, i, i * dt)
+        Measures.snapshot(measure_list, y, i, i * dt)
     end
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
 end
@@ -61,15 +61,15 @@ function perf_full()
     y = Float32[1, 2]
     dt = 1f-3
 
-    measure_snapshot(full_measure, y, 1, 1 * dt)
-    # @code_llvm measure_snapshot(full_measure, y, 0, 0 * dt)
+    Measures.snapshot(full_measure, y, 1, 1 * dt)
+    # @code_llvm Measures.snapshot(full_measure, y, 0, 0 * dt)
     t = @elapsed for i in 2:(n + 1)
-        measure_snapshot(full_measure, y, i, i * dt)
+        Measures.snapshot(full_measure, y, i, i * dt)
     end
     info(@sprintf("    Time per full measure: %.2fns", t / n * 1e9))
-    measure_snapshot(wrapped_measure, y, 1, 1 * dt)
+    Measures.snapshot(wrapped_measure, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
-        measure_snapshot(wrapped_measure, y, i, i * dt)
+        Measures.snapshot(wrapped_measure, y, i, i * dt)
     end
     info(@sprintf("    Time per wrapped full measure: %.2fns", t / n * 1e9))
 end
@@ -80,7 +80,7 @@ type CountMeasure{T} <: AbstractMeasure{T}
     n::Int
     CountMeasure() = new(0)
 end
-function measure_snapshot(c::CountMeasure, y, idx, t)
+function Measures.snapshot(c::CountMeasure, y, idx, t)
     c.n += 1
     @assert idx == c.n
 end
@@ -95,10 +95,10 @@ function test_list()
     n = 100_000_000
     y = Float32[1, 2]
 
-    # @code_llvm measure_snapshot(measure_list, y, 0, 0 * dt)
-    measure_snapshot(measure_list, y, 1, 1 * dt)
+    # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
+    Measures.snapshot(measure_list, y, 1, 1 * dt)
     t = @elapsed for i in 2:(n + 1)
-        measure_snapshot(measure_list, y, i, i * dt)
+        Measures.snapshot(measure_list, y, i, i * dt)
     end
     info(@sprintf("    Time per measure: %.2fns", t / n * 1e9))
     for ((imin, imax), m) in measures

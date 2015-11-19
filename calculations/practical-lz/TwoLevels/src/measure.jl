@@ -13,7 +13,7 @@ end
 
 abstract AbstractMeasure{T}
 
-function measure_snapshot end
+function snapshot end
 
 immutable DummyMeasure{T} <: AbstractMeasure{T}
     DummyMeasure() = new()
@@ -21,11 +21,11 @@ immutable DummyMeasure{T} <: AbstractMeasure{T}
     DummyMeasure(idxs, dt) = DummyMeasure()
 end
 
-@inline measure_snapshot(::DummyMeasure, y, idx, t) = nothing
+@inline snapshot(::DummyMeasure, y, idx, t) = nothing
 
 function _measure_wrapper{T}(measure::AbstractMeasure{T}, y::Vector{T},
                              idx::Int, t::T)
-    measure_snapshot(measure, y, idx, t)
+    snapshot(measure, y, idx, t)
     nothing
 end
 
@@ -50,8 +50,8 @@ immutable MeasureWrapper{T} <: AbstractMeasure{T}
 end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 
-@inline function measure_snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
-                                     idx::Int, t::T)
+@inline function snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
+                             idx::Int, t::T)
     fptr = wrapper.fptr
     assume(fptr != C_NULL)
     ccall(fptr, Void, (Any, Any, Int, T), wrapper.measure, y, idx, t)
@@ -108,11 +108,9 @@ end
     nothing
 end
 
-@inline function measure_snapshot{T}(list::MeasureList{T}, y::Vector{T},
-                                     idx::Int, t::T)
+@inline function snapshot{T}(list::MeasureList{T}, y::Vector{T}, idx::Int, t::T)
     list.tidx_max < idx && measure_list_update(list, idx)
-    measure_snapshot(list.cur_measure, y, idx - list.tidx_offset,
-                     t - list.t_offset)
+    snapshot(list.cur_measure, y, idx - list.tidx_offset, t - list.t_offset)
 end
 
 immutable FullMeasure{T} <: AbstractMeasure{T}
@@ -122,7 +120,7 @@ immutable FullMeasure{T} <: AbstractMeasure{T}
     FullMeasure(idxs, dt) = FullMeasure(length(idxs))
 end
 
-@inline function measure_snapshot(measure::FullMeasure, y, idx, t)
+@inline function snapshot(measure::FullMeasure, y, idx, t)
     @inbounds measure.ys[1, idx] = abs2(y[1])
     @inbounds measure.ys[2, idx] = abs2(y[2])
     nothing
