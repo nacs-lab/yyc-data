@@ -10,14 +10,14 @@ function getΩ end
 getϕ₀{T}(::AbstractDrive{T}) = zero(T)
 
 # Phase tracker
-type DriveTracker{T<:AbstractFloat}
+type PhaseTracker{T<:AbstractFloat}
     δ::T
     ϕ::T
-    DriveTracker() = new(zero(T), zero(T))
+    PhaseTracker() = new(zero(T), zero(T))
 end
 
 # Update the current phase and detuning
-function update{T}(tracker::DriveTracker{T}, drive::AbstractDrive{T},
+function update{T}(tracker::PhaseTracker{T}, drive::AbstractDrive{T},
                    dt::T, t::T, tlen::T, vold::T)
     t1 = muladd(T(-0.8872983346207417), dt, t)
     t2 = muladd(T(-0.5), dt, t)
@@ -33,10 +33,10 @@ function update{T}(tracker::DriveTracker{T}, drive::AbstractDrive{T},
     nothing
 end
 
-getδ{T}(tracker::DriveTracker{T}, ::AbstractDrive{T}, ::T, ::T, ::T) = tracker.δ
-getΩ{T}(::DriveTracker{T}, drive::AbstractDrive{T}, t::T, tlen::T, vold::T) =
+getδ{T}(tracker::PhaseTracker{T}, ::AbstractDrive{T}, ::T, ::T, ::T) = tracker.δ
+getΩ{T}(::PhaseTracker{T}, drive::AbstractDrive{T}, t::T, tlen::T, vold::T) =
     getΩ(drive, t, tlen, vold)
-getϕ{T}(tracker::DriveTracker{T}) = tracker.ϕ
+getϕ{T}(tracker::PhaseTracker{T}) = tracker.ϕ
 
 # Constant drive
 immutable ConstDrive{T<:AbstractFloat} <: AbstractDrive{T}
@@ -49,13 +49,13 @@ getδ{T}(drive::ConstDrive{T}, ::T, ::T, ::T) = drive.δ
 getΩ{T}(drive::ConstDrive{T}, ::T, ::T, ::T) = drive.Ω
 
 # Some more efficient specialization for the phase tracker
-@inline function update{T}(tracker::DriveTracker{T}, drive::ConstDrive{T},
+@inline function update{T}(tracker::PhaseTracker{T}, drive::ConstDrive{T},
                            dt::T, ::T, ::T, ::T)
     tracker.ϕ += drive.δ * dt
     tracker.δ = drive.δ
     nothing
 end
-getδ{T}(::DriveTracker{T}, drive::ConstDrive{T}, ::T, ::T, ::T) = drive.δ
+getδ{T}(::PhaseTracker{T}, drive::ConstDrive{T}, ::T, ::T, ::T) = drive.δ
 
 immutable LinearRampDrive{T<:AbstractFloat} <: AbstractDrive{T}
     δ0::T

@@ -7,7 +7,7 @@ using Base.Test
 info("Test Drive")
 
 import TwoLevels: AbstractDrive, getδ, getΩ, getϕ₀
-import TwoLevels: DriveTracker, update, getϕ
+import TwoLevels: PhaseTracker, update, getϕ
 import TwoLevels: ConstDrive, LinearRampDrive, RampToDrive
 
 info("  Test ConstDrive")
@@ -17,7 +17,7 @@ let
     @test getΩ(drive, 0f0, 1f0, 10f0) === 2f0
     @test getϕ₀(drive) === 0f0
 
-    tracker = DriveTracker{Float32}()
+    tracker = PhaseTracker{Float32}()
     @test update(tracker, drive, 0.1f0, 0.1f0, 1f0, 10f0) === nothing
     @test getδ(tracker, drive, 0.1f0, 1f0, 10f0) === 1f0
     @test getΩ(tracker, drive, 0.1f0, 1f0, 10f0) === 2f0
@@ -35,7 +35,7 @@ let
     @test getΩ(drive, 1f0, 2f0, 10f0)::Float32 ≈ -3.5f0
     @test getϕ₀(drive) === 0f0
 
-    tracker = DriveTracker{Float32}()
+    tracker = PhaseTracker{Float32}()
     @test update(tracker, drive, 0.1f0, 0.1f0, 1f0, 10f0) === nothing
     @test getδ(tracker, drive, 0.1f0, 1f0, 10f0)::Float32 ≈ 1.1f0
     @test getΩ(tracker, drive, 0.1f0, 1f0, 10f0)::Float32 ≈ -3.1f0
@@ -53,7 +53,7 @@ let
     @test getΩ(drive, 1f0, 2f0, 3f0)::Float32 ≈ 3.5f0
     @test getϕ₀(drive) === 0f0
 
-    tracker = DriveTracker{Float32}()
+    tracker = PhaseTracker{Float32}()
     @test update(tracker, drive, 0.1f0, 0.1f0, 1f0, -1f0) === nothing
     @test getδ(tracker, drive, 0.1f0, 1f0, -1f0)::Float32 ≈ -1.1f0
     @test getΩ(tracker, drive, 0.1f0, 1f0, 3f0)::Float32 ≈ 3.1f0
