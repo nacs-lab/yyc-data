@@ -20,7 +20,7 @@ immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
     phase_tracker::PhaseTracker{T}
     drive_tracker::DriveTracker{T}
     function Sequence{N}(dt, nsteps,
-                         drives::NTuple{N,AbstractDrive}, measure::M)
+                         drives::NTuple{N,Pair{Int}}, measure::M)
         Base.typeassert(drives, Ds)
         y = Vector{T}(2)
         phase_tracker = PhaseTracker{T}()
