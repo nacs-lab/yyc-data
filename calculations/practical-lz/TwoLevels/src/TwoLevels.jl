@@ -12,4 +12,8 @@ import .Measures: AbstractMeasure
 import .Measures: MeasureWrapper, MeasureList
 import .Measures: DummyMeasure, FullMeasure
 
+# sequence
+include("sequence.jl")
+import .Sequences: Sequence
+
 end
