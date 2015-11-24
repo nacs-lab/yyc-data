@@ -29,6 +29,29 @@ immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
     end
 end
 
+@generated function _propagate!{N}(y, drives::NTuple{N,Pair{Int}},
+                                   dt, measure::AbstractMeasure,
+                                   phase_tracker, drive_tracker, ϕ₀=0f0)
+    body = quote
+        idx_offset = 1
+        Measure.snapshot(measure, y, 1)
+    end
+    for i in 1:N
+        ex = quote
+            let
+                nsteps = drives[$i].first
+                drive = drives[$i].second
+                propagate_step(y, drive, dt, nsteps, measure, phase_tracker,
+                               drive_tracker, idx_offset)
+                idx_offset += nsteps
+            end
+        end
+        push!(body.args, ex)
+    end
+    push!(body.args, nothing)
+    body
+end
+
 function propagate_step{T}(y::Vector{T}, drive, dt, nstep, measure,
                            phase_tracker, drive_tracker, idx_offset)
     oldδ = drive_tracker.δ
