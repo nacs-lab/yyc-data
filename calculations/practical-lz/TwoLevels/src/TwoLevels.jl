@@ -14,6 +14,6 @@ import .Measures: DummyMeasure, FullMeasure
 
 # sequence
 include("sequence.jl")
-import .Sequences: Sequence, propagate!
+import .Sequences: Sequence, propagate
 
 end

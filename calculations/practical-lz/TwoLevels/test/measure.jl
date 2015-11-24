@@ -14,7 +14,7 @@ function perf_wrapper()
     dummy_measure = DummyMeasure{Float32}()
     wrapped_measure = MeasureWrapper(dummy_measure)
     n = 100_000_000
-    y = Float32[1, 2]
+    y = Complex64[1, 2]
     dt = 1f-3
 
     # @time for i in 1:n
@@ -32,7 +32,6 @@ perf_wrapper()
 
 info("  Test MeasureList performance")
 function perf_list()
-    dummy_measure = DummyMeasure{Float32}()
     measures = Any[(1, 10_000)=>DummyMeasure,
                    (20_000, 30_000)=>DummyMeasure,
                    (50_000, 3_000_000)=>DummyMeasure,
@@ -40,7 +39,7 @@ function perf_list()
     dt = 1f-3
     n = 100_000_000
     measure_list = MeasureList{Float32}(1:n, dt, measures)
-    y = Float32[1, 2]
+    y = Complex64[1, 2]
 
     # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
     Measures.snapshot(measure_list, y, 1, 1 * dt)
@@ -57,7 +56,7 @@ function perf_full()
 
     full_measure = FullMeasure{Float32}(n)
     wrapped_measure = MeasureWrapper(full_measure)
-    y = Float32[1, 2]
+    y = Complex64[1, 2]
     dt = 1f-3
 
     Measures.snapshot(full_measure, y, 1, 1 * dt)
@@ -97,7 +96,7 @@ function test_list()
     dt = 1f-3
     n = 100_000_000
     measure_list = MeasureList{Float32}(1:n, dt, measures)
-    y = Float32[1, 2]
+    y = Complex64[1, 2]
 
     # @code_llvm Measures.snapshot(measure_list, y, 0, 0 * dt)
     Measures.snapshot(measure_list, y, 1, 1 * dt)

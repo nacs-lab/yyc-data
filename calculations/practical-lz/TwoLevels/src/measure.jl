@@ -24,8 +24,8 @@ end
 
 @inline snapshot(::DummyMeasure, y, idx, t) = nothing
 
-function _measure_wrapper{T}(measure::AbstractMeasure{T}, y::Vector{T},
-                             idx::Int, t::T)
+function _measure_wrapper{T}(measure::AbstractMeasure{T},
+                             y::Vector{Complex{T}}, idx::Int, t::T)
     snapshot(measure, y, idx, t)
     nothing
 end
@@ -40,7 +40,7 @@ immutable MeasureWrapper{T} <: AbstractMeasure{T}
     function MeasureWrapper(measure::AbstractMeasure{T})
         M = typeof(measure)
         fptr = cfunction(_measure_wrapper, Void,
-                         Tuple{Ref{M},Ref{Vector{T}},Int,T})
+                         Tuple{Ref{M},Ref{Vector{Complex{T}}},Int,T})
         new(fptr, measure)
     end
     # Standard builder interface
@@ -52,7 +52,7 @@ end
 MeasureWrapper{T}(measure::AbstractMeasure{T}) = MeasureWrapper{T}(measure)
 Base.reset(wrapper::MeasureWrapper) = reset(wrapper.measure)
 
-@inline function snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{T},
+@inline function snapshot{T}(wrapper::MeasureWrapper{T}, y::Vector{Complex{T}},
                              idx::Int, t::T)
     fptr = wrapper.fptr
     assume(fptr != C_NULL)
@@ -142,13 +142,14 @@ Base.done(list::MeasureList, idx) = done(list.measures, idx)
     nothing
 end
 
-@inline function snapshot{T}(list::MeasureList{T}, y::Vector{T}, idx::Int, t::T)
+@inline function snapshot{T}(list::MeasureList{T}, y::Vector{Complex{T}},
+                             idx::Int, t::T)
     list.tidx_max < idx && measure_list_update(list, idx)
     snapshot(list.cur_measure, y, idx - list.tidx_offset, t - list.t_offset)
 end
 
 immutable FullMeasure{T} <: AbstractMeasure{T}
-    ys::Matrix{T}
+    ys::Matrix{Complex{T}}
     FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
     # Standard builder interface
     FullMeasure(idxs, dt) = FullMeasure{T}(length(idxs))

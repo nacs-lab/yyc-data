@@ -17,7 +17,7 @@ function Base.reset{T}(tracker::DriveTracker{T})
 end
 
 immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
-    y::Vector{T}
+    y::Vector{Complex{T}}
     dt::T
     nsteps::Int
     drives::Ds
@@ -27,14 +27,17 @@ immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
     function Sequence{N}(dt, nsteps,
                          drives::NTuple{N,Pair{Int}}, measure::M)
         Base.typeassert(drives, Ds)
-        y = Vector{T}(2)
+        y = Vector{Complex{T}}(2)
         phase_tracker = PhaseTracker{T}()
         drive_tracker = DriveTracker{T}(zero(T), zero(T))
         new(y, dt, nsteps, drives, measure, phase_tracker, drive_tracker)
     end
 end
 
-function propagate!(seq::Sequence, y0, ϕ₀=0f0)
+call{T,Ds<:Tuple,M}(::Type{Sequence{T}}, dt, nsteps, drives::Ds, measure::M) =
+    Sequence{T,Ds,M}(dt, nsteps, drives, measure)
+
+function propagate(seq::Sequence, y0, ϕ₀=0f0)
     reset(seq)
     seq.y[:] = y0
     _propagate!(seq.y, seq.drives, seq.dt, seq.measure,
@@ -43,7 +46,7 @@ end
 
 function Base.reset(seq::Sequence)
     fill!(seq.y, 0)
-    reset_drives!(seq.drives)
+    reset_drives(seq.drives)
     reset(seq.measure)
     reset(seq.phase_tracker)
     reset(seq.drive_tracker)
@@ -65,7 +68,7 @@ end
                                    phase_tracker, drive_tracker, ϕ₀)
     body = quote
         idx_offset = 1
-        Measure.snapshot(measure, y, 1)
+        Measures.snapshot(measure, y, 1, dt)
         phase_tracker.ϕ = ϕ₀
     end
     for i in 1:N
@@ -84,7 +87,7 @@ end
     body
 end
 
-function propagate_step{T}(y::Vector{T}, drive, dt, nstep, measure,
+function propagate_step{T}(y::Vector{Complex{T}}, drive, dt, nsteps, measure,
                            phase_tracker, drive_tracker, idx_offset)
     oldδ = drive_tracker.δ
     oldΩ = drive_tracker.Ω
@@ -92,7 +95,7 @@ function propagate_step{T}(y::Vector{T}, drive, dt, nstep, measure,
     tlen = nsteps * dt
     t_offset = idx_offset * dt
     @inbounds for i in 1:nsteps
-        t = dt * (i - 0.5)
+        t = dt * (i - T(0.5))
         update(phase_tracker, drive, ifelse(i == 1, dt / 2, dt), t, tlen, oldδ)
         # original parameters
         δ = getδ(phase_tracker, drive, t, tlen, oldδ)::T
