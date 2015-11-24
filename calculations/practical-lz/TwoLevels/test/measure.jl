@@ -86,7 +86,7 @@ function Measures.snapshot(c::CountMeasure, y, idx, t)
     c.n += 1
     @assert idx == c.n
 end
-function Measures.reset(c::CountMeasure)
+function Base.reset(c::CountMeasure)
     c.n = 0
 end
 function test_list()
@@ -112,7 +112,7 @@ function test_list()
         @test imax == measure.imax
         @test imax - imin + 1 == measure.n
     end
-    Measures.reset(measure_list)
+    reset(measure_list)
     for ((imin, imax), m) in measure_list
         measure = m.measure::CountMeasure{Float32}
         @test measure.n == 0
