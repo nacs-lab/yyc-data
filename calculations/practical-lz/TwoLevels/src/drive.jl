@@ -8,12 +8,18 @@ abstract AbstractDrive{T<:AbstractFloat}
 function getδ end
 function getΩ end
 getϕ₀{T}(::AbstractDrive{T}) = zero(T)
+Base.reset(::AbstractDrive) = nothing
 
 # Phase tracker
 type PhaseTracker{T<:AbstractFloat}
     δ::T
     ϕ::T
     PhaseTracker() = new(zero(T), zero(T))
+end
+function Base.reset{T}(tracker::PhaseTracker{T})
+    tracker.δ = zero(T)
+    tracker.ϕ = zero(T)
+    nothing
 end
 
 # Update the current phase and detuning

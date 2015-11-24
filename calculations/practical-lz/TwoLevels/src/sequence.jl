@@ -10,6 +10,11 @@ type DriveTracker{T}
     δ::T
     Ω::T
 end
+function Base.reset{T}(tracker::DriveTracker{T})
+    tracker.δ = zero(T)
+    tracker.Ω = zero(T)
+    nothing
+end
 
 immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
     y::Vector{T}
@@ -29,12 +34,39 @@ immutable Sequence{T,Ds<:Tuple,M<:AbstractMeasure}
     end
 end
 
+function propagate!(seq::Sequence, y0, ϕ₀=0f0)
+    reset(seq)
+    seq.y[:] = y0
+    _propagate!(seq.y, seq.drives, seq.dt, seq.measure,
+                seq.phase_tracker, seq.drive_tracker, ϕ₀)
+end
+
+function Base.reset(seq::Sequence)
+    fill!(seq.y, 0)
+    reset_drives!(seq.drives)
+    reset(seq.measure)
+    reset(seq.phase_tracker)
+    reset(seq.drive_tracker)
+    nothing
+end
+
+@generated function reset_drives{N}(drives::NTuple{N,Pair{Int}})
+    body = quote
+    end
+    for i in 1:N
+        push!(body.args, :(reset(drives[$i].second)))
+    end
+    push!(body.args, nothing)
+    body
+end
+
 @generated function _propagate!{N}(y, drives::NTuple{N,Pair{Int}},
                                    dt, measure::AbstractMeasure,
-                                   phase_tracker, drive_tracker, ϕ₀=0f0)
+                                   phase_tracker, drive_tracker, ϕ₀)
     body = quote
         idx_offset = 1
         Measure.snapshot(measure, y, 1)
+        phase_tracker.ϕ = ϕ₀
     end
     for i in 1:N
         ex = quote
