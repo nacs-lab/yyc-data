@@ -87,14 +87,14 @@ end
     body
 end
 
-@inline function Base.muladd(x::Complex, y::Complex, z::Complex)
-    Complex(muladd(-imag(x), imag(y), muladd(real(x), real(y), real(z))),
-            muladd(imag(x), real(y), muladd(real(x), imag(y), imag(z))))
-end
-@inline function Base.(:*)(x::Complex, y::Complex)
-    Complex(muladd(-imag(x), imag(y), real(x) * real(y)),
-            muladd(imag(x), real(y), real(x) * imag(y)))
-end
+# @inline function Base.muladd(x::Complex, y::Complex, z::Complex)
+#     Complex(muladd(-imag(x), imag(y), muladd(real(x), real(y), real(z))),
+#             muladd(imag(x), real(y), muladd(real(x), imag(y), imag(z))))
+# end
+# @inline function Base.(:*)(x::Complex, y::Complex)
+#     Complex(muladd(-imag(x), imag(y), real(x) * real(y)),
+#             muladd(imag(x), real(y), real(x) * imag(y)))
+# end
 
 function propagate_step{T}(y::Vector{Complex{T}}, drive, dt, nsteps, measure,
                            phase_tracker, drive_tracker, idx_offset)
