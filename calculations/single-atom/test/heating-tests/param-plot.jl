@@ -81,6 +81,7 @@ using PyPlot
 for _accum in accums
     plot_accum(_accum)
 end
+ylim(0, ylim()[2] * 1.1)
 
 figure()
 final_e = Float32[_accum.Es[end] for _accum in accums]

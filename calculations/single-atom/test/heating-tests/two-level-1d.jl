@@ -784,10 +784,27 @@ function plot_accum(accum::EnergyMonteCarloRecorder)
     # figure()
     @printf("Escape time: %.2f±%.2f\n", accum.t_esc, accum.t_esc2)
     @printf("Photon Emitted: %.2f±%.2f\n", accum.pcount, accum.pcount2)
-    errorbar((1:length(accum.Es)) * accum.sub_accum.dt, accum.Es, accum.Es2)
+    Es = accum.Es
+    Es2 = accum.Es2
+    len = length(Es)
+    step_len = max(len ÷ 10000, 1)
+    plot_len = len ÷ step_len
+    ts = (1:plot_len) * (accum.sub_accum.dt * step_len)
+    avg_Es = Vector{eltype(Es)}(plot_len)
+    avg_Es2 = Vector{eltype(Es2)}(plot_len)
+    @inbounds for i in 1:plot_len
+        es = zero(eltype(Es))
+        es2 = zero(eltype(Es2))
+        @simd for j in 1:step_len
+            es += Es[(i - 1) * step_len + j]
+            es2 += abs2(Es2[(i - 1) * step_len + j])
+        end
+        avg_Es[i] = es / step_len
+        avg_Es2[i] = sqrt(es2 / step_len)
+    end
+    errorbar(ts, avg_Es, avg_Es2)
     axvline(x=accum.t_esc, color="r")
-    axvline(x=accum.t_esc-accum.t_esc2, color="b", linestyle="--")
-    axvline(x=accum.t_esc+accum.t_esc2, color="b", linestyle="--")
+    axvline(x=accum.t_esc - accum.t_esc2, color="b", linestyle="--")
+    axvline(x=accum.t_esc + accum.t_esc2, color="b", linestyle="--")
     grid()
-    ylim(0, ylim()[2] * 1.1)
 end
