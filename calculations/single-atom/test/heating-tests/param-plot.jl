@@ -29,8 +29,8 @@
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.07) # f = 70kHz
-        # ω_e = ω_g * √(0.6)
-        ω_e = ω_g
+        ω_e = ω_g * √(0.6)
+        # ω_e = ω_g
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
@@ -70,7 +70,7 @@ end
 
 println("start")
 
-params = linspace(-25, 10, 8)
+params = linspace(-25, 10, 15)
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
