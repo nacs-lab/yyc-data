@@ -29,7 +29,8 @@
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.07) # f = 70kHz
-        ω_e = ω_g * √(0.6)
+        # ω_e = ω_g * √(0.6)
+        ω_e = ω_g
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
@@ -55,12 +56,12 @@
 
         grid_size = 512
         grid_space = 0.005f0
-        p_sys = SystemPropagator(h_system, 0.01f0, grid_space,
-                                 100_000, grid_size)
+        p_sys = SystemPropagator(h_system, 0.008f0, grid_space,
+                                 6_250_000, grid_size)
         e_thresh = trap_depth
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
-        monte_carlo = 100
+        monte_carlo = 25
         accum = MonteCarloAccumulator(_accum, monte_carlo)
         propagate(p_sys, ψ0, accum)
         return accum
