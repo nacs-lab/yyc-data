@@ -30,7 +30,6 @@
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.07) # f = 70kHz
         ω_e = ω_g * √(0.6)
-        # ω_e = ω_g
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
@@ -46,10 +45,10 @@
 
         # k, Ω, δ, τ_θ
         δ = δ_0 - δ_offset
-        Ω = 2π * 5.234 * √(0.1 / 6)
+        Ω = 2π * 5.234 * √(0.1 / 2)
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
-        o_drive3 = OpticalDrive{Float32}(0, Ω, δ * 2, 1000.0)
+        # o_drive3 = OpticalDrive{Float32}(0, Ω * 2, δ, 1000.0)
 
         h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2, o_drive3))
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
