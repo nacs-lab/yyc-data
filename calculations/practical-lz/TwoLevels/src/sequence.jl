@@ -133,7 +133,7 @@ function propagate_step{T}(y::Vector{Complex{T}}, drive, dt, nsteps, measure,
 
         y_1′ = muladd(T12, y_2, T11 * y_1)
         y_2′ = muladd(T21, y_1, T22 * y_2)
-        y_scale = 1 / sqrt(abs2(y_1) + abs2(y_2))
+        y_scale = 1 / sqrt(abs2(y_1′) + abs2(y_2′))
         y[1] = y_1′ * y_scale
         y[2] = y_2′ * y_scale
         Measures.snapshot(measure, y, i + idx_offset, t_offset + t + dt / 2)

@@ -149,7 +149,7 @@ end
 end
 
 immutable FullMeasure{T} <: AbstractMeasure{T}
-    ys::Matrix{Complex{T}}
+    ys::Matrix{T}
     FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
     # Standard builder interface
     FullMeasure(idxs, dt) = FullMeasure{T}(length(idxs))
