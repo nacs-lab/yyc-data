@@ -152,7 +152,7 @@ immutable FullMeasure{T} <: AbstractMeasure{T}
     ys::Matrix{T}
     FullMeasure(nsteps) = new(Matrix{T}(2, nsteps + 1))
     # Standard builder interface
-    FullMeasure(idxs, dt) = FullMeasure{T}(length(idxs))
+    FullMeasure(idxs, dt) = FullMeasure{T}(length(idxs) - 1)
 end
 
 @inline function snapshot(measure::FullMeasure, y, idx, t)
