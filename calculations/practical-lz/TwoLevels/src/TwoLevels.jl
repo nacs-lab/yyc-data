@@ -10,7 +10,7 @@ import .Drives: ConstDrive, LinearRampDrive, RampToDrive
 include("measure.jl")
 import .Measures: AbstractMeasure
 import .Measures: MeasureWrapper, MeasureList
-import .Measures: DummyMeasure, FullMeasure
+import .Measures: DummyMeasure, FullMeasure, SingleMeasure
 
 # sequence
 include("sequence.jl")

@@ -113,11 +113,14 @@ function Base.reset{T}(list::MeasureList{T})
         reset(m)
     end
 end
-Base.getindex(list::MeasureList, idx) = list.measures[idx]
+function Base.getindex(list::MeasureList, idx)
+    idx, m = list.measures[idx]
+    idx=>(m.measure::AbstractMeasure)
+end
 Base.length(list::MeasureList) = length(list.measures)
-Base.start(list::MeasureList) = start(list.measures)
-Base.next(list::MeasureList, idx) = next(list.measures, idx)
-Base.done(list::MeasureList, idx) = done(list.measures, idx)
+Base.start(list::MeasureList) = 1
+Base.next(list::MeasureList, idx) = (list[idx], idx + 1)
+Base.done(list::MeasureList, idx) = idx > length(list)
 
 @noinline function measure_list_update(list, idx)
     list.tidx_offset = idx - 1
@@ -158,6 +161,20 @@ end
 @inline function snapshot(measure::FullMeasure, y, idx, t)
     @inbounds measure.ys[1, idx] = abs2(y[1])
     @inbounds measure.ys[2, idx] = abs2(y[2])
+    nothing
+end
+
+immutable SingleMeasure{T} <: AbstractMeasure{T}
+    y::Vector{Complex{T}}
+    # Standard builder interface
+    function SingleMeasure(idxs, dt)
+        @assert length(idxs) == 1
+        new(Vector{Complex{T}}(2))
+    end
+end
+
+@inline function snapshot(measure::SingleMeasure, y, idx, t)
+    @inbounds measure.y[:] = y
     nothing
 end
 
