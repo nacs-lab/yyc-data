@@ -16,4 +16,8 @@ import .Measures: DummyMeasure, FullMeasure
 include("sequence.jl")
 import .Sequences: Sequence, propagate
 
+# builder
+include("builder.jl")
+import .Builders: SeqBuilder
+
 end
