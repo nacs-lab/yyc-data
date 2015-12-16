@@ -130,7 +130,7 @@ function gen_scan_plot{T}(opt::OptParams{T})
     δs, exts
 end
 
-const opt_params = OptParams(2f-1, 500, 8, 0.15f-1, 1f-1, 8f-1)
+const opt_params = OptParams(1f-1, 1000, 8, 0.2f-1, 2f-1, 8f-1)
 
 function run_scan{T}(opt::OptParams{T})
     δ1 = opt.δ1
@@ -143,7 +143,7 @@ function run_scan{T}(opt::OptParams{T})
     side_min = min(side1_min, side2_min)
     side_max = max(side1_max, side2_max)
     side_avg = (side1_avg + side2_avg) / 2
-    (1 - mid_min) * 2 + side_max * 10 + side_avg / mid_avg
+    (1 - mid_min) * 2 + side_max * 10 + side_avg / mid_avg * 100
 end
 function optim_model(params)
     # println(params)
@@ -153,8 +153,9 @@ function optim_model(params)
     Float64(res)
 end
 
-params = [-0.11083115669054208,-0.005421677040109914,-0.05139793646080384,-0.0021625185024753964,-0.01105432107412546,-0.0031723844585940237,-0.013821859115642522,-0.0037941483426334292,-0.0016658166228669658,0.0795912629232008,0.008355797655672724,-0.02129744092973063,-0.008622724582925952,0.008365347665137718,0.005627545243400751,-0.0025042245300960437,-0.0020916691271710345]
+params = [-0.13361689772435206,0.008132299896931528,-0.03907222192935885,0.001558776782071755,-0.01939069281408142,0.002691458109605411,-0.008044895635940323,0.0019743586238102013,-0.005783661222297927,0.08822043593886186,0.038818792355184026,-0.0509040424536384,-0.02446755583090826,0.010828173253685236,0.007658870204697957,-0.00027970945290131427,-0.0024192533736951505]
 do_opt = true
+do_opt = false
 
 if do_opt
     # opt_res = optimize(optim_model, params, method=:cg,
@@ -175,6 +176,12 @@ println(run_scan(opt_params))
 x, y = gen_scan_plot(opt_params)
 using PyPlot
 
-plot(x, y)
+plot(x, y, "r")
+axvline(opt_params.δ1, color="b")
+axvline(-opt_params.δ1, color="b")
+axvline(opt_params.δ2, color="g")
+axvline(-opt_params.δ2, color="g")
+axvline(opt_params.δ3, color="y")
+axvline(-opt_params.δ3, color="y")
 grid()
 show()
