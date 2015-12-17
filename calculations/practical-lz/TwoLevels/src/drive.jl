@@ -88,4 +88,35 @@ getδ{T}(drive::RampToDrive{T}, t::T, len::T, vold::T) =
 getΩ{T}(drive::RampToDrive{T}, t::T, len::T, vold::T) =
     (vold * (len - t) + drive.Ω * t) / len
 
+type SinsDrive{T<:AbstractFloat} <: AbstractDrive{T}
+    cδ::Vector{T}
+    cΩ::Vector{T}
+    δ0::T
+    δ1::T
+    Ω0::T
+    Ω1::T
+    SinsDrive(N, δ0, δ1, Ω0, Ω1=Ω0) =
+        new(zeros(T, N), zeros(T, N), δ0, δ1, Ω0, Ω1)
+end
+SinsDrive{T<:AbstractFloat}(N, δ0::T, δ1::T, Ω0::T, Ω1::T=Ω0) =
+    SinsDrive{T}(N, δ0, δ1, Ω0, Ω1)
+function Drives.getδ{T}(drive::SinsDrive{T}, t::T, len::T, ::T)
+    δ = (drive.δ0 * (len - t) + drive.δ1 * t) / len
+    θ = t / len * π
+    cδ = drive.cδ
+    @inbounds for i in 1:length(drive.cδ)
+        δ += cδ[i] * sin(θ * i)
+    end
+    δ
+end
+function Drives.getΩ{T}(drive::SinsDrive{T}, t::T, len::T, ::T)
+    Ω = (drive.Ω0 * (len - t) + drive.Ω1 * t) / len
+    θ = t / len * π
+    cΩ = drive.cΩ
+    @inbounds for i in 1:length(drive.cΩ)
+        Ω += cΩ[i] * sin(θ * i)
+    end
+    Ω
+end
+
 end

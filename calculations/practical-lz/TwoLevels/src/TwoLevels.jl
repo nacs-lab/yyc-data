@@ -5,7 +5,7 @@ module TwoLevels
 include("drive.jl")
 import .Drives: AbstractDrive, getδ, getΩ, getϕ₀
 import .Drives: PhaseTracker, update, getϕ
-import .Drives: ConstDrive, LinearRampDrive, RampToDrive
+import .Drives: ConstDrive, LinearRampDrive, RampToDrive, SinsDrive
 
 include("measure.jl")
 import .Measures: AbstractMeasure

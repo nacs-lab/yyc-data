@@ -1,41 +1,10 @@
 #!/usr/bin/julia -f
 
-import TwoLevels: AbstractDrive, Drives
+import TwoLevels: AbstractDrive, SinsDrive, Drives
 import TwoLevels: SeqBuilder, Builders
 import TwoLevels: propagate
 import TwoLevels: DummyMeasure, FullMeasure, SingleMeasure
 using Optim
-
-type SinsDrive{T<:AbstractFloat} <: AbstractDrive{T}
-    cδ::Vector{T}
-    cΩ::Vector{T}
-    δ0::T
-    δ1::T
-    Ω0::T
-    Ω1::T
-    SinsDrive(N, δ0, δ1, Ω0, Ω1=Ω0) =
-        new(zeros(T, N), zeros(T, N), δ0, δ1, Ω0, Ω1)
-end
-SinsDrive{T<:AbstractFloat}(N, δ0::T, δ1::T, Ω0::T, Ω1::T=Ω0) =
-    SinsDrive{T}(N, δ0, δ1, Ω0, Ω1)
-function Drives.getδ{T}(drive::SinsDrive{T}, t::T, len::T, ::T)
-    δ = (drive.δ0 * (len - t) + drive.δ1 * t) / len
-    θ = t / len * π
-    cδ = drive.cδ
-    @inbounds for i in 1:length(drive.cδ)
-        δ += cδ[i] * sin(θ * i)
-    end
-    δ
-end
-function Drives.getΩ{T}(drive::SinsDrive{T}, t::T, len::T, ::T)
-    Ω = (drive.Ω0 * (len - t) + drive.Ω1 * t) / len
-    θ = t / len * π
-    cΩ = drive.cΩ
-    @inbounds for i in 1:length(drive.cΩ)
-        Ω += cΩ[i] * sin(θ * i)
-    end
-    Ω
-end
 
 function gen_seq_drive(dt, n, sinN)
     builder = SeqBuilder(dt)
@@ -180,7 +149,7 @@ end
 # params = [-0.13013139682353347,0.006312375130221837,-0.031956048682332046,0.0006946369470619224,-0.0266169325552198,0.0016928797961989386,0.002108009418659553,-0.001415131715743528,-0.0022987348278135575,0.08751898962694254,0.043420080793892514,-0.04797923142566892,-0.025577461711200008,0.0101402353410935,0.006278498196434462,-0.0010224436342372658,-0.0012058875103421194]
 params = [-0.13165780584535017,0.002458924776874482,-0.03886563746693689,-0.0004594378756653323,-0.016217073839701675,0.0018728848350684562,-0.006420467959789269,0.000181854329494213,-0.0030732111122789467,0.08762561850840865,0.03967701306201832,-0.04854675615963805,-0.023358415966911707,0.009540338266152673,0.007151635718551654,4.0941846022623444e-5,-0.0022496656919625334]
 do_opt = true
-# do_opt = false
+do_opt = false
 
 if do_opt
     # opt_res = optimize(optim_model, params, method=:cg,
