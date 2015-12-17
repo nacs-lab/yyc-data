@@ -129,6 +129,25 @@ function gen_scan_plot{T}(opt::OptParams{T})
     end
     δs, exts
 end
+function gen_drive_plot{T}(opt::OptParams{T})
+    dri = opt.dri
+    seq = opt.seq
+    dt = seq.dt
+    nsteps = seq.nsteps
+    Δδ = opt.Δδ[]
+    dri.δ0 = -Δδ / 2
+    dri.δ1 = +Δδ / 2
+    tlen = nsteps * dt
+    δs = Vector{T}(nsteps + 1)
+    Ωs = Vector{T}(nsteps + 1)
+
+    @inbounds for i in 0:nsteps
+        t = i * dt
+        δs[i + 1] = Drives.getδ(dri, t, tlen, dri.δ0)
+        Ωs[i + 1] = Drives.getΩ(dri, t, tlen, T(0))
+    end
+    (0:nsteps) * dt, δs, Ωs
+end
 
 const opt_params = OptParams(1f-1, 1000, 8, 0.2f-1, 2f-1, 8f-1)
 
@@ -143,6 +162,9 @@ function run_scan{T}(opt::OptParams{T})
     side_min = min(side1_min, side2_min)
     side_max = max(side1_max, side2_max)
     side_avg = (side1_avg + side2_avg) / 2
+    # side_min = side1_min
+    # side_max = side1_max
+    # side_avg = side1_avg
     (1 - mid_min) * 2 + side_max * 10 + side_avg / mid_avg * 100
 end
 function optim_model(params)
@@ -153,9 +175,11 @@ function optim_model(params)
     Float64(res)
 end
 
-params = [-0.13361689772435206,0.008132299896931528,-0.03907222192935885,0.001558776782071755,-0.01939069281408142,0.002691458109605411,-0.008044895635940323,0.0019743586238102013,-0.005783661222297927,0.08822043593886186,0.038818792355184026,-0.0509040424536384,-0.02446755583090826,0.010828173253685236,0.007658870204697957,-0.00027970945290131427,-0.0024192533736951505]
+# params = [-0.11502749674683736,-0.06119036359289394,-0.034605598077178,-0.0032243129592623805,-0.0032738954954711,-0.045679977066940186,-0.0053466989997855464,-0.02194240530902273,-0.019574094058389495,0.07771069849593015,0.05225714565347806,-0.03454123505944487,-0.019839962213737725,0.00942251576695764,0.01464587601520262,-0.0013286541152173184,-0.003950156109605001]
+# params = [-0.13519760613828735,-0.029440296545190148,-0.04631800963527856,-0.0002234795251961228,-0.022804659213110864,-0.03944347612559795,0.015634510300549048,-0.030649756701684138,0.008807375702501353,0.0850712530556744,0.05319441082213134,-0.03985701020388253,-0.023133794733388856,0.006171758884888809,0.008483757092033868,-0.0061279458193116846,-0.0013327518864845545]
+params = [-0.13013139682353347,0.006312375130221837,-0.031956048682332046,0.0006946369470619224,-0.0266169325552198,0.0016928797961989386,0.002108009418659553,-0.001415131715743528,-0.0022987348278135575,0.08751898962694254,0.043420080793892514,-0.04797923142566892,-0.025577461711200008,0.0101402353410935,0.006278498196434462,-0.0010224436342372658,-0.0012058875103421194]
 do_opt = true
-do_opt = false
+# do_opt = false
 
 if do_opt
     # opt_res = optimize(optim_model, params, method=:cg,
@@ -174,8 +198,10 @@ end
 set_params(opt_params, params)
 println(run_scan(opt_params))
 x, y = gen_scan_plot(opt_params)
+ts, δs, Ωs = gen_drive_plot(opt_params)
 using PyPlot
 
+figure()
 plot(x, y, "r")
 axvline(opt_params.δ1, color="b")
 axvline(-opt_params.δ1, color="b")
@@ -184,4 +210,10 @@ axvline(-opt_params.δ2, color="g")
 axvline(opt_params.δ3, color="y")
 axvline(-opt_params.δ3, color="y")
 grid()
+
+figure()
+plot(ts, δs, "b", label="\$\\delta\$")
+plot(ts, Ωs, "g", label="\$\\Omega\$")
+grid()
+
 show()
