@@ -1,3 +1,9 @@
+# Trapping and cooling of sodium atoms for assembly of dipolar molecules
+
+## Author list
+
+Yichao Yu, Nicholas R Hutzler, Lee R Liu, Jessie T Zhang, Kang-Kuen Ni
+
 ## Abstract
 
 In order to create a diatomic molecule with a large electric dipole moment,
