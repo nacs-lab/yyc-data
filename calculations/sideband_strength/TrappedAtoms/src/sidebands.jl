@@ -22,4 +22,18 @@ function strength(n1::Integer, n2::Integer, η)
     lag * exp(lpre)
 end
 
+function thermal_strength(nbar, Δn, η)
+    s = 0.0
+    nmin = max(0, -Δn)
+    nmax = nmin + round(Int, nbar * 10)
+    weight = 0.0
+    for n in 0:nmax
+        w = exp(-n / nbar)
+        weight += w
+        n < nmin && continue
+        s += strength(n, n + Δn, η)^2 * w
+    end
+    s / weight
+end
+
 end
