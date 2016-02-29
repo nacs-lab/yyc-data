@@ -47,3 +47,39 @@ function load_matscan(fname)
         param_name, params, data
     end
 end
+
+function calc_survival(fnames)
+    data_dict = Dict{Float64,Vector{Float64}}()
+    local num_cnts::Int
+    for fname in fnames
+        data = readcsv(fname, Float64, skipstart=1)
+        num_cnts = size(data, 2) - 1
+        for i in 1:size(data, 1)
+            param = data[i, 1]
+            if param in keys(data_dict)
+                frame = data_dict[param]
+                for j in 1:num_cnts
+                    frame[j] += data[i, j]
+                end
+            else
+                data_dict[param] = data[i, 2:end]
+            end
+        end
+    end
+    params = sort(collect(keys(data_dict)))
+    len = length(params)
+    ratios = Matrix{Float64}(len, num_cnts - 1)
+    uncs = Matrix{Float64}(len, num_cnts - 1)
+    for i in 1:len
+        frame = data_dict[params[i]]
+        base = frame[1]
+        for j in 1:(num_cnts - 1)
+            cur = frame[j + 1]
+            ratios[i, j] = base <= 0 ? 0 : cur / base
+            uncs[i, j] = base <= 0 ? 0 : √(cur) / base
+            base = cur
+        end
+    end
+    params, ratios, uncs
+end
+calc_survival(fnames::AbstractString) = calc_survival([fnames])
