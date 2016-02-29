@@ -59,7 +59,7 @@ function calc_survival(fnames)
             if param in keys(data_dict)
                 frame = data_dict[param]
                 for j in 1:num_cnts
-                    frame[j] += data[i, j]
+                    frame[j] += data[i, j + 1]
                 end
             else
                 data_dict[param] = data[i, 2:end]
