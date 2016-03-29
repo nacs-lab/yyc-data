@@ -50,7 +50,7 @@
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
         # o_drive3 = OpticalDrive{Float32}(0, Ω * 2, δ, 1000.0)
 
-        h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2, o_drive3))
+        h_system = HSystem(h_trap, o_decay, (o_drive1, o_drive2))
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
@@ -79,6 +79,7 @@ xax_name = "Free space detuning"
 using PyPlot
 
 for _accum in accums
+    # println(_accum)
     plot_accum(_accum)
 end
 ylim(0, ylim()[2] * 1.1)
