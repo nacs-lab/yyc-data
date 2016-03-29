@@ -1,6 +1,7 @@
 #!/usr/bin/julia -f
 
 using StructsOfArrays
+using Compat
 
 typealias ComplexSoArray{T,N} StructOfArrays{Complex{T},N,NTuple{2,Array{T,N}}}
 typealias ComplexSoVector{T} ComplexSoArray{T,1}
@@ -107,7 +108,7 @@ type PhaseTracker{T}
     cosdθ_cache::T
 end
 
-function call{T}(::Type{PhaseTracker}, drive::OpticalDrive{T})
+function (::Type{PhaseTracker}){T}(drive::OpticalDrive{T})
     PhaseTracker{T}(drive, T(0), T(0),
                     T(0), Complex{T}(0),
                     T(0), T(1))
@@ -504,10 +505,8 @@ type WaveFuncRecorder{Acc, T} <: AbstractAccumulator
     WaveFuncRecorder(ψs) = new(ψs)
 end
 
-function call{H, T, Acc}(::Type{WaveFuncRecorder{Acc}},
-                         P::SystemPropagator{H, T})
-    return WaveFuncRecorder{Acc, T}(Array{Complex{T}}(2, P.nele, P.nstep + 1))
-end
+(::Type{WaveFuncRecorder{Acc}}){H,T,Acc}(P::SystemPropagator{H,T}) =
+    WaveFuncRecorder{Acc, T}(Array{Complex{T}}(2, P.nele, P.nstep + 1))
 
 function accum_init{H, T, Acc}(r::WaveFuncRecorder{Acc, T},
                                P::SystemPropagator{H, T})
@@ -552,10 +551,8 @@ type EnergyRecorder{T} <: AbstractAccumulator
     pcount::T
 end
 
-function call{H, T}(::Type{EnergyRecorder}, P::SystemPropagator{H, T},
-                    e_thresh)
+(::Type{EnergyRecorder}){H,T}(P::SystemPropagator{H,T}, e_thresh) =
     EnergyRecorder{T}(Array{T}(P.nstep + 1), e_thresh, 0, P.dt, 0)
-end
 
 function accum_init{H, T}(r::EnergyRecorder{T}, P::SystemPropagator{H, T})
     fill!(r.Es, T(0))
@@ -609,11 +606,9 @@ type WaveFuncMonteCarloRecorder{Acc, T} <: MonteCarloAccumulator
     ncycle::Int
 end
 
-function call{Acc, T}(::Type{WaveFuncMonteCarloRecorder},
-                      sub_accum::WaveFuncRecorder{Acc, T}, n)
-    WaveFuncMonteCarloRecorder{Acc, T}(Array{T}(size(sub_accum.ψs)...),
-                                       sub_accum, 0, n)
-end
+(::Type{WaveFuncMonteCarloRecorder}){Acc,T}(sub_accum::WaveFuncRecorder{Acc, T}, n) =
+    WaveFuncMonteCarloRecorder{Acc,T}(Array{T}(size(sub_accum.ψs)...),
+                                      sub_accum, 0, n)
 
 function accum_init{Acc, T}(r::WaveFuncMonteCarloRecorder{Acc, T}, P)
     if size(r.ψs2) != (2, P.nele, P.nstep + 1)
@@ -655,12 +650,10 @@ type EnergyMonteCarloRecorder{T} <: MonteCarloAccumulator
     ncycle::Int
 end
 
-function call{T}(::Type{EnergyMonteCarloRecorder},
-                 sub_accum::EnergyRecorder{T}, n)
+(::Type{EnergyMonteCarloRecorder}){T}(sub_accum::EnergyRecorder{T}, n) =
     EnergyMonteCarloRecorder{T}(Array{T}(size(sub_accum.Es)),
                                 Array{T}(size(sub_accum.Es)),
                                 0, 0, 0, 0, sub_accum, -1, n)
-end
 
 function accum_init{T}(r::EnergyMonteCarloRecorder{T}, P)
     if length(r.Es2) != P.nstep + 1
@@ -719,10 +712,10 @@ function accum_finalize(r::EnergyMonteCarloRecorder, P)
     nothing
 end
 
-call(::Type{MonteCarloAccumulator}, sub_accum::EnergyRecorder, n) =
+(::Type{MonteCarloAccumulator})(sub_accum::EnergyRecorder, n) =
     EnergyMonteCarloRecorder(sub_accum, n)
 
-call(::Type{MonteCarloAccumulator}, sub_accum::WaveFuncRecorder, n) =
+(::Type{MonteCarloAccumulator})(sub_accum::WaveFuncRecorder, n) =
     WaveFuncMonteCarloRecorder(sub_accum, n)
 
 function plot_accum_img(img::Matrix{Float64})
