@@ -800,3 +800,5 @@ function plot_accum(accum::EnergyMonteCarloRecorder)
     axvline(x=accum.t_esc + accum.t_esc2, color="b", linestyle="--")
     grid()
 end
+
+nothing
