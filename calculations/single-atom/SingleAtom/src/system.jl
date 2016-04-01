@@ -5,6 +5,7 @@
 
 module System
 
+using Compat
 using ..Atomic
 using ..Optical
 using ..Utils
@@ -117,7 +118,7 @@ immutable MotionSystem{Ax,T,PotIdxs,Intern<:InternStates,Pots,Dris,DriGrps}
     drives::Dris
 end
 
-call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
+(::Type{MotionSystem}){T}(ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
     MotionSystem{ax}(mass, builder)
 
 @generated get_value_type{T<:MotionSystem}(::Type{T}) = T.parameters[2]
@@ -152,7 +153,7 @@ call{T}(::Type{MotionSystem}, ax::Vec3D{T}, mass, builder::SystemBuilder{T}) =
 @generated get_drive_gids{T<:MotionSystem}(::Type{T}) = T.parameters[7]
 
 
-function call{Ax,T}(::Type{MotionSystem{Ax}}, _mass, builder::SystemBuilder{T})
+function (::Type{MotionSystem{Ax}}){Ax,T}(_mass, builder::SystemBuilder{T})
     Base.typeassert(Ax, Vec3D{T})
     mass = T(_mass)
     intern = InternStates(builder.atom)

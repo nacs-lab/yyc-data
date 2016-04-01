@@ -4,6 +4,7 @@
 
 module Optical
 
+using Compat
 using ..Utils
 
 export Drive, PhaseTracker, init_phase!, update_phase!
@@ -32,7 +33,7 @@ end
 
 @inline get_drive_type{T}(::Vec3D{Complex{T}}) = T
 
-@generated function call{Amp}(::Type{Drive{Amp}}, args...)
+@compat @generated function (::Type{Drive{Amp}}){Amp}(args...)
     @meta_expr inline
     quote
         $(Expr(:meta, :inline))
@@ -40,7 +41,7 @@ end
     end
 end
 
-call{Amp,T}(::Type{TrigCache}, drive::Drive{Amp,T}, xs) =
+@compat (::Type{TrigCache}){Amp,T}(drive::Drive{Amp,T}, xs) =
     TrigCache{T}(xs .* drive.k)
 
 """
@@ -55,7 +56,7 @@ type PhaseTracker{T}
     exp_t::Complex{T}
 end
 
-call{Amp,T}(::Type{PhaseTracker}, drive::Drive{Amp,T}) =
+@compat (::Type{PhaseTracker}){Amp,T}(drive::Drive{Amp,T}) =
     PhaseTracker{T}(drive.δ, drive.ϕ0, drive.τ_θ, 0, 1)
 
 """

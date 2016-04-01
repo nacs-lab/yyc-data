@@ -2,6 +2,8 @@
 
 module Atomic
 
+using Compat
+
 using ..Utils
 import ..Optical
 import Base: *
@@ -80,10 +82,10 @@ immutable Transition{Pol,T} # Pol::TransitionType
     α::T # Dipole moment
 end
 
-@inline call{Pol,T}(::Type{Transition{Pol}}, args::T...) =
+@compat @inline (::Type{Transition{Pol}}){Pol,T}(args::T...) =
     Transition{Pol,T}(args...)
 
-call{Pol,T}(::Type{TrigCache}, trans::Transition{Pol,T}, xs) =
+@compat (::Type{TrigCache}){Pol,T}(trans::Transition{Pol,T}, xs) =
     TrigCache{T}(xs .* trans.k)
 
 @generated get_transition_type{T<:Transition}(::Type{T}) =
@@ -194,7 +196,7 @@ end
 
 @generated get_state_names{T<:InternStates}(::Type{T}) = T.parameters[1]
 
-function call{T}(::Type{InternStates}, builder::AtomBuilder{T})
+@compat function (::Type{InternStates}){T}(builder::AtomBuilder{T})
     Names = (Symbol[state[1] for state in builder.states]...)
     energies = (T[state[2] for state in builder.states]...)
     Nstates = length(Names)

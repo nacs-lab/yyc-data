@@ -4,6 +4,7 @@
 
 module Measure
 
+using Compat
 using ..Utils
 using ..Propagate
 using ..System
@@ -17,7 +18,7 @@ immutable WaveFuncMeasure{ST,T} <: AbstractMeasure
     WaveFuncMeasure(ψs) = new(ψs)
 end
 
-function call{Sys,T,ST}(::Type{WaveFuncMeasure{ST}}, P::SystemPropagator{Sys,T})
+@compat function (::Type{WaveFuncMeasure{ST}}){Sys,T,ST}(P::SystemPropagator{Sys,T})
     nstates = System.num_states(Sys)
     WaveFuncMeasure{ST,T}(StructOfArrays(Complex{T}, P.nele, nstates,
                                          P.nstep + 1))
@@ -68,8 +69,8 @@ immutable EnergyMeasure{T} <: AbstractMeasure
     pcount::Base.RefValue{T}
 end
 
-function call{Sys,T}(::Type{EnergyMeasure}, P::SystemPropagator{Sys,T},
-                     base_state, e_thresh)
+@compat function (::Type{EnergyMeasure}){Sys,T}(P::SystemPropagator{Sys,T},
+                                                base_state, e_thresh)
     state_name, state_id = System.get_state_id(P.sys, base_state)
     pot_idxs = System.get_potential_idxs(Sys)
     pot_id = pot_idxs[state_id]
@@ -133,8 +134,7 @@ immutable WaveFuncMonteCarloMeasure{ST,T} <: MonteCarloMeasure
     ncycle::Int
 end
 
-function call{ST,T}(::Type{WaveFuncMonteCarloMeasure},
-                    sub_measure::WaveFuncMeasure{ST,T}, n)
+@compat function (::Type{WaveFuncMonteCarloMeasure}){ST,T}(sub_measure::WaveFuncMeasure{ST,T}, n)
     WaveFuncMonteCarloMeasure{ST,T}(Array{T}(size(sub_measure.ψs)...),
                                     sub_measure, Ref(0), n)
 end
@@ -189,8 +189,7 @@ immutable EnergyMonteCarloMeasure{T} <: MonteCarloMeasure
     ncycle::Int
 end
 
-function call{T}(::Type{EnergyMonteCarloMeasure},
-                 sub_measure::EnergyMeasure{T}, n)
+@compat function (::Type{EnergyMonteCarloMeasure}){T}(sub_measure::EnergyMeasure{T}, n)
     EnergyMonteCarloMeasure{T}(Array{T}(size(sub_measure.Es)),
                                Array{T}(size(sub_measure.Es)),
                                UncVal{T}(), UncVal{T}(), Ref(-1),
@@ -232,10 +231,10 @@ function measure_finalize(r::EnergyMonteCarloMeasure, P)
     nothing
 end
 
-call(::Type{MonteCarloMeasure}, sub_measure::EnergyMeasure, n) =
+@compat (::Type{MonteCarloMeasure})(sub_measure::EnergyMeasure, n) =
     EnergyMonteCarloMeasure(sub_measure, n)
 
-call(::Type{MonteCarloMeasure}, sub_measure::WaveFuncMeasure, n) =
+@compat (::Type{MonteCarloMeasure})(sub_measure::WaveFuncMeasure, n) =
     WaveFuncMonteCarloMeasure(sub_measure, n)
 
 end

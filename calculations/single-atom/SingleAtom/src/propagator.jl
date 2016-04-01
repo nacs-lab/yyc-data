@@ -2,6 +2,7 @@
 
 module Propagate
 
+using Compat
 using ..Utils
 using ..System
 using ..Atomic
@@ -96,8 +97,7 @@ immutable OpticalCache{T,NDri,NDec,Tra}
     trackers::Tra
 end
 
-@inline function call{T,NDri,NDec,Tra}(::Type{OpticalCache{T,NDri,NDec}},
-                                       drives, decays, trackers::Tra)
+@compat @inline function (::Type{OpticalCache{T,NDri,NDec}}){T,NDri,NDec,Tra}(drives, decays, trackers::Tra)
     OpticalCache{T,NDri,NDec,Tra}(drives, decays, trackers)
 end
 
