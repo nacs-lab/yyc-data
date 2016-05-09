@@ -28,14 +28,14 @@
         #                (1.0545717253362894e-34 * 1e6))
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
-        ω_g = Float32(2π * 0.16) # f = 160kHz
-        ω_e = ω_g * √(0.5)
+        ω_g = Float32(2π * 0.07) # f = 70kHz
+        ω_e = ω_g # * √(0.6)
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
 
         # k, Γ
-        o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 2)
+        o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 5)
 
         trap_depth = 1.2 * 2π * 20 # 2mK
         e_trap_depth = trap_depth * ω_e^2 / ω_g^2
@@ -45,7 +45,7 @@
 
         # k, Ω, δ, τ_θ
         δ = δ_0 - δ_offset
-        Ω = 2π * 2 / 2
+        Ω = 2π * 5 / 2
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
         # o_drive3 = OpticalDrive{Float32}(0, Ω * 2, δ, 1000.0)
@@ -56,8 +56,8 @@
 
         grid_size = 512
         grid_space = 0.0025f0
-        p_sys = SystemPropagator(h_system, 0.02f0, grid_space,
-                                 500_000, grid_size)
+        p_sys = SystemPropagator(h_system, 0.005f0, grid_space,
+                                 500_000 * 4, grid_size)
         e_thresh = trap_depth
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
@@ -70,7 +70,7 @@ end
 
 println("start")
 
-params = [-8, -6, -4, -2, -1, -0.5, -0.25, 0, 2, 4] + 7
+params = [-20, -15, -10, -7.5, -5, -2.5, 0, 5]
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
