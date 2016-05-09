@@ -35,7 +35,7 @@
         λ_res = Float32(0.852)
 
         # k, Γ
-        o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 1)
+        o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 2)
 
         trap_depth = 1.2 * 2π * 20 # 2mK
         e_trap_depth = trap_depth * ω_e^2 / ω_g^2
@@ -45,7 +45,7 @@
 
         # k, Ω, δ, τ_θ
         δ = δ_0 - δ_offset
-        Ω = 2π * 1 / 2
+        Ω = 2π * 2 / 2
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
         # o_drive3 = OpticalDrive{Float32}(0, Ω * 2, δ, 1000.0)
@@ -70,7 +70,7 @@ end
 
 println("start")
 
-params = [6, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13]
+params = [-8, -6, -4, -2, -1, -0.5, -0.25, 0, 2, 4] + 7
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
