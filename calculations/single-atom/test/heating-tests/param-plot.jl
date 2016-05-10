@@ -21,15 +21,16 @@
         ψ0
     end
 
-    function run(det_hz)
-        println("Running $det_hz")
+    function run(param)
+        β, det_hz, totalt = param
+        println("Running β=$β, δ=$det_hz, t=$totalt")
         # m here is actually m / ħ
         # m_Na = Float32(22.98977e-3 / 6.02214129e23 /
         #                (1.0545717253362894e-34 * 1e6))
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.16) # f = 160kHz
-        ω_e = ω_g # * √(0.6)
+        ω_e = ω_g * √(β)
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
@@ -57,7 +58,7 @@
         grid_size = 512
         grid_space = 0.0025f0
         tstep = 0.0025f0
-        totalt = 6_000f0
+        # totalt = 6_000f0
         nstep = round(Int, totalt ÷ tstep)
         p_sys = SystemPropagator(h_system, tstep, grid_space,
                                  nstep, grid_size)
@@ -73,14 +74,29 @@ end
 
 println("start")
 
+βs = [1, 0.6]
+det_list = [[-15, -10, -7.5, -6.25, -5, 0, 5, 10],
+            [-20, -15, -10, -5, 0, 5, 10, 15]]
+ts = [20000, 10000, 6000, 3000]
+
 # t = 10_000, β = 1
 # params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
 # t = 10_000, β = 0.6
 # params = [-20, -15, -10, -5, 0, 5, 10, 15]
-# t = 7_500, β = 1
-params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
-# t = 7_500, β = 0.6
+# t = 6_000, β = 1
+# params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
+# t = 6_000, β = 0.6
 # params = [-20, -15, -10, -5, 0, 5, 10, 15]
+params = Vector{NTuple{3,Float32}}()
+for t in ts
+    for i in 1:length(βs)
+        β = βs[i]
+        for det in det_list[i]
+            push!(params, (β, det, t))
+        end
+    end
+end
+
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
@@ -94,37 +110,40 @@ using PyPlot
 # end
 # ylim(0, ylim()[2] * 1.1)
 
-figure()
 final_e = Float32[_accum.Es[end] for _accum in accums]
 final_e2 = Float32[_accum.Es2[end] for _accum in accums]
-errorbar(params, final_e, final_e2)
-xlabel(xax_name)
-ylabel("Final energy")
-grid()
-ylim(0, ylim()[2])
-savefig("final_energy.png")
-close()
+println(("final_energy", params, final_e, final_e2))
+# figure()
+# errorbar(params, final_e, final_e2)
+# xlabel(xax_name)
+# ylabel("Final energy")
+# grid()
+# ylim(0, ylim()[2])
+# savefig("final_energy.png")
+# close()
 
-figure()
 t_esc = Float32[_accum.t_esc for _accum in accums]
 t_esc2 = Float32[_accum.t_esc2 for _accum in accums]
-errorbar(params, t_esc, t_esc2)
-xlabel(xax_name)
-ylabel("Escape time (us)")
-grid()
-ylim(0, ylim()[2])
-savefig("escape_time.png")
-close()
+println(("escape_time", params, t_esc, t_esc2))
+# figure()
+# errorbar(params, t_esc, t_esc2)
+# xlabel(xax_name)
+# ylabel("Escape time (us)")
+# grid()
+# ylim(0, ylim()[2])
+# savefig("escape_time.png")
+# close()
 
-figure()
 pcount = Float32[_accum.pcount for _accum in accums]
 pcount2 = Float32[_accum.pcount2 for _accum in accums]
-errorbar(params, pcount, pcount2)
-xlabel(xax_name)
-ylabel("Photon count")
-grid()
-ylim(0, ylim()[2])
-savefig("photon_count.png")
-close()
+println(("photon_count", params, pcount, pcount2))
+# figure()
+# errorbar(params, pcount, pcount2)
+# xlabel(xax_name)
+# ylabel("Photon count")
+# grid()
+# ylim(0, ylim()[2])
+# savefig("photon_count.png")
+# close()
 
 # show()
