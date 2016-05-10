@@ -28,7 +28,7 @@
         #                (1.0545717253362894e-34 * 1e6))
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
-        ω_g = Float32(2π * 0.07) # f = 70kHz
+        ω_g = Float32(2π * 0.08) # f = 80kHz
         ω_e = ω_g # * √(0.6)
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
@@ -54,10 +54,13 @@
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
-        grid_size = 512
+        grid_size = 1024
         grid_space = 0.0025f0
-        p_sys = SystemPropagator(h_system, 0.005f0, grid_space,
-                                 500_000 * 4, grid_size)
+        tstep = 0.0025f0
+        totalt = 6000f0
+        nstep = round(Int, totalt ÷ tstep)
+        p_sys = SystemPropagator(h_system, tstep, grid_space,
+                                 nstep, grid_size)
         e_thresh = trap_depth
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
@@ -70,7 +73,7 @@ end
 
 println("start")
 
-params = [-20, -15, -10, -7.5, -5, -2.5, 0, 5]
+params = [-20, -15, -10, -7.5, -5, -2.5, 0, 5] + 5
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
@@ -78,11 +81,11 @@ xax_name = "Free space detuning"
 
 using PyPlot
 
-for _accum in accums
-    # println(_accum)
-    plot_accum(_accum)
-end
-ylim(0, ylim()[2] * 1.1)
+# for _accum in accums
+#     # println(_accum)
+#     plot_accum(_accum)
+# end
+# ylim(0, ylim()[2] * 1.1)
 
 figure()
 final_e = Float32[_accum.Es[end] for _accum in accums]
@@ -92,6 +95,8 @@ xlabel(xax_name)
 ylabel("Final energy")
 grid()
 ylim(0, ylim()[2])
+savefig("final_energy.png")
+close()
 
 figure()
 t_esc = Float32[_accum.t_esc for _accum in accums]
@@ -101,6 +106,8 @@ xlabel(xax_name)
 ylabel("Escape time (us)")
 grid()
 ylim(0, ylim()[2])
+savefig("escape_time.png")
+close()
 
 figure()
 pcount = Float32[_accum.pcount for _accum in accums]
@@ -110,5 +117,7 @@ xlabel(xax_name)
 ylabel("Photon count")
 grid()
 ylim(0, ylim()[2])
+savefig("photon_count.png")
+close()
 
-show()
+# show()
