@@ -28,7 +28,7 @@
         #                (1.0545717253362894e-34 * 1e6))
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
-        ω_g = Float32(2π * 0.08) # f = 80kHz
+        ω_g = Float32(2π * 0.16) # f = 160kHz
         ω_e = ω_g # * √(0.6)
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
@@ -54,10 +54,10 @@
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
-        grid_size = 1024
+        grid_size = 512
         grid_space = 0.0025f0
         tstep = 0.0025f0
-        totalt = 6000f0
+        totalt = 6_000f0
         nstep = round(Int, totalt ÷ tstep)
         p_sys = SystemPropagator(h_system, tstep, grid_space,
                                  nstep, grid_size)
@@ -73,7 +73,14 @@ end
 
 println("start")
 
-params = [-20, -15, -10, -7.5, -5, -2.5, 0, 5] + 5
+# t = 10_000, β = 1
+# params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
+# t = 10_000, β = 0.6
+# params = [-20, -15, -10, -5, 0, 5, 10, 15]
+# t = 7_500, β = 1
+params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
+# t = 7_500, β = 0.6
+# params = [-20, -15, -10, -5, 0, 5, 10, 15]
 xax_name = "Free space detuning"
 @time accums = pmap(run, params)
 
