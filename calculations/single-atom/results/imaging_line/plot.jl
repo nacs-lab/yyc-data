@@ -1,6 +1,7 @@
 #!/usr/bin/julia -f
 
-include("gamma_5.jl")
+# β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
+data = readcsv("gamma_5.csv")
 
 using PyPlot
 
@@ -9,17 +10,18 @@ using PyPlot
 const cmap1 = PyPlot.ColorMap("autumn_r")
 const cmap2 = PyPlot.ColorMap("cool")
 
-function plot_params(name, params, values, uncs)
-    # β, δ, t
+function plot_params(name, all_data, val_idx)
     data06 = Dict{Float32,NTuple{3,Vector{Float32}}}()
     data10 = Dict{Float32,NTuple{3,Vector{Float32}}}()
-    for i in 1:length(params)
-        β, δ, t = params[i]
+    for i in 1:size(all_data, 1)
+        β = all_data[i, 1]
+        δ = all_data[i, 2]
+        t = all_data[i, 3]
         # The t=20000 isn't too different from t=10000 and just add more noise
         # to the plot
         t == 20000 && continue
-        val = values[i]
-        unc = uncs[i]
+        val = all_data[i, val_idx]
+        unc = all_data[i, val_idx + 1]
 
         data_dict = β == 1 ? data10 : data06
         data = if !(t in keys(data_dict))
@@ -49,7 +51,7 @@ function plot_params(name, params, values, uncs)
     grid()
 end
 
-# plot_params("Final Energy", params, final_energies...)
-# plot_params("Escape Time", params, escape_times...)
-plot_params("Photon Count", params, photon_counts...)
+# plot_params("Final Energy", data, 4)
+# plot_params("Escape Time", data, 6)
+plot_params("Photon Count", data, 8)
 savefig("gamma_5.png")
