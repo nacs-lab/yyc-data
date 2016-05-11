@@ -23,6 +23,9 @@
 
     function run(param)
         β, det_hz, totalt = param
+        # det_hz = param
+        # β = -0.6f0
+        # totalt = 6_000f0
         println("Running β=$β, δ=$det_hz, t=$totalt")
         # m here is actually m / ħ
         # m_Na = Float32(22.98977e-3 / 6.02214129e23 /
@@ -30,7 +33,7 @@
         m_Cs = Float32(132.905451933e-3 / 6.02214129e23 /
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.16) # f = 160kHz
-        ω_e = ω_g * √(β)
+        ω_e = sign(β) * ω_g * √(abs(β))
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
@@ -58,14 +61,13 @@
         grid_size = 512
         grid_space = 0.0025f0
         tstep = 0.0025f0
-        # totalt = 6_000f0
         nstep = round(Int, totalt ÷ tstep)
         p_sys = SystemPropagator(h_system, tstep, grid_space,
                                  nstep, grid_size)
         e_thresh = trap_depth
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
-        monte_carlo = 25
+        monte_carlo = 70
         accum = MonteCarloAccumulator(_accum, monte_carlo)
         propagate(p_sys, ψ0, accum)
         return accum
@@ -74,10 +76,12 @@ end
 
 println("start")
 
-βs = [1, 0.6]
-det_list = [[-15, -10, -7.5, -6.25, -5, 0, 5, 10],
-            [-20, -15, -10, -5, 0, 5, 10, 15]]
-ts = [20000, 10000, 6000, 3000]
+βs = [1.67, 1, 0.6, -0.6]
+det_list = [[-30, -25, -20, -17.5, -15, -10, -5, 0],
+            [-15, -10, -7.5, -6.25, -5, 0, 5, 10],
+            [-20, -15, -10, -5, 0, 5, 10, 15],
+            [-35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]]
+ts = [10000, 6000, 3000]
 
 # t = 10_000, β = 1
 # params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
@@ -87,6 +91,10 @@ ts = [20000, 10000, 6000, 3000]
 # params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
 # t = 6_000, β = 0.6
 # params = [-20, -15, -10, -5, 0, 5, 10, 15]
+# t = 6_000, β = 1.67
+# params = [-30, -25, -20, -17.5, -15, -10, -5, 0]
+# t = 6_000, β = -0.6
+# params = [-35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]
 params = Vector{NTuple{3,Float32}}()
 for t in ts
     for i in 1:length(βs)
