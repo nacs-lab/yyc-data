@@ -1,7 +1,7 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5.csv")
+data = readcsv("gamma_5_3.csv")
 
 using PyPlot
 
@@ -51,7 +51,11 @@ function plot_params(name, all_data, val_idx)
     grid()
 end
 
-# plot_params("Final Energy", data, 4)
-# plot_params("Escape Time", data, 6)
+figure()
+plot_params("Final Energy", data, 4)
+figure()
+plot_params("Escape Time", data, 6)
+figure()
 plot_params("Photon Count", data, 8)
-savefig("gamma_5.png")
+show()
+# savefig("gamma_5.png")
