@@ -49,7 +49,7 @@
 
         # k, Ω, δ, τ_θ
         δ = δ_0 - δ_offset
-        Ω = 2π * 5 / 2
+        Ω = 2π * 5 / 5
         o_drive1 = OpticalDrive{Float32}(2π / λ_res, Ω, δ, 1000.0)
         o_drive2 = OpticalDrive{Float32}(-2π / λ_res, Ω, δ, 1000.0)
         # o_drive3 = OpticalDrive{Float32}(0, Ω * 2, δ, 1000.0)
@@ -58,9 +58,9 @@
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
-        grid_size = 768
-        grid_space = 0.002f0
-        tstep = 0.001f0
+        grid_size = 512
+        grid_space = 0.0025f0
+        tstep = 0.0025f0
         nstep = round(Int, totalt ÷ tstep)
         p_sys = SystemPropagator(h_system, tstep, grid_space,
                                  nstep, grid_size)
