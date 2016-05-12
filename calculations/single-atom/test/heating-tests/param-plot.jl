@@ -58,16 +58,16 @@
         # h_system = HSystem(h_trap, o_decay, (o_drive1,))
         # h_system = HSystem(h_trap, o_decay, (o_drive2,))
 
-        grid_size = 512
-        grid_space = 0.0025f0
-        tstep = 0.0025f0
+        grid_size = 768
+        grid_space = 0.002f0
+        tstep = 0.001f0
         nstep = round(Int, totalt ÷ tstep)
         p_sys = SystemPropagator(h_system, tstep, grid_space,
                                  nstep, grid_size)
         e_thresh = trap_depth
         ψ0 = gen_ψ0(grid_size, grid_space)
         _accum = EnergyRecorder(p_sys, e_thresh)
-        monte_carlo = 70
+        monte_carlo = 50
         accum = MonteCarloAccumulator(_accum, monte_carlo)
         propagate(p_sys, ψ0, accum)
         return accum
@@ -76,12 +76,17 @@ end
 
 println("start")
 
-βs = [1.67, 1, 0.6, -0.6]
-det_list = [[-30, -25, -20, -17.5, -15, -10, -5, 0],
-            [-15, -10, -7.5, -6.25, -5, 0, 5, 10],
-            [-20, -15, -10, -5, 0, 5, 10, 15],
-            [-35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]]
-ts = [10000, 6000, 3000]
+# βs = [1.67, 1, 0.6, -0.6]
+βs = [1.67 ,1]
+det_list = [
+            [-30, -25, -20, -17.5, -15, -10, -5, 0],
+            [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
+            # [-20, -15, -10, -5, 0, 5, 10, 15],
+            # [-35, -30, -25, -20, -15, -10, -5, 0,
+            #  5, 10, 15, 20, 25, 30, 35, 40]
+            ]
+# ts = [10000, 6000, 3000]
+ts = [10000, 3000]
 
 # t = 10_000, β = 1
 # params = [-15, -10, -7.5, -6.25, -5, 0, 5, 10]
