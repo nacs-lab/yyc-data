@@ -34,6 +34,7 @@
                        (1.0545717253362894e-34 * 1e6))
         ω_g = Float32(2π * 0.16) # f = 160kHz
         ω_e = sign(β) * ω_g * √(abs(β))
+        ω_g, ω_e = ω_e, ω_g
         h_trap = HTrap{Float32}(m_Cs, (ω_g, ω_e))
 
         λ_res = Float32(0.852)
