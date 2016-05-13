@@ -1,18 +1,20 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_3.csv")
+data = readcsv("gamma_5_4.csv")
 
 using PyPlot
 
 # const cmap1 = PyPlot.ColorMap("autumn")
 # const cmap2 = PyPlot.ColorMap("winter")
+const plot_β1 = 1
+const plot_β2 = 1.67
 const cmap1 = PyPlot.ColorMap("autumn_r")
 const cmap2 = PyPlot.ColorMap("cool")
 
 function plot_params(name, all_data, val_idx)
-    data06 = Dict{Float32,NTuple{3,Vector{Float32}}}()
-    data10 = Dict{Float32,NTuple{3,Vector{Float32}}}()
+    data_d1 = Dict{Float32,NTuple{3,Vector{Float32}}}()
+    data_d2 = Dict{Float32,NTuple{3,Vector{Float32}}}()
     for i in 1:size(all_data, 1)
         β = all_data[i, 1]
         δ = all_data[i, 2]
@@ -23,7 +25,14 @@ function plot_params(name, all_data, val_idx)
         val = all_data[i, val_idx]
         unc = all_data[i, val_idx + 1]
 
-        data_dict = β == 1 ? data10 : data06
+        data_dict = if β == plot_β1
+            data_d1
+        elseif β == plot_β2
+            data_d2
+        else
+            continue
+        end
+
         data = if !(t in keys(data_dict))
             data_dict[t] = (Float32[], Float32[], Float32[])
         else
@@ -33,7 +42,8 @@ function plot_params(name, all_data, val_idx)
         push!(data[2], val)
         push!(data[3], unc)
     end
-    for (β, data_dict, cmap) in ((0.6, data06, cmap1), (1.0, data10, cmap2))
+    for (β, data_dict, cmap) in ((plot_β1, data_d1, cmap1),
+                                  (plot_β2, data_d2, cmap2))
         ts = collect(keys(data_dict))
         sort!(ts)
         tmin = ts[1]
@@ -51,11 +61,11 @@ function plot_params(name, all_data, val_idx)
     grid()
 end
 
-figure()
-plot_params("Final Energy", data, 4)
-figure()
-plot_params("Escape Time", data, 6)
+# figure()
+# plot_params("Final Energy", data, 4)
+# figure()
+# plot_params("Escape Time", data, 6)
 figure()
 plot_params("Photon Count", data, 8)
-show()
-# savefig("gamma_5.png")
+# show()
+savefig("gamma_5_4.png")
