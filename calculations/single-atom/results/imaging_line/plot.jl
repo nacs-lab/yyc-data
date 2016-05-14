@@ -1,7 +1,7 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_7.csv")
+data = readcsv("gamma_5_8.csv")
 
 using PyPlot
 
@@ -57,7 +57,7 @@ function plot_params(name, all_data, val_idx)
     end
     ylabel(name)
     xlabel("Detuning (MHz)")
-    legend()
+    # legend()
     grid()
 end
 
