@@ -1,16 +1,16 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_12.csv")
+data = readcsv("gamma_5_11.csv")
 
 using PyPlot
 
 # const cmap1 = PyPlot.ColorMap("autumn")
 # const cmap2 = PyPlot.ColorMap("winter")
-const plot_β1 = 4
+const plot_β1 = 1
 const plot_β2 = 2.5
-const cmap1 = PyPlot.ColorMap("autumn_r")
-const cmap2 = PyPlot.ColorMap("cool")
+const cmap1 = PyPlot.ColorMap("autumn")
+const cmap2 = PyPlot.ColorMap("cool_r")
 
 function plot_params(name, all_data, val_idx)
     data_d1 = Dict{Float32,NTuple{3,Vector{Float32}}}()
@@ -57,15 +57,15 @@ function plot_params(name, all_data, val_idx)
     end
     ylabel(name)
     xlabel("Detuning (MHz)")
-    # legend()
+    legend(loc=3)
     grid()
 end
 
-figure()
-plot_params("Final Energy", data, 4)
-figure()
-plot_params("Escape Time", data, 6)
+# figure()
+# plot_params("Final Energy", data, 4)
+# figure()
+# plot_params("Escape Time", data, 6)
 figure()
 plot_params("Photon Count", data, 8)
-show()
-# savefig("gamma_5_4.png")
+# show()
+savefig("gamma_5_beta1-2.5.png")
