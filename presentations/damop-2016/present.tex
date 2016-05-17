@@ -32,6 +32,17 @@
   shapes
 }
 
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(3mm)=(white);
+  color(7mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
 \mode<handout>{
   \usepackage{pgfpages}
   \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
@@ -182,15 +193,23 @@
 % How hard can this be =p
 
 \begin{frame}[t]{}
-  \only<1>{
+  \begin{center}
+    \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
+  \end{center}
+  \begin{columns}[t]
+    \column{8cm}
+    {}
+    % Somehow the author and date etc moves to the bottom of the
+    % page if this is removed.....
+    \includegraphics[width=8cm]{overall_full_min.png}
+    \column{4cm}
     \begin{center}
-      \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
       \usebeamercolor[fg]{title}{
         {\large{\theauthor}}\\
         {\small{\thedate}}\\
         {\small{\theinstitute}}}
     \end{center}
-  }
+  \end{columns}
 \end{frame}
 
 % Done in Rb by ....
@@ -203,20 +222,62 @@
 % <figure 3> Image, histogram
 
 \begin{frame}
+  \begin{columns}[t]
+    \column{5cm}
+    \begin{block}{\only<1>{Single atom loading}
+        \only<2->{Procedure}}
+      \begin{itemize}
+      \item<1-> Similar to\\
+        Ref1\\
+        Ref2
+      \item<2-> MOT Loading
+      \item<3-> Trapping
+      \item<4-> Imaging
+      \item<5-> Works for Cs
+      \end{itemize}
+    \end{block}
+    \column{7cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2-3>{
+          \shade[shading=radial,inner color=orange] (0,0) circle (1);
+        }
+        \visible<3-4>{
+          \shade[shading=radial,rotate=90,yscale=1,fill opacity=0.8,
+          inner color=red]
+          plot[draw,samples=200,domain=-3:3] function {sqrt(0.0025 + x**2 / 10)}
+          -- plot[draw,samples=200,domain=3:-3] function {-sqrt(0.0025 + x**2 / 10)};
+          \fill [blue,path fading=glow fading] (0,0) circle (0.08);
+          % the fading effect
+        }
+        \visible<5> {
+          % TODO replace with a better one
+          \path (0,0) node[above]
+          {\includegraphics[width=4cm]{Cs_single_atom.png}};
+          % TODO add histogram
+          \path (0,0) node[below] {Add Histogram};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
 \end{frame}
 
 % Doesn't work for Na
 % For Na we saw (blank picture)
-% We believe the issue is:
-% -    (Light shift) i.e. Excited and ground states have different AC Stark
-% -    shift in the trap.
+% We believe the issue is Light shift
+
+% \beta parameter, due to multiple levels. 1 = magic
+
+% Problems caused by this:
+% 1. Loading
+% -    Inefficient cooling
+% 2. Imaging
 
 \begin{frame}
 \end{frame}
 
-% Problems caused by this:
-% 1. Loading
-% 2. Imaging
+\begin{frame}
+\end{frame}
 
 % Solution:
 % * Switching
