@@ -1,7 +1,7 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_10.csv")
+data = readcsv("gamma_5_11.csv")
 
 using PyPlot
 
