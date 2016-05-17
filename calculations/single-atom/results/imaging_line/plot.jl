@@ -1,13 +1,13 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_11.csv")
+data = readcsv("gamma_5_12.csv")
 
 using PyPlot
 
 # const cmap1 = PyPlot.ColorMap("autumn")
 # const cmap2 = PyPlot.ColorMap("winter")
-const plot_β1 = 1
+const plot_β1 = 4
 const plot_β2 = 2.5
 const cmap1 = PyPlot.ColorMap("autumn_r")
 const cmap2 = PyPlot.ColorMap("cool")
