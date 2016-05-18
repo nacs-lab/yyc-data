@@ -248,7 +248,6 @@
           plot[draw,samples=200,domain=-3:3] function {sqrt(0.0025 + x**2 / 10)}
           -- plot[draw,samples=200,domain=3:-3] function {-sqrt(0.0025 + x**2 / 10)};
           \fill [blue,path fading=glow fading] (0,0) circle (0.08);
-          % the fading effect
         }
         \visible<5> {
           % TODO replace with a better one
@@ -263,26 +262,91 @@
 \end{frame}
 
 % Doesn't work for Na
-% For Na we saw (blank picture)
-% We believe the issue is Light shift
+% For Na we saw nothing
+% We believe the issue is the difference between ground and excited state
+% AC Stark shift.
 
 % \beta parameter, due to multiple levels. 1 = magic
 
 % Problems caused by this:
 % 1. Loading
 % -    Inefficient cooling
+% -    Possibly reduced trap depth
 % 2. Imaging
+% -    + Off resonance
 
 \begin{frame}
-\end{frame}
+  \begin{columns}
+    \column{5cm}
+    \begin{block}{Light shift}
+      \begin{itemize}
+      \item<2-> $\beta=\dfrac{\alpha_e}{\alpha_g}$
+      \item<3-> Inefficient cooling
+      \item<4-> Reduced trap depth\\
+        (for $\beta < 1$)
+      \item<5-> Out of resonance
+      \end{itemize}
+    \end{block}
+    \column{7cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<-5> {
+          % Excited state
+          \draw[dashed,line width=1] (-2, 3) -- (2, 3);
 
-\begin{frame}
+          % \beta = 0.5
+          \draw[violet,line width=1]
+          plot[samples=200,domain=-2:2]
+          function {3-0.5 * exp(-x**2 / 2 / (0.8**2))};
+
+          \visible<2-> {
+            \draw[dashed,line width=0.5] (2, 3) -- (2.5, 3) node[right] {$\beta=0$};
+
+            % \beta = -1
+            \draw[blue,line width=1]
+            plot[samples=200,domain=-2:2]
+            function {3+exp(-x**2 / 2 / (0.8**2))};
+
+            \draw[blue,dashed,line width=0.5] (0, 4) -- (2.5, 4)
+            node[right] {$\beta<0$};
+
+            % \beta = 1
+            \draw[black,line width=1]
+            plot[samples=200,domain=-2:2]
+            function {3-exp(-x**2 / 2 / (0.8**2))};
+            \draw[black,dashed,line width=0.5] (0, 2) -- (2.5, 2)
+            node[right] {$\beta=1$};
+
+            % \beta = 1.67
+            \draw[red,line width=1]
+            plot[samples=200,domain=-2:2]
+            function {3-1.67 * exp(-x**2 / 2 / (0.8**2))};
+            \draw[red,dashed,line width=0.5] (0, 1.33) -- (2.5, 1.33)
+            node[right] {$\beta>1$};
+          }
+
+          % Ground state
+          \draw[dashed,line width=1] (-2, 0) -- (2, 0);
+          \draw[black,line width=1]
+          plot[samples=200,domain=-2:2]
+          function {-exp(-x**2 / 2 / (0.8**2))};
+        }
+        \visible<6> {
+          % TODO photon-vs-detuning plot
+          \path (0, 1.5) node {Add photon-vs-detuning};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
 \end{frame}
 
 % Solution:
 % * Switching
 % * Fast enough (comparing to trap frequency)
 % * Slow enough (comparing to excited stated lifetime)
+
+\begin{frame}
+\end{frame}
 
 % Result
 % * Single Na atom
