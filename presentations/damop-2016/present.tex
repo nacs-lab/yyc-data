@@ -273,11 +273,21 @@
     \begin{block}{Light shift}
       \begin{itemize}
       \item<2-> $\beta=\dfrac{\alpha_e}{\alpha_g}$
-      \item<3-> Inefficient cooling;\\
+      \item<4-> Inefficient cooling;\\
         Heating
-      \item<4-> Shift imaging light out of resonance
+      \item<5-> Shift imaging light out of resonance
       \end{itemize}
     \end{block}
+    \visible<3-> {
+      \begin{center}
+        \begin{tabular}{|c|c|c|c|c|}
+          \hline
+          Atom&\multicolumn{3}{|c|}{Cs}&Na\\\hline
+          $\lambda_{trap}$&922&935&970&700\\\hline
+          $\beta$&2&1&0.6&-1\\\hline
+        \end{tabular}
+      \end{center}
+    }
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
@@ -322,10 +332,17 @@
           plot[samples=200,domain=-2:2]
           function {-exp(-x**2 / 2 / (0.8**2))};
         }
-        \visible<5> {
-          % TODO photon-vs-detuning plot
-          \path (0, 1.5) node {Add photon-vs-detuning};
-          % Maybe loading vs trap wavelength?
+        \visible<6> {
+          \path (0.5, 3) node[above] {
+            \begin{tabular}{|c|c|c|c|}
+              \multicolumn{4}{c}{Cs single atom loading}\\
+              \hline
+              $\lambda_{trap}$&922&935&970\\\hline
+              Loading&No&Yes&Yes\\\hline
+            \end{tabular}
+          };
+          \path (0.5, 2.5) node[below,align=center] {Cs single atom imaging\\
+            \includegraphics[width=6.5cm]{det-vs-photon-dc.png}};
         }
       \end{tikzpicture}
     \end{center}
