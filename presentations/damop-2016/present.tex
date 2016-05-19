@@ -361,26 +361,28 @@
       \begin{itemize}
       \item<2-> Alternate between resonant and trap light
       \item<3-> Switching at $1-3$MHz
+      \item<7-> Being able to load single Na atom
       \end{itemize}
     \end{block}
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
         \visible<4> {
-          \path (0, 0) node[above,align=center] {Cs single atom imaging\\
-            \includegraphics[width=6.5cm]{det-vs-photon-dc2.png}};
+          \path (0, 0) node[above,align=center]
+          {\includegraphics[width=6cm]{det-vs-photon-dc2.png}};
         }
         \visible<5-> {
-          \path (0, 0) node[above,align=center] {Cs single atom imaging\\
-            \includegraphics[width=6.5cm]{det-vs-photon-ac.png}};
+          \path (0, 0) node[above,align=center]
+          {\includegraphics[width=6cm]{det-vs-photon-ac.png}};
+        }
+        \visible<6-> {
+          \path (0, 0) node[below,align=center]
+          {\includegraphics[width=6cm]{trap-phase.png}};
         }
       \end{tikzpicture}
     \end{center}
   \end{columns}
 \end{frame}
-
-% Result
-% * Single Na atom
 
 \begin{frame}[t]
   % \vspace{-0.8cm}
