@@ -173,13 +173,11 @@
 
 \def\theauthor{Yichao Yu}
 \def\theinstitute{Ni Group/Harvard}
+\def\thedate{May 26, 2016}
 \title{Trapping and imaging of single atom in the present of light shift}
 \author{\theauthor}
 \institute{\theinstitute}
-\date{May 5, 2015}
-\makeatletter
-\def\thedate{\@date}
-\makeatother
+\date{\thedate}
 
 \begin{document}
 
@@ -189,9 +187,9 @@
 % Talk about some techniques we use in one of the important step:
 % (discovered and solved problems)
 % -    Trap single atom with tweezer out of laser cooled gas.
-% <figure 1>
 % How hard can this be =p
 
+% 1min
 \begin{frame}[t]{}
   \begin{center}
     \usebeamerfont{title}{\usebeamercolor[fg]{title}{\inserttitle\par}}
@@ -221,40 +219,34 @@
 % Didn't take so long for Cs (picture)
 % <figure 3> Image, histogram
 
+% 2.5min
 \begin{frame}
   \begin{columns}[t]
     \column{5cm}
-    \begin{block}{\only<1>{Single atom loading}
-        \only<2->{Procedure}}
+    \begin{block}{Procedure}
       \begin{itemize}
-      \item<1-> Similar to\\
-        Ref1\\
-        Ref2
-      \item<2-> MOT Loading
-      \item<3-> Trapping
-      \item<4-> Imaging
-      \item<5-> Works for Cs
+      \item<1-> MOT Loading
+      \item<2-> Trapping
+      \item<3-> Imaging
+      \item<4-> Works for Cs
       \end{itemize}
     \end{block}
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
-        \visible<2-3>{
+        \visible<1-2>{
           \shade[shading=radial,inner color=orange] (0,0) circle (1);
         }
-        \visible<3-4>{
+        \visible<2-3>{
           \shade[shading=radial,rotate=90,yscale=1,fill opacity=0.8,
           inner color=red]
           plot[draw,samples=200,domain=-3:3] function {sqrt(0.0025 + x**2 / 10)}
           -- plot[draw,samples=200,domain=3:-3] function {-sqrt(0.0025 + x**2 / 10)};
           \fill [blue,path fading=glow fading] (0,0) circle (0.08);
         }
-        \visible<5> {
-          % TODO replace with a better one
-          \path (0,0) node[above]
-          {\includegraphics[width=4cm]{Cs_single_atom.png}};
-          % TODO add histogram
-          \path (0,0) node[below] {Add Histogram};
+        \visible<4> {
+          \path (0,0) node
+          {\includegraphics[width=7cm]{histogram.png}};
         }
       \end{tikzpicture}
     \end{center}
@@ -262,7 +254,6 @@
 \end{frame}
 
 % Doesn't work for Na
-% For Na we saw nothing
 % We believe the issue is the difference between ground and excited state
 % AC Stark shift.
 
@@ -275,6 +266,7 @@
 % 2. Imaging
 % -    + Off resonance
 
+% 5min
 \begin{frame}
   \begin{columns}
     \column{5cm}
@@ -283,9 +275,7 @@
       \item<2-> $\beta=\dfrac{\alpha_e}{\alpha_g}$
       \item<3-> Inefficient cooling;\\
         Heating
-      \item<4-> Reduced trap depth\\
-        (for $\beta < 1$)
-      \item<5-> Out of resonance
+      \item<4-> Shift imaging light out of resonance
       \end{itemize}
     \end{block}
     \column{7cm}
@@ -332,7 +322,7 @@
           plot[samples=200,domain=-2:2]
           function {-exp(-x**2 / 2 / (0.8**2))};
         }
-        \visible<6> {
+        \visible<5> {
           % TODO photon-vs-detuning plot
           \path (0, 1.5) node {Add photon-vs-detuning};
           % Maybe loading vs trap wavelength?
