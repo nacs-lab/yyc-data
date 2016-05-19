@@ -284,7 +284,7 @@
           \hline
           Atom&\multicolumn{3}{|c|}{Cs}&Na\\\hline
           $\lambda_{trap}$&922&935&970&700\\\hline
-          $\beta$&2&1&0.6&-1\\\hline
+          $\beta_{cycle}$&2&1&0.6&-1\\\hline
         \end{tabular}
       \end{center}
     }
@@ -357,15 +357,24 @@
 \begin{frame}
   \begin{columns}
     \column{5cm}
-    \begin{block}{Solution}
+    \begin{block}{Trap switching}
       \begin{itemize}
-      \item<2-> Trap switching % TODO reference
-      \item<3-> Out-of-phase resonant and trap light % TODO trace
-      \item<4-> Switching frequency
+      \item<2-> Alternate between resonant and trap light
+      \item<3-> Switching at $1-3$MHz
       \end{itemize}
     \end{block}
     \column{7cm}
     \begin{center}
+      \begin{tikzpicture}
+        \visible<4> {
+          \path (0, 0) node[above,align=center] {Cs single atom imaging\\
+            \includegraphics[width=6.5cm]{det-vs-photon-dc2.png}};
+        }
+        \visible<5-> {
+          \path (0, 0) node[above,align=center] {Cs single atom imaging\\
+            \includegraphics[width=6.5cm]{det-vs-photon-ac.png}};
+        }
+      \end{tikzpicture}
     \end{center}
   \end{columns}
 \end{frame}
