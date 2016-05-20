@@ -212,65 +212,56 @@
     \column{5cm}
     \begin{block}{Light shift}
       \begin{itemize}
-      \item<2-> $\beta=\dfrac{\alpha_e}{\alpha_g}$ % Ratio between polarizability
-      \item<4-> Inefficient cooling;\\
+      \item<2-> Inefficient cooling;\\
         Heating
-      \item<5-> Shift imaging light out of resonance
+      \item<2-> Shift imaging light out of resonance
       \end{itemize}
     \end{block}
-    \visible<3-> {
+    \visible<1-> {
       \begin{center}
-        \begin{tabular}{|c|c|c|c|c|}
-          \hline
-          Atom&\multicolumn{3}{|c|}{Cs}&Na\\\hline
-          $\lambda_{trap}$&922&935&970&700\\\hline
-          $\beta_{cycle}$&2&1&0.6&-1\\\hline
-        \end{tabular}
+        \includegraphics[width=5.5cm]{light-shift.png}
       \end{center}
     }
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
-        \visible<-5> {
+        \visible<2-5> {
           % Excited state
           \draw[dashed,line width=1] (-2, 3) -- (2, 3);
 
-          % \beta = 0.5
-          \draw[violet,line width=1]
-          plot[samples=200,domain=-2:2]
-          function {3-0.5 * exp(-x**2 / 2 / (0.8**2))};
+          \visible<3-> {
+            \foreach \w in {20,18,...,1}
+            {\draw[orange,line width=\w,opacity=0.1]
+              plot[samples=200,domain=-2:2]
+              function {2.75 - exp(-x**2 / 2 / (0.8**2))};}
+          }
 
-          \visible<2-> {
-            \draw[dashed,line width=0.5] (2, 3) -- (2.5, 3) node[right] {$\beta=0$};
+          \visible<-3> {
+            % \beta = 0.8
+            \draw[violet,line width=1]
+            plot[samples=200,domain=-2:2]
+            function {3-0.8 * exp(-x**2 / 2 / (0.8**2))};
+          }
 
-            % \beta = -1
+          \visible<4> {
+            % \beta = 2
             \draw[blue,line width=1]
             plot[samples=200,domain=-2:2]
-            function {3+exp(-x**2 / 2 / (0.8**2))};
+            function {3-2.3 * exp(-x**2 / 2 / (0.8**2))};
+          }
 
-            \draw[blue,dashed,line width=0.5] (0, 4) -- (2.5, 4)
-            node[right] {$\beta<0$};
-
-            % \beta = 1
-            \draw[black,line width=1]
-            plot[samples=200,domain=-2:2]
-            function {3-exp(-x**2 / 2 / (0.8**2))};
-            \draw[black,dashed,line width=0.5] (0, 2) -- (2.5, 2)
-            node[right] {$\beta=1$};
-
-            % \beta = 1.67
+          \visible<5> {
+            % \beta = -1
             \draw[red,line width=1]
             plot[samples=200,domain=-2:2]
-            function {3-1.67 * exp(-x**2 / 2 / (0.8**2))};
-            \draw[red,dashed,line width=0.5] (0, 1.33) -- (2.5, 1.33)
-            node[right] {$\beta>1$};
+            function {3+exp(-x**2 / 2 / (0.8**2))};
           }
 
           % Ground state
-          \draw[dashed,line width=1] (-2, 0) -- (2, 0);
+          \draw[dashed,line width=1] (-2, -1) -- (2, -1);
           \draw[black,line width=1]
           plot[samples=200,domain=-2:2]
-          function {-exp(-x**2 / 2 / (0.8**2))};
+          function {-1-exp(-x**2 / 2 / (0.8**2))};
         }
         \visible<6> {
           \path (0.5, 3) node[above] {
@@ -306,15 +297,15 @@
       \item<7-> Being able to load single Na atom
       \end{itemize}
     \end{block}
-      \begin{tikzpicture}
-        \visible<2-7> {
-          \path (0, 0) node {\includegraphics[width=6cm]{switching.png}};
-        }
-        \visible<8-> {
-          \path (0, 0) node
-          {\includegraphics[width=5cm]{trap-phase.png}};
-        }
-      \end{tikzpicture}
+    \begin{tikzpicture}
+      \visible<2-7> {
+        \path (0, 0) node {\includegraphics[width=6cm]{switching.png}};
+      }
+      \visible<8-> {
+        \path (0, 0) node
+        {\includegraphics[width=5cm]{trap-phase.png}};
+      }
+    \end{tikzpicture}
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
