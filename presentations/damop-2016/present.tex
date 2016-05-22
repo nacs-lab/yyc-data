@@ -290,19 +290,17 @@
   \begin{columns}
     \column{5cm}
     \begin{block}{Trap modulation}
-      \begin{itemize}
-      \item<2-> Alternate between resonant (cooling and imaging) and trap light
-      \item<3-> Switching at $1\sim3$MHz\\
-        {\small $f_{trap}=10\sim400$\ kHz}\\
-        {\small $\Gamma=2\pi\times(5\sim10)$\ MHz}
-      \item<7-> Being able to load single Na atom
-      \end{itemize}
+      Alternate between trap and resonant {\small (cooling and imaging)} light
+      at $1\sim3$\ MHz\\
+      {\small $f_{trap}=10\sim400$\ kHz}\\
+      {\small $\Gamma=2\pi\times(5\sim10)$\ MHz}
     \end{block}
+    \vspace{0.5cm}
     \begin{tikzpicture}
-      \visible<2-7> {
+      \visible<1-5> {
         \path (0, 0) node {\includegraphics[width=5cm]{switching.png}};
       }
-      \visible<8-> {
+      \visible<6-> {
         \path (0, 0) node
         {\includegraphics[width=5cm]{trap-phase.png}};
       }
@@ -310,7 +308,7 @@
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
-        \visible<4-> {
+        \visible<2-4> {
           \path (0, 0) node[above,align=center]
           {
             \begin{tabular}{|c|c|c|c|}
@@ -321,19 +319,21 @@
             \end{tabular}
           };
         }
-        \visible<5> {
+        \visible<3> {
           \path (0, -0.5) node[below,align=center]
           {Cs single atom imaging\\
             \includegraphics[width=6cm]{det-vs-photon-dc2.png}};
         }
-        \visible<6-> {
+        \visible<4> {
           \path (0, -0.5) node[below,align=center]
           {Cs single atom imaging\\
             \includegraphics[width=6cm]{det-vs-photon-ac.png}};
         }
-        \visible<7-> {
-          \path (0, -1) node[above]
+        \visible<5-> {
+          \path (0, -3) node[above]
           {\includegraphics[width=6cm]{histogram.png}};
+          \path (0, -3.5) node[below,align=center]
+          {\Large Na Single Atom Loaded!!};
         }
       \end{tikzpicture}
     \end{center}
