@@ -213,12 +213,12 @@
     \column{5cm}
     \begin{block}{Light shift}
       \begin{itemize}
-      \item<2-> Inefficient cooling;\\
+      \item<4-> Inefficient cooling;\\
         Heating
-      \item<2-> Shift imaging light out of resonance
+      \item<4-> Shift imaging light out of resonance
       \end{itemize}
     \end{block}
-    \visible<1-> {
+    \visible<3-> {
       \begin{center}
         \includegraphics[width=5.5cm]{light-shift.png}
       \end{center}
@@ -226,32 +226,32 @@
     \column{7cm}
     \begin{center}
       \begin{tikzpicture}
-        \visible<2-5> {
+        \visible<1-7> {
           % Excited state
-          \draw[dashed,line width=1] (-2, 3) -- (2, 3);
-
-          \visible<3-> {
-            \foreach \w in {20,18,...,1}
-            {\draw[orange,line width=\w,opacity=0.1]
-              plot[samples=200,domain=-2:2]
-              function {2.75 - exp(-x**2 / 2 / (0.8**2))};}
+          \visible<2->{
+            \draw[dashed,line width=1] (-2, 3) -- (2, 3);
+          }
+          \visible<5-> {
+            \draw[orange,->,line width=2] (2, -1) -- (2, 2.85);
+            \draw[orange,dashed,->,line width=2]
+            (0.5, -1.8225775623986646) -- (0.5, 2.85 - 0.8225775623986646);
           }
 
-          \visible<-3> {
+          \visible<2-5> {
             % \beta = 0.8
             \draw[violet,line width=1]
             plot[samples=200,domain=-2:2]
             function {3-0.8 * exp(-x**2 / 2 / (0.8**2))};
           }
 
-          \visible<4> {
-            % \beta = 2
+          \visible<6> {
+            % \beta = 2.3
             \draw[blue,line width=1]
             plot[samples=200,domain=-2:2]
             function {3-2.3 * exp(-x**2 / 2 / (0.8**2))};
           }
 
-          \visible<5> {
+          \visible<7> {
             % \beta = -1
             \draw[red,line width=1]
             plot[samples=200,domain=-2:2]
@@ -264,7 +264,7 @@
           plot[samples=200,domain=-2:2]
           function {-1-exp(-x**2 / 2 / (0.8**2))};
         }
-        \visible<6> {
+        \visible<8> {
           \path (0.5, 3) node[above] {
             \begin{tabular}{|c|c|c|c|}
               \multicolumn{4}{c}{Cs single atom loading}\\
