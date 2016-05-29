@@ -25,7 +25,7 @@
         β, det_hz, trapf = param
         # β = 0.6
         totalt = 8_000f0
-        println("Running β=$β, δ=$det_hz, t=$totalt")
+        println("Running β=$β, δ=$det_hz, trapf=$trapf")
         # m here is actually m / ħ
         # m_Na = Float32(22.98977e-3 / 6.02214129e23 /
         #                (1.0545717253362894e-34 * 1e6))
