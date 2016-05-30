@@ -119,6 +119,9 @@ errors_strang = Float64[propagator_error([1, 1, 0], total_t, dt,
 errors_parallel = Float64[propagator_error([1, 1, 0], total_t, dt,
                                            step_parallel_split)
                           for dt in dts]
+
+figure()
+title("$([1, 1, 0])")
 ax = gca()
 ax[:set_xscale]("log", nonposx="clip")
 ax[:set_yscale]("log", nonposx="clip")
@@ -127,4 +130,26 @@ plot(dts, errors_strang, label="strang")
 plot(dts, errors_parallel, label="parallel")
 legend()
 grid()
+
+errors_simple = Float64[propagator_error([1, 1 / √(2), 1 / √(2)], total_t, dt,
+                                         step_simple_split)
+                        for dt in dts]
+errors_strang = Float64[propagator_error([1, 1 / √(2), 1 / √(2)], total_t, dt,
+                                         step_strang_split)
+                        for dt in dts]
+errors_parallel = Float64[propagator_error([1, 1 / √(2), 1 / √(2)], total_t, dt,
+                                           step_parallel_split)
+                          for dt in dts]
+
+figure()
+title("$([1, 1 / √(2), 1 / √(2)])")
+ax = gca()
+ax[:set_xscale]("log", nonposx="clip")
+ax[:set_yscale]("log", nonposx="clip")
+plot(dts, errors_simple, label="simple")
+plot(dts, errors_strang, label="strang")
+plot(dts, errors_parallel, label="parallel")
+legend()
+grid()
+
 show()
