@@ -30,6 +30,32 @@ function step_simple_split{_T<:Real}(cs::Vector{_T}, dt)
     return exp_x * exp_y * exp_z
 end
 
+function step_strang_split{_T<:Real}(cs::Vector{_T}, dt)
+    @assert length(cs) == 3
+    T = float(_T)
+    CT = Complex{T}
+    σ_x = CT[0 1;1 0]
+    σ_y = CT[0 -1im;1im 0]
+    σ_z = CT[1 0;0 -1]
+    exp_x = expm(im * T(dt) * cs[1] * σ_x / 2)
+    exp_y = expm(im * T(dt) * cs[2] * σ_y / 2)
+    exp_z = expm(im * T(dt) * cs[3] * σ_z / 2)
+    return exp_x * exp_y * exp_z * exp_z * exp_y * exp_x
+end
+
+function step_parallel_split{_T<:Real}(cs::Vector{_T}, dt)
+    @assert length(cs) == 3
+    T = float(_T)
+    CT = Complex{T}
+    σ_x = CT[0 1;1 0]
+    σ_y = CT[0 -1im;1im 0]
+    σ_z = CT[1 0;0 -1]
+    exp_x = expm(im * T(dt) * cs[1] * σ_x)
+    exp_y = expm(im * T(dt) * cs[2] * σ_y)
+    exp_z = expm(im * T(dt) * cs[3] * σ_z)
+    return (exp_x * exp_y * exp_z + exp_z * exp_y * exp_x) / 2
+end
+
 function propagate{_T<:Real}(cs::Vector{_T}, tmax, dt, _ψ0::Vector, step_getter)
     @assert length(_ψ0) == 2
     T = float(_T)
@@ -87,10 +113,18 @@ dts = total_t ./ logspace(log10(5), log10(100000), 1000)
 errors_simple = Float64[propagator_error([1, 1, 0], total_t, dt,
                                          step_simple_split)
                         for dt in dts]
+errors_strang = Float64[propagator_error([1, 1, 0], total_t, dt,
+                                         step_strang_split)
+                        for dt in dts]
+errors_parallel = Float64[propagator_error([1, 1, 0], total_t, dt,
+                                           step_parallel_split)
+                          for dt in dts]
 ax = gca()
 ax[:set_xscale]("log", nonposx="clip")
 ax[:set_yscale]("log", nonposx="clip")
 plot(dts, errors_simple, label="simple")
+plot(dts, errors_strang, label="strang")
+plot(dts, errors_parallel, label="parallel")
 legend()
 grid()
 show()
