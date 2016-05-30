@@ -1,0 +1,52 @@
+#!/usr/bin/julia -f
+
+# Simplest unitary system with multiple non-commuting operators: 2 level system
+
+# The system is described by three real numbers, ``c_x``, ``c_y``, ``c_z``
+# and the Hamiltonian is ``H = c_x σ_x + c_y σ_y + c_z σ_z``
+# We'll evolve the system with exact diagonalization and split operator methods
+
+function get_σ{T<:Real}(cs::Vector{T})
+    @assert length(cs) == 3
+    CT = Complex{float(T)}
+    σ_x = CT[0 1;1 0]
+    σ_y = CT[0 -1im;1im 0]
+    σ_z = CT[1 0;0 -1]
+    return σ_x * cs[1] + σ_y * cs[2] + σ_z * cs[3]
+end
+
+function propagate_exact{T<:Real}(cs::Vector{T}, _t::Number, _ψ0::Vector)
+    @assert length(_ψ0) == 2
+    CT = Complex{float(T)}
+    t = T(_t)
+    ψ0 = convert(Vector{CT}, _ψ0)
+    σ_n = get_σ(cs)
+    return expm(im * t * σ_n) * ψ0
+end
+
+function propagate_exact{_T<:Real}(cs::Vector{_T}, ts, _ψ0::Vector)
+    @assert length(_ψ0) == 2
+    T = float(_T)
+    CT = Complex{T}
+    ψ0 = convert(Vector{CT}, _ψ0)
+    σ_n = get_σ(cs)
+    nt = length(ts)
+    res = Matrix{CT}(2, nt)
+    for i in 1:nt
+        res[:, i] = expm(im * T(ts[i]) * σ_n) * ψ0
+    end
+    return res
+end
+
+using PyPlot
+
+function plot_exact(cs, ts, ψ0)
+    res = propagate_exact(cs, ts, ψ0)
+    plot(ts, abs2(res[1, :]), label="$cs")
+end
+
+plot_exact([1, 1, 0], linspace(0, 10π, 10000), [1.0, 0])
+plot_exact([0, 1, 1], linspace(0, 10π, 10000), [1.0, 0])
+plot_exact([1, 0, 1], linspace(0, 10π, 10000), [1.0, 0])
+legend()
+show()
