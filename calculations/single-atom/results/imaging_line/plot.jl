@@ -1,7 +1,7 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_13.csv", Float32)
+data = readcsv("gamma_5_14.csv", Float32)
 
 using PyPlot
 
@@ -51,7 +51,7 @@ function plot_params(name, all_data, val_idx)
             color = cmap((log(t) - log(tmin)) / (log(tmax) - log(tmin)))
             data = data_dict[t]
             errorbar(data[1], data[2], data[3], color=color,
-                     label="\$\\beta=$β; t=$(round(Int, t))\$")
+                     label="\$\\beta=$β; trapf=$t\$")
         end
     end
     ylabel(name)
