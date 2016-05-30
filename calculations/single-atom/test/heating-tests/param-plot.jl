@@ -40,7 +40,7 @@
         # k, Γ
         o_decay = OpticalDecay{Float32}(2π / λ_res, 2π * 5)
 
-        trap_depth = 1.2 * 2π * 20 # 2mK
+        trap_depth = 1.2 * 2π * 20 * (trapf / 0.16)^2 # 2mK
         e_trap_depth = trap_depth * ω_e^2 / ω_g^2
         δ_offset = trap_depth - e_trap_depth
 
