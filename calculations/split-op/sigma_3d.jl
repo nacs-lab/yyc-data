@@ -6,7 +6,7 @@
 # and the Hamiltonian is ``H = c_x σ_x + c_y σ_y + c_z σ_z``
 # We'll evolve the system with exact diagonalization and split operator methods
 
-function exp_n_exact{_T<:Real}(cs::Vector{_T}, dt)
+function step_exact{_T<:Real}(cs::Vector{_T}, dt)
     @assert length(cs) == 3
     T = float(_T)
     CT = Complex{float(T)}
@@ -17,7 +17,7 @@ function exp_n_exact{_T<:Real}(cs::Vector{_T}, dt)
     return expm(im * T(dt) * σ_n)
 end
 
-function exp_n_simple_split{_T<:Real}(cs::Vector{_T}, dt)
+function step_simple_split{_T<:Real}(cs::Vector{_T}, dt)
     @assert length(cs) == 3
     T = float(_T)
     CT = Complex{T}
@@ -30,7 +30,7 @@ function exp_n_simple_split{_T<:Real}(cs::Vector{_T}, dt)
     return exp_x * exp_y * exp_z
 end
 
-function propagate{_T<:Real}(cs::Vector{_T}, tmax, dt, _ψ0::Vector, exp_n_getter)
+function propagate{_T<:Real}(cs::Vector{_T}, tmax, dt, _ψ0::Vector, step_getter)
     @assert length(_ψ0) == 2
     T = float(_T)
     CT = Complex{T}
@@ -39,32 +39,58 @@ function propagate{_T<:Real}(cs::Vector{_T}, tmax, dt, _ψ0::Vector, exp_n_gette
     res = Matrix{CT}(2, nt)
     res[:, 1] = ψ0
     ψ = copy(ψ0)
-    exp_n = exp_n_getter(cs, dt)
+    step = step_getter(cs, dt)
     for i in 2:nt
-        ψ = exp_n * ψ
+        ψ = step * ψ
         res[:, i] = ψ
     end
     return res
 end
 
+function propagator(cs, tmax, dt, step_getter)
+    nt = round(Int, tmax ÷ dt) + 1
+    step_getter(cs, dt)^nt
+end
+
+function propagator_diff(cs, tmax, dt, step_getter, ref_getter=step_exact)
+    p1 = propagator(cs, tmax, dt, step_getter)
+    pref = propagator(cs, tmax, dt, ref_getter)
+    p1 - pref
+end
+
+propagator_error(cs, tmax, dt, step_getter, ref_getter=step_exact) =
+    sqrt(sum(abs2(propagator_diff(cs, tmax, dt, step_getter, ref_getter))))
+
 using PyPlot
 
-function plot_propagate(cs, tmax, dt, ψ0, exp_n_getter, name)
+function plot_propagate(cs, tmax, dt, ψ0, step_getter, name)
     ts = 0:dt:tmax
-    res = propagate(cs, tmax, dt, ψ0, exp_n_getter)
+    res = propagate(cs, tmax, dt, ψ0, step_getter)
     plot(ts, abs2(res[1, :]), label="$cs $name")
 end
 
 plot_exact(cs, tmax, dt, ψ0) =
-    plot_propagate(cs, tmax, dt, ψ0, exp_n_exact, "exact")
+    plot_propagate(cs, tmax, dt, ψ0, step_exact, "exact")
 plot_simple_split(cs, tmax, dt, ψ0) =
-    plot_propagate(cs, tmax, dt, ψ0, exp_n_simple_split, "simple")
+    plot_propagate(cs, tmax, dt, ψ0, step_simple_split, "simple")
 
 # plot_exact([1, 1, 0], 10π, 1, [1.0, 0])
 # plot_exact([1, 1, 0], 10π, 0.001, [1.0, 0])
-plot_exact([1, 1, 0], 10π, 0.1, [1.0, 0])
-plot_simple_split([1, 1, 0], 10π, 0.1, [1.0, 0])
+# plot_exact([1, 1, 0], 10π, 0.1, [1.0, 0])
+# plot_simple_split([1, 1, 0], 10π, 0.1, [1.0, 0])
 # plot_exact([0, 1, 1], 10π, 0.001, [1.0, 0])
 # plot_exact([1, 0, 1], 10π, 0.001, [1.0, 0])
+# legend()
+
+total_t = 10π
+dts = total_t ./ logspace(log10(5), log10(100000), 1000)
+errors_simple = Float64[propagator_error([1, 1, 0], total_t, dt,
+                                         step_simple_split)
+                        for dt in dts]
+ax = gca()
+ax[:set_xscale]("log", nonposx="clip")
+ax[:set_yscale]("log", nonposx="clip")
+plot(dts, errors_simple, label="simple")
 legend()
+grid()
 show()
