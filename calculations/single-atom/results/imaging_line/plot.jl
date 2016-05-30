@@ -1,14 +1,14 @@
 #!/usr/bin/julia -f
 
 # β, δ, t, <final energy ± unc>, <escape time ± unc>, <photon count ± unc>
-data = readcsv("gamma_5_11.csv")
+data = readcsv("gamma_5_13.csv", Float32)
 
 using PyPlot
 
 # const cmap1 = PyPlot.ColorMap("autumn")
 # const cmap2 = PyPlot.ColorMap("winter")
-const plot_β1 = 1
-const plot_β2 = 2.5
+const plot_β1 = 1f0
+const plot_β2 = 0.6f0
 const cmap1 = PyPlot.ColorMap("autumn")
 const cmap2 = PyPlot.ColorMap("cool_r")
 
@@ -21,7 +21,6 @@ function plot_params(name, all_data, val_idx)
         t = all_data[i, 3]
         # The t=20000 isn't too different from t=10000 and just add more noise
         # to the plot
-        t == 20000 && continue
         val = all_data[i, val_idx]
         unc = all_data[i, val_idx + 1]
 
@@ -61,11 +60,11 @@ function plot_params(name, all_data, val_idx)
     grid()
 end
 
-# figure()
-# plot_params("Final Energy", data, 4)
-# figure()
-# plot_params("Escape Time", data, 6)
+figure()
+plot_params("Final Energy", data, 4)
+figure()
+plot_params("Escape Time", data, 6)
 figure()
 plot_params("Photon Count", data, 8)
-# show()
-savefig("gamma_5_beta1-2.5.png")
+show()
+# savefig("gamma_5_beta1-2.5.png")
