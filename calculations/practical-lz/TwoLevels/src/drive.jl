@@ -116,7 +116,14 @@ function Drives.getΩ{T}(drive::SinsDrive{T}, t::T, len::T, ::T)
     @inbounds for i in 1:length(drive.cΩ)
         Ω += cΩ[i] * sin(θ * i)
     end
-    Ω
+    abs(Ω)
 end
+
+# immutable SplineDrive{T<:AbstractFloat} <: AbstractDrive{T}
+#     c::Matrix{T}
+#     SplineDrive(n) = new(Matrix{T}(4, n))
+# end
+# function Base.setindex!(dri::SplineDrive, vals)
+# end
 
 end
