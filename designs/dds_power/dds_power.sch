@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:dds_power-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -56,7 +57,7 @@ F 3 "" H 3250 2600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R1
+L R-RESCUE-dds_power R1
 U 1 1 55679800
 P 2200 2900
 F 0 "R1" V 2280 2900 40  0000 C CNN
@@ -67,7 +68,7 @@ F 3 "" H 2200 2900 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R2
+L R-RESCUE-dds_power R2
 U 1 1 55679B76
 P 4550 2650
 F 0 "R2" V 4630 2650 40  0000 C CNN
@@ -78,7 +79,7 @@ F 3 "" H 4550 2650 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L POT RV1
+L POT-RESCUE-dds_power RV1
 U 1 1 55679BD9
 P 4300 2300
 F 0 "RV1" H 4300 2200 50  0000 C CNN
@@ -221,7 +222,7 @@ F 3 "" H 4550 5000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C2
+L C-RESCUE-dds_power C2
 U 1 1 55687ADF
 P 2250 2200
 F 0 "C2" H 2250 2300 40  0000 L CNN
@@ -232,7 +233,7 @@ F 3 "" H 2250 2200 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L C C4
+L C-RESCUE-dds_power C4
 U 1 1 55687E96
 P 4500 5450
 F 0 "C4" H 4500 5550 40  0000 L CNN
@@ -243,7 +244,7 @@ F 3 "" H 4500 5450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C5
+L C-RESCUE-dds_power C5
 U 1 1 55687EED
 P 4500 5950
 F 0 "C5" H 4500 6050 40  0000 L CNN
@@ -254,7 +255,7 @@ F 3 "" H 4500 5950 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CP C7
+L CP-RESCUE-dds_power C7
 U 1 1 556883ED
 P 4750 5950
 F 0 "C7" H 4800 6050 40  0000 L CNN
@@ -265,7 +266,7 @@ F 3 "" H 4750 5950 300 0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L CP C6
+L CP-RESCUE-dds_power C6
 U 1 1 556883C0
 P 4750 5450
 F 0 "C6" H 4800 5550 40  0000 L CNN
@@ -415,7 +416,7 @@ Connection ~ 4500 5700
 Connection ~ 4750 5700
 Connection ~ 4100 5000
 $Comp
-L CP C1
+L CP-RESCUE-dds_power C1
 U 1 1 55688DD5
 P 2050 1900
 F 0 "C1" H 2100 2000 40  0000 L CNN
@@ -426,7 +427,7 @@ F 3 "" H 2050 1900 300 0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L CP C3
+L CP-RESCUE-dds_power C3
 U 1 1 556890A2
 P 2450 1900
 F 0 "C3" H 2500 2000 40  0000 L CNN
@@ -454,7 +455,7 @@ F 3 "" H 1450 2550 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L GND #PWR01
+L GND-RESCUE-dds_power #PWR01
 U 1 1 5568A308
 P 1900 3050
 F 0 "#PWR01" H 1900 3050 30  0001 C CNN
@@ -469,7 +470,7 @@ Wire Wire Line
 Wire Wire Line
 	1900 2550 1800 2550
 $Comp
-L GND #PWR02
+L GND-RESCUE-dds_power #PWR02
 U 1 1 5568A57C
 P 5500 5800
 F 0 "#PWR02" H 5500 5800 30  0001 C CNN
@@ -480,7 +481,7 @@ F 3 "" H 5500 5800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R3
+L R-RESCUE-dds_power R3
 U 1 1 5568A5A8
 P 5150 5700
 F 0 "R3" V 5230 5700 40  0000 C CNN
