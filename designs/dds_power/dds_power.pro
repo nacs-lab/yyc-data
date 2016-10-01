@@ -1,4 +1,4 @@
-update=2016年09月28日 星期三 12时16分27秒
+update=2016年09月29日 星期四 17时34分32秒
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=qd48t018033
+LibName32=ptb48510bas

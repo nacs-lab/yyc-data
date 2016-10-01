@@ -1,4 +1,5 @@
 (fp_lib_table
   (lib (name qd48t018033)(type KiCad)(uri "$(KIPRJMOD)/qd48t018033.pretty")(options "")(descr ""))
-  (lib (name cmr_link)(type KiCad)(uri /home/yuyichao/projects/nacs-lab/yyc-data/designs/cmr_link/cmr_link.pretty)(options "")(descr ""))
+  (lib (name cmr_link)(type KiCad)(uri "$(KIPRJMOD)/../cmr_link/cmr_link.pretty")(options "")(descr ""))
+  (lib (name ptb48510bas)(type KiCad)(uri "$(KIPRJMOD)/ptb48510bas.pretty")(options "")(descr ""))
 )
