@@ -24,18 +24,15 @@
 1. Front
 
     1. Ethernet and USB serial console input
-    2. 44V power input
-    3. Mount holes for the DC-DC converter
-    4. Board power
-    5. SD card and switch. Leave enough space for fingers
-    6. Front fan and holes next to the fan for better air flow
-    7. Auxiliary USB power input
+    2. Board power
+    3. SD card and switch. Leave enough space for fingers
+    4. Front fan holes enough for two fans
 
 2. Back
 
     1. Backup ethernet and USB serial console input
     2. Backup auxiliary USB power input
-    3. Back fan and holes next to the fan for better air flow
+    3. Back fan holes enough for two fans
 
 3. Top
 
@@ -46,11 +43,20 @@
     4. REF CLK inputs and signal outputs for the DDS boards. Output holes
     should not make contact with the connectors
     5. Mount holes for the L-brackets for the DDS boards
-    6. Auxiliary hole for powering the clock amplifier outside.
+    6. Auxiliary holes for powering the clock amplifier outside.
+    7. Holes for LED / thermal monitor
+    8. Auxiliary holes for WindFreak clock
 
 4. Bottom
 
     1. Mount holes for the FPGA board and the breakout boards.
+
+5. Left (DDS side)
+
+    1. 48V feed through hole
+
+    2. Mount hole for the power converter board, including the 12V to 5V
+       converter module
 
 ## Drawing
 
