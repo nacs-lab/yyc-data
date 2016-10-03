@@ -11,11 +11,6 @@
     1. Modify fan hole
     2. Remove the USB feedthrough on the DDS side.
 
-* Top
-
-    1. Add holes for LED / thermal monitor
-    2. Add holes for WindFreak clock
-
 * Left (DDS side)
 
     1. Add 48V feed through hole

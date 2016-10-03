@@ -15,17 +15,18 @@
    id="svg2"
    inkscape:version="0.91 r13725"
    sodipodi:docname="top.svg"
-   inkscape:export-filename="/home/yuyichao/projects/nacs-lab/enclosure/top.png"
+   inkscape:export-filename="/home/yuyichao/projects/nacs-lab/yyc-data/designs/enclosure/top.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300">
   <metadata
-     id="metadata570">
+     id="metadata678">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -39,14 +40,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="3192"
-     inkscape:window-height="1697"
-     id="namedview568"
+     inkscape:window-height="1699"
+     id="namedview676"
      showgrid="false"
-     inkscape:zoom="1.1194024"
-     inkscape:cx="676.26678"
-     inkscape:cy="413.86703"
+     inkscape:zoom="0.55970121"
+     inkscape:cx="64.904545"
+     inkscape:cy="387.70157"
      inkscape:window-x="0"
-     inkscape:window-y="56"
+     inkscape:window-y="54"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2" />
   <desc
@@ -1265,7 +1266,7 @@
        stroke-width="0.100mm"
        id="circle284" />
     <circle
-       cx="300.000"
+       cx="280.000"
        cy="22.778"
        r="2.000"
        fill="#ffffff"
@@ -1274,7 +1275,7 @@
        stroke-width="0.100mm"
        id="circle286" />
     <circle
-       cx="300.000"
+       cx="280.000"
        cy="67.223"
        r="2.000"
        fill="#ffffff"
@@ -1284,7 +1285,7 @@
        id="circle288" />
     <circle
        cx="391.000"
-       cy="67.220"
+       cy="87.219"
        r="7.003"
        fill="#ffffff"
        vector-effect="non-scaling-stroke"
@@ -1292,970 +1293,1446 @@
        stroke-width="0.100mm"
        id="circle290" />
     <path
-       d="M394.500 48.571  A1.500,1.500 0 0,0 394.950,47.499 L394.950 42.501 A1.500,1.500 0 0,0 394.500,41.429 A5.000,5.000 0 1,0 394.500,48.571z"
+       d="M394.500 68.570  A1.500,1.500 0 0,0 394.950,67.498 L394.950 62.500 A1.500,1.500 0 0,0 394.500,61.428 A5.000,5.000 0 1,0 394.500,68.570z"
        fill="#ffffff"
        vector-effect="non-scaling-stroke"
        stroke="#000000"
        stroke-width="0.100mm"
        id="path292" />
+    <rect
+       x="263.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect294" />
+    <rect
+       x="273.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect296" />
+    <rect
+       x="283.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect298" />
+    <rect
+       x="293.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect300" />
+    <rect
+       x="303.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect302" />
+    <rect
+       x="313.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect304" />
+    <rect
+       x="323.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect306" />
+    <rect
+       x="333.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect308" />
+    <rect
+       x="343.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect310" />
+    <rect
+       x="353.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect312" />
+    <rect
+       x="363.250"
+       y="205.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect314" />
+    <rect
+       x="263.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect316" />
+    <rect
+       x="273.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect318" />
+    <rect
+       x="283.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect320" />
+    <rect
+       x="293.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect322" />
+    <rect
+       x="303.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect324" />
+    <rect
+       x="313.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect326" />
+    <rect
+       x="323.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect328" />
+    <rect
+       x="333.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect330" />
+    <rect
+       x="343.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect332" />
+    <rect
+       x="353.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect334" />
+    <rect
+       x="363.250"
+       y="135.000"
+       width="1.500"
+       height="10.000"
+       rx="0.750"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="rect336" />
+    <circle
+       cx="400.000"
+       cy="22.780"
+       r="2.000"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="circle338" />
+    <circle
+       cx="390.000"
+       cy="42.780"
+       r="2.000"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="circle340" />
+    <circle
+       cx="380.000"
+       cy="22.780"
+       r="2.000"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="circle342" />
+    <circle
+       cx="350.000"
+       cy="45.000"
+       r="2.000"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="circle344" />
+    <circle
+       cx="390.000"
+       cy="152.780"
+       r="2.000"
+       fill="#ffffff"
+       vector-effect="non-scaling-stroke"
+       stroke="#000000"
+       stroke-width="0.100mm"
+       id="circle346" />
     <path
        d="M-1.000 0.000 L1.000 0.000 M0.000 -1.000 L0.000 1.000"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path294" />
+       id="path348" />
     <path
        d="M281.600 108.630 L283.600 108.630 M282.600 107.630 L282.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path296" />
+       id="path350" />
     <path
        d="M281.600 122.230 L283.600 122.230 M282.600 121.230 L282.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path298" />
+       id="path352" />
     <path
        d="M291.600 108.630 L293.600 108.630 M292.600 107.630 L292.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path300" />
+       id="path354" />
     <path
        d="M291.600 122.230 L293.600 122.230 M292.600 121.230 L292.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path302" />
+       id="path356" />
     <path
        d="M301.600 108.630 L303.600 108.630 M302.600 107.630 L302.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path304" />
+       id="path358" />
     <path
        d="M301.600 122.230 L303.600 122.230 M302.600 121.230 L302.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path306" />
+       id="path360" />
     <path
        d="M311.600 108.630 L313.600 108.630 M312.600 107.630 L312.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path308" />
+       id="path362" />
     <path
        d="M311.600 122.230 L313.600 122.230 M312.600 121.230 L312.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path310" />
+       id="path364" />
     <path
        d="M321.600 108.630 L323.600 108.630 M322.600 107.630 L322.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path312" />
+       id="path366" />
     <path
        d="M321.600 122.230 L323.600 122.230 M322.600 121.230 L322.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path314" />
+       id="path368" />
     <path
        d="M331.600 108.630 L333.600 108.630 M332.600 107.630 L332.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path316" />
+       id="path370" />
     <path
        d="M331.600 122.230 L333.600 122.230 M332.600 121.230 L332.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path318" />
+       id="path372" />
     <path
        d="M341.600 108.630 L343.600 108.630 M342.600 107.630 L342.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path320" />
+       id="path374" />
     <path
        d="M341.600 122.230 L343.600 122.230 M342.600 121.230 L342.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path322" />
+       id="path376" />
     <path
        d="M351.600 108.630 L353.600 108.630 M352.600 107.630 L352.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path324" />
+       id="path378" />
     <path
        d="M351.600 122.230 L353.600 122.230 M352.600 121.230 L352.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path326" />
+       id="path380" />
     <path
        d="M361.600 108.630 L363.600 108.630 M362.600 107.630 L362.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path328" />
+       id="path382" />
     <path
        d="M361.600 122.230 L363.600 122.230 M362.600 121.230 L362.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path330" />
+       id="path384" />
     <path
        d="M271.600 108.630 L273.600 108.630 M272.600 107.630 L272.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path332" />
+       id="path386" />
     <path
        d="M271.600 122.230 L273.600 122.230 M272.600 121.230 L272.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path334" />
+       id="path388" />
     <path
        d="M261.600 108.630 L263.600 108.630 M262.600 107.630 L262.600 109.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path336" />
+       id="path390" />
     <path
        d="M261.600 122.230 L263.600 122.230 M262.600 121.230 L262.600 123.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path338" />
+       id="path392" />
     <path
        d="M225.600 107.430 L227.600 107.430 M226.600 106.430 L226.600 108.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path340" />
+       id="path394" />
     <path
        d="M260.255 93.805 L262.255 93.805 M261.255 92.805 L261.255 94.805"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path342" />
+       id="path396" />
     <path
        d="M367.363 122.401 L369.363 122.401 M368.363 121.401 L368.363 123.401"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path344" />
+       id="path398" />
     <path
        d="M367.306 108.885 L369.306 108.885 M368.306 107.885 L368.306 109.885"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path346" />
+       id="path400" />
     <path
        d="M266.260 133.180 L268.260 133.180 M267.260 132.180 L267.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path348" />
+       id="path402" />
     <path
        d="M266.260 81.680 L268.260 81.680 M267.260 80.680 L267.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path350" />
+       id="path404" />
     <path
        d="M276.260 133.180 L278.260 133.180 M277.260 132.180 L277.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path352" />
+       id="path406" />
     <path
        d="M286.260 133.180 L288.260 133.180 M287.260 132.180 L287.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path354" />
+       id="path408" />
     <path
        d="M296.260 133.180 L298.260 133.180 M297.260 132.180 L297.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path356" />
+       id="path410" />
     <path
        d="M306.260 133.180 L308.260 133.180 M307.260 132.180 L307.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path358" />
+       id="path412" />
     <path
        d="M316.260 133.180 L318.260 133.180 M317.260 132.180 L317.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path360" />
+       id="path414" />
     <path
        d="M326.260 133.180 L328.260 133.180 M327.260 132.180 L327.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path362" />
+       id="path416" />
     <path
        d="M336.260 133.180 L338.260 133.180 M337.260 132.180 L337.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path364" />
+       id="path418" />
     <path
        d="M346.260 133.180 L348.260 133.180 M347.260 132.180 L347.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path366" />
+       id="path420" />
     <path
        d="M356.260 133.180 L358.260 133.180 M357.260 132.180 L357.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path368" />
+       id="path422" />
     <path
        d="M366.260 133.180 L368.260 133.180 M367.260 132.180 L367.260 134.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path370" />
+       id="path424" />
     <path
        d="M276.260 81.680 L278.260 81.680 M277.260 80.680 L277.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path372" />
+       id="path426" />
     <path
        d="M286.260 81.680 L288.260 81.680 M287.260 80.680 L287.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path374" />
+       id="path428" />
     <path
        d="M296.260 81.680 L298.260 81.680 M297.260 80.680 L297.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path376" />
+       id="path430" />
     <path
        d="M306.260 81.680 L308.260 81.680 M307.260 80.680 L307.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path378" />
+       id="path432" />
     <path
        d="M316.260 81.680 L318.260 81.680 M317.260 80.680 L317.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path380" />
+       id="path434" />
     <path
        d="M326.260 81.680 L328.260 81.680 M327.260 80.680 L327.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path382" />
+       id="path436" />
     <path
        d="M336.260 81.680 L338.260 81.680 M337.260 80.680 L337.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path384" />
+       id="path438" />
     <path
        d="M346.260 81.680 L348.260 81.680 M347.260 80.680 L347.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path386" />
+       id="path440" />
     <path
        d="M356.260 81.680 L358.260 81.680 M357.260 80.680 L357.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path388" />
+       id="path442" />
     <path
        d="M366.260 81.680 L368.260 81.680 M367.260 80.680 L367.260 82.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path390" />
+       id="path444" />
     <path
        d="M281.600 178.630 L283.600 178.630 M282.600 177.630 L282.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path392" />
+       id="path446" />
     <path
        d="M281.600 192.230 L283.600 192.230 M282.600 191.230 L282.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path394" />
+       id="path448" />
     <path
        d="M291.600 178.630 L293.600 178.630 M292.600 177.630 L292.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path396" />
+       id="path450" />
     <path
        d="M291.600 192.230 L293.600 192.230 M292.600 191.230 L292.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path398" />
+       id="path452" />
     <path
        d="M301.600 178.630 L303.600 178.630 M302.600 177.630 L302.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path400" />
+       id="path454" />
     <path
        d="M301.600 192.230 L303.600 192.230 M302.600 191.230 L302.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path402" />
+       id="path456" />
     <path
        d="M311.600 178.630 L313.600 178.630 M312.600 177.630 L312.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path404" />
+       id="path458" />
     <path
        d="M311.600 192.230 L313.600 192.230 M312.600 191.230 L312.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path406" />
+       id="path460" />
     <path
        d="M321.600 178.630 L323.600 178.630 M322.600 177.630 L322.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path408" />
+       id="path462" />
     <path
        d="M321.600 192.230 L323.600 192.230 M322.600 191.230 L322.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path410" />
+       id="path464" />
     <path
        d="M331.600 178.630 L333.600 178.630 M332.600 177.630 L332.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path412" />
+       id="path466" />
     <path
        d="M331.600 192.230 L333.600 192.230 M332.600 191.230 L332.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path414" />
+       id="path468" />
     <path
        d="M341.600 178.630 L343.600 178.630 M342.600 177.630 L342.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path416" />
+       id="path470" />
     <path
        d="M341.600 192.230 L343.600 192.230 M342.600 191.230 L342.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path418" />
+       id="path472" />
     <path
        d="M351.600 178.630 L353.600 178.630 M352.600 177.630 L352.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path420" />
+       id="path474" />
     <path
        d="M351.600 192.230 L353.600 192.230 M352.600 191.230 L352.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path422" />
+       id="path476" />
     <path
        d="M361.600 178.630 L363.600 178.630 M362.600 177.630 L362.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path424" />
+       id="path478" />
     <path
        d="M361.600 192.230 L363.600 192.230 M362.600 191.230 L362.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path426" />
+       id="path480" />
     <path
        d="M271.600 178.630 L273.600 178.630 M272.600 177.630 L272.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path428" />
+       id="path482" />
     <path
        d="M271.600 192.230 L273.600 192.230 M272.600 191.230 L272.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path430" />
+       id="path484" />
     <path
        d="M261.600 178.630 L263.600 178.630 M262.600 177.630 L262.600 179.630"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path432" />
+       id="path486" />
     <path
        d="M261.600 192.230 L263.600 192.230 M262.600 191.230 L262.600 193.230"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path434" />
+       id="path488" />
     <path
        d="M225.600 177.430 L227.600 177.430 M226.600 176.430 L226.600 178.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path436" />
+       id="path490" />
     <path
        d="M260.255 163.805 L262.255 163.805 M261.255 162.805 L261.255 164.805"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path438" />
+       id="path492" />
     <path
        d="M367.363 192.401 L369.363 192.401 M368.363 191.401 L368.363 193.401"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path440" />
+       id="path494" />
     <path
        d="M367.306 178.885 L369.306 178.885 M368.306 177.885 L368.306 179.885"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path442" />
+       id="path496" />
     <path
        d="M266.260 203.180 L268.260 203.180 M267.260 202.180 L267.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path444" />
+       id="path498" />
     <path
        d="M266.260 151.680 L268.260 151.680 M267.260 150.680 L267.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path446" />
+       id="path500" />
     <path
        d="M276.260 203.180 L278.260 203.180 M277.260 202.180 L277.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path448" />
+       id="path502" />
     <path
        d="M286.260 203.180 L288.260 203.180 M287.260 202.180 L287.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path450" />
+       id="path504" />
     <path
        d="M296.260 203.180 L298.260 203.180 M297.260 202.180 L297.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path452" />
+       id="path506" />
     <path
        d="M306.260 203.180 L308.260 203.180 M307.260 202.180 L307.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path454" />
+       id="path508" />
     <path
        d="M316.260 203.180 L318.260 203.180 M317.260 202.180 L317.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path456" />
+       id="path510" />
     <path
        d="M326.260 203.180 L328.260 203.180 M327.260 202.180 L327.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path458" />
+       id="path512" />
     <path
        d="M336.260 203.180 L338.260 203.180 M337.260 202.180 L337.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path460" />
+       id="path514" />
     <path
        d="M346.260 203.180 L348.260 203.180 M347.260 202.180 L347.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path462" />
+       id="path516" />
     <path
        d="M356.260 203.180 L358.260 203.180 M357.260 202.180 L357.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path464" />
+       id="path518" />
     <path
        d="M366.260 203.180 L368.260 203.180 M367.260 202.180 L367.260 204.180"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path466" />
+       id="path520" />
     <path
        d="M276.260 151.680 L278.260 151.680 M277.260 150.680 L277.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path468" />
+       id="path522" />
     <path
        d="M286.260 151.680 L288.260 151.680 M287.260 150.680 L287.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path470" />
+       id="path524" />
     <path
        d="M296.260 151.680 L298.260 151.680 M297.260 150.680 L297.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path472" />
+       id="path526" />
     <path
        d="M306.260 151.680 L308.260 151.680 M307.260 150.680 L307.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path474" />
+       id="path528" />
     <path
        d="M316.260 151.680 L318.260 151.680 M317.260 150.680 L317.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path476" />
+       id="path530" />
     <path
        d="M326.260 151.680 L328.260 151.680 M327.260 150.680 L327.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path478" />
+       id="path532" />
     <path
        d="M336.260 151.680 L338.260 151.680 M337.260 150.680 L337.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path480" />
+       id="path534" />
     <path
        d="M346.260 151.680 L348.260 151.680 M347.260 150.680 L347.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path482" />
+       id="path536" />
     <path
        d="M356.260 151.680 L358.260 151.680 M357.260 150.680 L357.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path484" />
+       id="path538" />
     <path
        d="M366.260 151.680 L368.260 151.680 M367.260 150.680 L367.260 152.680"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path486" />
+       id="path540" />
     <path
        d="M19.350 147.970 L21.350 147.970 M20.350 146.970 L20.350 148.970"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path488" />
+       id="path542" />
     <path
        d="M19.530 214.530 L21.530 214.530 M20.530 213.530 L20.530 215.530"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path490" />
+       id="path544" />
     <path
        d="M57.450 214.530 L59.450 214.530 M58.450 213.530 L58.450 215.530"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path492" />
+       id="path546" />
     <path
        d="M147.870 214.530 L149.870 214.530 M148.870 213.530 L148.870 215.530"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path494" />
+       id="path548" />
     <path
        d="M185.970 214.530 L187.970 214.530 M186.970 213.530 L186.970 215.530"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path496" />
+       id="path550" />
     <path
        d="M57.450 147.850 L59.450 147.850 M58.450 146.850 L58.450 148.850"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path498" />
+       id="path552" />
     <path
        d="M147.870 147.850 L149.870 147.850 M148.870 146.850 L148.870 148.850"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path500" />
+       id="path554" />
     <path
        d="M185.970 147.850 L187.970 147.850 M186.970 146.850 L186.970 148.850"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path502" />
+       id="path556" />
     <path
        d="M80.440 181.250 L82.440 181.250 M81.440 180.250 L81.440 182.250"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path504" />
+       id="path558" />
     <path
        d="M124.885 181.250 L126.885 181.250 M125.885 180.250 L125.885 182.250"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path506" />
+       id="path560" />
     <path
        d="M30.650 26.470 L32.650 26.470 M31.650 25.470 L31.650 27.470"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path508" />
+       id="path562" />
     <path
        d="M30.830 93.030 L32.830 93.030 M31.830 92.030 L31.830 94.030"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path510" />
+       id="path564" />
     <path
        d="M68.750 93.030 L70.750 93.030 M69.750 92.030 L69.750 94.030"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path512" />
+       id="path566" />
     <path
        d="M159.170 93.030 L161.170 93.030 M160.170 92.030 L160.170 94.030"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path514" />
+       id="path568" />
     <path
        d="M197.270 93.030 L199.270 93.030 M198.270 92.030 L198.270 94.030"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path516" />
+       id="path570" />
     <path
        d="M68.750 26.350 L70.750 26.350 M69.750 25.350 L69.750 27.350"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path518" />
+       id="path572" />
     <path
        d="M159.170 26.350 L161.170 26.350 M160.170 25.350 L160.170 27.350"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path520" />
+       id="path574" />
     <path
        d="M197.270 26.350 L199.270 26.350 M198.270 25.350 L198.270 27.350"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path522" />
+       id="path576" />
     <path
        d="M91.740 59.750 L93.740 59.750 M92.740 58.750 L92.740 60.750"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path524" />
+       id="path578" />
     <path
        d="M136.185 59.750 L138.185 59.750 M137.185 58.750 L137.185 60.750"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path526" />
+       id="path580" />
     <path
        d="M247.789 82.428 L249.789 82.428 M248.789 81.428 L248.789 83.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path528" />
+       id="path582" />
     <path
        d="M247.789 92.428 L249.789 92.428 M248.789 91.428 L248.789 93.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path530" />
+       id="path584" />
     <path
        d="M247.789 102.428 L249.789 102.428 M248.789 101.428 L248.789 103.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path532" />
+       id="path586" />
     <path
        d="M247.789 112.428 L249.789 112.428 M248.789 111.428 L248.789 113.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path534" />
+       id="path588" />
     <path
        d="M247.789 122.428 L249.789 122.428 M248.789 121.428 L248.789 123.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path536" />
+       id="path590" />
     <path
        d="M247.789 132.428 L249.789 132.428 M248.789 131.428 L248.789 133.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path538" />
+       id="path592" />
     <path
        d="M247.789 152.428 L249.789 152.428 M248.789 151.428 L248.789 153.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path540" />
+       id="path594" />
     <path
        d="M247.789 162.428 L249.789 162.428 M248.789 161.428 L248.789 163.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path542" />
+       id="path596" />
     <path
        d="M247.789 172.428 L249.789 172.428 M248.789 171.428 L248.789 173.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path544" />
+       id="path598" />
     <path
        d="M247.789 182.428 L249.789 182.428 M248.789 181.428 L248.789 183.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path546" />
+       id="path600" />
     <path
        d="M247.789 192.428 L249.789 192.428 M248.789 191.428 L248.789 193.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path548" />
+       id="path602" />
     <path
        d="M247.789 202.428 L249.789 202.428 M248.789 201.428 L248.789 203.428"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path550" />
+       id="path604" />
     <path
        d="M219.600 144.430 L221.600 144.430 M220.600 143.430 L220.600 145.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path552" />
+       id="path606" />
     <path
        d="M231.600 210.430 L233.600 210.430 M232.600 209.430 L232.600 211.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path554" />
+       id="path608" />
     <path
        d="M231.600 140.430 L233.600 140.430 M232.600 139.430 L232.600 141.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path556" />
+       id="path610" />
     <path
        d="M219.600 74.430 L221.600 74.430 M220.600 73.430 L220.600 75.430"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path558" />
+       id="path612" />
     <path
-       d="M299.000 22.778 L301.000 22.778 M300.000 21.778 L300.000 23.778"
+       d="M279.000 22.778 L281.000 22.778 M280.000 21.778 L280.000 23.778"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path560" />
+       id="path614" />
     <path
-       d="M299.000 67.223 L301.000 67.223 M300.000 66.223 L300.000 68.223"
+       d="M279.000 67.223 L281.000 67.223 M280.000 66.223 L280.000 68.223"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path562" />
+       id="path616" />
     <path
-       d="M390.000 67.220 L392.000 67.220 M391.000 66.220 L391.000 68.220"
+       d="M390.000 87.219 L392.000 87.219 M391.000 86.219 L391.000 88.219"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path564" />
+       id="path618" />
     <path
-       d="M390.000 45.000 L392.000 45.000 M391.000 44.000 L391.000 46.000"
+       d="M390.000 64.999 L392.000 64.999 M391.000 63.999 L391.000 65.999"
        fill="none"
        vector-effect="non-scaling-stroke"
        stroke="#ff0000"
        stroke-width="0.100mm"
-       id="path566" />
+       id="path620" />
+    <path
+       d="M263.000 210.000 L265.000 210.000 M264.000 209.000 L264.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path622" />
+    <path
+       d="M273.000 210.000 L275.000 210.000 M274.000 209.000 L274.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path624" />
+    <path
+       d="M283.000 210.000 L285.000 210.000 M284.000 209.000 L284.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path626" />
+    <path
+       d="M293.000 210.000 L295.000 210.000 M294.000 209.000 L294.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path628" />
+    <path
+       d="M303.000 210.000 L305.000 210.000 M304.000 209.000 L304.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path630" />
+    <path
+       d="M313.000 210.000 L315.000 210.000 M314.000 209.000 L314.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path632" />
+    <path
+       d="M323.000 210.000 L325.000 210.000 M324.000 209.000 L324.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path634" />
+    <path
+       d="M333.000 210.000 L335.000 210.000 M334.000 209.000 L334.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path636" />
+    <path
+       d="M343.000 210.000 L345.000 210.000 M344.000 209.000 L344.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path638" />
+    <path
+       d="M353.000 210.000 L355.000 210.000 M354.000 209.000 L354.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path640" />
+    <path
+       d="M363.000 210.000 L365.000 210.000 M364.000 209.000 L364.000 211.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path642" />
+    <path
+       d="M263.000 140.000 L265.000 140.000 M264.000 139.000 L264.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path644" />
+    <path
+       d="M273.000 140.000 L275.000 140.000 M274.000 139.000 L274.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path646" />
+    <path
+       d="M283.000 140.000 L285.000 140.000 M284.000 139.000 L284.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path648" />
+    <path
+       d="M293.000 140.000 L295.000 140.000 M294.000 139.000 L294.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path650" />
+    <path
+       d="M303.000 140.000 L305.000 140.000 M304.000 139.000 L304.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path652" />
+    <path
+       d="M313.000 140.000 L315.000 140.000 M314.000 139.000 L314.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path654" />
+    <path
+       d="M323.000 140.000 L325.000 140.000 M324.000 139.000 L324.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path656" />
+    <path
+       d="M333.000 140.000 L335.000 140.000 M334.000 139.000 L334.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path658" />
+    <path
+       d="M343.000 140.000 L345.000 140.000 M344.000 139.000 L344.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path660" />
+    <path
+       d="M353.000 140.000 L355.000 140.000 M354.000 139.000 L354.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path662" />
+    <path
+       d="M363.000 140.000 L365.000 140.000 M364.000 139.000 L364.000 141.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path664" />
+    <path
+       d="M399.000 22.780 L401.000 22.780 M400.000 21.780 L400.000 23.780"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path666" />
+    <path
+       d="M389.000 42.780 L391.000 42.780 M390.000 41.780 L390.000 43.780"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path668" />
+    <path
+       d="M379.000 22.780 L381.000 22.780 M380.000 21.780 L380.000 23.780"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path670" />
+    <path
+       d="M349.000 45.000 L351.000 45.000 M350.000 44.000 L350.000 46.000"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path672" />
+    <path
+       d="M389.000 152.780 L391.000 152.780 M390.000 151.780 L390.000 153.780"
+       fill="none"
+       vector-effect="non-scaling-stroke"
+       stroke="#ff0000"
+       stroke-width="0.100mm"
+       id="path674" />
   </g>
 </svg>
