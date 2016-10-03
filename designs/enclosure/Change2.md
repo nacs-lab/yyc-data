@@ -2,14 +2,14 @@
 
 * Front
 
-    1. Remove the USB feedthrough on the DDS side.
-    2. Modify fan hole
-    3. Remove mount holes for the DC-DC converter
-    4. Remove 48V power feedthrough
+    1. Modify fan hole
+    2. Remove mount holes for the DC-DC converter
+    3. Remove 48V power feedthrough
 
 * Back
 
     1. Modify fan hole
+    2. Remove the USB feedthrough on the DDS side.
 
 * Top
 

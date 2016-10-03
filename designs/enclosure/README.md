@@ -27,12 +27,12 @@
     2. Board power
     3. SD card and switch. Leave enough space for fingers
     4. Front fan holes enough for two fans
+    5. Backup auxiliary USB power input
 
 2. Back
 
     1. Backup ethernet and USB serial console input
-    2. Backup auxiliary USB power input
-    3. Back fan holes enough for two fans
+    2. Back fan holes enough for two fans
 
 3. Top
 
