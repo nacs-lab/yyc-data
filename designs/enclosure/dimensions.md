@@ -40,3 +40,8 @@ the inner surfaces.
 |      |     -4.57|Depth offset (-2.54 - F)|
 |     A|    132.59|Height|
 |      |     -1.91|Height offset|
+
+## References
+
+[Gray box B style data](img/graybox_b_techdata.pdf).
+We are using a full width, 3U, 10inches depth box.
