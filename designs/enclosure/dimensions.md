@@ -14,7 +14,7 @@ the inner surfaces.
 |     C|    254.00|Outer depth of the side panels|
 |     F|      2.03|Panel thickness|
 
-## Top panel
+## Top/bottom panels
 
 |Symbol|Value / mm|Description|
 |------|----------|-----------|
@@ -23,8 +23,11 @@ the inner surfaces.
 |     K|    238.00|Depth (C - 16.00)|
 |      |     0.375|Depth offset (16.00 / 2 - 2.54 - F)|
 
-Front:
-Width = 418.84
-Width Offset = -0.125
-Height = 132.59
-Height Offset = -1.91
+## Front/back panels
+
+|Symbol|Value / mm|Description|
+|------|----------|-----------|
+|     D|    418.84|Width (B - 6.10)|
+|      |     -0.13|Width offset (6.10 / 2 - 3.18); (should be 0)|
+|     A|    132.59|Height|
+|      |     -1.91|Height offset|
