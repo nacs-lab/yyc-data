@@ -27,7 +27,8 @@
     2. Board power
     3. SD card and switch. Leave enough space for fingers
     4. Front fan holes enough for two fans
-    5. Backup auxiliary USB power input
+    5. Backup 48V feed through hole
+    6. Backup mount hole for the power converter board
 
 2. Back
 
@@ -54,7 +55,6 @@
 5. Left (DDS side)
 
     1. 48V feed through hole
-
     2. Mount hole for the power converter board, including the 12V to 5V
        converter module
 

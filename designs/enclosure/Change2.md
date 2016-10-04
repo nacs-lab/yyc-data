@@ -1,11 +1,5 @@
 # Changes needed in the second version
 
-* Front
-
-    1. Modify fan hole
-    2. Remove mount holes for the DC-DC converter
-    3. Remove 48V power feedthrough
-
 * Left (DDS side)
 
     1. Add 48V feed through hole
