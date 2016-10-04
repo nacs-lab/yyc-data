@@ -1,5 +1,12 @@
 # Dimensions of the box
 
+Depth/width/height offsets for a certain panel are defined as the distance
+between the inner surface to the edge of the panel in the given direction.
+A positive number means that the panel is shorter than the distance between
+the inner surfaces.
+
+## General
+
 |Symbol|Value / mm|Description|
 |------|----------|-----------|
 |     A|    132.59|Outer height of the front, back and side panels|
@@ -7,11 +14,14 @@
 |     C|    254.00|Outer depth of the side panels|
 |     F|      2.03|Panel thickness|
 
-Top:
-Width = 417.83
-Width Offset = 0.38
-Depth = 238
-Depth Offset = 3.43
+## Top panel
+
+|Symbol|Value / mm|Description|
+|------|----------|-----------|
+|     J|    417.83|Width (B - 7.11)|
+|      |     0.375|Width offset (7.11 / 2 - 3.18)|
+|     K|    238.00|Depth (C - 16.00)|
+|      |     0.375|Depth offset (16.00 / 2 - 2.54 - F)|
 
 Front:
 Width = 418.84
