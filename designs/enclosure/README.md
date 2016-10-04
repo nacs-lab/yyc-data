@@ -76,6 +76,10 @@
 
     ![Bottom panel](bottom.png)
 
+5. Left
+
+    ![Left panel](left.png)
+
 ## Parts
 
 1. Ethernet feedthrough
