@@ -31,3 +31,12 @@ the inner surfaces.
 |      |     -0.13|Width offset (6.10 / 2 - 3.18); (should be 0)|
 |     A|    132.59|Height|
 |      |     -1.91|Height offset|
+
+## Side panels
+
+|Symbol|Value / mm|Description|
+|------|----------|-----------|
+|     C|    254.00|Depth|
+|      |     -4.57|Depth offset (-2.54 - F)|
+|     A|    132.59|Height|
+|      |     -1.91|Height offset|
