@@ -74,17 +74,17 @@ Per board. 22 boards per box.
 
 ## Power breakout board
 
-|      Part number|Quantity|   Source|                                   Note|
-|-----------------|--------|---------|---------------------------------------|
-|     860010672011|       2|  Digikey|                   50V 33uF cap (C1, 3)|
-|  ESK107M025AC3AA|       2|  Digikey|                 25V 100uF cap (C10-11)|
-|   UVY1A221MDD1TD|       6|  Digikey|   10V 220uF cap (C6-7, 12, 14, 16, 18)|
-|  CL31B105KCHNNNE|       1|  Digikey|                      100V 1uF cap (C2)|
-|  CL31A106KAHNNNE|       8|  Digikey|25V 10uF cap (C4-5, 8-9, 13,15, 17, 19)|
-|   RC0603FR-070RL|       3|  Digikey|                           0 ohm (R1-3)|
-|    3266W-1-203LF|       2|  Digikey|                        Trimpot (RV1-2)|
-| QD48T018033-NCC0|       1|  Digikey|                  48V to 1.8, 3.3V (U1)|
-|      PTB48510BAS|       1|  Digikey|                      48V to +-12V (U2)|
+|      Part number|Quantity|         Source|                             Note|
+|-----------------|--------|---------------|---------------------------------|
+|     860010672011|       2|        Digikey|             50V 33uF cap (C1, 3)|
+|  ESK107M025AC3AA|       2|        Digikey|           25V 100uF cap (C10-11)|
+|   UVY1A221MDD1TD|       6|        Digikey|10V 220uF cap (C6-7, 12, 14, 16, 18)|
+|  CL31B105KCHNNNE|       1|        Digikey|                100V 1uF cap (C2)|
+|  CL31A106KAHNNNE|       8|        Digikey|25V 10uF cap (C4-5, 8-9, 13,15, 17, 19)|
+|   RC0603FR-070RL|       3|        Digikey|                     0 ohm (R1-3)|
+|    3266W-1-203LF|       2|        Digikey|                  Trimpot (RV1-2)|
+| QD48T018033-NCC0|       1|Onlinecomponent|            48V to 1.8, 3.3V (U1)|
+|      PTB48510BAS|       1|        Digikey|                48V to +-12V (U2)|
 
 ## Board interconnection
 
