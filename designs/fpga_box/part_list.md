@@ -124,7 +124,7 @@ Per board. 22 boards per box.
 |        Part number|Quantity|         Source|                    Note|
 |-------------------|--------|---------------|------------------------|
 |         AXA-SMBPSF|      44|          L-com|SMB-F to SMA-F connector|
-|             <TODO>|      30|               |    SMA-M to BNC-M cable|
+|       415-0037-060|      30|               | 5' SMA-M to BNC-M cable|
 |             <TODO>|      30|               |    SMA-M to SMA-M cable|
 |         ZB8PD-4-S+|       3|   Minicircuits|       x8 power splitter|
 |         ZB3PD-4-S+|       1|   Minicircuits|       x3 power splitter|
