@@ -43,5 +43,5 @@ the inner surfaces.
 
 ## References
 
-[Gray box B style data](img/graybox_b_techdata.pdf).
+[Gray box B style data](doc/graybox_b_techdata.pdf).
 We are using a full width, 3U, 10inches depth box.
