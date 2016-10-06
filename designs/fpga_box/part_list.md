@@ -92,7 +92,7 @@ Per board. 22 boards per box.
 |-------------------|--------|---------------|----------------------|
 |            1827130|      30|        Digikey|            3-pos plug|
 |            1803439|      30|        Digikey|          3-pos header|
-|            1827127|      30|        Digikey|            2-pos plug|
+|            1827127|      20|        Digikey|            2-pos plug|
 |            1803426|      20|        Digikey|          2-pos header|
 |        76502.18.01|       1|        Digikey|     18 AWG wire black|
 |        76502.18.02|       1|        Digikey|     18 AWG wire white|
@@ -125,12 +125,11 @@ Per board. 22 boards per box.
 |-------------------|--------|---------------|------------------------|
 |         AXA-SMBPSF|      44|          L-com|SMB-F to SMA-F connector|
 |       415-0037-060|      30|               | 5' SMA-M to BNC-M cable|
-|             <TODO>|      30|               |    SMA-M to SMA-M cable|
+|    135103-02-12.00|      30|               |1' SMA to SMA right angle cable|
 |         ZB8PD-4-S+|       3|   Minicircuits|       x8 power splitter|
 |         ZB3PD-4-S+|       1|   Minicircuits|       x3 power splitter|
 |        ZX60-V82-S+|       1|   Minicircuits|         Clock amplifier|
 |              MixNV|       1|      WindFreak|                   Clock|
 |       DTM165PW480C|       1|        Digikey|        48V power supply|
 |         PR35B32CMB|       1|          L-com|            Output panel|
-|             <TODO>|      30|               |                   SMA L|
 |             <TODO>|       1|               |          SMA-M to SMA-M|
