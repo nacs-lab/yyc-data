@@ -13,10 +13,19 @@ end
 
 const whitelist = [27, 55, 78, 93, 144, 154, 171, 245, 311, 329, 542, 622, 629, 631, 632, 678, 897, 917, 918, 933, 961, 962, 1067, 1101, 1160, 1237, 1393, 1430, 1465, 1468, 1486, 1490, 1645, 1695, 1729, 1719]
 
-implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
+# implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
+#                 extent=[-2.5, 2.5, -2.5, 2.5])
+# implot[:set_cmap]("gray")
+# # implot[:set_cmap]("viridis")
+# xlabel("x(\$\\mu m\$)")
+# ylabel("y(\$\\mu m\$)")
+# savefig(ARGS[2], bbox_inches="tight")
+# show()
+
+implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
                 extent=[-2.5, 2.5, -2.5, 2.5])
-implot[:set_cmap]("gray")
-# implot[:set_cmap]("viridis")
+# implot[:set_cmap]("gray")
+implot[:set_cmap]("viridis")
 xlabel("x(\$\\mu m\$)")
 ylabel("y(\$\\mu m\$)")
 savefig(ARGS[2], bbox_inches="tight")
