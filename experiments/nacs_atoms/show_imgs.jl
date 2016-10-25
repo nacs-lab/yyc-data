@@ -16,19 +16,70 @@ const whitelist = [27, 55, 78, 93, 144, 154, 171, 245, 311, 329, 542, 622, 629, 
 implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("gray")
-# implot[:set_cmap]("viridis")
 xlabel("x(\$\\mu m\$)")
 ylabel("y(\$\\mu m\$)")
-savefig(ARGS[2], bbox_inches="tight", transparent=true)
-# show()
+annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+savefig(joinpath(ARGS[2], "single_gray.png"),
+        bbox_inches="tight", transparent=true)
+close()
 
-# implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
-#                 extent=[-5, 5, -5, 5])
-# implot[:set_cmap]("gray")
-# # implot[:set_cmap]("viridis")
-# xlabel("x(\$\\mu m\$)")
-# ylabel("y(\$\\mu m\$)")
-# savefig(ARGS[2], bbox_inches="tight", transparent=true)
+implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
+                extent=[-5, 5, -5, 5])
+implot[:set_cmap]("viridis")
+xlabel("x(\$\\mu m\$)")
+ylabel("y(\$\\mu m\$)")
+annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+savefig(joinpath(ARGS[2], "single_viridis.png"),
+        bbox_inches="tight", transparent=true)
+close()
+
+implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
+                extent=[-5, 5, -5, 5])
+implot[:set_cmap]("gray")
+xlabel("x(\$\\mu m\$)")
+ylabel("y(\$\\mu m\$)")
+annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+savefig(joinpath(ARGS[2], "avg_gray.png"),
+        bbox_inches="tight", transparent=true)
+close()
+
+implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
+                extent=[-5, 5, -5, 5])
+implot[:set_cmap]("viridis")
+xlabel("x(\$\\mu m\$)")
+ylabel("y(\$\\mu m\$)")
+annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
+         arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
+                         "width"=>15, "headwidth"=>25, "headlength"=>25),
+         color="white", size=40, weight="bold")
+savefig(joinpath(ARGS[2], "avg_viridis.png"),
+        bbox_inches="tight", transparent=true)
+close()
 # show()
 
 function show_imgs(imgs, single_atom)
