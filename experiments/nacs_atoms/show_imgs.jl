@@ -3,7 +3,8 @@
 using MAT
 using PyPlot
 
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 30))
+PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 30,
+                                            "font.weight" => "bold"))
 PyPlot.matplotlib[:rc]("xtick", labelsize=25)
 PyPlot.matplotlib[:rc]("ytick", labelsize=25)
 
