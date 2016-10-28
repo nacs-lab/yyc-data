@@ -109,5 +109,5 @@ imshow(plot_img, vmin=0,
 xlabel("Detuning (MHz)")
 ylabel("Power (mW)")
 colorbar()
-savefig(ARGS[2], bbox_inches="tight")
+savefig(ARGS[2], bbox_inches="tight", transparent=true)
 # show()
