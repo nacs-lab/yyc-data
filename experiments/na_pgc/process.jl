@@ -106,5 +106,8 @@ figure()
 imshow(plot_img, vmin=0,
        extent=[freqs_p[1] / 1e6, freqs_p[end] / 1e6, amps_p[end], amps_p[1]],
        aspect="auto")
+xlabel("Detuning (MHz)")
+ylabel("Power (mW)")
 colorbar()
-show()
+savefig(ARGS[2], bbox_inches="tight")
+# show()
