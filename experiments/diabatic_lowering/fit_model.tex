@@ -333,4 +333,99 @@ we can get
   f\paren{\abs{\alpha}}=&\frac{\ue^{\varepsilon} - 1}{\pi}\exp\paren{-\abs{\alpha}^2\paren{\ue^{\varepsilon} - 1}}
 }
 
+\subsection{Squeezed state}
+The new coherent states in the final potential are squeezed states in the original trap. The squeeze factor can be obtained from
+\eqar{
+  \ue^{-2r}=&\frac{\omega_0}{\omega'}\\
+  r=&-\frac12\ln\paren{\frac{\omega_0}{\omega'}}
+}
+where $\omega'$ is the final trapping frequency.
+The new ground state is,
+\eqar{
+  |0\rangle'=&S\paren{r}|0\rangle
+}
+where $\displaystyle S\equiv\exp\paren{\frac{r}2\paren{a^2-{a^\dagger}^2}}$ is the squeeze operator.
+The new coherent state with amplitude $\alpha'$ is
+\eqar{
+  |\alpha'\rangle'=&S\paren{r}|\alpha'\rangle\\
+  =&S\paren{r}D\paren{\alpha'}|0\rangle\\
+  =&S\paren{r}\exp\paren{\alpha'a^\dagger-\alpha'^*a}|0\rangle\\
+  =&S\paren{r}\exp\paren{\alpha'a^\dagger-\alpha'^*a}S^\dagger\paren{r}S\paren{r}|0\rangle\\
+  =&\exp\paren{\alpha'\paren{\cosh r a^\dagger+\sinh r a}-\alpha'^*\paren{\cosh r a+\sinh r a^\dagger}}S\paren{r}|0\rangle\\
+  =&\exp\paren{\paren{\alpha'\cosh r-\alpha'^*\sinh r}a^\dagger-\paren{\alpha'^*\cosh r-\alpha'\sinh r}a}S\paren{r}|0\rangle\\
+  =&D\paren{\alpha'\cosh r-\alpha'^*\sinh r}S\paren{r}|0\rangle
+}
+The overlap between this state and a coherent state is
+\eqar{
+  \langle\alpha|\alpha'\rangle'=&\langle0|D\paren{-\alpha}D\paren{\alpha'\cosh r-\alpha'^*\sinh r}S\paren{r}|0\rangle\\
+  =&\langle0|D\paren{-\alpha+\alpha'\cosh r-\alpha'^*\sinh r}S\paren{r}|0\rangle
+}
+Let $\alpha''\equiv\alpha-\alpha'\cosh r+\alpha'^*\sinh r$
+\eqar{
+  \langle\alpha|\alpha'\rangle'=&\langle0|D\paren{-\alpha''}S\paren{r}|0\rangle\\
+  =&\ue^{-\abs{\alpha''}^2/2}\sum_{n}\langle n|\frac{{\alpha''}^n}{\sqrt{n!}}
+  \frac1{\sqrt{\cosh r}}\sum_{m}\frac{\paren{-1}^m\sqrt{(2m)!}}{2^mm!}\tanh^mr|2m\rangle\\
+  =&\frac{\ue^{-\abs{\alpha''}^2/2}}{\sqrt{\cosh r}}\sum_{n}\frac{1}{n!}\paren{-\frac{\alpha''^2}{2}\tanh r}^n\\
+  =&\frac{1}{\sqrt{\cosh r}}\exp\paren{-\frac{\abs{\alpha''}^2}2-\frac{\alpha''^2}{2}\tanh r}
+}
+\subsection{Survival}
+The survival after lowering in this model for a threshold $\gamma$
+\eqar{
+  p=&\frac1\pi\Tr\paren{\int_{\abs{\alpha'}\leqslant\gamma}|\alpha'\rangle'\ud^2\alpha'\langle\alpha'|'\rho}\\
+  =&\frac1\pi\int_{\abs{\alpha'}\leqslant\gamma}\langle\alpha'|'\rho|\alpha'\rangle'\ud^2\alpha'\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi^2}\int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\exp\paren{-\abs{\alpha}^2\paren{\ue^{\varepsilon} - 1}} \abs{\langle\alpha|\alpha'\rangle'}^2\ud^2\alpha'\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\exp\paren{-\abs{\alpha}^2\paren{\ue^{\varepsilon} - 1}} \abs{\exp\paren{-\abs{\alpha''}^2-\alpha''^2\tanh r}}\ud^2\alpha'\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\exp\paren{-\abs{\alpha}^2\paren{\ue^{\varepsilon} - 1}}\exp\paren{-\abs{\alpha''}^2-\Re\paren{\alpha''^2\tanh r}}\ud^2\alpha'
+}
+Let the real and imaginary part of $\alpha$, $\alpha'$ and $\alpha''$ be $\alpha=\alpha_r+\ui\alpha_i$, $\alpha'=\alpha'_r+\ui\alpha'_i$, $\alpha''=\alpha''_r+\ui\alpha''_i$.
+\eqar{
+  \alpha''=&\alpha-\alpha'\cosh r+\alpha'^*\sinh r\\
+  =&\alpha_r+\ui\alpha_i-\alpha'_r\cosh r+\alpha'_r\sinh r-\ui\alpha'_i\cosh r-\ui\alpha'_i\sinh r\\
+  =&\alpha_r-\alpha'_r\cosh r+\alpha'_r\sinh r+\ui\paren{\alpha_i-\alpha'_i\cosh r-\alpha'_i\sinh r}\\
+  \alpha''_r=&\alpha_r-\alpha'_r\cosh r\paren{1-\tanh r}\\
+  \alpha''_i=&\alpha_i-\alpha'_i\cosh r\paren{1+\tanh r}
+}
+\eqar{
+  p=&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}
+  \int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'
+  \exp\paren{-\paren{\alpha_r^2+\alpha_i^2}\paren{\ue^{\varepsilon} - 1}}\\
+  &\exp\paren{-\paren{{\alpha''_r}^2+{\alpha''_i}^2}-\paren{{\alpha''_r}^2-{\alpha''_i}^2}\tanh r}\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
+  &\exp\paren{-\alpha_r^2\paren{\ue^{\varepsilon} - 1}-{\alpha''_r}^2\paren{1+\tanh r}}
+  \exp\paren{-\alpha_i^2\paren{\ue^{\varepsilon} - 1}-{\alpha''_i}^2\paren{1-\tanh r}}
+}
+\eqar{
+  {\alpha''_r}^2=&\paren{\alpha_r-\alpha'_r\cosh r\paren{1-\tanh r}}^2\\
+  =&\alpha_r^2+{\alpha'_r}^2\cosh^2r\paren{1-\tanh r}^2-2\alpha_r\alpha'_r\cosh r\paren{1-\tanh r}\\
+  {\alpha''_r}^2\paren{1+\tanh r}=&\alpha_r^2\paren{1+\tanh r}+{\alpha'_r}^2\cosh^2r\paren{1-\tanh r}\paren{1-\tanh^2 r}-2\alpha_r\alpha'_r\cosh r\paren{1-\tanh^2 r}\\
+  =&\alpha_r^2\paren{1+\tanh r}+{\alpha'_r}^2\paren{1-\tanh r}-\frac{2\alpha_r\alpha'_r}{\cosh r}
+}
+\eqar{
+  {\alpha''_i}^2=&\paren{\alpha_i-\alpha'_i\cosh r\paren{1+\tanh r}}^2\\
+  =&\alpha_i^2+{\alpha'_i}^2\cosh^2r\paren{1+\tanh r}^2-2\alpha_i\alpha'_i\cosh r\paren{1+\tanh r}\\
+  {\alpha''_i}^2\paren{1-\tanh r}=&\alpha_i^2\paren{1-\tanh r}+{\alpha'_i}^2\cosh^2r\paren{1+\tanh r}\paren{1-\tanh^2 r}-2\alpha_i\alpha'_i\cosh r\paren{1-\tanh^2 r}\\
+  =&\alpha_i^2\paren{1-\tanh r}+{\alpha'_i}^2\paren{1+\tanh r}-\frac{2\alpha_i\alpha'_i}{\cosh r}
+}
+\eqar{
+  p=&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\int\ud^2\alpha\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
+  &\exp\paren{-\alpha_r^2\paren{\ue^{\varepsilon} + \tanh r}
+    +\frac{2\alpha_r\alpha'_r}{\cosh r}
+    -{\alpha'_r}^2\paren{1-\tanh r}
+  }\\
+  &\exp\paren{-\alpha_i^2\paren{\ue^{\varepsilon} - \tanh r}
+    +\frac{2\alpha_i\alpha'_i}{\cosh r}
+    -{\alpha'_i}^2\paren{1+\tanh r}
+  }\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\sqrt{\frac{\pi}{\ue^{\varepsilon} + \tanh r}}\sqrt{\frac{\pi}{\ue^{\varepsilon} - \tanh r}}\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
+  &\exp\paren{\frac{{\alpha'_r}^2}{\paren{\ue^{\varepsilon} + \tanh r}\cosh^2r} + {\alpha'_r}^2\paren{1 - \tanh r}}\\
+  &\exp\paren{\frac{{\alpha'_i}^2}{\paren{\ue^{\varepsilon} - \tanh r}\cosh^2r} - {\alpha'_i}^2\paren{1 + \tanh r}}\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi\cosh r\sqrt{\ue^{2\varepsilon} - \tanh^2 r}}\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
+  &\exp\paren{
+    \frac{{\alpha'_r}^2\paren{1 - \tanh r}\paren{1 + \ue^\varepsilon}}{\ue^{\varepsilon} + \tanh r}
+  }\\
+  &\exp\paren{
+    \frac{{\alpha'_i}^2\paren{1 + \tanh r}\paren{1 - \ue^\varepsilon}}{\ue^{\varepsilon} - \tanh r}
+  }
+}
+
 \end{document}
