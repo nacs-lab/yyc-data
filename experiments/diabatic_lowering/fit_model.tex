@@ -417,14 +417,21 @@ Let the real and imaginary part of $\alpha$, $\alpha'$ and $\alpha''$ be $\alpha
     -{\alpha'_i}^2\paren{1+\tanh r}
   }\\
   =&\frac{\ue^{\varepsilon} - 1}{\pi^2\cosh r}\sqrt{\frac{\pi}{\ue^{\varepsilon} + \tanh r}}\sqrt{\frac{\pi}{\ue^{\varepsilon} - \tanh r}}\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
-  &\exp\paren{\frac{{\alpha'_r}^2}{\paren{\ue^{\varepsilon} + \tanh r}\cosh^2r} + {\alpha'_r}^2\paren{1 - \tanh r}}\\
+  &\exp\paren{\frac{{\alpha'_r}^2}{\paren{\ue^{\varepsilon} + \tanh r}\cosh^2r} - {\alpha'_r}^2\paren{1 - \tanh r}}\\
   &\exp\paren{\frac{{\alpha'_i}^2}{\paren{\ue^{\varepsilon} - \tanh r}\cosh^2r} - {\alpha'_i}^2\paren{1 + \tanh r}}\\
-  =&\frac{\ue^{\varepsilon} - 1}{\pi\cosh r\sqrt{\ue^{2\varepsilon} - \tanh^2 r}}\int_{\abs{\alpha'}\leqslant\gamma}\ud^2\alpha'\\
+  =&\frac{\ue^{\varepsilon} - 1}{\pi\cosh r\sqrt{\ue^{2\varepsilon} - \tanh^2 r}}\int_{{\alpha'_i}^2+{\alpha'_r}^2\leqslant\gamma^2}\ud\alpha'_r\ud\alpha'_i\\
   &\exp\paren{
-    \frac{{\alpha'_r}^2\paren{1 - \tanh r}\paren{1 + \ue^\varepsilon}}{\ue^{\varepsilon} + \tanh r}
+    \frac{\paren{1 - \tanh r}\paren{1 - \ue^\varepsilon}}{\ue^{\varepsilon} + \tanh r}{\alpha'_r}^2
+  }
+  \exp\paren{
+    \frac{\paren{1 + \tanh r}\paren{1 - \ue^\varepsilon}}{\ue^{\varepsilon} - \tanh r}{\alpha'_i}^2
   }\\
+  =&\frac{1}{\pi\cosh r\sqrt{\ue^{2\varepsilon} - \tanh^2 r}}\int_{x^2+y^2\leqslant\paren{\ue^{\varepsilon} - 1}\gamma^2}\ud\alpha'_r\ud\alpha'_i\\
   &\exp\paren{
-    \frac{{\alpha'_i}^2\paren{1 + \tanh r}\paren{1 - \ue^\varepsilon}}{\ue^{\varepsilon} - \tanh r}
+    -\frac{\paren{1 - \tanh r}}{\ue^{\varepsilon} + \tanh r}x^2
+  }
+  \exp\paren{
+    -\frac{\paren{1 + \tanh r}}{\ue^{\varepsilon} - \tanh r}y^2
   }
 }
 
