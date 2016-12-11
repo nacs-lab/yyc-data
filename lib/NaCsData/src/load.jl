@@ -48,6 +48,18 @@ function load_matscan(fname)
     end
 end
 
+function binomial_estimate(x, n, z=1.0)
+    if n <= 0
+        return 0.5, 0.5
+    end
+    p = x / n
+    z² = z^2
+    z²n = z² / n
+    p′::Float64 = (p + z²n / 2) / (1 + z²n)
+    unc::Float64 = sqrt(p * (1 - p) / n + z² / 4 / n^2) / (1 + z²n)
+    return p′, unc
+end
+
 function calc_survival(fnames)
     data_dict = Dict{Float64,Vector{Float64}}()
     local num_cnts::Int
@@ -75,8 +87,7 @@ function calc_survival(fnames)
         base = frame[1]
         for j in 1:(num_cnts - 1)
             cur = frame[j + 1]
-            ratios[i, j] = base <= 0 ? 0 : cur / base
-            uncs[i, j] = base <= 0 ? 0 : √(cur) / base
+            ratios[i, j], uncs[i, j] = binomial_estimate(cur, base)
             base = cur
         end
     end
