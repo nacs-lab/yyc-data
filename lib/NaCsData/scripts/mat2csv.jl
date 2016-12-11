@@ -1,5 +1,7 @@
 #!/usr/bin/julia -f
 
+push!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
+
 using NaCsData
 
 iname = ARGS[1]
