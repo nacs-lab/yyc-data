@@ -4,12 +4,10 @@ push!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
 
 using NaCsData
 
-iname = ARGS[1]
-oname = ARGS[2]
-param_name = length(ARGS) >= 3 ? ARGS[3] : ""
+iname = ARGS[1:end - 1]
+oname = ARGS[end]
 
-_param_name, params, data = NaCsData.load_matscan(iname)
-isempty(param_name) && (param_name = _param_name)
+param_name, params, data = NaCsData.load_matscan(iname)
 
 open(oname, "w") do fd
     print(fd, param_name)
