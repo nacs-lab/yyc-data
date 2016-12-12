@@ -1,4 +1,4 @@
-#!/usr/bin/julia -f
+#!/usr/bin/julia --startup-file=no
 
 push!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
 
