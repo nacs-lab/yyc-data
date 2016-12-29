@@ -26,7 +26,7 @@ figure()
 hist_for_roi(imgs[:, :, 2:2:end], cs_roi)
 title("Cesium")
 xlabel("Electron count")
-savefig(joinpath(ARGS[2], "hist_cs.png"),
+savefig(joinpath(ARGS[2], "hist_cs.svg"),
         bbox_inches="tight", transparent=true)
 close()
 
@@ -34,7 +34,7 @@ figure()
 hist_for_roi(imgs[:, :, 2:2:end], na_roi)
 title("Sodium")
 xlabel("Electron count")
-savefig(joinpath(ARGS[2], "hist_na.png"),
+savefig(joinpath(ARGS[2], "hist_na.svg"),
         bbox_inches="tight", transparent=true)
 close()
 

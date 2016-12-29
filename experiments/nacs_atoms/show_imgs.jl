@@ -27,7 +27,7 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "single_gray.png"),
+savefig(joinpath(ARGS[2], "single_gray.svg"),
         bbox_inches="tight", transparent=true)
 close()
 
@@ -44,7 +44,7 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "single_viridis.png"),
+savefig(joinpath(ARGS[2], "single_viridis.svg"),
         bbox_inches="tight", transparent=true)
 close()
 
@@ -61,7 +61,7 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "avg_gray.png"),
+savefig(joinpath(ARGS[2], "avg_gray.svg"),
         bbox_inches="tight", transparent=true)
 close()
 
@@ -78,7 +78,7 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "avg_viridis.png"),
+savefig(joinpath(ARGS[2], "avg_viridis.svg"),
         bbox_inches="tight", transparent=true)
 close()
 # show()
