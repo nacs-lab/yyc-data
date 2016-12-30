@@ -1,13 +1,6 @@
 #!/usr/bin/julia
 
-push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
-
-using NaCsData
-using PyPlot
-matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                     "font.weight" => "bold"))
-matplotlib[:rc]("xtick", labelsize=15)
-matplotlib[:rc]("ytick", labelsize=15)
+include("init_libs.jl")
 
 const all_times = linspace(0, 150, 26)
 const ntimes = length(all_times)
