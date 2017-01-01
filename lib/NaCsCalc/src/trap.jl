@@ -10,8 +10,7 @@ function η(m, freq, k)
     z_0 * k
 end
 
-function sideband{T1,T2,T3}(n1::T1, n2::T2,
-                            η::T3)::float(promote_type(T1, T2, T3))
+@inline function _sideband(n1::Int, n2::Int, η::Float64)::Float64
     if n1 < 0 || n2 < 0
         return η
     elseif η == 0
@@ -41,6 +40,27 @@ function sideband{T1,T2,T3}(n1::T1, n2::T2,
         lag = GSL.sf_laguerre_n(n₋, Δn, η²)
     end
     lag * exp(lpre)
+end
+
+immutable SidebandKey
+    n1::Int
+    n2::Int
+    η::Float64
+end
+Base.isequal(k1::SidebandKey, k2::SidebandKey) = k1 === k2
+Base.hash(k1::SidebandKey, h::UInt) = hash(k1.n1, hash(k1.n2, hash(k1.η, h)))
+
+# Use a custom type to work around the inefficient `isequal` for
+# heterogeneous tuples
+const sideband_cache = Dict{SidebandKey,Float64}()
+
+function sideband(_n1, _n2, _η)
+    n1 = Int(_n1)
+    n2 = Int(_n2)
+    η = Float64(_η)
+    return get!(sideband_cache, SidebandKey(n1, n2, η)) do
+        _sideband(n1, n2, η)
+    end
 end
 
 @noinline function resize_caches_thread(tid, Ωcache, pcache)
