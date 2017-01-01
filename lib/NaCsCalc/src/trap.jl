@@ -151,5 +151,6 @@ end
         return s
     end
 end
+thermal_sideband(nbar, t, η, Δn) = thermal_sideband((nbar,), t, (η,), (Δn,))
 
 end
