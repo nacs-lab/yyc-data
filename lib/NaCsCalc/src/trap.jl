@@ -29,12 +29,17 @@ function sideband{T1,T2,T3}(n1::T1, n2::T2,
     # = ⟨n1|exp(iη(a + a†))|n2⟩
     # = exp(-η^2 / 2) η^Δn √(γ(n₋ + 1) / γ(n₊ + 1)) L^Δn_n₋(η^2)
     # = exp(-η^2 / 2 + Δn log(η) + lγ(n₋ + 1) / 2 - lγ(n₊ + 1) / 2) L^Δn_n₋(η^2)
-    n₋ = min(n1, n2)
-    n₊ = max(n1, n2)
-    Δn = abs(n1 - n2)
     η² = η * η
-    lpre = (-η² + lgamma(n₋ + 1) - lgamma(n₊ + 1)) / 2 + log(η) * Δn
-    lag = GSL.sf_laguerre_n(n₋, Δn, η²)
+    if n1 == n2
+        lpre = η² * (-0.5)
+        lag = GSL.sf_laguerre_n(n1, 0, η²)
+    else
+        n₋ = min(n1, n2)
+        n₊ = max(n1, n2)
+        Δn = abs(n1 - n2)
+        lpre = (-η² + lgamma(n₋ + 1) - lgamma(n₊ + 1)) / 2 + log(η) * Δn
+        lag = GSL.sf_laguerre_n(n₋, Δn, η²)
+    end
     lag * exp(lpre)
 end
 
