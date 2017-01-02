@@ -12,7 +12,7 @@ end
 
 @inline function _sideband(n1::Int, n2::Int, η::Float64)::Float64
     if n1 < 0 || n2 < 0
-        return η
+        return 0
     elseif η == 0
         if n1 == n2
             return 1
