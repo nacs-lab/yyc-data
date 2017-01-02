@@ -88,7 +88,7 @@ end
 
     @gensym p
     @gensym Ω
-    body = :(s += $p * cos($Ω)^2)
+    body = :(s += $p * sin($Ω)^2)
 
     for i in N:-1:2
         @gensym j
