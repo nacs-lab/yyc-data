@@ -42,4 +42,74 @@ function fp_digit(io::IO, a::AbstractFloat, d::Int)
     return
 end
 
+@enum ExpType Exp Ten Sci
+
+immutable Unc{T<:AbstractFloat}
+    a::T
+    s::T
+    exp_type::ExpType
+    Unc(a, s, exp_type=Exp) = new(a, s, exp_type)
+end
+Unc{T<:AbstractFloat}(a::T, s::T, exp_type=Exp) = Unc{T}(a, s, exp_type)
+Unc(a, b, exp_type=Exp) = Unc(promote(float(a), float(b))..., exp_type)
+
+function Base.show(io::IO, v::Unc)
+    a = v.a
+    s = v.s
+    if s <= 0
+        show(io, a)
+        return
+    end
+    exp_type = v.exp_type
+
+    ten = oftype(s, 10)
+
+    ls = floor(Integer, log10(s))
+    # First two digits of the uncertainty
+    fs = floor(Int, s * ten^(1 - ls))
+    @assert 10 <= fs < 100
+    # Whether we should use scientific notation
+    sci = ls >= 2 || max(abs(a), s) < 0.1
+
+    if sci
+        if a == 0
+            fa = a
+            # Exponent
+            la = ls
+            # Number of digits after the decimal point
+            dl = one(la)
+        elseif abs(a) <= s
+            fa = a * ten^-ls
+            la = ls
+            dl = one(la)
+        else
+            la = floor(Integer, log10(abs(a)))
+            fa = a * ten^-la
+            dl = la - ls + 1
+        end
+        @assert dl >= 1
+        fp_digit(io, fa, dl)
+        write(io, '(')
+        show(io, fs)
+        if exp_type == Exp
+            write(io, ")e")
+            show(io, la)
+        elseif exp_type == Ten
+            write(io, ")*10^")
+            show(io, la)
+        else
+            write(io, ")\\times10^{")
+            show(io, la)
+            write(io, '}')
+        end
+    else
+        fp_digit(io, a, 1 - ls)
+        write(io, '(')
+        show(io, fs)
+        write(io, ')')
+    end
+    return
+end
+unc(a, b, exp_type=Exp) = sprint(show, Unc(a, b, exp_type))
+
 end
