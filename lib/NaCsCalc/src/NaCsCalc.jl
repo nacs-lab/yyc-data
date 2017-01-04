@@ -4,6 +4,7 @@ __precompile__(true)
 
 module NaCsCalc
 
+include("utils.jl")
 include("trap.jl")
 include("format.jl")
 
