@@ -50,9 +50,9 @@ function sample{T,N}(ary::HybridArray{T,N})
 end
 
 function sample_sideband(n::Int, η, nmax::Int)
-    # Estimate the range of final states with none zero matrix element.
+    # Estimate the range of final states with non-zero matrix elements.
     # By starting with the ones with high probability we can minimize the
-    # expectation value of evaluation time.
+    # average evaluation time.
 
     # I can't find any good bound on the matrix element.
     # The following is based on a combination of observation and guessing.
@@ -106,6 +106,31 @@ function sample_sideband(n::Int, η, nmax::Int)
         end
     end
     return -1
+end
+
+function sample_emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
+    # Returns `(cosθ, φ)`
+    # The PDFs of the `θ` distribution are
+    # `3 / 4 * (1 - cos²θ) * sinθ` for π light and
+    # `3 / 8 * (1 + cos²θ) * sinθ` for σ± light
+    # The corresponding CDFs are
+    # `1 / 4 * (3cosθ - cos³θ) + 1 / 2` for π light and
+    # `1 / 8 * (3cosθ + cos³θ) + 1 / 2` for σ± light
+    # For a random number `v` we need to solve
+    # `3cosθ - cos³θ = 4v - 2` for π light and
+    # `3cosθ + cos³θ = 8v - 4` for σ± light
+    # The (real) solution is
+    # `cosθ = x + 1 / x` where `x = ∛(2√(v² - v) - 2v + 1)` for π light and
+    # `cosθ = x - 1 / x` where `x = ∛(√(16v² - 16v + 5) + 4v - 2)` for σ± light
+    φ = T(rand()) # This is faster than `rand(T)`....
+    v = T(rand())
+    if isσ
+        x = cbrt(√(@evalpoly(v, 5, -16, 16)) + 4v - 2)
+        return x - 1 / x, φ
+    else
+        x = cbrt(2√((v - 1) * v) - 2v + 1)
+        return x + 1 / x, φ
+    end
 end
 
 end
