@@ -2,7 +2,7 @@
 
 module Trap
 
-import GSL
+import ..Utils
 
 function η(m, freq, k)
     ħ = 1.0545718e-34
@@ -10,7 +10,7 @@ function η(m, freq, k)
     z_0 * k
 end
 
-@inline function _sideband(n1::Int, n2::Int, η::Float64)::Float64
+function sideband{T<:AbstractFloat}(n1::Integer, n2::Integer, η::T)::T
     if n1 < 0 || n2 < 0
         return 0
     elseif η == 0
@@ -28,40 +28,20 @@ end
     # = ⟨n1|exp(iη(a + a†))|n2⟩
     # = exp(-η^2 / 2) η^Δn √(γ(n₋ + 1) / γ(n₊ + 1)) L^Δn_n₋(η^2)
     # = exp(-η^2 / 2 + Δn log(η) + lγ(n₋ + 1) / 2 - lγ(n₊ + 1) / 2) L^Δn_n₋(η^2)
-    η² = η * η
-    if n1 == n2
-        lpre = η² * (-0.5)
-        lag = GSL.sf_laguerre_n(n1, 0, η²)
+    η²::T = η * η
+    @fastmath if n1 == n2
+        lpre = η² * T(-0.5)
+        lag = Utils.genlaguerre(n1, 0, η²)
     else
         n₋ = min(n1, n2)
         n₊ = max(n1, n2)
         Δn = abs(n1 - n2)
-        lpre = (-η² + lgamma(n₋ + 1) - lgamma(n₊ + 1)) / 2 + log(η) * Δn
-        lag = GSL.sf_laguerre_n(n₋, Δn, η²)
+        lpre = (-η² + lgamma(T(n₋ + 1)) - lgamma(T(n₊ + 1))) / 2 + log(η) * Δn
+        lag = Utils.genlaguerre(n₋, Δn, η²)
     end
-    lag * exp(lpre)
+    return @fastmath lag * exp(lpre)
 end
-
-immutable SidebandKey
-    n1::Int
-    n2::Int
-    η::Float64
-end
-Base.isequal(k1::SidebandKey, k2::SidebandKey) = k1 === k2
-Base.hash(k1::SidebandKey, h::UInt) = hash(k1.n1, hash(k1.n2, hash(k1.η, h)))
-
-# Use a custom type to work around the inefficient `isequal` for
-# heterogeneous tuples
-const sideband_cache = Dict{SidebandKey,Float64}()
-
-function sideband(_n1, _n2, _η)
-    n1 = Int(_n1)
-    n2 = Int(_n2)
-    η = Float64(_η)
-    return get!(sideband_cache, SidebandKey(n1, n2, η)) do
-        _sideband(n1, n2, η)
-    end
-end
+sideband(n1::Integer, n2::Integer, η) = sideband(n1, n2, float(η))
 
 @noinline function resize_caches_thread(tid, Ωcache, pcache)
     old_len = size(Ωcache, 1)
