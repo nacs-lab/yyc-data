@@ -109,7 +109,7 @@ function sample_sideband(n::Int, η, nmax::Int)
 end
 
 function sample_emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
-    # Returns `(cosθ, φ)`
+    # Returns `(cosθ, φ)`. The caller should be ready to handle `|cosθ| > 1`
     # The PDFs of the `θ` distribution are
     # `3 / 4 * (1 - cos²θ) * sinθ` for π light and
     # `3 / 8 * (1 + cos²θ) * sinθ` for σ± light
@@ -122,14 +122,17 @@ function sample_emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
     # The (real) solution is
     # `cosθ = x + 1 / x` where `x = ∛(2√(v² - v) - 2v + 1)` for π light and
     # `cosθ = x - 1 / x` where `x = ∛(√(16v² - 16v + 5) + 4v - 2)` for σ± light
-    φ = T(rand()) # This is faster than `rand(T)`....
-    v = T(rand())
+    # Note that the `x` for
+    v = T(rand()) # This is faster than `rand(T)`....
+    φ = T(rand()) * T(2π)
     if isσ
-        x = cbrt(√(@evalpoly(v, 5, -16, 16)) + 4v - 2)
+        y = muladd(v, 4, -2)
+        x = @fastmath cbrt(sqrt(muladd(y, y, 1)) + y)
         return x - 1 / x, φ
     else
-        x = cbrt(2√((v - 1) * v) - 2v + 1)
-        return x + 1 / x, φ
+        θ′ = @fastmath acos(muladd(T(-2), v, T(1)))
+        cosθ = @fastmath cos(muladd(θ′, T(1 / 3), - T(2π / 3))) * 2
+        return cosθ, φ
     end
 end
 
