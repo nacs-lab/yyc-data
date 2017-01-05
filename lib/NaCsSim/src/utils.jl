@@ -20,7 +20,7 @@ end
 (::Type{HybridArray{T}}){T,N}(sz::NTuple{N,Int}) = HybridArray{T,N}(sz)
 (::Type{HybridArray{T}}){T,N}(sz::Vararg{Int,N}) = HybridArray{T,N}(sz)
 
-@generated default_index{N}(::Val{N}) = ntuple(i->0, N)
+@generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
 @generated function sample{T,N}(ary::Array{T,N}, thresh)
     quote
@@ -134,6 +134,34 @@ function sample_emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
         cosθ = @fastmath cos(muladd(θ′, T(1 / 3), - T(2π / 3))) * 2
         return cosθ, φ
     end
+end
+
+# This currently can't handle misalignment between the quantization axis
+# and trap axis. Hopefully it's not very important
+function sample_op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int},
+                                     ηs::NTuple{3,T}, ηdri::NTuple{3,T},
+                                     isσ::Bool)
+    cosθ, φ = sample_emission(T, isσ)
+    ηx = ηs[1] * cosθ
+    if -1 < cosθ < 1
+        # @fastmath on comparison is currently problematic
+        sinθ = @fastmath sqrt(1 - cosθ * cosθ)
+        ηy = @fastmath ηs[2] * sinθ * cos(φ)
+        ηz = @fastmath ηs[3] * sinθ * sin(φ)
+    else
+        ηy = zero(T)
+        ηz = zero(T)
+    end
+    ηx = abs(ηx - ηdri[1])
+    ηy = abs(ηy - ηdri[2])
+    ηz = abs(ηz - ηdri[3])
+    nx = sample_sideband(n_init[1], ηx, n_max[1])
+    nx == -1 && return default_index(Val{3}(), Val{-1}())
+    ny = sample_sideband(n_init[2], ηy, n_max[2])
+    ny == -1 && return default_index(Val{3}(), Val{-1}())
+    nz = sample_sideband(n_init[3], ηz, n_max[3])
+    nz == -1 && return default_index(Val{3}(), Val{-1}())
+    return (nx, ny, nz)
 end
 
 end
