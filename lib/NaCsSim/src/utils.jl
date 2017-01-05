@@ -20,6 +20,13 @@ end
 (::Type{HybridArray{T}}){T,N}(sz::NTuple{N,Int}) = HybridArray{T,N}(sz)
 (::Type{HybridArray{T}}){T,N}(sz::Vararg{Int,N}) = HybridArray{T,N}(sz)
 
+function zero!(ary::HybridArray)
+    ary.isfull = false
+    ary.sum = 0
+    empty!(ary.sparse)
+    return
+end
+
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
 @generated function sample{T,N}(ary::Array{T,N}, thresh)
