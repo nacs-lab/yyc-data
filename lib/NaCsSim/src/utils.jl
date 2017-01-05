@@ -173,4 +173,14 @@ function sample_op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}
     return default_index(Val{3}(), Val{-1}())
 end
 
+function sample_thermal(nbar, nmax)
+    α = @fastmath 1 / log(nbar / (nbar + 1))
+    while true
+        n = @fastmath floor(Int, log(rand()) * α)
+        if n <= nmax
+            return n
+        end
+    end
+end
+
 end
