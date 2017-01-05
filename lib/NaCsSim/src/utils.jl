@@ -156,12 +156,14 @@ function sample_op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
     nx = sample_sideband(n_init[1], ηx, n_max[1])
-    nx == -1 && return default_index(Val{3}(), Val{-1}())
+    nx == -1 && @goto escape
     ny = sample_sideband(n_init[2], ηy, n_max[2])
-    ny == -1 && return default_index(Val{3}(), Val{-1}())
+    ny == -1 && @goto escape
     nz = sample_sideband(n_init[3], ηz, n_max[3])
-    nz == -1 && return default_index(Val{3}(), Val{-1}())
+    nz == -1 && @goto escape
     return (nx, ny, nz)
+    @label escape
+    return default_index(Val{3}(), Val{-1}())
 end
 
 end
