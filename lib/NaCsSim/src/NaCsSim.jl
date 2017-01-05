@@ -6,5 +6,6 @@ module NaCsSim
 
 include("utils.jl")
 include("setup.jl")
+include("system.jl")
 
 end
