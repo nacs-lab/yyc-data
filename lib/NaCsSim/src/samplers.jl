@@ -161,7 +161,7 @@ function thermal(nbar, nmax)
     end
 end
 
-decay{T<:AbstractFloat}(rate::T) = log(T(rand())) / rate
+decay{T<:AbstractFloat}(rate::T) = -log(T(rand())) / rate
 function select{T}(total::T, weights::AbstractArray{T})
     v = T(rand()) * total
     @inbounds for i in 1:length(weights)
