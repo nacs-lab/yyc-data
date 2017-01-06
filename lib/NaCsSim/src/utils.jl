@@ -183,4 +183,14 @@ function sample_thermal(nbar, nmax)
     end
 end
 
+sample_decay{T<:AbstractFloat}(rate::T) = log(T(rand())) / rate
+function sample_select{T}(total::T, weights::AbstractArray{T})
+    v = T(rand()) * total
+    @inbounds for i in 1:length(weights)
+        v -= weights[i]
+        v <= 0 && return i
+    end
+    return 1
+end
+
 end
