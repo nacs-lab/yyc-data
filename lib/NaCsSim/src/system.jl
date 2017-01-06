@@ -3,6 +3,7 @@
 module System
 
 import ..Utils
+import ..Samplers
 import ..Setup
 
 import ..Utils: HybridArray
@@ -29,9 +30,9 @@ function (init::ThermalInit{Idx,T}){Idx,T}(atomic_state::State{T})
     end
     ary = atomic_state[Idx]
     nmax = size(ary.full)
-    nx = Utils.sample_thermal(init.nx, nmax[1] - 1)
-    ny = Utils.sample_thermal(init.ny, nmax[2] - 1)
-    nz = Utils.sample_thermal(init.nz, nmax[3] - 1)
+    nx = Samplers.thermal(init.nx, nmax[1] - 1)
+    ny = Samplers.thermal(init.ny, nmax[2] - 1)
+    nz = Samplers.thermal(init.nz, nmax[3] - 1)
     push!(ary.sparse, ((nx + 1, ny + 1, nz + 1), Complex{T}(1)))
     return
 end
