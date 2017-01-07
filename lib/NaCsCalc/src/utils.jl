@@ -61,13 +61,15 @@ function poly_laguerre_recursion{Tp}(n::Integer, α, x::Tp)
     n == 1 && return l_1
 
     # Compute l_n^alpha by recursion on n.
-    l_n2::Tp = l_0
-    l_n1::Tp = l_1
-    l_n::Tp = 0
-    for nn in 2:n
-        l_n = ((Tp(2nn - 1 + α) - x) * l_n1 - Tp(nn - 1 + α) * l_n2) / Tp(nn)
-        l_n2 = l_n1
-        l_n1 = l_n
+    l_n′::Tp = l_0
+    l_n::Tp = l_1
+    b::Tp = α - 1
+    a::Tp = b - x
+    @fastmath for nn in 2:n
+        fnn = Tp(nn)
+        l1 = muladd(a, l_n, -b * l_n′)
+        l2 = muladd(2, l_n, -l_n′)
+        l_n, l_n′ = l1 / fnn + l2, l_n
     end
     return l_n
 end
