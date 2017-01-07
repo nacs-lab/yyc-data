@@ -25,6 +25,7 @@ end
 immutable SeqBuilder{AS,ES,IA,I,M}
     seq::Sequence{AS,ES,IA,I,M}
     pulsemap::Dict{Any,Any}
+    datacache::Dict{Any,Any}
 end
 function (::Type{SeqBuilder{AS,ES}}){AS,ES,IA,I,M}(init_atom::IA, init::I,
                                                    measure::M)
@@ -34,11 +35,11 @@ function (::Type{SeqBuilder{AS,ES}}){AS,ES,IA,I,M}(init_atom::IA, init::I,
     return SeqBuilder(seq, Dict{Any,Any}())
 end
 
-compile_pulse(pulse) = pulse
+compile_pulse(pulse, cache) = pulse
 
 function add_pulse(builder::SeqBuilder, pulse)
     real_pulse = get!(builder.pulsemap, pulse) do
-        compile_pulse(pulse)
+        compile_pulse(pulse, builder.datacache)
     end
     pulses = builder.seq.pulses
     push!(pulses, eltype(pulses)(real_pulse))
