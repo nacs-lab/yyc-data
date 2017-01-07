@@ -161,6 +161,24 @@ function thermal(nbar, nmax)
     end
 end
 
+function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T})
+    total = sum(weights)
+    v = T(rand()) * total
+    nstates = length(rates)
+    if length(weights) != nstates
+        throw(ArgumentError("Decay rates and weights should have the same size"))
+    end
+    @inbounds for i in 1:nstates
+        w = weights[i]
+        old_v = v
+        v -= w
+        @fastmath if v < 0
+            return -log(old_v / w) / rates[i], i
+        end
+    end
+    return T(Inf), 1
+end
+
 decay{T<:AbstractFloat}(rate::T) = -log(T(rand())) / rate
 function select{T}(total::T, weights::AbstractArray{T})
     v = T(rand()) * total
