@@ -32,7 +32,7 @@ function (::Type{SeqBuilder{AS,ES}}){AS,ES,IA,I,M}(init_atom::IA, init::I,
     seq = Sequence{AS,ES,IA,I,M}(init_atom, init,
                                  FunctionWrapper{Bool,Tuple{AS,ES}}[],
                                  measure)
-    return SeqBuilder(seq, Dict{Any,Any}())
+    return SeqBuilder(seq, Dict{Any,Any}(), Dict{Any,Any}())
 end
 
 compile_pulse(pulse, cache) = pulse
