@@ -46,4 +46,8 @@ function add_pulse(builder::SeqBuilder, pulse)
     return
 end
 
+immutable Dummy
+end
+(::Dummy)(a_s, e_s) = true
+
 end
