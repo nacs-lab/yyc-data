@@ -126,7 +126,7 @@ end
 # and trap axis. Hopefully it's not very important
 function op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int},
                               ηs::NTuple{3,T}, ηdri::NTuple{3,T}, isσ::Bool)
-    cosθ, φ = sample_emission(T, isσ)
+    cosθ, φ = emission(T, isσ)
     ηx = ηs[1] * cosθ
     if -1 < cosθ < 1
         # @fastmath on comparison is currently problematic
@@ -140,11 +140,11 @@ function op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int},
     ηx = abs(ηx - ηdri[1])
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
-    nx = sample_sideband(n_init[1], ηx, n_max[1])
+    nx = sideband(n_init[1], ηx, n_max[1])
     nx == -1 && @goto escape
-    ny = sample_sideband(n_init[2], ηy, n_max[2])
+    ny = sideband(n_init[2], ηy, n_max[2])
     ny == -1 && @goto escape
-    nz = sample_sideband(n_init[3], ηz, n_max[3])
+    nz = sideband(n_init[3], ηz, n_max[3])
     nz == -1 && @goto escape
     return (nx, ny, nz)
     @label escape
