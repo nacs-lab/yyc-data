@@ -132,7 +132,7 @@ function propagate_op!{T,N}(pulse::OPPulse{T}, state::State{T,N}, maxt::T)
         Utils.zero!(state)
         return zero(T), false
     end
-    set_ns!(state, wf, v_f...)
+    set_ns!(state, state[n_f], v_f...)
     return maxt - t, true
 end
 
