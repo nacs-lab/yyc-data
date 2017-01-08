@@ -66,6 +66,9 @@ end
 typealias OPCache{T} Tuple{Vector{T},Vector{Vector{T}},Vector{T}}
 
 function Setup.compile_pulse{T}(pulse::OP{T}, cache)
+    if size(pulse.isσ) != size(pulse.rates)
+        throw(ArgumentError("rates and isσ should have the same sizes"))
+    end
     type_cache = get!(cache, OP{T}) do
         Dict{Matrix{T},OPCache{T}}()
     end::Dict{Matrix{T},OPCache{T}}
