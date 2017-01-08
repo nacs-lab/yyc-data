@@ -16,10 +16,14 @@ function (::Type{State{T,N}}){T,N}(nx, ny, nz)
     ntuple(x->HybridArray{T,3}(nx + 1, ny + 1, nz + 1), Val{N})
 end
 
-function set_ns!{T}(atomic_state::State{T}, ary, nx, ny, nz)
-    for _ary in atomic_state
-        Utils.zero!(_ary)
+function Utils.zero!(atomic_state::State)
+    for ary in atomic_state
+        Utils.zero!(ary)
     end
+end
+
+function set_ns!{T}(atomic_state::State{T}, ary, nx, ny, nz)
+    Utils.zero!(atomic_state)
     ary.sum = 1
     push!(ary.sparse, ((nx + 1, ny + 1, nz + 1), Complex{T}(1)))
     return
@@ -124,7 +128,10 @@ function propagate_op!{T,N}(pulse::OPPulse{T}, state::State{T,N}, maxt::T)
     sz_x, sz_y, sz_z = size(wf.full)
     v_f = Samplers.op(v_i, (sz_x - 1, sz_y - 1, sz_z - 1),
                       pulse.ηs, pulse.ηdri, pulse.isσ[n_f, n_i])
-    v_f[1] >= 0 || return zero(T), false
+    if v_f[1] < 0
+        Utils.zero!(state)
+        return zero(T), false
+    end
     set_ns!(state, wf, v_f...)
     return maxt - t, true
 end
@@ -139,5 +146,8 @@ function (pulse::OPPulse{T}){T,N}(state::State{T,N}, extern_state)
 end
 
 # External state / measure
+immutable HyperFineMeasure
+end
+(::HyperFineMeasure)(state::State, extern_state) = [a.sum for a in state]
 
 end
