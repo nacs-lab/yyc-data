@@ -25,8 +25,7 @@ end
 
 function set_ns!{T}(atomic_state::State{T}, ary, nx, ny, nz)
     Utils.zero!(atomic_state)
-    ary.sum = 1
-    push!(ary.sparse, ((nx + 1, ny + 1, nz + 1), Complex{T}(1)))
+    push!(ary, (nx + 1, ny + 1, nz + 1), 1)
     return
 end
 
@@ -112,7 +111,7 @@ function propagate_op!{T,N}(pulse::OPPulse{T}, state::State{T,N}, maxt::T)
     # at what time should it happen
     weights = pulse.weights_buf
     for i in 1:N
-        weights[i] = state[i].sum
+        weights[i] = abs2(state[i])
     end
     t, n_i = Samplers.decay(pulse.rates, weights)
     0 < t < maxt || return zero(T), true
@@ -226,19 +225,20 @@ end
 # External state / measure
 immutable HyperFineMeasure
 end
-(::HyperFineMeasure)(state::State, extern_state) = [a.sum for a in state]
+(::HyperFineMeasure)(state::State, extern_state) = [abs2(a) for a in state]
 
 immutable NBarMeasure
 end
 function (::NBarMeasure){T,N}(state::State{T,N}, extern_state)
     res = zeros(T, 4)
     for ary in state
-        res[4] += ary.sum
         for ele in ary.sparse
-            ns, p = ele
+            ns, amp = ele
+            p = abs2(amp)
             res[1] += ns[1] * p
             res[2] += ns[2] * p
             res[3] += ns[3] * p
+            res[4] += p
         end
     end
     return res

@@ -9,9 +9,8 @@ import ..Utils
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
 function wavefunc{T,N}(ary::Utils.WaveFunc{T,N})
-    thresh = rand(T) * ary.sum
-    sparse_ary = ary.sparse
-    @inbounds for (idx, v) in sparse_ary
+    thresh = rand(T) * abs2(ary)
+    @inbounds for (idx, v) in ary.sparse
         thresh -= abs2(v)
         if thresh <= 0
             return idx
@@ -20,7 +19,7 @@ function wavefunc{T,N}(ary::Utils.WaveFunc{T,N})
     return default_index(Val{N}())
 end
 
-function sideband(n::Int, η, nmax::Int)
+function sideband{T}(n::Int, η::T, nmax::Int)
     # Estimate the range of final states with non-zero matrix elements.
     # By starting with the ones with high probability we can minimize the
     # average evaluation time.
@@ -49,7 +48,7 @@ function sideband(n::Int, η, nmax::Int)
     n_start = max(0, floor(Int, n_center - n_width))
     n_end = min(ceil(Int, n_center + n_width), nmax)
 
-    v::Float64 = rand()
+    v::T = T(rand())
 
     for i in n_start:n_end
         v -= Trap.sideband(n, i, η)^2
