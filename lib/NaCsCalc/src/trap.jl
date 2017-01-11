@@ -4,9 +4,10 @@ module Trap
 
 import ..Utils
 
-function η(m, freq, k)
-    ħ = 1.0545718e-34
-    z_0 = √(ħ / 2 / m / (2π * freq))
+function η{T1,T2,T3}(m::T1, freq::T2, k::T3)
+    T = float(promote_type(T1, T2, T3))
+    ħ = T(1.0545718e-34)
+    z_0 = √(ħ / 2 / m / (T(2π) * freq))
     z_0 * k
 end
 
