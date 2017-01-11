@@ -225,7 +225,22 @@ end
 # External state / measure
 immutable HyperFineMeasure
 end
-(::HyperFineMeasure)(state::State, extern_state) = [abs2(a) for a in state]
+function (::HyperFineMeasure){T,N}(state::State{T,N}, extern_state)
+    res = Vector{T}(N + 1)
+    s = zero(T)
+    @inbounds for i in 1:N
+        a = abs2(state[i])
+        res[i] = a
+        s += a
+    end
+    res[end] = s
+    return res
+end
+Setup.combine_measures(::HyperFineMeasure, m1, m2) = m1 .+ m2
+function Setup.finalize_measure(::HyperFineMeasure, m, n)
+    len = length(m)
+    return (m[1:(len - 1)] ./ m[len], m[len] / n)
+end
 
 immutable NBarMeasure
 end
@@ -243,5 +258,7 @@ function (::NBarMeasure){T,N}(state::State{T,N}, extern_state)
     end
     return res
 end
+Setup.combine_measures(::NBarMeasure, m1, m2) = m1 .+ m2
+Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
 
 end

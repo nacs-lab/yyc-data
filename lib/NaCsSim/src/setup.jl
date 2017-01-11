@@ -50,4 +50,11 @@ immutable Dummy
 end
 (::Dummy)(a_s, e_s) = true
 
+combine_measures(seq::Sequence, m1, m2) =
+    combine_measures(seq.measure, m1, m2)
+finalize_measure(seq::Sequence, m, n) =
+    finalize_measure(seq.measure, m, n)
+combine_measures(::Dummy, m1, m2) = true
+finalize_measure(::Dummy, m, n) = nothing
+
 end
