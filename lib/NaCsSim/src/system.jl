@@ -217,7 +217,7 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
     end
     p = sin(Ω * pulse.t)^2
     if rand() < p
-        set_ns!(state, state[hf2], ns_f...)
+        set_ns!(state, state[hf2], (-).(ns_f, 1)...)
     end
     return true
 end
