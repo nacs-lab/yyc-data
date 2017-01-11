@@ -250,9 +250,9 @@ function (::NBarMeasure){T,N}(state::State{T,N}, extern_state)
         for ele in ary.sparse
             ns, amp = ele
             p = abs2(amp)
-            res[1] += ns[1] * p
-            res[2] += ns[2] * p
-            res[3] += ns[3] * p
+            res[1] += (ns[1] - 1) * p
+            res[2] += (ns[2] - 1) * p
+            res[3] += (ns[3] - 1) * p
             res[4] += p
         end
     end
