@@ -8,7 +8,7 @@ const sz = 500, 100, 100
 const init = System.ThermalInit{1,Float32}(20, 4, 4)
 
 const m_Na = 23f-3 / 6.02f23
-const k_Na = 589f-9
+const k_Na = Float32(2π) / 589f-9
 η(freq) = Trap.η(m_Na, freq, k_Na)
 
 const η_op = (η(60f3), η(420f3), η(420f3))
