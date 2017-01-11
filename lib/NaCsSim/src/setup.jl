@@ -22,6 +22,18 @@ function run{AS,ES}(seq::Sequence{AS,ES}, atomic_state::AS, extern_state::ES)
     return seq.measure(atomic_state, extern_state)
 end
 
+# TODO, run in parallel/run multiple sequences
+function run{AS,ES}(seq::Sequence{AS,ES},
+                    atomic_state::AS, extern_state::ES, n)
+    @assert n >= 1
+    res = run(seq, atomic_state, extern_state)
+    for i in 2:n
+        res2 = run(seq, atomic_state, extern_state)
+        res = combine_measures(seq, res, res2)
+    end
+    return finalize_measure(seq, res, n)
+end
+
 immutable SeqBuilder{AS,ES,IA,I,M}
     seq::Sequence{AS,ES,IA,I,M}
     pulsemap::Dict{Any,Any}
