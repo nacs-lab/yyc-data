@@ -8,31 +8,16 @@ import ..Utils
 
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
-@generated function sample_array{T,N}(ary::Array{T,N}, thresh)
-    quote
-        $(Expr(:meta, :inline))
-        @inbounds @nloops $N i ary begin
-            thresh -= abs2(@nref $N ary i)
-            thresh <= 0 && return @ntuple $N i
-        end
-        return default_index($(Val{N}()))
-    end
-end
-
-function wavefunction{T,N}(ary::Utils.HybridArray{T,N})
+function wavefunc{T,N}(ary::Utils.WaveFunc{T,N})
     thresh = rand(T) * ary.sum
-    @inbounds if ary.isfull
-        return sample_array(ary.full, thresh)
-    else
-        sparse_ary = ary.sparse
-        for (idx, v) in sparse_ary
-            thresh -= abs2(v)
-            if thresh <= 0
-                return idx
-            end
+    sparse_ary = ary.sparse
+    @inbounds for (idx, v) in sparse_ary
+        thresh -= abs2(v)
+        if thresh <= 0
+            return idx
         end
-        return default_index(Val{N}())
     end
+    return default_index(Val{N}())
 end
 
 function sideband(n::Int, η, nmax::Int)

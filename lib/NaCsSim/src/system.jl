@@ -7,14 +7,14 @@ import ..Utils
 import ..Samplers
 import ..Setup
 
-import ..Utils: HybridArray
+import ..Utils: WaveFunc
 
 # Atomic state
 
-typealias State{T<:AbstractFloat,N} NTuple{N,HybridArray{T,3}}
+typealias State{T<:AbstractFloat,N} NTuple{N,WaveFunc{T,3}}
 
 function (::Type{State{T,N}}){T,N}(nx, ny, nz)
-    ntuple(x->HybridArray{T,3}(nx + 1, ny + 1, nz + 1), Val{N})
+    ntuple(x->WaveFunc{T,3}(nx + 1, ny + 1, nz + 1), Val{N})
 end
 
 function Utils.zero!(atomic_state::State)
@@ -40,7 +40,7 @@ end
 
 function (init::ThermalInit{Idx,T}){Idx,T}(atomic_state::State{T})
     ary = atomic_state[Idx]
-    nmax = size(ary.full)
+    nmax = size(ary)
     nx = Samplers.thermal(init.nx, nmax[1] - 1)
     ny = Samplers.thermal(init.ny, nmax[2] - 1)
     nz = Samplers.thermal(init.nz, nmax[3] - 1)
@@ -122,11 +122,11 @@ function propagate_op!{T,N}(pulse::OPPulse{T}, state::State{T,N}, maxt::T)
 
     wf = state[n_i]
     # Then, given the initial hyperfine state, pick an initial vibrational state
-    v_i = (-).(Samplers.wavefunction(wf), 1)
+    v_i = (-).(Samplers.wavefunc(wf), 1)
 
     # Finally, given the initial hyperfine+vibrational and final hyperfine state,
     # pick the final vibrational state.
-    sz_x, sz_y, sz_z = size(wf.full)
+    sz_x, sz_y, sz_z = size(wf)
     v_f = Samplers.op(v_i, (sz_x - 1, sz_y - 1, sz_z - 1),
                       pulse.ηs, pulse.ηdri, pulse.isσ[n_f, n_i])
     if v_f[1] < 0
@@ -182,11 +182,10 @@ end
 function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
     ary1 = state[N1]
     ary2 = state[N2]
-    # For now...
-    @assert !ary1.isfull && !ary2.isfull
     l1 = length(ary1.sparse)
     l2 = length(ary2.sparse)
     l1 + l2 == 0 && return true
+    # For now...
     @assert l1 + l2 == 1
     if l1 == 1
         # forward
@@ -207,7 +206,7 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
     if ns_f[1] < 0 || ns_f[2] < 0 || ns_f[3] < 0
         return true
     end
-    sz_x, sz_y, sz_z = size(ary1.full)
+    sz_x, sz_y, sz_z = size(ary1)
     if ns_f[1] >= sz_x || ns_f[2] >= sz_y || ns_f[3] >= sz_z
         Utils.zero!(state)
         return false
@@ -235,7 +234,6 @@ function (::NBarMeasure){T,N}(state::State{T,N}, extern_state)
     res = zeros(T, 4)
     for ary in state
         res[4] += ary.sum
-        @assert !ary.isfull
         for ele in ary.sparse
             ns, p = ele
             res[1] += ns[1] * p
