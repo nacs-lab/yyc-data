@@ -261,4 +261,21 @@ end
 Setup.combine_measures(::NBarMeasure, m1, m2) = m1 .+ m2
 Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
 
+immutable GroundStateMeasure
+end
+function (::GroundStateMeasure){T,N}(state::State{T,N}, extern_state)
+    res = zero(T)
+    for ary in state
+        for ele in ary.sparse
+            if ele[1] !== (1, 1, 1)
+                continue
+            end
+            res += abs2(ele[2])
+        end
+    end
+    return res
+end
+Setup.combine_measures(::GroundStateMeasure, m1, m2) = m1 + m2
+Setup.finalize_measure(::GroundStateMeasure, m, n) = m / n
+
 end

@@ -32,7 +32,8 @@ const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
 # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure())
-builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
+# builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
+builder = BuilderT(init, Setup.Dummy(), System.GroundStateMeasure())
 # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
 state = System.State{Float32,3}(sz...)
 function f1op(t, γ, ηs=η_op, ηdri=η_op_dri)
@@ -108,4 +109,5 @@ for i in 1:300
     Setup.add_pulse(builder, f2op_pulse)
 end
 
-@show Setup.run(builder.seq, state, nothing, 1000000)
+@time @show Setup.run(builder.seq, state, nothing, 1)
+@time @show Setup.run(builder.seq, state, nothing, 1000000)
