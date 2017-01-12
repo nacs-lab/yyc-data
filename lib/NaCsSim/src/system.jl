@@ -185,7 +185,7 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
     l2 = length(ary2.sparse)
     l1 + l2 == 0 && return true
     # For now...
-    @assert l1 + l2 == 1
+    # @assert l1 + l2 == 1
     if l1 == 1
         # forward
         ele = ary1.sparse[1]
@@ -199,7 +199,8 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
         hf1 = N2
         hf2 = N1
     end
-    @assert abs2(ele[2]) ≈ 1
+    # Don't assert since ≈ is super slow....
+    # @assert abs2(ele[2]) ≈ 1
     ns_i = ele[1]
     ns_f = (+).(ns_i, Δn)
     if ns_f[1] < 0 || ns_f[2] < 0 || ns_f[3] < 0
