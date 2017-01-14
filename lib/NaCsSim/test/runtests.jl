@@ -50,27 +50,27 @@ function raman_pulse(ax, order, t, Ω=1)
 end
 f2op_pulse = f2op(40, 5, 0.5)
 
-for i in 1:30
+for i in 1:20
     Setup.add_pulse(builder, raman_pulse(1, 6, 8))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 6, 8))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(3, 2, 5))
+    Setup.add_pulse(builder, f2op_pulse)
+end
+for i in 1:30
+    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(2, 2, 5))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(3, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
 end
 for i in 1:40
-    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(2, 2, 5))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(3, 2, 5))
-    Setup.add_pulse(builder, f2op_pulse)
-end
-for i in 1:30
     Setup.add_pulse(builder, raman_pulse(1, 2, 4))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 2, 5))
@@ -80,21 +80,7 @@ for i in 1:30
     Setup.add_pulse(builder, raman_pulse(3, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
 end
-for i in 1:20
-    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 1, 4))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(2, 2, 5))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 1, 4))
-    Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(3, 2, 5))
-    Setup.add_pulse(builder, f2op_pulse)
-end
-for i in 1:300
+for i in 1:50
     Setup.add_pulse(builder, raman_pulse(1, 2, 4))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 1, 4))
@@ -110,4 +96,4 @@ for i in 1:300
 end
 
 @time @show Setup.run(builder.seq, state, nothing, 1)
-@time @show Setup.run(builder.seq, state, nothing, 1000000)
+@time @show Setup.run(builder.seq, state, nothing, 100000)
