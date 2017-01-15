@@ -5,7 +5,7 @@ import NaCsCalc: Trap
 
 const BuilderT = Setup.SeqBuilder{System.State{Float32,3},Void}
 const sz = 500, 100, 100
-const init = System.ThermalInit{1,Float32}(20, 4, 4)
+const init = System.ThermalInit{1,Float32}(15, 4, 4)
 
 const m_Na = 23f-3 / 6.02f23
 const k_Na = Float32(2π) / 589f-9
@@ -50,48 +50,74 @@ function raman_pulse(ax, order, t, Ω=1)
 end
 f2op_pulse = f2op(40, 5, 0.5)
 
-for i in 1:20
+for i in 1:15
     Setup.add_pulse(builder, raman_pulse(1, 6, 8))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 5, 10))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 6, 8))
     Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 5, 10))
+    Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(3, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
 end
-for i in 1:30
+for i in 1:15
+    Setup.add_pulse(builder, raman_pulse(1, 5, 10))
+    Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 4, 10))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 5, 10))
+    Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 4, 10))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(3, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
 end
-for i in 1:40
-    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
+for i in 1:15
+    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 3, 12))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
+    Setup.add_pulse(builder, raman_pulse(1, 4, 10))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 3, 12))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(3, 2, 5))
     Setup.add_pulse(builder, f2op_pulse)
 end
-for i in 1:50
-    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
+for i in 1:15
+    Setup.add_pulse(builder, raman_pulse(1, 3, 12))
     Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(1, 1, 4))
+    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(2, 1, 5))
     Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 3, 12))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(3, 1, 5))
+    Setup.add_pulse(builder, f2op_pulse)
+end
+for i in 1:15
     Setup.add_pulse(builder, raman_pulse(1, 2, 4))
     Setup.add_pulse(builder, f2op_pulse)
     Setup.add_pulse(builder, raman_pulse(1, 1, 4))
     Setup.add_pulse(builder, f2op_pulse)
-    Setup.add_pulse(builder, raman_pulse(3, 1, 5))
+    Setup.add_pulse(builder, raman_pulse(2, 1, 3))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 2, 4))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(1, 1, 4))
+    Setup.add_pulse(builder, f2op_pulse)
+    Setup.add_pulse(builder, raman_pulse(3, 1, 3))
     Setup.add_pulse(builder, f2op_pulse)
 end
 
