@@ -247,16 +247,16 @@ immutable FilterMeasure{T,F}
 end
 (::Type{FilterMeasure{T}}){T,F}(cb::F) = FilterMeasure{T,F}(cb)
 FilterMeasure(cb) = FilterMeasure{Float32}(cb)
-Setup.create_measure{T}(::FilterMeasure{T}, seq) = Ref{T}(0)
-function (measure::FilterMeasure{T}){T}(res::Ref{T}, state::StateC,
+Setup.create_measure{T}(::FilterMeasure{T}, seq) = Ref{Int}(0)
+function (measure::FilterMeasure{T}){T}(res::Ref{Int}, state::StateC,
                                         extern_state)
     if !state.lost && measure.cb(state.n, state.hf)
         res[] += 1
     end
     return res
 end
-Setup.finalize_measure(::FilterMeasure, m, n) =
-    Unc(binomial_estimate(m[], n)...)
+Setup.finalize_measure{T}(::FilterMeasure{T}, m, n) =
+    Unc{T}(binomial_estimate(m[], n)...)
 
 GroundStateMeasure() = FilterMeasure() do n, hf
     n == (0, 0, 0)
