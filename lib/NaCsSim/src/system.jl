@@ -236,13 +236,19 @@ end
 Setup.combine_measures(::NBarMeasure, m1, m2) = m1 .+ m2
 Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
 
-immutable GroundStateMeasure{T}
+immutable FilterMeasure{T,F}
+    cb::F
 end
-GroundStateMeasure() = GroundStateMeasure{Float32}()
-function (::GroundStateMeasure{T}){T}(state::StateC, extern_state)::T
-    return (state.lost || state.n != (0, 0, 0)) ? 0 : 1
+(::Type{FilterMeasure{T}}){T,F}(cb::F) = FilterMeasure{T,F}(cb)
+FilterMeasure(cb) = FilterMeasure{Float32}(cb)
+function (measure::FilterMeasure{T}){T}(state::StateC, extern_state)::T
+    return (state.lost || !measure.cb(state.n, state.hf)) ? 0 : 1
 end
-Setup.combine_measures(::GroundStateMeasure, m1, m2) = m1 + m2
-Setup.finalize_measure(::GroundStateMeasure, m, n) = m / n
+Setup.combine_measures(::FilterMeasure, m1, m2) = m1 + m2
+Setup.finalize_measure(::FilterMeasure, m, n) = m / n
+
+GroundStateMeasure() = FilterMeasure() do n, hf
+    n == (0, 0, 0)
+end
 
 end
