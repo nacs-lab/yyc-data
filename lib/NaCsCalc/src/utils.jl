@@ -100,4 +100,16 @@ function genlaguerre{Tp<:AbstractFloat}(n::Integer, α, x::Tp)::Tp
 end
 genlaguerre(n::Integer, α, x) = genlaguerre(n, α, float(x))
 
+function binomial_estimate{T<:AbstractFloat}(x, n, z::T=1.0)
+    if n <= 0
+        return T(0.5), T(0.5)
+    end
+    p = T(x / n)
+    z² = z^2
+    z²n = z² / n
+    p′::T = (p + z²n / 2) / (1 + z²n)
+    unc::T = sqrt(p * (1 - p) / n + z² / 4 / n^2) / (1 + z²n)
+    return p′, unc
+end
+
 end

@@ -1,6 +1,7 @@
 #!/usr/bin/julia -f
 
 using MAT
+import NaCsCalc.Utils: binomial_estimate
 
 """
 Load a MAT scan file
@@ -57,18 +58,6 @@ function load_matscan(fnames)
     param_name, params, data
 end
 load_matscan(fname::AbstractString) = load_matscan([fname])
-
-function binomial_estimate(x, n, z=1.0)
-    if n <= 0
-        return 0.5, 0.5
-    end
-    p = x / n
-    z² = z^2
-    z²n = z² / n
-    p′::Float64 = (p + z²n / 2) / (1 + z²n)
-    unc::Float64 = sqrt(p * (1 - p) / n + z² / 4 / n^2) / (1 + z²n)
-    return p′, unc
-end
 
 function calc_survival(fnames)
     data_dict = Dict{Float64,Vector{Float64}}()
