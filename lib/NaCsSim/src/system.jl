@@ -209,54 +209,76 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
     return true
 end
 
+binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
+
 # External state / measure
-immutable HyperFineMeasure{N,T}
+immutable HyperFineMeasure{N}
 end
-(::Type{HyperFineMeasure{N}}){N}() = HyperFineMeasure{N,Float32}()
-Setup.create_measure{N,T}(::HyperFineMeasure{N,T}, seq) = zeros(T, N + 1)
-function (::HyperFineMeasure{N,T}){N,T}(res::Vector{T}, state::StateC,
-                                        extern_state)
+Setup.create_measure{N}(::HyperFineMeasure{N}, seq) = zeros(Int, N + 1)
+function (::HyperFineMeasure{N}){N}(res::Vector{Int}, state::StateC,
+                                    extern_state)
     if !state.lost
         res[state.hf] += 1
         res[N + 1] += 1
     end
     return res
 end
-function Setup.finalize_measure(::HyperFineMeasure, m, n)
-    len = length(m)
-    return (m[1:(len - 1)] ./ m[len], m[len] / n)
+function Setup.finalize_measure{N}(::HyperFineMeasure{N}, m, n)
+    return (binomial_unc.(m[1:N], m[N + 1]), binomial_unc(m[N + 1], n))
 end
 
-immutable NBarMeasure{T}
+immutable NBarMeasure
 end
-NBarMeasure() = NBarMeasure{Float32}()
-Setup.create_measure{T}(::NBarMeasure{T}, seq) = zeros(T, 4)
-function (::NBarMeasure{T}){T}(res::Vector{T}, state::StateC, extern_state)
+type NBarResult
+    nx::Int
+    ny::Int
+    nz::Int
+    n::Int
+    nx²::Float64
+    ny²::Float64
+    nz²::Float64
+    NBarResult() = new(0, 0, 0, 0,
+                       0.0, 0.0, 0.0)
+end
+Setup.create_measure(::NBarMeasure, seq) = NBarResult()
+function (::NBarMeasure)(res::NBarResult, state::StateC, extern_state)
     state.lost && return res
     n = state.n
-    res[1] += n[1]
-    res[2] += n[2]
-    res[3] += n[3]
-    res[4] += 1
+    res.nx += n[1]
+    res.ny += n[2]
+    res.nz += n[3]
+    res.n += 1
+    res.nx² += n[1]^2
+    res.ny² += n[2]^2
+    res.nz² += n[3]^2
     return res
 end
-Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
+function Setup.finalize_measure(::NBarMeasure, res::NBarResult, n)
+    total = res.n
+    nx = res.nx / total
+    ny = res.ny / total
+    nz = res.nz / total
+    nx² = res.nx² / total
+    ny² = res.ny² / total
+    nz² = res.nz² / total
+    factor = 1 / sqrt(total - 1)
+    σnx = sqrt(nx² - nx^2) * factor
+    σny = sqrt(ny² - ny^2) * factor
+    σnz = sqrt(nz² - nz^2) * factor
+    ((Unc(nx, σnx), Unc(ny, σny), Unc(nz, σnz)), binomial_unc(total, n))
+end
 
-immutable FilterMeasure{T,F}
+immutable FilterMeasure{F}
     cb::F
 end
-(::Type{FilterMeasure{T}}){T,F}(cb::F) = FilterMeasure{T,F}(cb)
-FilterMeasure(cb) = FilterMeasure{Float32}(cb)
-Setup.create_measure{T}(::FilterMeasure{T}, seq) = Ref{Int}(0)
-function (measure::FilterMeasure{T}){T}(res::Ref{Int}, state::StateC,
-                                        extern_state)
+Setup.create_measure(::FilterMeasure, seq) = Ref{Int}(0)
+function (measure::FilterMeasure)(res::Ref{Int}, state::StateC, extern_state)
     if !state.lost && measure.cb(state.n, state.hf)
         res[] += 1
     end
     return res
 end
-Setup.finalize_measure{T}(::FilterMeasure{T}, m, n) =
-    Unc{T}(binomial_estimate(m[], n)...)
+Setup.finalize_measure(::FilterMeasure, m, n) = binomial_unc(m[], n)
 
 GroundStateMeasure() = FilterMeasure() do n, hf
     n == (0, 0, 0)
