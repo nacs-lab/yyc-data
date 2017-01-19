@@ -3,7 +3,7 @@
 import NaCsSim: Setup, System
 import NaCsCalc: Trap
 
-const BuilderT = Setup.SeqBuilder{System.State{Float32,3},Void}
+const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 const sz = 500, 100, 100
 const init = System.ThermalInit{1,Float32}(15, 4, 4)
 
@@ -31,7 +31,7 @@ const η_raman3 = (0f0, 0f0, η(420f3) * sqrt(2f0))
 const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
-state = System.State{Float32,3}(sz...)
+state = System.StateC(sz...)
 function f1op(t, γ, ηs=η_op, ηdri=η_op_dri)
     System.OP{Float32}(t, branching_11 .* γ, ηs, ηdri, isσ)
 end

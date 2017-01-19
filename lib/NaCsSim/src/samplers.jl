@@ -4,20 +4,8 @@ module Samplers
 
 using Base.Cartesian
 import NaCsCalc: Trap
-import ..Utils
 
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
-
-function wavefunc{T,N}(ary::Utils.WaveFunc{T,N})
-    thresh = rand(T) * abs2(ary)
-    @inbounds for (idx, v) in ary.sparse
-        thresh -= abs2(v)
-        if thresh <= 0
-            return idx
-        end
-    end
-    return default_index(Val{N}())
-end
 
 function sideband{T}(n::Int, η::T, nmax::Int)
     # Estimate the range of final states with non-zero matrix elements.

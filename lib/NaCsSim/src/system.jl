@@ -3,29 +3,24 @@
 module System
 
 import NaCsCalc: Trap
-import ..Utils
 import ..Samplers
 import ..Setup
 
-import ..Utils: WaveFunc
-
 # Atomic state
 
-typealias State{T<:AbstractFloat,N} NTuple{N,WaveFunc{T,3}}
-
-function (::Type{State{T,N}}){T,N}(nx, ny, nz)
-    ntuple(x->WaveFunc{T,3}(nx + 1, ny + 1, nz + 1), Val{N})
-end
-
-function Utils.zero!(atomic_state::State)
-    for ary in atomic_state
-        Utils.zero!(ary)
+type StateC
+    nmax::NTuple{3,Int}
+    n::NTuple{3,Int}
+    hf::Int
+    lost::Bool
+    function StateC(nx, ny, nz)
+        new((nx, ny, nz), (0, 0, 0), 1, false)
     end
 end
 
-function set_ns!{T}(atomic_state::State{T}, ary, nx, ny, nz)
-    Utils.zero!(atomic_state)
-    push!(ary, (nx + 1, ny + 1, nz + 1), 1)
+@inline function set_ns!(state::StateC, hf, nx, ny, nz)
+    state.n = (nx, ny, nz)
+    state.hf = hf
     return
 end
 
@@ -37,13 +32,13 @@ immutable ThermalInit{Idx,T<:AbstractFloat}
     nz::T
 end
 
-function (init::ThermalInit{Idx,T}){Idx,T}(atomic_state::State{T})
-    ary = atomic_state[Idx]
-    nmax = size(ary)
-    nx = Samplers.thermal(init.nx, nmax[1] - 1)
-    ny = Samplers.thermal(init.ny, nmax[2] - 1)
-    nz = Samplers.thermal(init.nz, nmax[3] - 1)
-    set_ns!(atomic_state, ary, nx, ny, nz)
+function (init::ThermalInit{Idx,T}){Idx,T}(state::StateC)
+    nmax = state.nmax
+    nx = Samplers.thermal(init.nx, nmax[1])
+    ny = Samplers.thermal(init.ny, nmax[2])
+    nz = Samplers.thermal(init.nz, nmax[3])
+    set_ns!(state, Idx, nx, ny, nz)
+    state.lost = false
     return
 end
 
@@ -106,37 +101,31 @@ function Setup.compile_pulse{T}(pulse::OP{T}, cache)
                       pulse.ηs, pulse.ηdri, pulse.isσ)
 end
 
-function propagate_op!{T,N}(pulse::OPPulse{T}, state::State{T,N}, maxt::T)
+function propagate_op!{T}(pulse::OPPulse{T}, state::StateC, maxt::T)
     # First, decide which hyperfine state should be pumped and
     # at what time should it happen
-    weights = pulse.weights_buf
-    for i in 1:N
-        weights[i] = abs2(state[i])
-    end
-    t, n_i = Samplers.decay(pulse.rates, weights)
+    hf0 = state.hf
+    v_i = state.n
+    nmax = state.nmax
+
+    t = Samplers.decay(pulse.rates[hf0])
     0 < t < maxt || return zero(T), true
 
     # Next, if we want to do a OP, decide which branch it should take
-    n_f = Samplers.select(one(T), pulse.branchings[n_i])
+    hf1 = Samplers.select(one(T), pulse.branchings[hf0])
 
-    wf = state[n_i]
-    # Then, given the initial hyperfine state, pick an initial vibrational state
-    v_i = (-).(Samplers.wavefunc(wf), 1)
-
-    # Finally, given the initial hyperfine+vibrational and final hyperfine state,
-    # pick the final vibrational state.
-    sz_x, sz_y, sz_z = size(wf)
-    v_f = Samplers.op(v_i, (sz_x - 1, sz_y - 1, sz_z - 1),
-                      pulse.ηs, pulse.ηdri, pulse.isσ[n_f, n_i])
+    # Finally, given the initial hyperfine+vibrational and final hyperfine
+    # state, pick the final vibrational state.
+    v_f = Samplers.op(v_i, nmax, pulse.ηs, pulse.ηdri, pulse.isσ[hf1, hf0])
     if v_f[1] < 0
-        Utils.zero!(state)
+        state.lost = true
         return zero(T), false
     end
-    set_ns!(state, state[n_f], v_f...)
+    set_ns!(state, hf1, v_f...)
     return maxt - t, true
 end
 
-function (pulse::OPPulse{T}){T,N}(state::State{T,N}, extern_state)
+function (pulse::OPPulse)(state::StateC, extern_state)
     maxt = pulse.t
     while maxt > 0
         maxt, cont = propagate_op!(pulse, state, maxt)
@@ -166,6 +155,7 @@ computeΩs{T}(Ω::T, η::T, Δn, nmax) =
     T[Trap.sideband(n - 1, n - 1 + Δn, η) * Ω for n in 1:(nmax + abs(Δn) + 1)]
 
 function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
+    @assert N1 != N2
     type_cache = get!(cache, Raman{T}) do
         Dict{RamanKey{T},RamanCache{T}}()
     end::Dict{RamanKey{T},RamanCache{T}}
@@ -178,63 +168,55 @@ function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
     return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs)
 end
 
-function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::State{T}, extern_state)
-    ary1 = state[N1]
-    ary2 = state[N2]
-    l1 = length(ary1.sparse)
-    l2 = length(ary2.sparse)
-    l1 + l2 == 0 && return true
-    # For now...
-    # @assert l1 + l2 == 1
-    if l1 == 1
+function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
+    hf0 = state.hf
+    v_i = state.n
+    nmax = state.nmax
+
+    if hf0 == N1
         # forward
-        ele = ary1.sparse[1]
         Δn = pulse.Δn
-        hf1 = N1
-        hf2 = N2
-    else
-        # backward
-        ele = ary2.sparse[1]
-        Δn = (-).(pulse.Δn)
         hf1 = N2
-        hf2 = N1
-    end
-    # Don't assert since ≈ is super slow....
-    # @assert abs2(ele[2]) ≈ 1
-    ns_i = ele[1]
-    ns_f = (+).(ns_i, Δn)
-    if ns_f[1] < 0 || ns_f[2] < 0 || ns_f[3] < 0
+    elseif hf0 == N2
+        # backward
+        Δn = (-).(pulse.Δn)
+        hf1 = N1
+    else
         return true
     end
-    sz_x, sz_y, sz_z = size(ary1)
-    if ns_f[1] >= sz_x || ns_f[2] >= sz_y || ns_f[3] >= sz_z
-        Utils.zero!(state)
+    v_f = (+).(v_i, Δn)
+    if v_f[1] < 0 || v_f[2] < 0 || v_f[3] < 0
+        return true
+    end
+    nmax_x, nmax_y, nmax_z = nmax
+    if v_f[1] > nmax_x || v_f[2] > nmax_y || v_f[3] > nmax_z
+        state.lost = true
         return false
     end
-    if l1 == 1
-        Ω = pulse.Ωs[1][ns_i[1]] * pulse.Ωs[2][ns_i[2]] * pulse.Ωs[3][ns_i[3]]
+    if hf0 == N1
+        Ω = (pulse.Ωs[1][v_i[1] + 1] * pulse.Ωs[2][v_i[2] + 1] *
+              pulse.Ωs[3][v_i[3] + 1])
     else
-        Ω = pulse.Ωs[1][ns_f[1]] * pulse.Ωs[2][ns_f[2]] * pulse.Ωs[3][ns_f[3]]
+        Ω = (pulse.Ωs[1][v_f[1] + 1] * pulse.Ωs[2][v_f[2] + 1] *
+              pulse.Ωs[3][v_f[3] + 1])
     end
     p = sin(Ω * pulse.t)^2
     if rand() < p
-        set_ns!(state, state[hf2], (-).(ns_f, 1)...)
+        set_ns!(state, hf1, v_f...)
     end
     return true
 end
 
 # External state / measure
-immutable HyperFineMeasure
+immutable HyperFineMeasure{T}
 end
-function (::HyperFineMeasure){T,N}(state::State{T,N}, extern_state)
-    res = Vector{T}(N + 1)
-    s = zero(T)
-    @inbounds for i in 1:N
-        a = abs2(state[i])
-        res[i] = a
-        s += a
+HyperFineMeasure() = HyperFineMeasure{Float32}()
+function (::HyperFineMeasure{T}){T}(state::StateC, extern_state)
+    res = zeros(T, N + 1)
+    if !state.lost
+        res[hf] = 1
+        res[end] = 1
     end
-    res[end] = s
     return res
 end
 Setup.combine_measures(::HyperFineMeasure, m1, m2) = m1 .+ m2
@@ -243,38 +225,22 @@ function Setup.finalize_measure(::HyperFineMeasure, m, n)
     return (m[1:(len - 1)] ./ m[len], m[len] / n)
 end
 
-immutable NBarMeasure
+immutable NBarMeasure{T}
 end
-function (::NBarMeasure){T,N}(state::State{T,N}, extern_state)
-    res = zeros(T, 4)
-    for ary in state
-        for ele in ary.sparse
-            ns, amp = ele
-            p = abs2(amp)
-            res[1] += (ns[1] - 1) * p
-            res[2] += (ns[2] - 1) * p
-            res[3] += (ns[3] - 1) * p
-            res[4] += p
-        end
-    end
-    return res
+NBarMeasure() = NBarMeasure{Float32}()
+function (::NBarMeasure{T}){T}(state::StateC, extern_state)
+    state.lost && return zeros(T, 4)
+    n = state.n
+    return T[n[1], n[2], n[3], 1]
 end
 Setup.combine_measures(::NBarMeasure, m1, m2) = m1 .+ m2
 Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
 
-immutable GroundStateMeasure
+immutable GroundStateMeasure{T}
 end
-function (::GroundStateMeasure){T,N}(state::State{T,N}, extern_state)
-    res = zero(T)
-    for ary in state
-        for ele in ary.sparse
-            if ele[1] !== (1, 1, 1)
-                continue
-            end
-            res += abs2(ele[2])
-        end
-    end
-    return res
+GroundStateMeasure() = GroundStateMeasure{Float32}()
+function (::GroundStateMeasure{T}){T}(state::StateC, extern_state)::T
+    return (state.lost || state.n != (0, 0, 0)) ? 0 : 1
 end
 Setup.combine_measures(::GroundStateMeasure, m1, m2) = m1 + m2
 Setup.finalize_measure(::GroundStateMeasure, m, n) = m / n
