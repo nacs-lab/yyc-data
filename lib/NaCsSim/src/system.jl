@@ -208,18 +208,18 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
 end
 
 # External state / measure
-immutable HyperFineMeasure{T}
+immutable HyperFineMeasure{N,T}
 end
-HyperFineMeasure() = HyperFineMeasure{Float32}()
-function (::HyperFineMeasure{T}){T}(state::StateC, extern_state)
-    res = zeros(T, N + 1)
+(::Type{HyperFineMeasure{N}}){N}() = HyperFineMeasure{N,Float32}()
+Setup.create_measure{N,T}(::HyperFineMeasure{N,T}, seq) = zeros(T, N + 1)
+function (::HyperFineMeasure{N,T}){N,T}(res::Vector{T}, state::StateC,
+                                        extern_state)
     if !state.lost
-        res[hf] = 1
-        res[end] = 1
+        res[state.hf] += 1
+        res[N + 1] += 1
     end
     return res
 end
-Setup.combine_measures(::HyperFineMeasure, m1, m2) = m1 .+ m2
 function Setup.finalize_measure(::HyperFineMeasure, m, n)
     len = length(m)
     return (m[1:(len - 1)] ./ m[len], m[len] / n)
@@ -228,12 +228,16 @@ end
 immutable NBarMeasure{T}
 end
 NBarMeasure() = NBarMeasure{Float32}()
-function (::NBarMeasure{T}){T}(state::StateC, extern_state)
-    state.lost && return zeros(T, 4)
+Setup.create_measure{T}(::NBarMeasure{T}, seq) = zeros(T, 4)
+function (::NBarMeasure{T}){T}(res::Vector{T}, state::StateC, extern_state)
+    state.lost && return res
     n = state.n
-    return T[n[1], n[2], n[3], 1]
+    res[1] += n[1]
+    res[2] += n[2]
+    res[3] += n[3]
+    res[4] += 1
+    return res
 end
-Setup.combine_measures(::NBarMeasure, m1, m2) = m1 .+ m2
 Setup.finalize_measure(::NBarMeasure, m, n) = (m[1:3] ./ m[4], m[4] / n)
 
 immutable FilterMeasure{T,F}
@@ -241,11 +245,15 @@ immutable FilterMeasure{T,F}
 end
 (::Type{FilterMeasure{T}}){T,F}(cb::F) = FilterMeasure{T,F}(cb)
 FilterMeasure(cb) = FilterMeasure{Float32}(cb)
-function (measure::FilterMeasure{T}){T}(state::StateC, extern_state)::T
-    return (state.lost || !measure.cb(state.n, state.hf)) ? 0 : 1
+Setup.create_measure{T}(::FilterMeasure{T}, seq) = Ref{T}(0)
+function (measure::FilterMeasure{T}){T}(res::Ref{T}, state::StateC,
+                                        extern_state)
+    if !state.lost && measure.cb(state.n, state.hf)
+        res[] += 1
+    end
+    return res
 end
-Setup.combine_measures(::FilterMeasure, m1, m2) = m1 + m2
-Setup.finalize_measure(::FilterMeasure, m, n) = m / n
+Setup.finalize_measure(::FilterMeasure, m, n) = m[] / n
 
 GroundStateMeasure() = FilterMeasure() do n, hf
     n == (0, 0, 0)

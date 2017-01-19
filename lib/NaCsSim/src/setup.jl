@@ -11,7 +11,8 @@ immutable Sequence{AS,ES,IA,I,M}
     measure::M
 end
 
-function run{AS,ES}(seq::Sequence{AS,ES}, atomic_state::AS, extern_state::ES)
+function run{AS,ES}(seq::Sequence{AS,ES}, atomic_state::AS, extern_state::ES,
+                    res=create_measure(seq))
     seq.init_atom(atomic_state)
     seq.init(atomic_state, extern_state)
     @inbounds for p in seq.pulses
@@ -19,17 +20,17 @@ function run{AS,ES}(seq::Sequence{AS,ES}, atomic_state::AS, extern_state::ES)
             break
         end
     end
-    return seq.measure(atomic_state, extern_state)
+    return seq.measure(res, atomic_state, extern_state)
 end
 
 # TODO, run in parallel/run multiple sequences
 function run{AS,ES}(seq::Sequence{AS,ES},
-                    atomic_state::AS, extern_state::ES, n)
+                    atomic_state::AS, extern_state::ES, n::Integer)
     @assert n >= 1
-    res = run(seq, atomic_state, extern_state)
+    res = create_measure(seq)
+    run(seq, atomic_state, extern_state, res)
     for i in 2:n
-        res2 = run(seq, atomic_state, extern_state)
-        res = combine_measures(seq, res, res2)
+        run(seq, atomic_state, extern_state, res)
     end
     return finalize_measure(seq, res, n)
 end
@@ -61,12 +62,12 @@ end
 immutable Dummy
 end
 (::Dummy)(a_s, e_s) = true
+(::Dummy)(res, a_s, e_s) = nothing
 
-combine_measures(seq::Sequence, m1, m2) =
-    combine_measures(seq.measure, m1, m2)
+create_measure(seq::Sequence) = create_measure(seq.measure, seq)
 finalize_measure(seq::Sequence, m, n) =
     finalize_measure(seq.measure, m, n)
-combine_measures(::Dummy, m1, m2) = true
+create_measure(::Dummy, seq) = nothing
 finalize_measure(::Dummy, m, n) = nothing
 
 end

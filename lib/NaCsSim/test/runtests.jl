@@ -127,7 +127,7 @@ function add_group5(builder)
     end
 end
 
-# builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure())
+# builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
 # builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
 # builder = BuilderT(init, Setup.Dummy(), System.GroundStateMeasure())
 # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
@@ -143,6 +143,8 @@ function create_sequence(ngroup, nbar)
     else
         builder = BuilderT(init, Setup.Dummy(), System.GroundStateMeasure())
     end
+    # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
+    # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
     adders = [add_group1, add_group2, add_group3, add_group4, add_group5]
     for i in 1:ngroup
         adders[i](builder)
@@ -161,8 +163,11 @@ end
 
 # run_sequences()
 
-@time @show Setup.run(create_sequence(5, true), state, nothing, 10)
-@time @show Setup.run(create_sequence(5, false), state, nothing, 10)
+seq1 = create_sequence(5, true)
+seq2 = create_sequence(5, false)
 
-@time @show Setup.run(create_sequence(5, true), state, nothing, 100000)
-@time @show Setup.run(create_sequence(5, false), state, nothing, 100000)
+@time @show Setup.run(seq1, state, nothing, 10)
+@time @show Setup.run(seq2, state, nothing, 10)
+
+@time @show Setup.run(seq1, state, nothing, 100000)
+@time @show Setup.run(seq2, state, nothing, 100000)
