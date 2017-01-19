@@ -159,7 +159,10 @@ function run_sequences()
     end
 end
 
-run_sequences()
+# run_sequences()
 
-# @time @show Setup.run(create_sequence(5, true), state, nothing, 100000)
-# @time @show Setup.run(create_sequence(5, false), state, nothing, 100000)
+@time @show Setup.run(create_sequence(5, true), state, nothing, 10)
+@time @show Setup.run(create_sequence(5, false), state, nothing, 10)
+
+@time @show Setup.run(create_sequence(5, true), state, nothing, 100000)
+@time @show Setup.run(create_sequence(5, false), state, nothing, 100000)
