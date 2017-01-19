@@ -224,7 +224,9 @@ function (::HyperFineMeasure{N}){N}(res::Vector{Int}, state::StateC,
     return res
 end
 function Setup.finalize_measure{N}(::HyperFineMeasure{N}, m, n)
-    return (binomial_unc.(m[1:N], m[N + 1]), binomial_unc(m[N + 1], n))
+    total = m[N + 1]
+    return (ntuple(i->binomial_unc(m[i], total), Val{N}),
+            binomial_unc(total, n))
 end
 
 immutable NBarMeasure
