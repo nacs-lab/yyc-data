@@ -3,6 +3,8 @@
 module System
 
 import NaCsCalc: Trap
+import NaCsCalc.Utils: binomial_estimate
+import NaCsCalc.Format: Unc
 import ..Samplers
 import ..Setup
 
@@ -253,7 +255,8 @@ function (measure::FilterMeasure{T}){T}(res::Ref{T}, state::StateC,
     end
     return res
 end
-Setup.finalize_measure(::FilterMeasure, m, n) = m[] / n
+Setup.finalize_measure(::FilterMeasure, m, n) =
+    Unc(binomial_estimate(m[], n)...)
 
 GroundStateMeasure() = FilterMeasure() do n, hf
     n == (0, 0, 0)
