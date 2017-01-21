@@ -32,10 +32,7 @@ const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
 state = System.StateC(sz...)
-function f1op(t, γ, ηs=η_op, ηdri=η_op_dri)
-    System.OP{Float32}(t, branching_11 .* γ, ηs, ηdri, isσ)
-end
-function f2op(t, γ1, γ2, γ2′=0.0f0 * γ2, ηs=η_op, ηdri=η_op_dri)
+function op_pulse(t, γ1, γ2, γ2′=0.01f0 * γ2, ηs=η_op, ηdri=η_op_dri)
     branching = (branching_11 .* γ1 .+ branching_21 .* γ2 .+
                  branching_22 .* γ2′)
     System.OP{Float32}(t, branching, ηs, ηdri, isσ)
@@ -44,87 +41,98 @@ function raman_pulse(ax, order, t, Ω=1)
     ns = ntuple(i->i == ax ? -order : 0, Val{3})
     System.Raman{Float32,1,3}(t, Ω, η_ramans[ax], ns, sz)
 end
-const f2op_pulse = f2op(40, 5, 0.5)
+
+immutable OPParams
+    γ1::Float32
+    γ2::Float32
+    darkness::Float32
+end
+
+pulse(params::OPParams) =
+    op_pulse(1, params.γ1, params.γ2, params.γ2 * params.darkness)
+
+immutable RamanParams
+    ax::Int
+    order::Int
+    t::Float32
+end
+
+pulse(params::RamanParams) = raman_pulse(params.ax, params.order, params.t)
+
+add_pulse(builder, params) = Setup.add_pulse(builder, pulse(params))
+
+# Group with two axial cooling per loop
+immutable Grp2AParams
+    op::OPParams
+    raman11::RamanParams
+    raman12::RamanParams
+    raman2::RamanParams
+    raman3::RamanParams
+    rep::Int
+end
+
+function add_pulse(builder, params::Grp2AParams)
+    op = pulse(params.op)
+    for i in 1:params.rep
+        Setup.add_pulse(builder, pulse(params.raman11))
+        Setup.add_pulse(builder, op)
+        Setup.add_pulse(builder, pulse(params.raman12))
+        Setup.add_pulse(builder, op)
+        Setup.add_pulse(builder, pulse(params.raman2))
+        Setup.add_pulse(builder, op)
+        Setup.add_pulse(builder, pulse(params.raman11))
+        Setup.add_pulse(builder, op)
+        Setup.add_pulse(builder, pulse(params.raman12))
+        Setup.add_pulse(builder, op)
+        Setup.add_pulse(builder, pulse(params.raman3))
+        Setup.add_pulse(builder, op)
+    end
+end
 
 function add_group1(builder)
-    for i in 1:12
-        Setup.add_pulse(builder, raman_pulse(1, 6, 8))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 5, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(2, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 6, 8))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 5, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(3, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-    end
+    add_pulse(builder,
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 6, 8),
+                          RamanParams(1, 5, 10),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12))
 end
 function add_group2(builder)
-    for i in 1:12
-        Setup.add_pulse(builder, raman_pulse(1, 5, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(2, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 5, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(3, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-    end
+    add_pulse(builder,
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 5, 10),
+                          RamanParams(1, 4, 10),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12))
 end
 function add_group3(builder)
-    for i in 1:12
-        Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 3, 12))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(2, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 4, 10))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 3, 12))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(3, 2, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-    end
+    add_pulse(builder,
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 4, 10),
+                          RamanParams(1, 3, 12),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12))
 end
 function add_group4(builder)
-    for i in 1:12
-        Setup.add_pulse(builder, raman_pulse(1, 3, 12))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(2, 1, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 3, 12))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(3, 1, 5))
-        Setup.add_pulse(builder, f2op_pulse)
-    end
+    add_pulse(builder,
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 3, 12),
+                          RamanParams(1, 2, 4),
+                          RamanParams(2, 1, 5),
+                          RamanParams(3, 1, 5),
+                          12))
 end
 function add_group5(builder)
-    for i in 1:12
-        Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 1, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(2, 1, 3))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 2, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(1, 1, 4))
-        Setup.add_pulse(builder, f2op_pulse)
-        Setup.add_pulse(builder, raman_pulse(3, 1, 3))
-        Setup.add_pulse(builder, f2op_pulse)
-    end
+    add_pulse(builder,
+              Grp2AParams(OPParams(15, 0.06, 0.01),
+                          RamanParams(1, 2, 4),
+                          RamanParams(1, 1, 4),
+                          RamanParams(2, 1, 3),
+                          RamanParams(3, 1, 3),
+                          50))
 end
 
 # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
@@ -166,8 +174,8 @@ end
 seq1 = create_sequence(5, true)
 seq2 = create_sequence(5, false)
 
-@time @show Setup.run(seq1, state, nothing, 10)
-@time @show Setup.run(seq2, state, nothing, 10)
+# @time @show Setup.run(seq1, state, nothing, 10)
+# @time @show Setup.run(seq2, state, nothing, 10)
 
 @time @show Setup.run(seq1, state, nothing, 100000)
 @time @show Setup.run(seq2, state, nothing, 100000)
