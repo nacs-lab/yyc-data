@@ -64,6 +64,34 @@ end
 (::Dummy)(a_s, e_s) = true
 (::Dummy)(res, a_s, e_s) = nothing
 
+immutable CombinedMeasure{T<:Tuple}
+    measures::T
+    # Kill default constructors
+    CombinedMeasure(measures) = new(measures)
+end
+CombinedMeasure(measures...) = CombinedMeasure{typeof(measures)}(measures)
+@generated function create_measure{T}(m::CombinedMeasure{T}, seq)
+    N = length(T.parameters)
+    quote
+        ms = m.measures
+        ($((:(create_measure(ms[$i], seq)) for i in 1:N)...),)
+    end
+end
+@generated function (m::CombinedMeasure{T}){T}(res, state, extern_state)
+    N = length(T.parameters)
+    quote
+        ms = m.measures
+        ($((:(ms[$i](res[$i], state, extern_state)) for i in 1:N)...),)
+    end
+end
+@generated function finalize_measure{T}(m::CombinedMeasure{T}, res, n)
+    N = length(T.parameters)
+    quote
+        ms = m.measures
+        ($((:(finalize_measure(ms[$i], res[$i], n)) for i in 1:N)...),)
+    end
+end
+
 create_measure(seq::Sequence) = create_measure(seq.measure, seq)
 finalize_measure(seq::Sequence, m, n) =
     finalize_measure(seq.measure, m, n)

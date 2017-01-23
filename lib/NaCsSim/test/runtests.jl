@@ -89,14 +89,12 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-function create_sequence(ngroup, nbar)
-    if nbar
-        builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
-    else
-        builder = BuilderT(init, Setup.Dummy(), System.GroundStateMeasure())
-    end
+function create_sequence(ngroup)
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
     # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
+    builder = BuilderT(init, Setup.Dummy(),
+                       Setup.CombinedMeasure(System.NBarMeasure(),
+                                             System.GroundStateMeasure()))
 
     pulses = [Grp2AParams(OPParams(15, 0.3, 0.01),
                           RamanParams(1, 6, 8),
@@ -137,19 +135,14 @@ end
 function run_sequences()
     for i in 0:5
         println("Pulse groups: $i")
-        nbars, = Setup.run(create_sequence(i, true), state, nothing, 100000)
-        ground = Setup.run(create_sequence(i, false), state, nothing, 100000)
+        (nbars,), ground =
+            Setup.run(create_sequence(i), state, nothing, 100000)
         println("    nbar: $nbars; pgrd: $ground")
     end
 end
 
-# run_sequences()
+seq = create_sequence(5)
 
-seq1 = create_sequence(5, true)
-seq2 = create_sequence(5, false)
+@time @show Setup.run(seq, state, nothing, 100000)
 
-# @time @show Setup.run(seq1, state, nothing, 10)
-# @time @show Setup.run(seq2, state, nothing, 10)
-
-@time @show Setup.run(seq1, state, nothing, 100000)
-@time @show Setup.run(seq2, state, nothing, 100000)
+@time run_sequences()
