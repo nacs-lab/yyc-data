@@ -14,8 +14,8 @@ const k_Na = Float32(2π) / 589f-9
 const η_op = (η(60f3), η(420f3), η(420f3))
 const η_op_dri = (0f0, η(420f3) / sqrt(2f0), η(420f3) / sqrt(2f0))
 const isσ = [false false false
-             true true true
-             true true true]
+              true true true
+              true true true]
 const branching_11 = Float32[0 0 1 / 6
                              0 0 1 / 12
                              0 0 1 / 4]
@@ -89,62 +89,6 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-function add_group1(builder)
-    add_pulse(builder,
-              Grp2AParams(OPParams(15, 0.3, 0.01),
-                          RamanParams(1, 6, 8),
-                          RamanParams(1, 5, 10),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          12))
-end
-function add_group2(builder)
-    add_pulse(builder,
-              Grp2AParams(OPParams(15, 0.3, 0.01),
-                          RamanParams(1, 5, 10),
-                          RamanParams(1, 4, 10),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          12))
-end
-function add_group3(builder)
-    add_pulse(builder,
-              Grp2AParams(OPParams(15, 0.3, 0.01),
-                          RamanParams(1, 4, 10),
-                          RamanParams(1, 3, 12),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          12))
-end
-function add_group4(builder)
-    add_pulse(builder,
-              Grp2AParams(OPParams(15, 0.3, 0.01),
-                          RamanParams(1, 3, 12),
-                          RamanParams(1, 2, 4),
-                          RamanParams(2, 1, 5),
-                          RamanParams(3, 1, 5),
-                          12))
-end
-function add_group5(builder)
-    add_pulse(builder,
-              Grp2AParams(OPParams(15, 0.06, 0.01),
-                          RamanParams(1, 2, 4),
-                          RamanParams(1, 1, 4),
-                          RamanParams(2, 1, 3),
-                          RamanParams(3, 1, 3),
-                          50))
-end
-
-# builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
-# builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
-# builder = BuilderT(init, Setup.Dummy(), System.GroundStateMeasure())
-# builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
-# add_group1(builder)
-# add_group2(builder)
-# add_group3(builder)
-# add_group4(builder)
-# add_group5(builder)
-
 function create_sequence(ngroup, nbar)
     if nbar
         builder = BuilderT(init, Setup.Dummy(), System.NBarMeasure())
@@ -153,9 +97,39 @@ function create_sequence(ngroup, nbar)
     end
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
     # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
-    adders = [add_group1, add_group2, add_group3, add_group4, add_group5]
+
+    pulses = [Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 6, 8),
+                          RamanParams(1, 5, 10),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12),
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 5, 10),
+                          RamanParams(1, 4, 10),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12),
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 4, 10),
+                          RamanParams(1, 3, 12),
+                          RamanParams(2, 2, 5),
+                          RamanParams(3, 2, 5),
+                          12),
+              Grp2AParams(OPParams(15, 0.3, 0.01),
+                          RamanParams(1, 3, 12),
+                          RamanParams(1, 2, 4),
+                          RamanParams(2, 1, 5),
+                          RamanParams(3, 1, 5),
+                          12),
+              Grp2AParams(OPParams(15, 0.06, 0.01),
+                          RamanParams(1, 2, 4),
+                          RamanParams(1, 1, 4),
+                          RamanParams(2, 1, 3),
+                          RamanParams(3, 1, 3),
+                          50)]
     for i in 1:ngroup
-        adders[i](builder)
+        add_pulse(builder, pulses[i])
     end
     return builder.seq
 end
