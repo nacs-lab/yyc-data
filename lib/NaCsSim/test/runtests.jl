@@ -1,5 +1,8 @@
 #!/usr/bin/julia
 
+@everywhere import NaCsSim: Setup, System
+
+@everywhere module TestSequence
 import NaCsSim: Setup, System
 import NaCsCalc: Trap
 
@@ -31,7 +34,8 @@ const η_raman3 = (0f0, 0f0, η(420f3) * sqrt(2f0))
 const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
-state = System.StateC(sz...)
+export statec
+const statec = System.StateC(sz...)
 function op_pulse(t, γ1, γ2, γ2′=0.01f0 * γ2, ηs=η_op, ηdri=η_op_dri)
     branching = (branching_11 .* γ1 .+ branching_21 .* γ2 .+
                  branching_22 .* γ2′)
@@ -89,7 +93,8 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-function create_sequence(ngroup)
+export create_sequence
+function create_sequence(ngroup, ncycles5)
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
     # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
     builder = BuilderT(init, Setup.Dummy(),
@@ -125,24 +130,28 @@ function create_sequence(ngroup)
                           RamanParams(1, 1, 4),
                           RamanParams(2, 1, 3),
                           RamanParams(3, 1, 3),
-                          50)]
+                          ncycles5)]
     for i in 1:ngroup
         add_pulse(builder, pulses[i])
     end
     return builder.seq
 end
 
-function run_sequences()
-    for i in 0:5
-        println("Pulse groups: $i")
-        (nbars,), ground =
-            Setup.run(create_sequence(i), state, nothing, 100000)
-        println("    nbar: $nbars; pgrd: $ground")
-    end
 end
 
-seq = create_sequence(5)
+@everywhere using TestSequence
 
-@time @show Setup.run(seq, state, nothing, 100000)
+# @time @show [Setup.run(create_sequence(5, ncycles5), statec, nothing, 100000)
+#              for ncycles5 in 0:10:50]
 
-@time run_sequences()
+@time @show pmap(ncycles5->Setup.run(create_sequence(5, ncycles5), statec,
+                                     nothing, 100000), 0:10:50)
+
+# function run_sequences()
+#     for i in 0:5
+#         println("Pulse groups: $i")
+#         (nbars,), ground =
+#             Setup.run(create_sequence(i), statec, nothing, 100000)
+#         println("    nbar: $nbars; pgrd: $ground")
+#     end
+# end
