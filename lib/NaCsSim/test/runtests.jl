@@ -94,7 +94,9 @@ function add_pulse(builder, params::Grp2AParams)
 end
 
 export create_sequence
-function create_sequence(ngroup, ncycles)
+function create_sequence(ngroup, op_defect)
+    ncycles = 98
+    # op_defect = 0.01
     pulses_left = Ref(ncycles)
 
     take_pulses = function (n)
@@ -115,31 +117,31 @@ function create_sequence(ngroup, ncycles)
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure()))
 
-    pulses = [Grp2AParams(OPParams(15, 0.3, 0.01),
+    pulses = [Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 6, 8),
                           RamanParams(1, 5, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, 0.01),
+              Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 5, 10),
                           RamanParams(1, 4, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, 0.01),
+              Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 4, 10),
                           RamanParams(1, 3, 12),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, 0.01),
+              Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 3, 12),
                           RamanParams(1, 2, 4),
                           RamanParams(2, 1, 5),
                           RamanParams(3, 1, 5),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.06, 0.01),
+              Grp2AParams(OPParams(15, 0.06, op_defect),
                           RamanParams(1, 2, 4),
                           RamanParams(1, 1, 4),
                           RamanParams(2, 1, 3),
@@ -155,10 +157,10 @@ end
 
 @everywhere using TestSequence
 
-const params = 0:98
+const params = linspace(0, 0.02, 20)
 
-res = pmap(ncycles->Setup.run(create_sequence(5, ncycles), statec,
-                              nothing, 100000), params)
+res = pmap(p->Setup.run(create_sequence(5, p), statec,
+                        nothing, 100000), params)
 
 using PyPlot
 
@@ -187,7 +189,9 @@ function plot_result(params, res)
     nbary_unc = [n.s for n in nbary_res]
     nbarz = [n.a for n in nbarz_res]
     nbarz_unc = [n.s for n in nbarz_res]
-    gca()[:set_yscale]("log")
+    if max(maximum(nbarx), maximum(nbary), maximum(nbarz)) > 1
+        gca()[:set_yscale]("log")
+    end
     errorbar(params, nbarx, nbarx_unc, label="X")
     errorbar(params, nbary, nbary_unc, label="Y")
     errorbar(params, nbarz, nbarz_unc, label="Z")
