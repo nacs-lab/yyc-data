@@ -26,11 +26,12 @@ end
 # TODO, run in parallel/run multiple sequences
 function run{AS,ES}(seq::Sequence{AS,ES},
                     atomic_state::AS, extern_state::ES, n::Integer)
-    @assert n >= 1
     res = create_measure(seq)
-    run(seq, atomic_state, extern_state, res)
-    for i in 2:n
+    for i in 1:n
         run(seq, atomic_state, extern_state, res)
+        if abort_measure(seq, res, i)
+            return finalize_measure(seq, res, i)
+        end
     end
     return finalize_measure(seq, res, n)
 end
@@ -91,10 +92,24 @@ end
         ($((:(finalize_measure(ms[$i], res[$i], n)) for i in 1:N)...),)
     end
 end
+@generated function abort_measure{T}(m::CombinedMeasure{T}, res, n)
+    N = length(T.parameters)
+    val = true
+    for i in N:-1:1
+        val = :(abort_measure(ms[$i], res[$i], n) && $val)
+    end
+    quote
+        ms = m.measures
+        $val
+    end
+end
+
+abort_measure(measure, res, n) = false
 
 create_measure(seq::Sequence) = create_measure(seq.measure, seq)
 finalize_measure(seq::Sequence, m, n) =
     finalize_measure(seq.measure, m, n)
+abort_measure(seq::Sequence, res, n) = abort_measure(seq.measure, res, n)
 create_measure(::Dummy, seq) = nothing
 finalize_measure(::Dummy, m, n) = nothing
 

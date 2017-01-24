@@ -211,6 +211,15 @@ end
 
 binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
 
+@inline function check_abort(r, n)
+    n < 300 && return false
+    if r * 2 > n
+        r = n - r
+    end
+    p, unc = binomial_estimate(r, n, 1f0)
+    return unc < 0.005 || unc < p * 0.01
+end
+
 # External state / measure
 immutable HyperFineMeasure{N}
 end
@@ -269,6 +278,20 @@ function Setup.finalize_measure(::NBarMeasure, res::NBarResult, n)
     σnz = sqrt(nz² - nz^2) * factor
     ((Unc(nx, σnx), Unc(ny, σny), Unc(nz, σnz)), binomial_unc(total, n))
 end
+@inline function check_abort_x2(x, x², n)
+    xbar² = (x / n)^2
+    x²bar = x² / n
+    unc² = (x²bar - xbar²) / (n - 1)
+    return unc² < 0.0001 || unc² < xbar² * 0.0001
+end
+function Setup.abort_measure(::NBarMeasure, res::NBarResult, n)
+    n < 300 && return false
+    total = res.n
+    check_abort_x2(res.nx, res.nx², total) || return false
+    check_abort_x2(res.ny, res.ny², total) || return false
+    check_abort_x2(res.nz, res.nz², total) || return false
+    return check_abort(total, n)
+end
 
 immutable FilterMeasure{F}
     cb::F
@@ -281,6 +304,7 @@ function (measure::FilterMeasure)(res::Ref{Int}, state::StateC, extern_state)
     return res
 end
 Setup.finalize_measure(::FilterMeasure, m, n) = binomial_unc(m[], n)
+Setup.abort_measure(::FilterMeasure, m, n) = check_abort(m[], n)
 
 GroundStateMeasure() = FilterMeasure() do n, hf
     n == (0, 0, 0)
