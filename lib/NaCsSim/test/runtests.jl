@@ -94,7 +94,21 @@ function add_pulse(builder, params::Grp2AParams)
 end
 
 export create_sequence
-function create_sequence(ngroup, ncycles5)
+function create_sequence(ngroup, ncycles)
+    pulses_left = Ref(ncycles)
+
+    take_pulses = function (n)
+        nleft = pulses_left[]
+        if nleft > n
+            nleft -= n
+            pulses_left[] = nleft
+            return n
+        else
+            pulses_left[] = 0
+            return nleft
+        end
+    end
+
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
     # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
     builder = BuilderT(init, Setup.Dummy(),
@@ -106,31 +120,31 @@ function create_sequence(ngroup, ncycles5)
                           RamanParams(1, 5, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
-                          12),
+                          take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, 0.01),
                           RamanParams(1, 5, 10),
                           RamanParams(1, 4, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
-                          12),
+                          take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, 0.01),
                           RamanParams(1, 4, 10),
                           RamanParams(1, 3, 12),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
-                          12),
+                          take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, 0.01),
                           RamanParams(1, 3, 12),
                           RamanParams(1, 2, 4),
                           RamanParams(2, 1, 5),
                           RamanParams(3, 1, 5),
-                          12),
+                          take_pulses(12)),
               Grp2AParams(OPParams(15, 0.06, 0.01),
                           RamanParams(1, 2, 4),
                           RamanParams(1, 1, 4),
                           RamanParams(2, 1, 3),
                           RamanParams(3, 1, 3),
-                          ncycles5)]
+                          take_pulses(50))]
     for i in 1:ngroup
         add_pulse(builder, pulses[i])
     end
@@ -141,11 +155,48 @@ end
 
 @everywhere using TestSequence
 
-# @time @show [Setup.run(create_sequence(5, ncycles5), statec, nothing, 100000)
-#              for ncycles5 in 0:10:50]
+const params = 0:98
 
-@time @show pmap(ncycles5->Setup.run(create_sequence(5, ncycles5), statec,
-                                     nothing, 100000), 0:10:50)
+res = pmap(ncycles->Setup.run(create_sequence(5, ncycles), statec,
+                              nothing, 100000), params)
+
+using PyPlot
+
+function plot_result(params, res)
+    figure()
+    gp = [r[2].a for r in res]
+    gp_unc = [r[2].s for r in res]
+    errorbar(params, gp, gp_unc, label="Ground state")
+
+    nbar_res = (r[1] for r in res)
+    total_res = (nr[2] for nr in nbar_res)
+    total = [t.a for t in total_res]
+    total_unc = [t.s for t in total_res]
+    errorbar(params, total, total_unc, label="Total")
+    legend()
+    grid()
+
+    figure()
+    nbarx_res = (nr[1][1] for nr in nbar_res)
+    nbary_res = (nr[1][2] for nr in nbar_res)
+    nbarz_res = (nr[1][3] for nr in nbar_res)
+
+    nbarx = [n.a for n in nbarx_res]
+    nbarx_unc = [n.s for n in nbarx_res]
+    nbary = [n.a for n in nbary_res]
+    nbary_unc = [n.s for n in nbary_res]
+    nbarz = [n.a for n in nbarz_res]
+    nbarz_unc = [n.s for n in nbarz_res]
+    gca()[:set_yscale]("log")
+    errorbar(params, nbarx, nbarx_unc, label="X")
+    errorbar(params, nbary, nbary_unc, label="Y")
+    errorbar(params, nbarz, nbarz_unc, label="Z")
+    legend()
+    grid()
+end
+
+plot_result(params, res)
+show()
 
 # function run_sequences()
 #     for i in 0:5

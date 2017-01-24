@@ -282,7 +282,7 @@ end
     xbar² = (x / n)^2
     x²bar = x² / n
     unc² = (x²bar - xbar²) / (n - 1)
-    return unc² < 0.0001 || unc² < xbar² * 0.0001
+    return unc² < 0.00005 || unc² < xbar² * 0.0001
 end
 function Setup.abort_measure(::NBarMeasure, res::NBarResult, n)
     n < 300 && return false
