@@ -164,24 +164,29 @@ res = pmap(p->Setup.run(create_sequence(5, p), statec,
 
 using PyPlot
 
-function plot_result(params, res)
+function plot_ground_state(params, res)
     figure()
-    gp = [r[2].a for r in res]
-    gp_unc = [r[2].s for r in res]
-    errorbar(params, gp, gp_unc, label="Ground state")
-
-    nbar_res = (r[1] for r in res)
-    total_res = (nr[2] for nr in nbar_res)
-    total = [t.a for t in total_res]
-    total_unc = [t.s for t in total_res]
-    errorbar(params, total, total_unc, label="Total")
-    legend()
+    gp = [r.a for r in res]
+    gp_unc = [r.s for r in res]
+    errorbar(params, gp, gp_unc)
+    title("Ground state probability")
     grid()
+end
 
+function plot_total(params, res)
     figure()
-    nbarx_res = (nr[1][1] for nr in nbar_res)
-    nbary_res = (nr[1][2] for nr in nbar_res)
-    nbarz_res = (nr[1][3] for nr in nbar_res)
+    total = [1 - t.a for t in res]
+    total_unc = [t.s for t in res]
+    errorbar(params, total, total_unc)
+    title("Total loss")
+    grid()
+end
+
+function plot_nbars(params, res)
+    figure()
+    nbarx_res = (nr[1] for nr in res)
+    nbary_res = (nr[2] for nr in res)
+    nbarz_res = (nr[3] for nr in res)
 
     nbarx = [n.a for n in nbarx_res]
     nbarx_unc = [n.s for n in nbarx_res]
@@ -197,6 +202,12 @@ function plot_result(params, res)
     errorbar(params, nbarz, nbarz_unc, label="Z")
     legend()
     grid()
+end
+
+function plot_result(params, res)
+    plot_ground_state(params, (r[2] for r in res))
+    plot_total(params, (r[1][2] for r in res))
+    plot_nbars(params, (r[1][1] for r in res))
 end
 
 plot_result(params, res)
