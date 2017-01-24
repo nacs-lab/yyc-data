@@ -60,6 +60,16 @@ immutable RamanParams
     order::Int
     t::Float32
 end
+immutable RamanDelta
+    t::Float32
+end
+function mix(param::RamanParams, delta::RamanDelta, i, n)
+    if i == 1
+        return param
+    end
+    RamanParams(param.ax, param.order,
+                param.t + delta.t * (i - 1) / (n - 1))
+end
 
 pulse(params::RamanParams) = raman_pulse(params.ax, params.order, params.t)
 
@@ -72,23 +82,37 @@ immutable Grp2AParams
     raman12::RamanParams
     raman2::RamanParams
     raman3::RamanParams
+    delta11::RamanDelta
+    delta12::RamanDelta
+    delta2::RamanDelta
+    delta3::RamanDelta
     rep::Int
 end
 
 function add_pulse(builder, params::Grp2AParams)
+    n = params.rep
+    if n == 0
+        return
+    end
     op = pulse(params.op)
-    for i in 1:params.rep
-        Setup.add_pulse(builder, pulse(params.raman11))
+    for i in 1:n
+        Setup.add_pulse(builder, pulse(mix(params.raman11,
+                                           params.delta11, i, n)))
         Setup.add_pulse(builder, op)
-        Setup.add_pulse(builder, pulse(params.raman12))
+        Setup.add_pulse(builder, pulse(mix(params.raman12,
+                                           params.delta12, i, n)))
         Setup.add_pulse(builder, op)
-        Setup.add_pulse(builder, pulse(params.raman2))
+        Setup.add_pulse(builder, pulse(mix(params.raman2,
+                                           params.delta2, i, n)))
         Setup.add_pulse(builder, op)
-        Setup.add_pulse(builder, pulse(params.raman11))
+        Setup.add_pulse(builder, pulse(mix(params.raman11,
+                                           params.delta11, i, n)))
         Setup.add_pulse(builder, op)
-        Setup.add_pulse(builder, pulse(params.raman12))
+        Setup.add_pulse(builder, pulse(mix(params.raman12,
+                                           params.delta12, i, n)))
         Setup.add_pulse(builder, op)
-        Setup.add_pulse(builder, pulse(params.raman3))
+        Setup.add_pulse(builder, pulse(mix(params.raman3,
+                                           params.delta3, i, n)))
         Setup.add_pulse(builder, op)
     end
 end
@@ -122,30 +146,50 @@ function create_sequence(ngroup, op_defect)
                           RamanParams(1, 5, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
                           take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 5, 10),
                           RamanParams(1, 4, 10),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
                           take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 4, 10),
                           RamanParams(1, 3, 12),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
                           take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 3, 12),
                           RamanParams(1, 2, 4),
                           RamanParams(2, 1, 5),
                           RamanParams(3, 1, 5),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
                           take_pulses(12)),
               Grp2AParams(OPParams(15, 0.06, op_defect),
                           RamanParams(1, 2, 4),
                           RamanParams(1, 1, 4),
                           RamanParams(2, 1, 3),
                           RamanParams(3, 1, 3),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
+                          RamanDelta(0),
                           take_pulses(50))]
     for i in 1:ngroup
         add_pulse(builder, pulses[i])
