@@ -117,12 +117,14 @@ function add_pulse(builder, params::Grp2AParams)
 end
 
 export create_sequence
-function create_sequence(t)
-    ncycles = 98
+function create_sequence(ncycles)
+    # ncycles = 98
     op_defect = 0.01
     pulses_left = Ref(ncycles)
+    cooling_on = true
 
-    take_pulses = function (n)
+    take_pulses = function (n)::Int
+        cooling_on || return 0
         nleft = pulses_left[]
         if nleft > n
             nleft -= n
@@ -138,19 +140,20 @@ function create_sequence(t)
     # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
     builder = BuilderT(init, Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
-                                             System.GroundStateMeasure()))
+                                             System.GroundStateMeasure(),
+                                             System.HyperFineMeasure{3}()))
 
-    # pulses = [RamanParams(1, 6, t)]
-    pulses = [Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 6, 10),
-                          RamanParams(1, 5, t),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
+    pulses = [Grp2AParams(OPParams(15, 0.6, op_defect),
+                          RamanParams(1, 6, 5),
+                          RamanParams(1, 5, 5),
+                          RamanParams(2, 2, 4),
+                          RamanParams(3, 2, 4),
                           RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
+                          RamanDelta(5),
+                          RamanDelta(2),
+                          RamanDelta(2),
                           take_pulses(12)),
+              # RamanParams(2, 2, t),
               Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 5, 10),
                           RamanParams(1, 4, 10),
@@ -201,8 +204,8 @@ end
 
 @everywhere using TestSequence
 
-const params = linspace(0, 50, 51)
-# const params = 0:98
+# const params = linspace(0, 1, 21)
+const params = 0:12
 
 res = pmap(p->Setup.run(create_sequence(p), statec,
                         nothing, 100000), params)
@@ -246,25 +249,21 @@ function plot_nbars(params, res)
     errorbar(params, nbary, nbary_unc, label="Y")
     errorbar(params, nbarz, nbarz_unc, label="Z")
     legend()
+    title("\$\\bar n\$")
     grid()
 end
 
-function plot_hf(params, res)
-    figure()
-    nbarx_res = (nr[1] for nr in res)
-    nbary_res = (nr[2] for nr in res)
-    nbarz_res = (nr[3] for nr in res)
+plot_hf(params, res) = plot_hf(params, collect(res))
 
-    nbarx = [n.a for n in nbarx_res]
-    nbarx_unc = [n.s for n in nbarx_res]
-    nbary = [n.a for n in nbary_res]
-    nbary_unc = [n.s for n in nbary_res]
-    nbarz = [n.a for n in nbarz_res]
-    nbarz_unc = [n.s for n in nbarz_res]
-    errorbar(params, nbarx, nbarx_unc, label="X")
-    errorbar(params, nbary, nbary_unc, label="Y")
-    errorbar(params, nbarz, nbarz_unc, label="Z")
+function plot_hf{T<:Tuple}(params, res::Vector{T})
+    figure()
+    for i in 1:nfields(T)
+        hf = [r[i].a for r in res]
+        hf_unc = [r[i].s for r in res]
+        errorbar(params, hf, hf_unc, label="$i")
+    end
     legend()
+    title("Hyperfine")
     grid()
 end
 
@@ -272,8 +271,8 @@ function plot_result(params, res)
     plot_ground_state(params, (r[2] for r in res))
     plot_total(params, (r[1][2] for r in res))
     plot_nbars(params, (r[1][1] for r in res))
-    # plot_total(params, (r[2] for r in res))
-    # plot_nbars(params, (r[1] for r in res))
+    # plot_total(params, (r[3][2] for r in res))
+    plot_hf(params, (r[3][1] for r in res))
 end
 
 plot_result(params, res)

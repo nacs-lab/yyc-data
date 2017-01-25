@@ -237,6 +237,14 @@ function Setup.finalize_measure{N}(::HyperFineMeasure{N}, m, n)
     return (ntuple(i->binomial_unc(m[i], total), Val{N}),
             binomial_unc(total, n))
 end
+function Setup.abort_measure(::HyperFineMeasure, res::Vector{Int}, n)
+    total = res[end]
+    total < 300 && return false
+    @inbounds for i in 1:(length(res) - 1)
+        check_abort(res[i], total) || return false
+    end
+    return check_abort(total, n)
+end
 
 immutable NBarMeasure
 end
