@@ -118,9 +118,9 @@ function add_pulse(builder, params::Grp2AParams)
 end
 
 export create_sequence
-function create_sequence(ngroup, op_defect)
+function create_sequence(t)
     ncycles = 98
-    # op_defect = 0.01
+    op_defect = 0.01
     pulses_left = Ref(ncycles)
 
     take_pulses = function (n)
@@ -136,63 +136,64 @@ function create_sequence(ngroup, op_defect)
     end
 
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
-    # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
-    builder = BuilderT(init, Setup.Dummy(),
-                       Setup.CombinedMeasure(System.NBarMeasure(),
-                                             System.GroundStateMeasure()))
+    builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
+    # builder = BuilderT(init, Setup.Dummy(),
+    #                    Setup.CombinedMeasure(System.NBarMeasure(),
+    #                                          System.GroundStateMeasure()))
 
-    pulses = [Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 6, 8),
-                          RamanParams(1, 5, 10),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 5, 10),
-                          RamanParams(1, 4, 10),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 4, 10),
-                          RamanParams(1, 3, 12),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 3, 12),
-                          RamanParams(1, 2, 4),
-                          RamanParams(2, 1, 5),
-                          RamanParams(3, 1, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.06, op_defect),
-                          RamanParams(1, 2, 4),
-                          RamanParams(1, 1, 4),
-                          RamanParams(2, 1, 3),
-                          RamanParams(3, 1, 3),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(50))]
-    for i in 1:ngroup
-        add_pulse(builder, pulses[i])
+    pulses = [RamanParams(1, 6, t)]
+    # pulses = [Grp2AParams(OPParams(15, 0.3, op_defect),
+    #                       RamanParams(1, 6, 15),
+    #                       RamanParams(1, 5, 40),
+    #                       RamanParams(2, 2, 5),
+    #                       RamanParams(3, 2, 5),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       take_pulses(12)),
+    #           Grp2AParams(OPParams(15, 0.3, op_defect),
+    #                       RamanParams(1, 5, 10),
+    #                       RamanParams(1, 4, 10),
+    #                       RamanParams(2, 2, 5),
+    #                       RamanParams(3, 2, 5),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       take_pulses(12 * 0)),
+    #           Grp2AParams(OPParams(15, 0.3, op_defect),
+    #                       RamanParams(1, 4, 10),
+    #                       RamanParams(1, 3, 12),
+    #                       RamanParams(2, 2, 5),
+    #                       RamanParams(3, 2, 5),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       take_pulses(12 * 0)),
+    #           Grp2AParams(OPParams(15, 0.3, op_defect),
+    #                       RamanParams(1, 3, 12),
+    #                       RamanParams(1, 2, 4),
+    #                       RamanParams(2, 1, 5),
+    #                       RamanParams(3, 1, 5),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       take_pulses(12 * 0)),
+    #           Grp2AParams(OPParams(15, 0.06, op_defect),
+    #                       RamanParams(1, 2, 4.2),
+    #                       RamanParams(1, 1, 5.7),
+    #                       RamanParams(2, 1, 3.4),
+    #                       RamanParams(3, 1, 3.4),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       RamanDelta(0),
+    #                       take_pulses(50 * 0))]
+    for p in pulses
+        add_pulse(builder, p)
     end
     return builder.seq
 end
@@ -201,9 +202,10 @@ end
 
 @everywhere using TestSequence
 
-const params = linspace(0, 0.02, 20)
+const params = linspace(0, 50, 51)
+# const params = 0:98
 
-res = pmap(p->Setup.run(create_sequence(5, p), statec,
+res = pmap(p->Setup.run(create_sequence(p), statec,
                         nothing, 100000), params)
 
 using PyPlot
@@ -248,20 +250,32 @@ function plot_nbars(params, res)
     grid()
 end
 
+function plot_hf(params, res)
+    figure()
+    nbarx_res = (nr[1] for nr in res)
+    nbary_res = (nr[2] for nr in res)
+    nbarz_res = (nr[3] for nr in res)
+
+    nbarx = [n.a for n in nbarx_res]
+    nbarx_unc = [n.s for n in nbarx_res]
+    nbary = [n.a for n in nbary_res]
+    nbary_unc = [n.s for n in nbary_res]
+    nbarz = [n.a for n in nbarz_res]
+    nbarz_unc = [n.s for n in nbarz_res]
+    errorbar(params, nbarx, nbarx_unc, label="X")
+    errorbar(params, nbary, nbary_unc, label="Y")
+    errorbar(params, nbarz, nbarz_unc, label="Z")
+    legend()
+    grid()
+end
+
 function plot_result(params, res)
-    plot_ground_state(params, (r[2] for r in res))
-    plot_total(params, (r[1][2] for r in res))
-    plot_nbars(params, (r[1][1] for r in res))
+    # plot_ground_state(params, (r[2] for r in res))
+    # plot_total(params, (r[1][2] for r in res))
+    # plot_nbars(params, (r[1][1] for r in res))
+    plot_total(params, (r[2] for r in res))
+    plot_nbars(params, (r[1] for r in res))
 end
 
 plot_result(params, res)
 show()
-
-# function run_sequences()
-#     for i in 0:5
-#         println("Pulse groups: $i")
-#         (nbars,), ground =
-#             Setup.run(create_sequence(i), statec, nothing, 100000)
-#         println("    nbar: $nbars; pgrd: $ground")
-#     end
-# end
