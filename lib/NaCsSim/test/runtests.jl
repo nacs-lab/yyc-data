@@ -116,6 +116,7 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
+# TODO sweep OP power
 export create_sequence
 function create_sequence(ncycles)
     # ncycles = 98
@@ -153,47 +154,46 @@ function create_sequence(ncycles)
                           RamanDelta(2),
                           RamanDelta(2),
                           take_pulses(12)),
-              # RamanParams(2, 2, t),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 5, 10),
-                          RamanParams(1, 4, 10),
+              Grp2AParams(OPParams(15, 0.6, op_defect),
+                          RamanParams(1, 5, 5),
+                          RamanParams(1, 4, 5),
+                          RamanParams(2, 2, 4),
+                          RamanParams(3, 2, 4),
+                          RamanDelta(5),
+                          RamanDelta(5),
+                          RamanDelta(2),
+                          RamanDelta(2),
+                          take_pulses(12)),
+              Grp2AParams(OPParams(15, 0.4, op_defect),
+                          RamanParams(1, 4, 5),
+                          RamanParams(1, 3, 4.5),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12 * 0)),
+                          RamanDelta(5),
+                          RamanDelta(4.5),
+                          RamanDelta(7),
+                          RamanDelta(7),
+                          take_pulses(12)),
               Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 4, 10),
-                          RamanParams(1, 3, 12),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
+                          RamanParams(1, 3, 10),
+                          RamanParams(1, 2, 5),
+                          RamanParams(2, 1, 3),
+                          RamanParams(3, 1, 3),
                           RamanDelta(0),
+                          RamanDelta(5),
+                          RamanDelta(2),
+                          RamanDelta(2),
+                          take_pulses(12)),
+              Grp2AParams(OPParams(15, 0.1, op_defect),
+                          RamanParams(1, 2, 5),
+                          RamanParams(1, 1, 1.5),
+                          RamanParams(2, 1, 2.5),
+                          RamanParams(3, 1, 2.5),
                           RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12 * 0)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 3, 12),
-                          RamanParams(1, 2, 4),
-                          RamanParams(2, 1, 5),
-                          RamanParams(3, 1, 5),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(12 * 0)),
-              Grp2AParams(OPParams(15, 0.06, op_defect),
-                          RamanParams(1, 2, 4.2),
-                          RamanParams(1, 1, 5.7),
-                          RamanParams(2, 1, 3.4),
-                          RamanParams(3, 1, 3.4),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          RamanDelta(0),
-                          take_pulses(50 * 0))]
+                          RamanDelta(1),
+                          RamanDelta(2),
+                          RamanDelta(2),
+                          take_pulses(40))]
     for p in pulses
         add_pulse(builder, p)
     end
@@ -204,8 +204,8 @@ end
 
 @everywhere using TestSequence
 
-# const params = linspace(0, 1, 21)
-const params = 0:12
+# const params = linspace(0, 0.5, 41)
+const params = 0:88
 
 res = pmap(p->Setup.run(create_sequence(p), statec,
                         nothing, 100000), params)
