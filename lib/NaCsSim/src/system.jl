@@ -212,7 +212,7 @@ end
 binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
 
 @inline function check_abort(r, n)
-    n < 300 && return false
+    n < 1000 && return false
     if r * 2 > n
         r = n - r
     end
@@ -239,7 +239,7 @@ function Setup.finalize_measure{N}(::HyperFineMeasure{N}, m, n)
 end
 function Setup.abort_measure(::HyperFineMeasure, res::Vector{Int}, n)
     total = res[end]
-    total < 300 && return false
+    total < 1000 && return false
     @inbounds for i in 1:(length(res) - 1)
         check_abort(res[i], total) || return false
     end
@@ -293,7 +293,7 @@ end
     return unc² < 0.000025 / 4 || unc² < xbar² * 0.0001
 end
 function Setup.abort_measure(::NBarMeasure, res::NBarResult, n)
-    n < 300 && return false
+    n < 1000 && return false
     total = res.n
     check_abort_x2(res.nx, res.nx², total) || return false
     check_abort_x2(res.ny, res.ny², total) || return false

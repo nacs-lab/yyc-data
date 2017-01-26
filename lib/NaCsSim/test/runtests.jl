@@ -1,7 +1,5 @@
 #!/usr/bin/julia
 
-@everywhere import NaCsSim: Setup, System
-
 @everywhere module TestSequence
 import NaCsSim: Setup, System
 import NaCsCalc: Trap
@@ -129,9 +127,9 @@ end
 
 # TODO sweep OP power
 export create_sequence
-function create_sequence(ncycles)
-    # ncycles = 88
-    op_defect = 0.01
+function create_sequence(op_defect)
+    ncycles = 88
+    # op_defect = 0.01
     pulses_left = Ref(ncycles)
     cooling_on = true
 
@@ -219,10 +217,11 @@ end
 
 end
 
+@everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-# const params = linspace(-0.08, 0.08, 41)
-const params = 0:88
+const params = linspace(0.0, 0.02, 41)
+# const params = 0:88
 
 res = pmap(p->Setup.run(create_sequence(p), statec,
                         nothing, 100000), params)
