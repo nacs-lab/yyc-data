@@ -147,7 +147,6 @@ function create_sequence(op_defect)
     end
 
     # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
-    # builder = BuilderT(init, Setup.Dummy(), System.HyperFineMeasure{3}())
     builder = BuilderT(init, Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
