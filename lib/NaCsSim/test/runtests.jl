@@ -46,11 +46,25 @@ function raman_pulse(ax, order, t, Ω=1)
     System.Raman{Float32,1,3}(t, Ω, η_ramans[ax], ns, sz)
 end
 
+@inline function mix(p, delta, i)
+    return p + delta * (i - 1)
+end
+
 immutable OPParams
     γ1::Float32
     γ2::Float32
     darkness::Float32
 end
+immutable OPDelta
+    γ1::Float32
+    γ2::Float32
+    darkness::Float32
+end
+Base.:*(delta::OPDelta, n) = OPDelta(delta.γ1 * n, delta.γ2 * n, delta.darkness * n)
+Base.:+(param::OPParams, delta::OPDelta) =
+    OPParams(param.γ1 + delta.γ1, param.γ2 + delta.γ2,
+             param.darkness + delta.darkness)
+OPDelta(;γ1=0, γ2=0, darkness=0) = OPDelta(γ1, γ2, darkness)
 
 pulse(params::OPParams) =
     op_pulse(1, params.γ1, params.γ2, params.γ2 * params.darkness)
@@ -63,13 +77,9 @@ end
 immutable RamanDelta
     t::Float32
 end
-function mix(param::RamanParams, delta::RamanDelta, i, n)
-    if i == 1
-        return param
-    end
-    RamanParams(param.ax, param.order,
-                param.t + delta.t * (i - 1) / (n - 1))
-end
+Base.:*(delta::RamanDelta, n) = RamanDelta(delta.t * n)
+Base.:+(param::RamanParams, delta::RamanDelta) =
+    RamanParams(param.ax, param.order, param.t + delta.t)
 
 pulse(params::RamanParams) = raman_pulse(params.ax, params.order, params.t)
 
@@ -82,6 +92,7 @@ immutable Grp2AParams
     raman12::RamanParams
     raman2::RamanParams
     raman3::RamanParams
+    deltaop::OPDelta
     delta11::RamanDelta
     delta12::RamanDelta
     delta2::RamanDelta
@@ -92,7 +103,7 @@ end
 function add_raman_op(builder, raman, op)
     raman.t > 0 || return
     add_pulse(builder, raman)
-    Setup.add_pulse(builder, op)
+    add_pulse(builder, op)
     return
 end
 
@@ -101,12 +112,12 @@ function add_pulse(builder, params::Grp2AParams)
     if n == 0
         return
     end
-    op = pulse(params.op)
     for i in 1:n
-        raman11 = mix(params.raman11, params.delta11, i, n)
-        raman12 = mix(params.raman12, params.delta12, i, n)
-        raman2 = mix(params.raman2, params.delta2, i, n)
-        raman3 = mix(params.raman3, params.delta3, i, n)
+        op = params.op + params.deltaop * i
+        raman11 = params.raman11 + params.delta11 * i
+        raman12 = params.raman12 + params.delta12 * i
+        raman2 = params.raman2 + params.delta2 * i
+        raman3 = params.raman3 + params.delta3 * i
         add_raman_op(builder, raman11, op)
         add_raman_op(builder, raman12, op)
         add_raman_op(builder, raman2, op)
@@ -119,7 +130,7 @@ end
 # TODO sweep OP power
 export create_sequence
 function create_sequence(ncycles)
-    # ncycles = 98
+    # ncycles = 88
     op_defect = 0.01
     pulses_left = Ref(ncycles)
     cooling_on = true
@@ -144,56 +155,62 @@ function create_sequence(ncycles)
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{3}()))
 
-    pulses = [Grp2AParams(OPParams(15, 0.6, op_defect),
+    pulses = [Grp2AParams(OPParams(15, 0.8, op_defect),
                           RamanParams(1, 6, 5),
                           RamanParams(1, 5, 5),
                           RamanParams(2, 2, 4),
                           RamanParams(3, 2, 4),
-                          RamanDelta(0),
-                          RamanDelta(5),
-                          RamanDelta(2),
-                          RamanDelta(2),
+                          OPDelta(),
+                          RamanDelta(0 / 11),
+                          RamanDelta(5 / 11),
+                          RamanDelta(2 / 11),
+                          RamanDelta(2 / 11),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.6, op_defect),
+              Grp2AParams(OPParams(15, 0.7, op_defect),
                           RamanParams(1, 5, 5),
                           RamanParams(1, 4, 5),
                           RamanParams(2, 2, 4),
                           RamanParams(3, 2, 4),
-                          RamanDelta(5),
-                          RamanDelta(5),
-                          RamanDelta(2),
-                          RamanDelta(2),
+                          OPDelta(),
+                          RamanDelta(5 / 11),
+                          RamanDelta(5 / 11),
+                          RamanDelta(2 / 11),
+                          RamanDelta(2 / 11),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.4, op_defect),
+              Grp2AParams(OPParams(15, 0.7, op_defect),
                           RamanParams(1, 4, 5),
                           RamanParams(1, 3, 4.5),
                           RamanParams(2, 2, 5),
                           RamanParams(3, 2, 5),
-                          RamanDelta(5),
-                          RamanDelta(4.5),
-                          RamanDelta(7),
-                          RamanDelta(7),
+                          OPDelta(),
+                          RamanDelta(5 / 11),
+                          RamanDelta(4.5 / 11),
+                          RamanDelta(7 / 11),
+                          RamanDelta(7 / 11),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
+              Grp2AParams(OPParams(15, 0.4, op_defect),
                           RamanParams(1, 3, 10),
                           RamanParams(1, 2, 5),
                           RamanParams(2, 1, 3),
                           RamanParams(3, 1, 3),
-                          RamanDelta(0),
-                          RamanDelta(5),
-                          RamanDelta(2),
-                          RamanDelta(2),
+                          OPDelta(γ2=0.2 / 11),
+                          RamanDelta(0 / 11),
+                          RamanDelta(5 / 11),
+                          RamanDelta(2 / 11),
+                          RamanDelta(2 / 11),
                           take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.1, op_defect),
+              Grp2AParams(OPParams(15, 0.3, op_defect),
                           RamanParams(1, 2, 5),
                           RamanParams(1, 1, 1.5),
                           RamanParams(2, 1, 2.5),
                           RamanParams(3, 1, 2.5),
-                          RamanDelta(0),
-                          RamanDelta(1),
-                          RamanDelta(2),
-                          RamanDelta(2),
-                          take_pulses(40))]
+                          OPDelta(γ2=-0.08 / 11),
+                          RamanDelta(0 / 39),
+                          RamanDelta(1 / 39),
+                          RamanDelta(2 / 39),
+                          RamanDelta(2 / 39),
+                          take_pulses(40))
+              ]
     for p in pulses
         add_pulse(builder, p)
     end
@@ -204,7 +221,7 @@ end
 
 @everywhere using TestSequence
 
-# const params = linspace(0, 0.5, 41)
+# const params = linspace(-0.08, 0.08, 41)
 const params = 0:88
 
 res = pmap(p->Setup.run(create_sequence(p), statec,
