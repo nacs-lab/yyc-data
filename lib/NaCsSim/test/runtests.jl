@@ -126,9 +126,9 @@ end
 
 # TODO sweep OP power
 export create_sequence
-function create_sequence(op_defect)
-    ncycles = 88
-    # op_defect = 0.01
+function create_sequence(ncycles)
+    # ncycles = 88
+    op_defect = 0.01
     pulses_left = Ref(ncycles)
     cooling_on = true
 
@@ -217,13 +217,17 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-const params = linspace(0.0, 0.02, 41)
-# const params = 0:88
+# const params = linspace(0.0, 0.02, 41)
+const params = 0:88
+const xname = "Cycles"
 
-res = pmap(p->Setup.run(create_sequence(p), statec,
-                        nothing, 100000), params)
+res = pmap(p->Setup.run(create_sequence(p), statec, nothing, 100000), params)
 
 using PyPlot
+PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 15,
+                                            "font.weight" => "bold"))
+PyPlot.matplotlib[:rc]("xtick", labelsize=15)
+PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_ground_state(params, res)
     figure()
@@ -231,6 +235,7 @@ function plot_ground_state(params, res)
     gp_unc = [r.s for r in res]
     errorbar(params, gp, gp_unc)
     title("Ground state probability")
+    xlabel(xname)
     grid()
 end
 
@@ -240,6 +245,7 @@ function plot_total(params, res)
     total_unc = [t.s for t in res]
     errorbar(params, total, total_unc)
     title("Total loss")
+    xlabel(xname)
     grid()
 end
 
@@ -263,6 +269,7 @@ function plot_nbars(params, res)
     errorbar(params, nbarz, nbarz_unc, label="Z")
     legend()
     title("\$\\bar n\$")
+    xlabel(xname)
     grid()
 end
 
@@ -277,15 +284,26 @@ function plot_hf{T<:Tuple}(params, res::Vector{T})
     end
     legend()
     title("Hyperfine")
+    xlabel(xname)
     grid()
 end
 
 function plot_result(params, res)
     plot_ground_state(params, (r[2] for r in res))
+    savefig(joinpath(ARGS[1], "ground.svg"), bbox_inches="tight", transparent=true)
+    savefig(joinpath(ARGS[1], "ground.png"), bbox_inches="tight", transparent=true)
+
     plot_total(params, (r[1][2] for r in res))
+    savefig(joinpath(ARGS[1], "loss.svg"), bbox_inches="tight", transparent=true)
+    savefig(joinpath(ARGS[1], "loss.png"), bbox_inches="tight", transparent=true)
+
     plot_nbars(params, (r[1][1] for r in res))
-    # plot_total(params, (r[3][2] for r in res))
+    savefig(joinpath(ARGS[1], "nbar.svg"), bbox_inches="tight", transparent=true)
+    savefig(joinpath(ARGS[1], "nbar.png"), bbox_inches="tight", transparent=true)
+
     plot_hf(params, (r[3][1] for r in res))
+    savefig(joinpath(ARGS[1], "hf.svg"), bbox_inches="tight", transparent=true)
+    savefig(joinpath(ARGS[1], "hf.png"), bbox_inches="tight", transparent=true)
 end
 
 plot_result(params, res)
