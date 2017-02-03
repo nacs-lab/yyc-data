@@ -6,7 +6,6 @@ import NaCsCalc: Trap
 
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 const sz = 500, 100, 100
-const init = System.ThermalInit{1,Float32}(15, 4, 4)
 
 const m_Na = 23f-3 / 6.02f23
 const k_Na = Float32(2π) / 589f-9
@@ -146,8 +145,7 @@ function create_sequence(op_defect)
         end
     end
 
-    # builder = BuilderT(init, Setup.Dummy(), Setup.Dummy())
-    builder = BuilderT(init, Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{1,Float32}(15, 4, 4), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{3}()))
