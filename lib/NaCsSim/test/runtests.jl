@@ -151,7 +151,7 @@ function create_sequence(t)
                                              System.HyperFineMeasure{3}()))
 
     pulses = [
-        RamanParams(1, 6, t)
+        RamanParams(1, 5, t)
         # Grp2AParams(OPParams(15, 0.8, op_defect),
         #             RamanParams(1, 6, 5),
         #             RamanParams(1, 5, 5),
@@ -219,7 +219,7 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-const params = linspace(0.0, 10, 41)
+const params = linspace(0.0, 15, 41)
 # const params = 0:88
 const xname = "t"
 
@@ -233,6 +233,7 @@ PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
     axvline(5, linewidth=3)
+    axvline(10, linewidth=3)
     xlabel(xname)
 end
 
