@@ -126,8 +126,8 @@ end
 
 # TODO sweep OP power
 export create_sequence
-function create_sequence(ncycles)
-    # ncycles = 88
+function create_sequence(t)
+    ncycles = 88
     op_defect = 0.01
     pulses_left = Ref(ncycles)
     cooling_on = true
@@ -150,62 +150,64 @@ function create_sequence(ncycles)
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{3}()))
 
-    pulses = [Grp2AParams(OPParams(15, 0.8, op_defect),
-                          RamanParams(1, 6, 5),
-                          RamanParams(1, 5, 5),
-                          RamanParams(2, 2, 4),
-                          RamanParams(3, 2, 4),
-                          OPDelta(),
-                          RamanDelta(0 / 11),
-                          RamanDelta(5 / 11),
-                          RamanDelta(2 / 11),
-                          RamanDelta(2 / 11),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.7, op_defect),
-                          RamanParams(1, 5, 5),
-                          RamanParams(1, 4, 5),
-                          RamanParams(2, 2, 4),
-                          RamanParams(3, 2, 4),
-                          OPDelta(),
-                          RamanDelta(5 / 11),
-                          RamanDelta(5 / 11),
-                          RamanDelta(2 / 11),
-                          RamanDelta(2 / 11),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.7, op_defect),
-                          RamanParams(1, 4, 5),
-                          RamanParams(1, 3, 4.5),
-                          RamanParams(2, 2, 5),
-                          RamanParams(3, 2, 5),
-                          OPDelta(),
-                          RamanDelta(5 / 11),
-                          RamanDelta(4.5 / 11),
-                          RamanDelta(7 / 11),
-                          RamanDelta(7 / 11),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.4, op_defect),
-                          RamanParams(1, 3, 10),
-                          RamanParams(1, 2, 5),
-                          RamanParams(2, 1, 3),
-                          RamanParams(3, 1, 3),
-                          OPDelta(γ2=0.2 / 11),
-                          RamanDelta(0 / 11),
-                          RamanDelta(5 / 11),
-                          RamanDelta(2 / 11),
-                          RamanDelta(2 / 11),
-                          take_pulses(12)),
-              Grp2AParams(OPParams(15, 0.3, op_defect),
-                          RamanParams(1, 2, 5),
-                          RamanParams(1, 1, 1.5),
-                          RamanParams(2, 1, 2.5),
-                          RamanParams(3, 1, 2.5),
-                          OPDelta(γ2=-0.08 / 11),
-                          RamanDelta(0 / 39),
-                          RamanDelta(1 / 39),
-                          RamanDelta(2 / 39),
-                          RamanDelta(2 / 39),
-                          take_pulses(40))
-              ]
+    pulses = [
+        RamanParams(1, 6, t)
+        # Grp2AParams(OPParams(15, 0.8, op_defect),
+        #             RamanParams(1, 6, 5),
+        #             RamanParams(1, 5, 5),
+        #             RamanParams(2, 2, 4),
+        #             RamanParams(3, 2, 4),
+        #             OPDelta(),
+        #             RamanDelta(0 / 11),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(2 / 11),
+        #             RamanDelta(2 / 11),
+        #             take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.7, op_defect),
+        #             RamanParams(1, 5, 5),
+        #             RamanParams(1, 4, 5),
+        #             RamanParams(2, 2, 4),
+        #             RamanParams(3, 2, 4),
+        #             OPDelta(),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(2 / 11),
+        #             RamanDelta(2 / 11),
+        #             take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.7, op_defect),
+        #             RamanParams(1, 4, 5),
+        #             RamanParams(1, 3, 4.5),
+        #             RamanParams(2, 2, 5),
+        #             RamanParams(3, 2, 5),
+        #             OPDelta(),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(4.5 / 11),
+        #             RamanDelta(7 / 11),
+        #             RamanDelta(7 / 11),
+        #             take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.4, op_defect),
+        #             RamanParams(1, 3, 10),
+        #             RamanParams(1, 2, 5),
+        #             RamanParams(2, 1, 3),
+        #             RamanParams(3, 1, 3),
+        #             OPDelta(γ2=0.2 / 11),
+        #             RamanDelta(0 / 11),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(2 / 11),
+        #             RamanDelta(2 / 11),
+        #             take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.3, op_defect),
+        #             RamanParams(1, 2, 5),
+        #             RamanParams(1, 1, 1.5),
+        #             RamanParams(2, 1, 2.5),
+        #             RamanParams(3, 1, 2.5),
+        #             OPDelta(γ2=-0.08 / 11),
+        #             RamanDelta(0 / 39),
+        #             RamanDelta(1 / 39),
+        #             RamanDelta(2 / 39),
+        #             RamanDelta(2 / 39),
+        #             take_pulses(40))
+    ]
     for p in pulses
         add_pulse(builder, p)
     end
@@ -217,9 +219,9 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-# const params = linspace(0.0, 0.02, 41)
-const params = 0:88
-const xname = "Cycles"
+const params = linspace(0.0, 10, 41)
+# const params = 0:88
+const xname = "t"
 
 res = pmap(p->Setup.run(create_sequence(p), statec, nothing, 100000), params)
 
@@ -229,13 +231,18 @@ PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 15,
 PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
+function plot_hook()
+    axvline(5, linewidth=3)
+    xlabel(xname)
+end
+
 function plot_ground_state(params, res)
     figure()
     gp = [r.a for r in res]
     gp_unc = [r.s for r in res]
     errorbar(params, gp, gp_unc)
     title("Ground state probability")
-    xlabel(xname)
+    plot_hook()
     grid()
 end
 
@@ -245,7 +252,8 @@ function plot_total(params, res)
     total_unc = [t.s for t in res]
     errorbar(params, total, total_unc)
     title("Total loss")
-    xlabel(xname)
+    ylim([0, ylim()[2]])
+    plot_hook()
     grid()
 end
 
@@ -269,7 +277,7 @@ function plot_nbars(params, res)
     errorbar(params, nbarz, nbarz_unc, label="Z")
     legend()
     title("\$\\bar n\$")
-    xlabel(xname)
+    plot_hook()
     grid()
 end
 
@@ -283,8 +291,9 @@ function plot_hf{T<:Tuple}(params, res::Vector{T})
         errorbar(params, hf, hf_unc, label="$i")
     end
     legend()
+    ylim([0, 1])
     title("Hyperfine")
-    xlabel(xname)
+    plot_hook()
     grid()
 end
 
