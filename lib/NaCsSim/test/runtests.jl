@@ -151,17 +151,17 @@ function create_sequence(t)
                                              System.HyperFineMeasure{3}()))
 
     pulses = [
-        Grp2AParams(OPParams(15, 0.8, op_defect),
-                    RamanParams(1, 6, 5),
-                    RamanParams(1, 5, 5),
-                    RamanParams(2, 2, 4),
-                    RamanParams(3, 2, 4),
-                    OPDelta(),
-                    RamanDelta(0 / 11),
-                    RamanDelta(5 / 11),
-                    RamanDelta(2 / 11),
-                    RamanDelta(2 / 11),
-                    take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.8, op_defect),
+        #             RamanParams(1, 6, 5),
+        #             RamanParams(1, 5, 5),
+        #             RamanParams(2, 2, 4),
+        #             RamanParams(3, 2, 4),
+        #             OPDelta(),
+        #             RamanDelta(0 / 11),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(2 / 11),
+        #             RamanDelta(2 / 11),
+        #             take_pulses(12)),
         RamanParams(1, 4, t)
         # Grp2AParams(OPParams(15, 0.7, op_defect),
         #             RamanParams(1, 5, 5),
