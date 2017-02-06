@@ -162,7 +162,7 @@ function create_sequence(t)
         #             RamanDelta(2 / 11),
         #             RamanDelta(2 / 11),
         #             take_pulses(12)),
-        RamanParams(1, 4, t)
+        RamanParams(1, 3, t)
         # Grp2AParams(OPParams(15, 0.7, op_defect),
         #             RamanParams(1, 5, 5),
         #             RamanParams(1, 4, 5),
@@ -232,8 +232,8 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
-    axvline(5, linewidth=3)
-    axvline(10, linewidth=3)
+    axvline(4.5, linewidth=3)
+    axvline(9, linewidth=3)
     xlabel(xname)
 end
 
