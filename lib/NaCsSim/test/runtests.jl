@@ -173,28 +173,28 @@ function create_sequence(t)
                     RamanDelta(2 / 11),
                     RamanDelta(2 / 11),
                     take_pulses(12)),
-        Grp2AParams(OPParams(15, 0.7, op_defect),
-                    RamanParams(1, 4, 5),
-                    RamanParams(1, 3, 4.5),
-                    RamanParams(2, 2, 5),
-                    RamanParams(3, 2, 5),
-                    OPDelta(),
-                    RamanDelta(5 / 11),
-                    RamanDelta(4.5 / 11),
-                    RamanDelta(7 / 11),
-                    RamanDelta(7 / 11),
-                    take_pulses(12)),
-        Grp2AParams(OPParams(15, 0.4, op_defect),
-                    RamanParams(1, 3, 10),
-                    RamanParams(1, 2, 5),
-                    RamanParams(2, 1, 3),
-                    RamanParams(3, 1, 3),
-                    OPDelta(γ2=0.2 / 11),
-                    RamanDelta(0 / 11),
-                    RamanDelta(5 / 11),
-                    RamanDelta(2 / 11),
-                    RamanDelta(2 / 11),
-                    take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.7, op_defect),
+        #             RamanParams(1, 4, 5),
+        #             RamanParams(1, 3, 4.5),
+        #             RamanParams(2, 2, 5),
+        #             RamanParams(3, 2, 5),
+        #             OPDelta(),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(4.5 / 11),
+        #             RamanDelta(7 / 11),
+        #             RamanDelta(7 / 11),
+        #             take_pulses(12)),
+        # Grp2AParams(OPParams(15, 0.4, op_defect),
+        #             RamanParams(1, 3, 10),
+        #             RamanParams(1, 2, 5),
+        #             RamanParams(2, 1, 3),
+        #             RamanParams(3, 1, 3),
+        #             OPDelta(γ2=0.2 / 11),
+        #             RamanDelta(0 / 11),
+        #             RamanDelta(5 / 11),
+        #             RamanDelta(2 / 11),
+        #             RamanDelta(2 / 11),
+        #             take_pulses(12)),
         # Grp2AParams(OPParams(15, 0.3, op_defect),
         #             RamanParams(1, 2, 5),
         #             RamanParams(1, 1, 1.5),
@@ -206,7 +206,7 @@ function create_sequence(t)
         #             RamanDelta(2 / 39),
         #             RamanDelta(2 / 39),
         #             take_pulses(40)),
-        RamanParams(2, 1, t)
+        RamanParams(2, 2, t)
     ]
     for p in pulses
         add_pulse(builder, p)
@@ -219,7 +219,7 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-const params = linspace(0.0, 10, 41)
+const params = linspace(0.0, 15, 41)
 # const params = 0:88
 const xname = "t"
 
@@ -232,8 +232,9 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
-    axvline(3, linewidth=3)
-    axvline(5, linewidth=3)
+    axvline(4, linewidth=3)
+    axvline(6, linewidth=3)
+    axvline(12, linewidth=3)
     xlabel(xname)
 end
 
