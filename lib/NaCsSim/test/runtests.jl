@@ -145,13 +145,13 @@ function create_sequence(t)
         end
     end
 
-    builder = BuilderT(System.ThermalInit{2,Float32}(15, 4, 4), Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{3,Float32}(15, 4, 4), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{3}()))
 
     pulses = [
-        OPParams(15 * t, 0.4 * t, op_defect)
+        OPParams(15 * t, 0.22 * t, op_defect)
         # Grp2AParams(OPParams(15, 0.8, op_defect),
         #             RamanParams(1, 6, 5),
         #             RamanParams(1, 5, 5),
