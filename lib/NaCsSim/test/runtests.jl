@@ -206,7 +206,7 @@ function create_sequence(t)
         #             RamanDelta(2 / 39),
         #             RamanDelta(2 / 39),
         #             take_pulses(40)),
-        RamanParams(1, 2, t)
+        RamanParams(1, 1, t)
     ]
     for p in pulses
         add_pulse(builder, p)
@@ -219,7 +219,7 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-const params = linspace(0.0, 15, 41)
+const params = linspace(0.0, 5, 41)
 # const params = 0:88
 const xname = "t"
 
@@ -232,8 +232,8 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
-    axvline(5, linewidth=3)
-    axvline(10, linewidth=3)
+    axvline(1.5, linewidth=3)
+    axvline(2.5, linewidth=3)
     xlabel(xname)
 end
 
