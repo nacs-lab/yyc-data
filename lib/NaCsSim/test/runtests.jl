@@ -206,7 +206,7 @@ function create_sequence(t)
         #             RamanDelta(2 / 39),
         #             RamanDelta(2 / 39),
         #             take_pulses(40)),
-        RamanParams(2, 2, t)
+        RamanParams(1, 4, t)
     ]
     for p in pulses
         add_pulse(builder, p)
@@ -232,9 +232,8 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
-    axvline(4, linewidth=3)
-    axvline(6, linewidth=3)
-    axvline(12, linewidth=3)
+    axvline(5, linewidth=3)
+    axvline(10, linewidth=3)
     xlabel(xname)
 end
 
