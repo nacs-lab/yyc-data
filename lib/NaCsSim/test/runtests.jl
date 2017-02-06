@@ -151,18 +151,18 @@ function create_sequence(t)
                                              System.HyperFineMeasure{3}()))
 
     pulses = [
-        # Grp2AParams(OPParams(15, 0.8, op_defect),
-        #             RamanParams(1, 6, 5),
-        #             RamanParams(1, 5, 5),
-        #             RamanParams(2, 2, 4),
-        #             RamanParams(3, 2, 4),
-        #             OPDelta(),
-        #             RamanDelta(0 / 11),
-        #             RamanDelta(5 / 11),
-        #             RamanDelta(2 / 11),
-        #             RamanDelta(2 / 11),
-        #             take_pulses(12)),
-        RamanParams(1, 3, t)
+        Grp2AParams(OPParams(15, 0.8, op_defect),
+                    RamanParams(1, 6, 5),
+                    RamanParams(1, 5, 5),
+                    RamanParams(2, 2, 4),
+                    RamanParams(3, 2, 4),
+                    OPDelta(),
+                    RamanDelta(0 / 11),
+                    RamanDelta(5 / 11),
+                    RamanDelta(2 / 11),
+                    RamanDelta(2 / 11),
+                    take_pulses(12)),
+        RamanParams(2, 1, t)
         # Grp2AParams(OPParams(15, 0.7, op_defect),
         #             RamanParams(1, 5, 5),
         #             RamanParams(1, 4, 5),
@@ -219,7 +219,7 @@ end
 @everywhere import NaCsSim: Setup, System
 @everywhere using TestSequence
 
-const params = linspace(0.0, 20, 41)
+const params = linspace(0.0, 10, 41)
 # const params = 0:88
 const xname = "t"
 
@@ -232,8 +232,8 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 function plot_hook()
-    axvline(4.5, linewidth=3)
-    axvline(9, linewidth=3)
+    axvline(3, linewidth=3)
+    axvline(5, linewidth=3)
     xlabel(xname)
 end
 
