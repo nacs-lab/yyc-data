@@ -124,7 +124,6 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-# TODO sweep OP power
 export create_sequence
 function create_sequence(t)
     ncycles = 88
