@@ -68,7 +68,7 @@ end
 immutable CombinedMeasure{T<:Tuple}
     measures::T
     # Kill default constructors
-    CombinedMeasure(measures) = new(measures)
+    (::Type{CombinedMeasure{T}}){T}(measures) = new{T}(measures)
 end
 CombinedMeasure(measures...) = CombinedMeasure{typeof(measures)}(measures)
 @generated function create_measure{T}(m::CombinedMeasure{T}, seq)

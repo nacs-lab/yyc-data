@@ -48,7 +48,7 @@ immutable Unc{T<:AbstractFloat}
     a::T
     s::T
     exp_type::ExpType
-    Unc(a, s, exp_type=Exp) = new(a, s, exp_type)
+    (::Type{Unc{T}}){T}(a, s, exp_type=Exp) = new{T}(a, s, exp_type)
 end
 Unc{T<:AbstractFloat}(a::T, s::T, exp_type=Exp) = Unc{T}(a, s, exp_type)
 Unc(a, b, exp_type=Exp) = Unc(promote(float(a), float(b))..., exp_type)
