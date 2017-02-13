@@ -1,6 +1,6 @@
 #!/usr/bin/julia --startup-file=no
 
-push!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
+push!(LOAD_PATH, joinpath(@__DIR__, "..", ".."))
 
 using NaCsData
 
