@@ -142,12 +142,15 @@ immutable Raman{T,N1,N2}
     ηs::NTuple{3,T}
     Δn::NTuple{3,Int}
     nmax::NTuple{3,Int}
+    Γ::T
+    Raman{T,N1,N2}(t, Ω, ηs, Δn, nmax, Γ=0) where {T,N1,N2} = new(t, Ω, ηs, Δn, nmax, Γ)
 end
 
 immutable RamanPulse{T,N1,N2}
     t::T
     Δn::NTuple{3,Int}
     Ωs::NTuple{3,Vector{T}}
+    expΓ::T
 end
 
 typealias RamanKey{T} Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
@@ -167,7 +170,7 @@ function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
         Ωs3 = computeΩs(pulse.Ω, pulse.ηs[3], pulse.Δn[3], pulse.nmax[3])
         return Ωs1, Ωs2, Ωs3
     end
-    return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs)
+    return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, exp(-pulse.Γ * pulse.t))
 end
 
 function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
@@ -202,7 +205,7 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
         Ω = (pulse.Ωs[1][v_f[1] + 1] * pulse.Ωs[2][v_f[2] + 1] *
               pulse.Ωs[3][v_f[3] + 1])
     end
-    p = sin(Ω * pulse.t)^2
+    p = (1 - cos(2 * Ω * pulse.t) * pulse.expΓ) / 2
     if rand() < p
         set_ns!(state, hf1, v_f...)
     end
