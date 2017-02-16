@@ -220,4 +220,18 @@ In high temperature limit, this becomes
 }
 which is the classical Maxwell-Boltzmann distribution.
 
+\subsection{$p$ distribution}
+\eqar{
+  p(p)=&\int\ud x W\\
+  =&\frac{\tanh(f)}{\pi\hbar}\int\ud x
+  \exp\paren{-\tanh(f)\paren{\frac{m\omega x^2}{\hbar} + \frac{p^2}{m\omega\hbar}}}\\
+  =&\sqrt{\frac{\tanh(f)}{\pi m\omega\hbar}}\exp\paren{-\tanh(f)\frac{p^2}{m\omega\hbar}}\\
+}
+Similar to the $x$ case, in high temperature limit, this becomes
+\eqar{
+  p(p)\approx&\sqrt{\frac{f}{\pi m\omega\hbar}}\exp\paren{-f\frac{p^2}{m\omega\hbar}}\\
+  =&\sqrt{\frac{\beta}{2\pi m}}\exp\paren{-\beta\frac{p^2}{2m}}\\
+}
+which is also the classical Maxwell-Boltzmann distribution.
+
 \end{document}
