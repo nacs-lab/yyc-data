@@ -28,14 +28,18 @@ _tuple_tail(x, y...) = y
     return tf * G(ɛ * tf, t) / ω
 end
 
-@inline function pdf_rnr{N}(kT, t, ωs::NTuple{N}, Es::NTuple{N})
-    return pdf_rnr_1d(kT, t, ωs[1], Es[1]) * pdf_rnr(kT, t, _tuple_tail(ωs...),
-                                                      _tuple_tail(Es...))
+@inline function pdf_rnr{N}(kT::NTuple{N}, t, ωs::NTuple{N}, Es::NTuple{N})
+    return pdf_rnr_1d(kT[1], t, ωs[1], Es[1]) * pdf_rnr(_tuple_tail(kT...), t,
+                                                         _tuple_tail(ωs...),
+                                                         _tuple_tail(Es...))
 end
 
-@inline function pdf_rnr(kT, t, ωs::NTuple{1}, Es::NTuple{1})
-    return pdf_rnr_1d(kT, t, ωs[1], Es[1])
+@inline function pdf_rnr(kT::NTuple{1}, t, ωs::NTuple{1}, Es::NTuple{1})
+    return pdf_rnr_1d(kT[1], t, ωs[1], Es[1])
 end
+
+@inline pdf_rnr{N}(kT::Number, t, ωs::NTuple{N}, Es::NTuple{N}) =
+    pdf_rnr(ntuple(i->kT, Val{N}), t, ωs, Es)
 
 function pdf_rnr_polar(kT, t, ωs, Er, θ, ϕ)
     sinθ = @fastmath sin(θ)
