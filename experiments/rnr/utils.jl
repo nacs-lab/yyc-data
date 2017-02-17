@@ -1,11 +1,12 @@
 #
 
 using SpecialFunctions
+using Cubature
 
 function G(x::Float64, t::Float64)
     x1 = x * (2 + t^2)
     x2 = x * t * √(4 + t^2)
-    @fastmath if x1 <= 400 && x2 <= 400
+    @fastmath if x2 <= 400
         return 2 * exp(-x1) * besseli(0, x2)
     else
         z8 = 1 / 8 / x2
@@ -47,4 +48,10 @@ function pdf_rnr_polar(kT, t, ωs, Er, θ, ϕ)
     Ey = Eρ * cosϕ
     Ez = Eρ * sinϕ
     return Er^2 * pdf_rnr(kT, t, ωs, (Ex, Ey, Ez)) * sinθ
+end
+
+function cdf_rnr(kT, t, ωs, E)
+    cb = x->pdf_rnr_polar(kT, t, ωs, x[1], x[2], x[3])
+    (val, err) = hcubature(cb, [0.0, 0.0, 0.0], [E, π / 2, π / 2], reltol=3e-4)
+    return val
 end
