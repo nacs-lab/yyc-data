@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:cmr_link-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -10,7 +11,6 @@ LIBS:cmos4000
 LIBS:adc-dac
 LIBS:memory
 LIBS:xilinx
-LIBS:special
 LIBS:microcontrollers
 LIBS:dsp
 LIBS:microchip
@@ -76,7 +76,7 @@ Inner_Shield
 Text Label 9350 1100 1    60   ~ 0
 Inner_Shield
 $Comp
-L R R6
+L R-RESCUE-cmr_link R6
 U 1 1 54DEA660
 P 9050 3900
 F 0 "R6" V 9130 3900 40  0000 C CNN
@@ -87,7 +87,7 @@ F 3 "~" H 9050 3900 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R5
+L R-RESCUE-cmr_link R5
 U 1 1 54DEA7C4
 P 8850 3900
 F 0 "R5" V 8930 3900 40  0000 C CNN
@@ -98,7 +98,7 @@ F 3 "~" H 8850 3900 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R4
+L R-RESCUE-cmr_link R4
 U 1 1 54DEA903
 P 8650 3900
 F 0 "R4" V 8730 3900 40  0000 C CNN
@@ -109,7 +109,7 @@ F 3 "~" H 8650 3900 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R3
+L R-RESCUE-cmr_link R3
 U 1 1 54DEA909
 P 8450 3900
 F 0 "R3" V 8530 3900 40  0000 C CNN
@@ -120,7 +120,7 @@ F 3 "~" H 8450 3900 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R2
+L R-RESCUE-cmr_link R2
 U 1 1 54DEA90F
 P 8250 3900
 F 0 "R2" V 8330 3900 40  0000 C CNN
@@ -214,7 +214,7 @@ LVDS_GND
 Text Label 6750 3600 0    60   ~ 0
 LVDS_VCC
 $Comp
-L C C1
+L C-RESCUE-cmr_link C1
 U 1 1 54E4A69C
 P 700 850
 F 0 "C1" H 700 950 40  0000 L CNN
@@ -225,7 +225,7 @@ F 3 "~" H 700 850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C8
+L C-RESCUE-cmr_link C8
 U 1 1 54E4A6AB
 P 900 850
 F 0 "C8" H 900 950 40  0000 L CNN
@@ -236,7 +236,7 @@ F 3 "~" H 900 850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C15
+L C-RESCUE-cmr_link C15
 U 1 1 54E4A6BA
 P 1100 850
 F 0 "C15" H 1100 950 40  0000 L CNN
@@ -271,7 +271,7 @@ RxIN0+
 Text Label 6750 3500 0    60   ~ 0
 RxIN0-
 $Comp
-L C C2
+L C-RESCUE-cmr_link C2
 U 1 1 54E51266
 P 700 1350
 F 0 "C2" H 700 1450 40  0000 L CNN
@@ -282,7 +282,7 @@ F 3 "~" H 700 1350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C9
+L C-RESCUE-cmr_link C9
 U 1 1 54E5126C
 P 900 1350
 F 0 "C9" H 900 1450 40  0000 L CNN
@@ -293,7 +293,7 @@ F 3 "~" H 900 1350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C16
+L C-RESCUE-cmr_link C16
 U 1 1 54E51272
 P 1100 1350
 F 0 "C16" H 1100 1450 40  0000 L CNN
@@ -308,7 +308,7 @@ LVDS_VCC
 Text Label 1300 1550 0    60   ~ 0
 LVDS_GND
 $Comp
-L C C4
+L C-RESCUE-cmr_link C4
 U 1 1 54E514C8
 P 700 2350
 F 0 "C4" H 700 2450 40  0000 L CNN
@@ -319,7 +319,7 @@ F 3 "~" H 700 2350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C11
+L C-RESCUE-cmr_link C11
 U 1 1 54E514CE
 P 900 2350
 F 0 "C11" H 900 2450 40  0000 L CNN
@@ -330,7 +330,7 @@ F 3 "~" H 900 2350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C18
+L C-RESCUE-cmr_link C18
 U 1 1 54E514D4
 P 1100 2350
 F 0 "C18" H 1100 2450 40  0000 L CNN
@@ -354,7 +354,7 @@ F 3 "" H 1150 2550 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L C C3
+L C-RESCUE-cmr_link C3
 U 1 1 54E5299D
 P 700 1850
 F 0 "C3" H 700 1950 40  0000 L CNN
@@ -365,7 +365,7 @@ F 3 "~" H 700 1850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C10
+L C-RESCUE-cmr_link C10
 U 1 1 54E529A3
 P 900 1850
 F 0 "C10" H 900 1950 40  0000 L CNN
@@ -376,7 +376,7 @@ F 3 "~" H 900 1850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C17
+L C-RESCUE-cmr_link C17
 U 1 1 54E529A9
 P 1100 1850
 F 0 "C17" H 1100 1950 40  0000 L CNN
@@ -687,7 +687,7 @@ Wire Wire Line
 Wire Wire Line
 	700  2550 1150 2550
 $Comp
-L C C5
+L C-RESCUE-cmr_link C5
 U 1 1 54E5D4CD
 P 700 2850
 F 0 "C5" H 700 2950 40  0000 L CNN
@@ -698,7 +698,7 @@ F 3 "~" H 700 2850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C12
+L C-RESCUE-cmr_link C12
 U 1 1 54E5D4D3
 P 900 2850
 F 0 "C12" H 900 2950 40  0000 L CNN
@@ -709,7 +709,7 @@ F 3 "~" H 900 2850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C19
+L C-RESCUE-cmr_link C19
 U 1 1 54E5D4D9
 P 1100 2850
 F 0 "C19" H 1100 2950 40  0000 L CNN
@@ -741,7 +741,7 @@ Connection ~ 1100 2650
 Wire Wire Line
 	700  3050 1150 3050
 $Comp
-L C C6
+L C-RESCUE-cmr_link C6
 U 1 1 54E5D6DB
 P 700 3350
 F 0 "C6" H 700 3450 40  0000 L CNN
@@ -752,7 +752,7 @@ F 3 "~" H 700 3350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C13
+L C-RESCUE-cmr_link C13
 U 1 1 54E5D6E1
 P 900 3350
 F 0 "C13" H 900 3450 40  0000 L CNN
@@ -763,7 +763,7 @@ F 3 "~" H 900 3350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C20
+L C-RESCUE-cmr_link C20
 U 1 1 54E5D6E7
 P 1100 3350
 F 0 "C20" H 1100 3450 40  0000 L CNN
@@ -795,7 +795,7 @@ Connection ~ 1100 3150
 Wire Wire Line
 	700  3550 1150 3550
 $Comp
-L C C7
+L C-RESCUE-cmr_link C7
 U 1 1 54E5D6FA
 P 700 3850
 F 0 "C7" H 700 3950 40  0000 L CNN
@@ -806,7 +806,7 @@ F 3 "~" H 700 3850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C14
+L C-RESCUE-cmr_link C14
 U 1 1 54E5D700
 P 900 3850
 F 0 "C14" H 900 3950 40  0000 L CNN
@@ -817,7 +817,7 @@ F 3 "~" H 900 3850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C21
+L C-RESCUE-cmr_link C21
 U 1 1 54E5D706
 P 1100 3850
 F 0 "C21" H 1100 3950 40  0000 L CNN
@@ -1266,7 +1266,7 @@ Text Label 4100 6550 0    60   ~ 0
 PLL_GND
 Connection ~ 3650 6550
 $Comp
-L R R1
+L R-RESCUE-cmr_link R1
 U 1 1 54E6D056
 P 1550 5200
 F 0 "R1" V 1630 5200 50  0000 C CNN
@@ -1314,7 +1314,7 @@ PLL_VCC
 Text Label 3700 4950 2    60   ~ 0
 3v3_FPGA
 $Comp
-L R R7
+L R-RESCUE-cmr_link R7
 U 1 1 54E63C55
 P 4050 4850
 F 0 "R7" V 4130 4850 50  0000 C CNN
@@ -1325,7 +1325,7 @@ F 3 "" H 4050 4850 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R8
+L R-RESCUE-cmr_link R8
 U 1 1 54E63D9C
 P 4050 5050
 F 0 "R8" V 4130 5050 50  0000 C CNN
