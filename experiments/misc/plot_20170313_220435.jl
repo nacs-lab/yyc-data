@@ -84,7 +84,6 @@ savefig("$(prefix)_r3_+-1.png", bbox_inches="tight", transparent=true)
 savefig("$(prefix)_r3_+-1.svg", bbox_inches="tight", transparent=true)
 close()
 
-
 figure()
 plot_params(Params5, Idx5)
 grid()
