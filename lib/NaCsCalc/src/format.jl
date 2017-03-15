@@ -52,6 +52,10 @@ immutable Unc{T<:AbstractFloat}
 end
 Unc{T<:AbstractFloat}(a::T, s::T, exp_type=Exp) = Unc{T}(a, s, exp_type)
 Unc(a, b, exp_type=Exp) = Unc(promote(float(a), float(b))..., exp_type)
+Base.:*(u::Unc, v) = Unc(u.a * v, u.s * v, u.exp_type)
+Base.:*(v, u::Unc) = Unc(v * u.a, v * u.s, u.exp_type)
+Base.:/(u::Unc, v) = Unc(u.a / v, u.s / v, u.exp_type)
+Base.:\(v, u::Unc) = Unc(v \ u.a, v \ u.s, u.exp_type)
 
 function Base.show(io::IO, v::Unc)
     a = v.a
