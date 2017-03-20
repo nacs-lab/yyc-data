@@ -35,7 +35,7 @@ function plot_params(Params, Idx; kws...)
     errorbar(Params, Ratios, Uncs; kws...)
 end
 
-# const prefix = ARGS[2]
+const prefix = ARGS[2]
 
 figure()
 plot_params(Params3, Idx3, fmt="ro-", label="Before")
@@ -45,9 +45,9 @@ legend()
 ylim([0, 1])
 title("Radial 2")
 xlabel("\$\\delta\$/MHz")
-# savefig("$(prefix)_r2.png", bbox_inches="tight", transparent=true)
-# savefig("$(prefix)_r2.svg", bbox_inches="tight", transparent=true)
-# close()
+savefig("$(prefix)_r2.png", bbox_inches="tight", transparent=true)
+savefig("$(prefix)_r2.svg", bbox_inches="tight", transparent=true)
+close()
 
 figure()
 plot_params(Params4, Idx4, fmt="ro-", label="Before")
@@ -57,7 +57,6 @@ legend()
 ylim([0, 1])
 title("Radial 3")
 xlabel("\$\\delta\$/MHz")
-# savefig("$(prefix)_r3.png", bbox_inches="tight", transparent=true)
-# savefig("$(prefix)_r3.svg", bbox_inches="tight", transparent=true)
-# close()
-show()
+savefig("$(prefix)_r3.png", bbox_inches="tight", transparent=true)
+savefig("$(prefix)_r3.svg", bbox_inches="tight", transparent=true)
+close()
