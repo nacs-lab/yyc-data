@@ -64,7 +64,7 @@ immutable OPPulse{T}
     isσ::Matrix{Bool}
 end
 
-typealias OPCache{T} Tuple{Vector{T},Vector{Vector{T}},Vector{T}}
+OPCache{T} = Tuple{Vector{T},Vector{Vector{T}},Vector{T}}
 
 function Setup.compile_pulse{T}(pulse::OP{T}, cache)
     if size(pulse.isσ) != size(pulse.rates)
@@ -153,8 +153,8 @@ immutable RamanPulse{T,N1,N2}
     expΓ::T
 end
 
-typealias RamanKey{T} Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
-typealias RamanCache{T} NTuple{3,Vector{T}}
+RamanKey{T} = Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
+RamanCache{T} = NTuple{3,Vector{T}}
 
 computeΩs{T}(Ω::T, η::T, Δn, nmax) =
     T[Trap.sideband(n - 1, n - 1 + Δn, η) * Ω for n in 1:(nmax + abs(Δn) + 1)]
