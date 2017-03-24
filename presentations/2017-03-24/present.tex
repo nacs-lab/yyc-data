@@ -307,11 +307,11 @@
     \path (5.4, 0) node[align=center] {$\cdots$};
     \draw[line width=1] (8.1, 0) node[fill=green!20,draw,rounded corners,align=center]
     {
-      Axial: $3$rd\\
       Axial: $2$nd\\
+      Axial: $1$st\\
       Radial A: $1$st\\
-      Axial: $3$rd\\
       Axial: $2$nd\\
+      Axial: $1$st\\
       Radial B: $1$st};
     \path (0, -1.7) node[rounded corners,align=center]
     {
@@ -334,10 +334,16 @@
     \begin{itemize}
     \item Radial-only cooling
     \item<2-> Axial-only cooling
-    \item<3-> 3D cooling
+    \item<3-> 3D cooling\\
+      (Survival: $\approx 89\%$)
     \end{itemize}
+    \vspace{0.5cm}
+    \visible<3>{
+      \includegraphics[width=5cm]{../../experiments/misc/imgs/data_20170324_010638_a1.png}
+    }
     \column{6cm}
     \begin{center}
+      \vspace{-1cm}
       \begin{tikzpicture}
         \visible<1>{
           \path (0, 0) node[align=center] {
@@ -350,20 +356,13 @@
             \includegraphics[width=6cm]{../../experiments/misc/imgs/data_20170313_220435_a1_fit.png}
           };
         }
+        \visible<3>{
+          \path (0, 0) node[align=center] {
+            \includegraphics[width=5cm]{../../experiments/misc/imgs/data_20170324_010638_r2.png}\\
+            \includegraphics[width=5cm]{../../experiments/misc/imgs/data_20170324_010638_r3.png}
+          };
+        }
       \end{tikzpicture}
-      \only<3>{
-        \vspace{-8cm}
-        \begin{block}{}
-          \begin{itemize}
-          \item Overall survival\\
-            $\approx 89\%$
-          \item Good sideband ratios\\
-            $3\sim4$
-          \item Heating sideband not high enough\\
-            $30\sim40\%$
-          \end{itemize}
-        \end{block}
-      }
     \end{center}
   \end{columns}
 \end{frame}
