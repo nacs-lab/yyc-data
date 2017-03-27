@@ -32,8 +32,7 @@ function plot_params(Params, Idx; kws...)
     errorbar(Params, Ratios, Uncs; kws...)
 end
 
-# const save_fig = false
-const save_fig = true
+const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
 
 function maybe_save(name)
     if save_fig
