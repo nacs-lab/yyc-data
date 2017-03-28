@@ -11,8 +11,9 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=25)
 PyPlot.matplotlib[:rc]("ytick", labelsize=25)
 
 const m_Na = 23e-3 / 6.02e23
-const η_ax = Trap.η(m_Na, 60e3, 2π / 589e-9) / √(2)
-const η_rad = Trap.η(m_Na, 400e3, 2π / 589e-9) * √(2)
+const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9) / √(2)
+const η_rad1 = Trap.η(m_Na, 420e3, 2π / 589e-9) * √(2)
+const η_rad2 = Trap.η(m_Na, 580e3, 2π / 589e-9) * √(2)
 
 const colors = ["k", "r", "y", "g", "c", "b", "m"]
 function plot_sidebands(ns, Δns, η)
@@ -27,20 +28,36 @@ function plot_sidebands(ns, Δns, η)
     xlabel("n")
     ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
 end
+
+const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
+
+function maybe_save(name)
+    if save_fig
+        savefig("$name.png"; bbox_inches="tight", transparent=true)
+        savefig("$name.svg", bbox_inches="tight", transparent=true)
+        close()
+    end
+end
+
+function maybe_show()
+    if !save_fig
+        show()
+    end
+end
+
 figure()
 plot_sidebands(0:70, -6:0, η_ax)
 title("Axial coupling strength")
-savefig(joinpath(ARGS[1], "coupling_0.46_0-6.svg"),
-        bbox_inches="tight", transparent=true)
-savefig(joinpath(ARGS[1], "coupling_0.46_0-6.png"),
-        bbox_inches="tight", transparent=true)
-close()
+maybe_save(joinpath(ARGS[1], "coupling_0.43_0-6"))
+
 figure()
-plot_sidebands(0:25, -2:0, η_rad)
-title("Radial coupling strength")
-savefig(joinpath(ARGS[1], "coupling_0.35_0-2.svg"),
-        bbox_inches="tight", transparent=true)
-savefig(joinpath(ARGS[1], "coupling_0.35_0-2.png"),
-        bbox_inches="tight", transparent=true)
-close()
-# show()
+plot_sidebands(0:25, -2:0, η_rad1)
+title("Radial 2 coupling strength")
+maybe_save(joinpath(ARGS[1], "coupling_0.35_0-2"))
+
+figure()
+plot_sidebands(0:25, -2:0, η_rad2)
+title("Radial 3 coupling strength")
+maybe_save(joinpath(ARGS[1], "coupling_0.29_0-2"))
+
+maybe_show()
