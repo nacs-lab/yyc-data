@@ -7,6 +7,10 @@ using NaCsData
 iname = ARGS[1:end - 1]
 oname = ARGS[end]
 
+if isdir(oname)
+    oname = joinpath(oname, "$(splitext(basename(iname[1]))[1]).csv")
+end
+
 param_name, params, data = NaCsData.load_matscan(iname)
 
 open(oname, "w") do fd
