@@ -12,7 +12,7 @@ matplotlib[:rc]("ytick", labelsize=15)
 const iname = joinpath(@__DIR__, "data", "data_20170402_205344.csv")
 const params, ratios, uncs = NaCsData.calc_survival(iname)
 
-# With cooling
+# With cooling +-1
 Params1_1 = [linspace(-18.985, -18.785, 11);]
 Params1_2 = [linspace(-18.15, -17.95, 11);]
 Params2_1 = [linspace(-18.945, -19.145, 11);]
@@ -20,7 +20,7 @@ Params2_2 = [linspace(-18.00, -17.75, 11);]
 Params3_1 = [linspace(-18.545, -18.585, 11);]
 Params3_2 = [linspace(-18.415, -18.455, 11);]
 
-# Without cooling
+# Without cooling +-1, -2
 Params4_1 = [linspace(-18.985, -18.785, 11);]
 Params4_2 = [linspace(-18.15, -17.95, 11);]
 Params4_3 = [linspace(-17.53, -17.745, 11);]
@@ -31,9 +31,12 @@ Params6_1 = [linspace(-18.545, -18.585, 11);]
 Params6_2 = [linspace(-18.415, -18.455, 11);]
 Params6_3 = [linspace(-18.35, -18.39, 11);]
 
+# Without cooling carrier
 Params7 = [linspace(-18.335, -18.58, 11);]
 Params8 = [linspace(-18.31, -18.61, 11);]
 Params9 = [linspace(-18.47, -18.53, 11);]
+
+# Without cooling axial high orders
 Params10 = [linspace(-18.35, -17.90, 91);]
 Params11_1 = [linspace(-18.985, -18.785, 11);]
 Params11_2 = [linspace(-18.15, -17.95, 11);]
@@ -129,6 +132,7 @@ figure()
 plot_params(Params4_1, Idx4_1, fmt="ro-", label="Before")
 plot_params(Params4_2, Idx4_2, fmt="ro-")
 plot_params(Params4_3, Idx4_3, fmt="ro-")
+plot_params(Params7, Idx7, fmt="ro-")
 # With cooling
 plot_params(Params1_1, Idx1_1, fmt="bo-", label="After")
 plot_params(Params1_2, Idx1_2, fmt="bo-")
@@ -144,6 +148,7 @@ figure()
 plot_params(Params5_1, Idx5_1, fmt="ro-", label="Before")
 plot_params(Params5_2, Idx5_2, fmt="ro-")
 plot_params(Params5_3, Idx5_3, fmt="ro-")
+plot_params(Params8, Idx8, fmt="ro-")
 # With cooling
 plot_params(Params2_1, Idx2_1, fmt="bo-", label="After")
 plot_params(Params2_2, Idx2_2, fmt="bo-")
@@ -159,6 +164,8 @@ figure()
 plot_params(Params6_1, Idx6_1, fmt="ro-", label="Before")
 plot_params(Params6_2, Idx6_2, fmt="ro-")
 plot_params(Params6_3, Idx6_3, fmt="ro-")
+plot_params(Params9, Idx9, fmt="ro-")
+plot_params(Params10, Idx10, fmt="o-", color="orange", label="Before")
 # With cooling
 plot_params(Params3_1, Idx3_1, fmt="bo-", label="After")
 plot_params(Params3_2, Idx3_2, fmt="bo-")
