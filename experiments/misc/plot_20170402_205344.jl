@@ -38,13 +38,22 @@ Params9 = [linspace(-18.47, -18.53, 11);]
 
 # Without cooling axial high orders
 Params10 = [linspace(-18.35, -17.90, 91);]
+
+# Without repeating
 Params11_1 = [linspace(-18.985, -18.785, 11);]
 Params11_2 = [linspace(-18.15, -17.95, 11);]
-Params12 = [linspace(-18.945, -19.145, 11); linspace(-18.00, -17.75, 11)]
-Params13 = [linspace(-18.545, -18.585, 11); linspace(-18.415, -18.455, 11)]
-Params14 = [linspace(-18.985, -18.785, 11); linspace(-18.15, -17.95, 11)]
-Params15 = [linspace(-18.945, -19.145, 11); linspace(-18.00, -17.75, 11)]
-Params16 = [linspace(-18.545, -18.585, 11); linspace(-18.415, -18.455, 11)]
+Params12_1 = [linspace(-18.945, -19.145, 11);]
+Params12_2 = [linspace(-18.00, -17.75, 11);]
+Params13_1 = [linspace(-18.545, -18.585, 11);]
+Params13_2 = [linspace(-18.415, -18.455, 11);]
+
+# With waiting
+Params14_1 = [linspace(-18.985, -18.785, 11);]
+Params14_2 = [linspace(-18.15, -17.95, 11);]
+Params15_1 = [linspace(-18.945, -19.145, 11);]
+Params15_2 = [linspace(-18.00, -17.75, 11);]
+Params16_1 = [linspace(-18.545, -18.585, 11);]
+Params16_2 = [linspace(-18.415, -18.455, 11);]
 
 offset1_1 = length(Params1_1)
 offset1_2 = offset1_1 + length(Params1_2)
@@ -67,11 +76,16 @@ offset9 = offset8 + length(Params9)
 offset10 = offset9 + length(Params10)
 offset11_1 = offset10 + length(Params11_1)
 offset11_2 = offset11_1 + length(Params11_2)
-offset12 = offset11_2 + length(Params12)
-offset13 = offset12 + length(Params13)
-offset14 = offset13 + length(Params14)
-offset15 = offset14 + length(Params15)
-offset16 = offset15 + length(Params16)
+offset12_1 = offset11_2 + length(Params12_1)
+offset12_2 = offset12_1 + length(Params12_2)
+offset13_1 = offset12_2 + length(Params13_1)
+offset13_2 = offset13_1 + length(Params13_2)
+offset14_1 = offset13_2 + length(Params14_1)
+offset14_2 = offset14_1 + length(Params14_2)
+offset15_1 = offset14_2 + length(Params15_1)
+offset15_2 = offset15_1 + length(Params15_2)
+offset16_1 = offset15_2 + length(Params16_1)
+offset16_2 = offset16_1 + length(Params16_2)
 
 Idx1_1 = [1:offset1_1;]
 Idx1_2 = [(offset1_1 + 1):offset1_2;]
@@ -94,11 +108,16 @@ Idx9 = [(offset8 + 1):offset9;]
 Idx10 = [(offset9 + 1):offset10;]
 Idx11_1 = [(offset10 + 1):offset11_1;]
 Idx11_2 = [(offset11_1 + 1):offset11_2;]
-Idx12 = [(offset11_2 + 1):offset12;]
-Idx13 = [(offset12 + 1):offset13;]
-Idx14 = [(offset13 + 1):offset14;]
-Idx15 = [(offset14 + 1):offset15;]
-Idx16 = [(offset15 + 1):offset16;]
+Idx12_1 = [(offset11_2 + 1):offset12_1;]
+Idx12_2 = [(offset12_1 + 1):offset12_2;]
+Idx13_1 = [(offset12_2 + 1):offset13_1;]
+Idx13_2 = [(offset13_1 + 1):offset13_2;]
+Idx14_1 = [(offset13_2 + 1):offset14_1;]
+Idx14_2 = [(offset14_1 + 1):offset14_2;]
+Idx15_1 = [(offset14_2 + 1):offset15_1;]
+Idx15_2 = [(offset15_1 + 1):offset15_2;]
+Idx16_1 = [(offset15_2 + 1):offset16_1;]
+Idx16_2 = [(offset16_1 + 1):offset16_2;]
 
 function plot_params(Params, Idx; kws...)
     perm = sortperm(Params)
@@ -176,13 +195,88 @@ xlabel("\$\\delta\$/MHz")
 legend()
 maybe_save("$(prefix)_a1")
 
-# figure()
-# plot_params(Params11_1, Idx11_1, fmt="bo-")
-# plot_params(Params11_2, Idx11_2, fmt="bo-")
-# grid()
-# ylim([0, ylim()[2]])
-# title("Radial 2")
-# xlabel("\$\\delta\$/MHz")
-# maybe_save("$(prefix)_r2")
+figure()
+# Without repeating
+plot_params(Params11_1, Idx11_1, fmt="ro-", label="No repeat")
+plot_params(Params11_2, Idx11_2, fmt="ro-")
+# With repeating
+plot_params(Params1_1, Idx1_1, fmt="bo-", label="With repeat")
+plot_params(Params1_2, Idx1_2, fmt="bo-")
+grid()
+ylim([0, 0.9])
+title("Radial 2")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_r2_rp")
+
+figure()
+# Without repeating
+plot_params(Params12_1, Idx12_1, fmt="ro-", label="No repeat")
+plot_params(Params12_2, Idx12_2, fmt="ro-")
+# With repeating
+plot_params(Params2_1, Idx2_1, fmt="bo-", label="With repeat")
+plot_params(Params2_2, Idx2_2, fmt="bo-")
+grid()
+ylim([0, 0.8])
+title("Radial 3")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_r3_rp")
+
+figure()
+# Without repeating
+plot_params(Params13_1, Idx13_1, fmt="ro-", label="No repeat")
+plot_params(Params13_2, Idx13_2, fmt="ro-")
+# With repeating
+plot_params(Params3_1, Idx3_1, fmt="bo-", label="With repeat")
+plot_params(Params3_2, Idx3_2, fmt="bo-")
+grid()
+ylim([0, 0.7])
+title("Axial 1")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_a1_rp")
+
+figure()
+# With waiting
+plot_params(Params14_1, Idx14_1, fmt="ro-", label="With wait")
+plot_params(Params14_2, Idx14_2, fmt="ro-")
+# Without waiting
+plot_params(Params1_1, Idx1_1, fmt="bo-", label="Without wait")
+plot_params(Params1_2, Idx1_2, fmt="bo-")
+grid()
+ylim([0, 0.9])
+title("Radial 2")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_r2_wait")
+
+figure()
+# With waiting
+plot_params(Params15_1, Idx15_1, fmt="ro-", label="With wait")
+plot_params(Params15_2, Idx15_2, fmt="ro-")
+# Without waiting
+plot_params(Params2_1, Idx2_1, fmt="bo-", label="Without wait")
+plot_params(Params2_2, Idx2_2, fmt="bo-")
+grid()
+ylim([0, 0.8])
+title("Radial 3")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_r3_wait")
+
+figure()
+# With waiting
+plot_params(Params16_1, Idx16_1, fmt="ro-", label="With wait")
+plot_params(Params16_2, Idx16_2, fmt="ro-")
+# Without waiting
+plot_params(Params3_1, Idx3_1, fmt="bo-", label="Without wait")
+plot_params(Params3_2, Idx3_2, fmt="bo-")
+grid()
+ylim([0, 0.7])
+title("Axial 1")
+xlabel("\$\\delta\$/MHz")
+legend()
+maybe_save("$(prefix)_a1_wait")
 
 maybe_show()
