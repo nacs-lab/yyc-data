@@ -22,6 +22,7 @@ function plot_sidebands(ns, Δns, η)
              label="\$\\Delta n=$(Δn)\$")
     end
     text(5, 0.8, "\$\\eta\\approx$(@sprintf("%.2f", η))\$", fontsize=30)
+    xlim([0, xlim()[2]])
     ylim([0, 1])
     legend(bbox_to_anchor=(1.05, 1), loc=2)
     grid()
@@ -48,16 +49,16 @@ end
 figure()
 plot_sidebands(0:70, -6:0, η_ax)
 title("Axial coupling strength")
-maybe_save(joinpath(ARGS[1], "coupling_0.43_0-6"))
+maybe_save(joinpath(@__DIR__, "imgs/coupling_0.43_0-6"))
 
 figure()
 plot_sidebands(0:25, -2:0, η_rad1)
 title("Radial 2 coupling strength")
-maybe_save(joinpath(ARGS[1], "coupling_0.35_0-2"))
+maybe_save(joinpath(@__DIR__, "imgs/coupling_0.35_0-2"))
 
 figure()
 plot_sidebands(0:25, -2:0, η_rad2)
 title("Radial 3 coupling strength")
-maybe_save(joinpath(ARGS[1], "coupling_0.29_0-2"))
+maybe_save(joinpath(@__DIR__, "imgs/coupling_0.29_0-2"))
 
 maybe_show()
