@@ -15,52 +15,52 @@ const iname_b = joinpath(@__DIR__, "data", "data_20170404_133229.csv")
 const params_b, ratios_b, uncs_b = NaCsData.calc_survival(iname_b)
 
 # With cooling +-1
-Params_A1_1 = [linspace(-18.985, -18.785, 11);]
-Params_A1_2 = [linspace(-18.15, -17.95, 11);]
-Params_A2_1 = [linspace(-18.945, -19.145, 11);]
-Params_A2_2 = [linspace(-18.00, -17.75, 11);]
-Params_A3_1 = [linspace(-18.545, -18.585, 11);]
-Params_A3_2 = [linspace(-18.415, -18.455, 11);]
+Params_A1_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
+Params_A1_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
+Params_A2_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
+Params_A2_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
+Params_A3_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
+Params_A3_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
 
 # Without cooling +-1, -2
-Params_A4_1 = [linspace(-18.985, -18.785, 11);]
-Params_A4_2 = [linspace(-18.15, -17.95, 11);]
-Params_A4_3 = [linspace(-17.53, -17.745, 11);]
-Params_A5_1 = [linspace(-18.945, -19.145, 11);]
-Params_A5_2 = [linspace(-18.00, -17.75, 11);]
-Params_A5_3 = [linspace(-17.14, -17.44, 11);]
-Params_A6_1 = [linspace(-18.545, -18.585, 11);]
-Params_A6_2 = [linspace(-18.415, -18.455, 11);]
-Params_A6_3 = [linspace(-18.35, -18.39, 11);]
+Params_A4_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
+Params_A4_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
+Params_A4_3 = [linspace(-17.53, -17.745, 11);] .* 1000 .+ 18462.5
+Params_A5_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
+Params_A5_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
+Params_A5_3 = [linspace(-17.14, -17.44, 11);] .* 1000 .+ 18485
+Params_A6_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
+Params_A6_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
+Params_A6_3 = [linspace(-18.35, -18.39, 11);] .* 1000 .+ 18496.5
 
 # Without cooling carrier
-Params_A7 = [linspace(-18.335, -18.58, 11);]
-Params_A8 = [linspace(-18.31, -18.61, 11);]
-Params_A9 = [linspace(-18.47, -18.53, 11);]
+Params_A7 = [linspace(-18.335, -18.58, 11);] .* 1000 .+ 18462.5
+Params_A8 = [linspace(-18.31, -18.61, 11);] .* 1000 .+ 18485
+Params_A9 = [linspace(-18.47, -18.53, 11);] .* 1000 .+ 18496.5
 
 # Without cooling axial high orders
-Params_A10 = [linspace(-18.35, -17.90, 91);]
+Params_A10 = [linspace(-18.35, -17.90, 91);] .* 1000 .+ 18496.5
 
 # Without repeating
-Params_A11_1 = [linspace(-18.985, -18.785, 11);]
-Params_A11_2 = [linspace(-18.15, -17.95, 11);]
-Params_A12_1 = [linspace(-18.945, -19.145, 11);]
-Params_A12_2 = [linspace(-18.00, -17.75, 11);]
-Params_A13_1 = [linspace(-18.545, -18.585, 11);]
-Params_A13_2 = [linspace(-18.415, -18.455, 11);]
+Params_A11_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
+Params_A11_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
+Params_A12_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
+Params_A12_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
+Params_A13_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
+Params_A13_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
 
 # With waiting
-Params_A14_1 = [linspace(-18.985, -18.785, 11);]
-Params_A14_2 = [linspace(-18.15, -17.95, 11);]
-Params_A15_1 = [linspace(-18.945, -19.145, 11);]
-Params_A15_2 = [linspace(-18.00, -17.75, 11);]
-Params_A16_1 = [linspace(-18.545, -18.585, 11);]
-Params_A16_2 = [linspace(-18.415, -18.455, 11);]
+Params_A14_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
+Params_A14_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
+Params_A15_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
+Params_A15_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
+Params_A16_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
+Params_A16_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
 
-Params_B1 = [linspace(-17.53, -17.745, 11);]
-Params_B2 = [linspace(-17.14, -17.44, 11);]
-Params_B3 = [linspace(-18.40, -17.90, 51);]
-Params_B4 = [linspace(-18.40, -18.35, 11);]
+Params_B1 = [linspace(-17.53, -17.745, 11);] .* 1000 .+ 18462.5
+Params_B2 = [linspace(-17.14, -17.44, 11);] .* 1000 .+ 18496.5
+Params_B3 = [linspace(-18.40, -17.90, 51);] .* 1000 .+ 18496.5
+Params_B4 = [linspace(-18.40, -18.35, 11);] .* 1000 .+ 18496.5
 Params_B5 = [0:2:100;]
 Params_B6 = [2:2:100;]
 Params_B7 = [10:10:400;]
@@ -198,7 +198,7 @@ plot_params(ratios_b, uncs_b, Params_B1, Idx_B1, 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 1])
 title("Radial 2")
-xlabel("\$\\delta\$/MHz")
+xlabel("Detuning from carrier/kHz")
 ylabel("Normalized survival")
 legend()
 maybe_save("$(prefix)_r2")
@@ -216,7 +216,7 @@ plot_params(ratios_b, uncs_b, Params_B2, Idx_B2, 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 0.9])
 title("Radial 3")
-xlabel("\$\\delta\$/MHz")
+xlabel("Detuning from carrier/kHz")
 ylabel("Normalized survival")
 legend()
 maybe_save("$(prefix)_r3")
@@ -241,7 +241,7 @@ plot_params(ratios_b, uncs_b, Params_B3, Idx_B3, 1 / 0.85, fmt="b^-", label="Aft
 grid()
 ylim([0, 0.8])
 title("Axial 1")
-xlabel("\$\\delta\$/MHz")
+xlabel("Detuning from carrier/kHz")
 ylabel("Normalized survival")
 legend()
 maybe_save("$(prefix)_a1")
