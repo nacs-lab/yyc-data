@@ -221,7 +221,7 @@ ylabel("Normalized survival")
 legend()
 maybe_save("$(prefix)_r3")
 
-figure()
+figure(figsize=[2.5, 1] * 4.8)
 # Without cooling
 plot_params(ratios_a, uncs_a, Params_A6_1, Idx_A6_1, 1 / 0.95, fmt="ro-", label="Before")
 plot_params(ratios_a, uncs_a, Params_A6_2, Idx_A6_2, 1 / 0.95, fmt="ro-")
@@ -232,12 +232,12 @@ let
     ratios_plot = [ratios_b[Idx_B4, 2]; ratios_a[idx_a10, 2]] ./ 0.95
     uncs_plot = [uncs_b[Idx_B4, 2]; uncs_a[idx_a10, 2]] ./ 0.95
     errorbar(params_plot, ratios_plot, uncs_plot,
-             fmt="o-", color="orange", label="Before")
+             fmt="r^-", label="Before")
 end
 # With cooling
 plot_params(ratios_a, uncs_a, Params_A3_1, Idx_A3_1, 1 / 0.85, fmt="bo-", label="After")
 plot_params(ratios_a, uncs_a, Params_A3_2, Idx_A3_2, 1 / 0.85, fmt="bo-")
-plot_params(ratios_b, uncs_b, Params_B3, Idx_B3, 1 / 0.85, fmt="co-", label="After")
+plot_params(ratios_b, uncs_b, Params_B3, Idx_B3, 1 / 0.85, fmt="b^-", label="After")
 grid()
 ylim([0, 0.8])
 title("Axial 1")
