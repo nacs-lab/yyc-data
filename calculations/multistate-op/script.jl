@@ -106,30 +106,29 @@ const rates_f1_coprop = gen_rates((0.5, 0.0, 0.5), -25.0e9)
 const rates_f2_coprop = gen_rates((0.25, 0.5, 0.25), -25.0e9 - 1.77e9)
 const rates_f2_counterop = gen_rates((0, 0, 1), -25.0e9 - 1.77e9)
 
-function propagate(rates, init, ts)
-    # ∂ₜpᵢ = ΣⱼΓᵢⱼpⱼ - ΣⱼΓⱼᵢpᵢ
-    #      = ΣⱼAᵢⱼpⱼ
-    #  Aᵢⱼ = Γᵢⱼ - ΣₖΓₖᵢδᵢⱼ
-    nt = length(ts)
-    ns = length(init)
-    res = Matrix{Float64}(nt, ns)
-    A = Matrix{Float64}(ns, ns)
-    for i in 1:ns
+function rates_to_A(rates)
+    nx, ny = size(rates)
+    A = Matrix{Float64}(nx, ny)
+    @inbounds for i in 1:nx
         s = 0.0
-        for j in 1:ns
+        for j in 1:ny
             r = rates[j, i]
             A[j, i] = r
             s += r
         end
         A[i, i] -= s
     end
-    A2 = similar(A)
-    for i in 1:nt
-        t = ts[i]
-        A2 .= A .* t
-        res[i, :] = expm(A2) * init
-    end
-    return res
+    return A
+end
+
+function propagate_f1(A, init, t)
+    res = expm(A * t) * init
+    return res[6] + res[7] + res[8]
+end
+
+function gen_model(rates, init)
+    A = rates_to_A(rates)
+    t->propagate_f1(A, init, t)
 end
 
 using PyPlot
@@ -142,18 +141,9 @@ function plot_f12(rates, tscale)
     τ = 1 / r
     τ_f1 = 1 / r_f1
     τ_max = max(τ, τ_f1)
-    ts = linspace(0, τ_max * tscale)
-    res = propagate(rates, init, ts)
-    nt = length(ts)
-    f1 = Vector{Float64}(nt)
-    f2 = Vector{Float64}(nt)
-    for i in 1:nt
-        f2[i] = res[i, 1] + res[i, 2] + res[i, 3] + res[i, 4] + res[i, 5]
-        f1[i] = res[i, 6] + res[i, 7] + res[i, 8]
-    end
-    plot(ts, f1, label="F1")
-    plot(ts, f2, label="F2")
-    legend()
+    ts = linspace(0, τ_max * tscale, 100)
+    f1 = gen_model(rates, init).(ts)
+    plot(ts, f1)
     ylim(0, 1)
     maxt = maximum(ts)
     xlim(0, maxt)
