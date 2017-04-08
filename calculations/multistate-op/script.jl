@@ -130,39 +130,3 @@ function gen_model(rates, init)
     A = rates_to_A(rates)
     t->propagate_f1(A, init, t)
 end
-
-using PyPlot
-
-function plot_f12(rates, tscale)
-    init = Float64[1, 0, 0, 0, 0, 0, 0, 0]
-    init_f1 = Float64[0, 0, 0, 0, 0, 1, 0, 0]
-    r = sum(rates * init)
-    r_f1 = sum(rates * init_f1)
-    τ = 1 / r
-    τ_f1 = 1 / r_f1
-    τ_max = max(τ, τ_f1)
-    ts = linspace(0, τ_max * tscale, 100)
-    f1 = gen_model(rates, init).(ts)
-    plot(ts, f1)
-    ylim(0, 1)
-    maxt = maximum(ts)
-    xlim(0, maxt)
-    axvline(τ_f1, color="blue")
-    axvline(τ, color="red")
-end
-
-ts = linspace(0, 2e7, 1000)
-
-figure()
-title("F2 Counter OP")
-plot_f12(rates_f2_counterop, 10)
-figure()
-title("F2 Co-prop")
-plot_f12(rates_f2_coprop, 10)
-figure()
-title("F1 Up/Down")
-plot_f12(rates_f1_up, 10)
-figure()
-title("F1 Co-prop")
-plot_f12(rates_f1_coprop, 10)
-show()
