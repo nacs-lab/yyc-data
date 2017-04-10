@@ -41,7 +41,12 @@ function load_matscan(fnames)
                 end
                 frame[1] += 1
                 for j in 1:numimages
-                    single_atom[numimages * (i - 1) + j] != 0 && (frame[j + 1] += 1)
+                    # Ignore "single atoms" in second image but not the first one.
+                    # This should probably be an option/filter
+                    if single_atom[numimages * (i - 1) + j] == 0
+                        break
+                    end
+                    frame[j + 1] += 1
                 end
             end
         end
