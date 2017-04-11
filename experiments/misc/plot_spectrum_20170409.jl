@@ -4,214 +4,81 @@ push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 using NaCsData
 using PyPlot
+using DataStructures
 matplotlib["rcParams"][:update](Dict("font.size" => 20,
                                      "font.weight" => "bold"))
 matplotlib[:rc]("xtick", labelsize=15)
 matplotlib[:rc]("ytick", labelsize=15)
 
 const iname_a = joinpath(@__DIR__, "data", "data_20170402_205344.csv")
-const params_a, ratios_a, uncs_a = NaCsData.calc_survival(iname_a)
 const iname_b = joinpath(@__DIR__, "data", "data_20170404_133229.csv")
-const params_b, ratios_b, uncs_b = NaCsData.calc_survival(iname_b)
 const iname_c = joinpath(@__DIR__, "data", "data_20170409_005850.csv")
-const params_c, ratios_c, uncs_c = NaCsData.calc_survival(iname_c)
 const iname_d = joinpath(@__DIR__, "data", "data_20170409_082523.csv")
-const params_d, ratios_d, uncs_d = NaCsData.calc_survival(iname_d)
 
-# With cooling +-1
-Params_A1_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
-Params_A1_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
-Params_A2_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
-Params_A2_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
-Params_A3_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
-Params_A3_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
+const data_a = NaCsData.load_count_csv(iname_a)
+const data_b = NaCsData.load_count_csv(iname_b)
+const data_c = NaCsData.load_count_csv(iname_c)
+const data_d = NaCsData.load_count_csv(iname_d)
 
-# Without cooling +-1, -2
-Params_A4_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
-Params_A4_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
-Params_A4_3 = [linspace(-17.53, -17.745, 11);] .* 1000 .+ 18462.5
-Params_A5_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
-Params_A5_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
-Params_A5_3 = [linspace(-17.14, -17.44, 11);] .* 1000 .+ 18485
-Params_A6_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
-Params_A6_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
-Params_A6_3 = [linspace(-18.35, -18.39, 11);] .* 1000 .+ 18496.5
+const spec_a = OrderedDict(
+    # With cooling +-1
+    :cool_pm1=>((linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11)),
+                (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11)),
+                (linspace(-18.545, -18.585, 11), linspace(-18.415, -18.455, 11))),
+    # Without cooling +-1, -2
+    :nocool_pm12=>((linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11),
+                    linspace(-17.53, -17.745, 11)),
+                   (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11),
+                    linspace(-17.14, -17.44, 11)),
+                   (linspace(-18.545, -18.585, 11), linspace(-18.415, -18.455, 11),
+                    linspace(-18.35, -18.39, 11))),
+    # Without cooling carrier
+    :nocool_0=>(linspace(-18.335, -18.58, 11),
+                linspace(-18.31, -18.61, 11),
+                linspace(-18.47, -18.53, 11),),
+    # Without cooling axial high orders
+    :nocool_a8=>linspace(-18.35, -17.90, 91),
+    # Without repeating
+    :norepeat=>((linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11)),
+                (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11)),
+                (linspace(-18.545, -18.585, 11), linspace(-18.415, -18.455, 11))),
+    # With waiting
+    :wait=>((linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11)),
+            (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11)),
+            (linspace(-18.545, -18.585, 11), linspace(-18.415, -18.455, 11)))
+)
+const spec_b = (linspace(-17.53, -17.745, 11),
+                linspace(-17.14, -17.44, 11),
+                linspace(-18.40, -17.90, 51),
+                linspace(-18.40, -18.35, 11),)
+const spec_c = ((linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11),
+                 linspace(-17.53, -17.745, 11)),
+                (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11),
+                 linspace(-17.14, -17.44, 11)),
+                (linspace(-18.54, -18.58, 11), linspace(-18.400, -18.440, 11)),
+                # Axial -2 ~ -8
+                linspace(-18.40, -17.90, 51) # 4
+                )
+const spec_d = (
+    (linspace(-18.985, -18.785, 11), linspace(-18.15, -17.95, 11),
+     linspace(-17.53, -17.745, 11)),
+    (linspace(-18.945, -19.145, 11), linspace(-18.00, -17.75, 11),
+     linspace(-17.14, -17.44, 11)),
+    (linspace(-18.54, -18.58, 11), linspace(-18.400, -18.440, 11))
+)
 
-# Without cooling carrier
-Params_A7 = [linspace(-18.335, -18.58, 11);] .* 1000 .+ 18462.5
-Params_A8 = [linspace(-18.31, -18.61, 11);] .* 1000 .+ 18485
-Params_A9 = [linspace(-18.47, -18.53, 11);] .* 1000 .+ 18496.5
+const split_a = NaCsData.split_data(data_a, spec_a)
+const split_b = NaCsData.split_data(data_b, spec_b)
+const split_c = NaCsData.split_data(data_c, spec_c)
+const split_d = NaCsData.split_data(data_d, spec_d)
 
-# Without cooling axial high orders
-Params_A10 = [linspace(-18.35, -17.90, 91);] .* 1000 .+ 18501.5
-
-# Without repeating
-Params_A11_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
-Params_A11_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
-Params_A12_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
-Params_A12_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
-Params_A13_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
-Params_A13_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
-
-# With waiting
-Params_A14_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18462.5
-Params_A14_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18462.5
-Params_A15_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18485
-Params_A15_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18485
-Params_A16_1 = [linspace(-18.545, -18.585, 11);] .* 1000 .+ 18496.5
-Params_A16_2 = [linspace(-18.415, -18.455, 11);] .* 1000 .+ 18496.5
-
-Params_B1 = [linspace(-17.53, -17.745, 11);] .* 1000 .+ 18462.5
-Params_B2 = [linspace(-17.14, -17.44, 11);] .* 1000 .+ 18496.5
-Params_B3 = [linspace(-18.40, -17.90, 51);] .* 1000 .+ 18496.5
-Params_B4 = [linspace(-18.40, -18.35, 11);] .* 1000 .+ 18496.5
-Params_B5 = [0:2:100;]
-Params_B6 = [2:2:100;]
-Params_B7 = [10:10:400;]
-Params_B8 = [2:2:30;]
-Params_B9 = [2:2:30;]
-Params_B10 = [10:10:140;]
-
-Params_C1 = [linspace(-18.985, -18.785, 11); linspace(-18.15, -17.95, 11);
-             linspace(-17.53, -17.745, 11)]
-Params_C2 = [linspace(-18.945, -19.145, 11); linspace(-18.00, -17.75, 11);
-             linspace(-17.14, -17.44, 11)]
-# Not taken
-# Params_C3 = [linspace(-18.54, -18.58, 11); linspace(-18.400, -18.440, 11)]
-# Axial -2 ~ -8
-Params_C3 = [linspace(-18.40, -17.90, 51);] .* 1000 .+ 18488
-Params_C4 = [1]
-
-Params_D1_1 = [linspace(-18.985, -18.785, 11);] .* 1000 .+ 18457.5
-Params_D1_2 = [linspace(-18.15, -17.95, 11);] .* 1000 .+ 18457.5
-Params_D1_3 = [linspace(-17.53, -17.745, 11);] .* 1000 .+ 18457.5
-Params_D2_1 = [linspace(-18.945, -19.145, 11);] .* 1000 .+ 18480
-Params_D2_2 = [linspace(-18.00, -17.75, 11);] .* 1000 .+ 18480
-Params_D2_3 = [linspace(-17.14, -17.44, 11);] .* 1000 .+ 18480
-Params_D3_1 = [linspace(-18.54, -18.58, 11);] .* 1000 .+ 18488
-Params_D3_2 = [linspace(-18.400, -18.440, 11);] .* 1000 .+ 18488
-
-offset_a1_1 = length(Params_A1_1)
-offset_a1_2 = offset_a1_1 + length(Params_A1_2)
-offset_a2_1 = offset_a1_2 + length(Params_A2_1)
-offset_a2_2 = offset_a2_1 + length(Params_A2_2)
-offset_a3_1 = offset_a2_2 + length(Params_A3_1)
-offset_a3_2 = offset_a3_1 + length(Params_A3_2)
-offset_a4_1 = offset_a3_2 + length(Params_A4_1)
-offset_a4_2 = offset_a4_1 + length(Params_A4_2)
-offset_a4_3 = offset_a4_2 + length(Params_A4_3)
-offset_a5_1 = offset_a4_3 + length(Params_A5_1)
-offset_a5_2 = offset_a5_1 + length(Params_A5_2)
-offset_a5_3 = offset_a5_2 + length(Params_A5_3)
-offset_a6_1 = offset_a5_3 + length(Params_A6_1)
-offset_a6_2 = offset_a6_1 + length(Params_A6_2)
-offset_a6_3 = offset_a6_2 + length(Params_A6_3)
-offset_a7 = offset_a6_3 + length(Params_A7)
-offset_a8 = offset_a7 + length(Params_A8)
-offset_a9 = offset_a8 + length(Params_A9)
-offset_a10 = offset_a9 + length(Params_A10)
-offset_a11_1 = offset_a10 + length(Params_A11_1)
-offset_a11_2 = offset_a11_1 + length(Params_A11_2)
-offset_a12_1 = offset_a11_2 + length(Params_A12_1)
-offset_a12_2 = offset_a12_1 + length(Params_A12_2)
-offset_a13_1 = offset_a12_2 + length(Params_A13_1)
-offset_a13_2 = offset_a13_1 + length(Params_A13_2)
-offset_a14_1 = offset_a13_2 + length(Params_A14_1)
-offset_a14_2 = offset_a14_1 + length(Params_A14_2)
-offset_a15_1 = offset_a14_2 + length(Params_A15_1)
-offset_a15_2 = offset_a15_1 + length(Params_A15_2)
-offset_a16_1 = offset_a15_2 + length(Params_A16_1)
-offset_a16_2 = offset_a16_1 + length(Params_A16_2)
-offset_b1 = length(Params_B1)
-offset_b2 = offset_b1 + length(Params_B2)
-offset_b3 = offset_b2 + length(Params_B3)
-offset_b4 = offset_b3 + length(Params_B4)
-offset_b5 = offset_b4 + length(Params_B5)
-offset_b6 = offset_b5 + length(Params_B6)
-offset_b7 = offset_b6 + length(Params_B7)
-offset_b8 = offset_b7 + length(Params_B8)
-offset_b9 = offset_b8 + length(Params_B9)
-offset_b10 = offset_b9 + length(Params_B10)
-offset_c1 = length(Params_C1)
-offset_c2 = offset_c1 + length(Params_C2)
-offset_c3 = offset_c2 + length(Params_C3)
-offset_c4 = offset_c3 + length(Params_C4)
-offset_d1_1 = length(Params_D1_1)
-offset_d1_2 = offset_d1_1 + length(Params_D1_2)
-offset_d1_3 = offset_d1_2 + length(Params_D1_3)
-offset_d2_1 = offset_d1_3 + length(Params_D2_1)
-offset_d2_2 = offset_d2_1 + length(Params_D2_2)
-offset_d2_3 = offset_d2_2 + length(Params_D2_3)
-offset_d3_1 = offset_d2_3 + length(Params_D3_1)
-offset_d3_2 = offset_d3_1 + length(Params_D3_2)
-
-Idx_A1_1 = [1:offset_a1_1;]
-Idx_A1_2 = [(offset_a1_1 + 1):offset_a1_2;]
-Idx_A2_1 = [(offset_a1_2 + 1):offset_a2_1;]
-Idx_A2_2 = [(offset_a2_1 + 1):offset_a2_2;]
-Idx_A3_1 = [(offset_a2_2 + 1):offset_a3_1;]
-Idx_A3_2 = [(offset_a3_1 + 1):offset_a3_2;]
-Idx_A4_1 = [(offset_a3_2 + 1):offset_a4_1;]
-Idx_A4_2 = [(offset_a4_1 + 1):offset_a4_2;]
-Idx_A4_3 = [(offset_a4_2 + 1):offset_a4_3;]
-Idx_A5_1 = [(offset_a4_3 + 1):offset_a5_1;]
-Idx_A5_2 = [(offset_a5_1 + 1):offset_a5_2;]
-Idx_A5_3 = [(offset_a5_2 + 1):offset_a5_3;]
-Idx_A6_1 = [(offset_a5_3 + 1):offset_a6_1;]
-Idx_A6_2 = [(offset_a5_1 + 1):offset_a6_2;]
-Idx_A6_3 = [(offset_a5_2 + 1):offset_a6_3;]
-Idx_A7 = [(offset_a6_3 + 1):offset_a7;]
-Idx_A8 = [(offset_a7 + 1):offset_a8;]
-Idx_A9 = [(offset_a8 + 1):offset_a9;]
-Idx_A10 = [(offset_a9 + 1):offset_a10;]
-Idx_A11_1 = [(offset_a10 + 1):offset_a11_1;]
-Idx_A11_2 = [(offset_a11_1 + 1):offset_a11_2;]
-Idx_A12_1 = [(offset_a11_2 + 1):offset_a12_1;]
-Idx_A12_2 = [(offset_a12_1 + 1):offset_a12_2;]
-Idx_A13_1 = [(offset_a12_2 + 1):offset_a13_1;]
-Idx_A13_2 = [(offset_a13_1 + 1):offset_a13_2;]
-Idx_A14_1 = [(offset_a13_2 + 1):offset_a14_1;]
-Idx_A14_2 = [(offset_a14_1 + 1):offset_a14_2;]
-Idx_A15_1 = [(offset_a14_2 + 1):offset_a15_1;]
-Idx_A15_2 = [(offset_a15_1 + 1):offset_a15_2;]
-Idx_A16_1 = [(offset_a15_2 + 1):offset_a16_1;]
-Idx_A16_2 = [(offset_a16_1 + 1):offset_a16_2;]
-Idx_B1 = [1:offset_b1;]
-Idx_B2 = [(offset_b1 + 1):offset_b2;]
-Idx_B3 = [(offset_b2 + 1):offset_b3;]
-Idx_B4 = [(offset_b3 + 1):offset_b4;]
-Idx_B5 = [(offset_b4 + 1):offset_b5;]
-Idx_B6 = [(offset_b4 + 1); (offset_b5 + 1):offset_b6]
-Idx_B7 = [(offset_b4 + 1); (offset_b6 + 1):offset_b7]
-Idx_B8 = [(offset_b4 + 1); (offset_b7 + 1):offset_b8]
-Idx_B9 = [(offset_b4 + 1); (offset_b8 + 1):offset_b9]
-Idx_B10 = [(offset_b4 + 1); (offset_b9 + 1):offset_b10]
-Idx_C1 = [1:offset_c1;]
-Idx_C2 = [(offset_c1 + 1):offset_c2;]
-Idx_C3 = [(offset_c2 + 1):offset_c3;]
-Idx_C4 = [(offset_c3 + 1):offset_c4;]
-Idx_D1_1 = [1:offset_d1_1;]
-Idx_D1_2 = [(offset_d1_1 + 1):offset_d1_2;]
-Idx_D1_3 = [(offset_d1_2 + 1):offset_d1_3;]
-Idx_D2_1 = [(offset_d1_3 + 1):offset_d2_1;]
-Idx_D2_2 = [(offset_d2_1 + 1):offset_d2_2;]
-Idx_D2_3 = [(offset_d2_2 + 1):offset_d2_3;]
-Idx_D3_1 = [(offset_d2_3 + 1):offset_d3_1;]
-Idx_D3_2 = [(offset_d3_1 + 1):offset_d3_2;]
-
-unshift!(Params_B6, 0)
-unshift!(Params_B7, 0)
-unshift!(Params_B8, 0)
-unshift!(Params_B9, 0)
-unshift!(Params_B10, 0)
-
-function plot_params(ratios, uncs, Params, Idx, scale=1; kws...)
-    perm = sortperm(Params)
-    Params = Params[perm]
-    Idx = Idx[perm]
-    Ratios = ratios[Idx, 2] .* scale
-    Uncs = uncs[Idx, 2] .* scale
-    errorbar(Params, Ratios, Uncs; kws...)
+function plot_data(data, scale=1; kws...)
+    params, ratios, uncs = NaCsData.get_values(data)
+    perm = sortperm(params)
+    params = params[perm]
+    ratios = ratios[perm, 2] .* scale
+    uncs = uncs[perm, 2] .* scale
+    errorbar(params, ratios, uncs; kws...)
 end
 
 const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
@@ -232,16 +99,21 @@ end
 
 const prefix = joinpath(@__DIR__, "imgs", "data_spectrum_20170409")
 
+to_sideband(f) = (i, v)->(v - f) * 1000
+
 figure()
 # Without cooling
-plot_params(ratios_a, uncs_a, Params_A4_1, Idx_A4_1, 1 / 0.95, fmt="ro-", label="Before")
-plot_params(ratios_a, uncs_a, Params_A4_2, Idx_A4_2, 1 / 0.95, fmt="ro-")
-plot_params(ratios_a, uncs_a, Params_A4_3, Idx_A4_3, 1 / 0.95, fmt="ro-")
-plot_params(ratios_a, uncs_a, Params_A7, Idx_A7, 1 / 0.95, fmt="ro-")
+data_nocool_r2 = NaCsData.map_params(to_sideband(-18.4625), split_a[:nocool_pm12][1])
+data_nocool_r2_0 = NaCsData.map_params(to_sideband(-18.4625), split_a[:nocool_0][1])
+plot_data(data_nocool_r2[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_r2[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r2[3], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r2_0, 1 / 0.95, fmt="ro-")
 # With cooling
-plot_params(ratios_d, uncs_d, Params_D1_1, Idx_D1_1, 1 / 0.85, fmt="bo-", label="After")
-plot_params(ratios_d, uncs_d, Params_D1_2, Idx_D1_2, 1 / 0.85, fmt="bo-")
-plot_params(ratios_d, uncs_d, Params_D1_3, Idx_D1_3, 1 / 0.85, fmt="bo-")
+data_cool_r2 =  NaCsData.map_params(to_sideband(-18.4575), split_d[1])
+plot_data(data_cool_r2[1], 1 / 0.85, fmt="bo-", label="After")
+plot_data(data_cool_r2[2], 1 / 0.85, fmt="bo-")
+plot_data(data_cool_r2[3], 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 1])
 title("Radial 2")
@@ -252,14 +124,17 @@ maybe_save("$(prefix)_r2")
 
 figure()
 # Without cooling
-plot_params(ratios_a, uncs_a, Params_A5_1, Idx_A5_1, 1 / 0.95, fmt="ro-", label="Before")
-plot_params(ratios_a, uncs_a, Params_A5_2, Idx_A5_2, 1 / 0.95, fmt="ro-")
-plot_params(ratios_a, uncs_a, Params_A5_3, Idx_A5_3, 1 / 0.95, fmt="ro-")
-plot_params(ratios_a, uncs_a, Params_A8, Idx_A8, 1 / 0.95, fmt="ro-")
+data_nocool_r3 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_pm12][2])
+data_nocool_r3_0 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_0][2])
+plot_data(data_nocool_r3[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_r3[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r3[3], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r3_0, 1 / 0.95, fmt="ro-")
 # With cooling
-plot_params(ratios_d, uncs_d, Params_D2_1, Idx_D2_1, 1 / 0.85, fmt="bo-", label="After")
-plot_params(ratios_d, uncs_d, Params_D2_2, Idx_D2_2, 1 / 0.85, fmt="bo-")
-plot_params(ratios_d, uncs_d, Params_D2_3, Idx_D2_3, 1 / 0.85, fmt="bo-")
+data_cool_r3 =  NaCsData.map_params(to_sideband(-18.480), split_d[2])
+plot_data(data_cool_r3[1], 1 / 0.85, fmt="bo-", label="After")
+plot_data(data_cool_r3[2], 1 / 0.85, fmt="bo-")
+plot_data(data_cool_r3[3], 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 0.9])
 title("Radial 3")
@@ -270,21 +145,20 @@ maybe_save("$(prefix)_r3")
 
 figure(figsize=[2.5, 1] * 4.8)
 # Without cooling
-plot_params(ratios_a, uncs_a, Params_A6_1, Idx_A6_1, 1 / 0.95, fmt="ro-", label="Before")
-plot_params(ratios_a, uncs_a, Params_A6_2, Idx_A6_2, 1 / 0.95, fmt="ro-")
-plot_params(ratios_a, uncs_a, Params_A9, Idx_A9, 1 / 0.95, fmt="ro-")
-let
-    params_plot = [Params_B4; Params_A10]
-    local idx_a10 = Idx_A10
-    ratios_plot = [ratios_b[Idx_B4, 2]; ratios_a[idx_a10, 2]] ./ 0.95
-    uncs_plot = [uncs_b[Idx_B4, 2]; uncs_a[idx_a10, 2]] ./ 0.95
-    errorbar(params_plot, ratios_plot, uncs_plot,
-             fmt="r^-", label="Before")
-end
+data_nocool_a1 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_pm12][3])
+data_nocool_a1_0 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_0][3])
+data_nocool_a1_hi = [NaCsData.map_params(to_sideband(-18.5015), split_a[:nocool_a8]);
+                     NaCsData.map_params(to_sideband(-18.4965), split_b[4])]
+plot_data(data_nocool_a1[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_a1[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_0, 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_hi, 1 / 0.95, fmt="r^-", label="Before")
 # With cooling
-plot_params(ratios_d, uncs_d, Params_D3_1, Idx_D3_1, 1 / 0.85, fmt="bo-", label="After")
-plot_params(ratios_d, uncs_d, Params_D3_2, Idx_D3_2, 1 / 0.85, fmt="bo-")
-plot_params(ratios_c, uncs_c, Params_C3, Idx_C3, 1 / 0.85, fmt="b^-", label="After")
+data_cool_a1 =  NaCsData.map_params(to_sideband(-18.488), split_d[3])
+data_cool_a1_hi =  NaCsData.map_params(to_sideband(-18.488), split_c[4])
+plot_data(data_cool_a1[1], 1 / 0.85, fmt="bo-", label="After")
+plot_data(data_cool_a1[2], 1 / 0.85, fmt="bo-")
+plot_data(data_cool_a1_hi, 1 / 0.85, fmt="b^-", label="After")
 grid()
 ylim([0, 0.8])
 title("Axial 1")

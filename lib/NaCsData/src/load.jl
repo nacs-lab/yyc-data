@@ -2,6 +2,7 @@
 
 using MAT
 import NaCsCalc.Utils: binomial_estimate
+using DataStructures
 
 abstract type AbstractValues end
 
@@ -170,7 +171,7 @@ SurvivalData{K} = SortedData{K,SurvivalValues}
 SurvivalData(data::CountData{K}) where K =
     SurvivalData{K}(data.params, SurvivalValues(data.values))
 
-get_values(data::SurvivalData) = data.params, data.ratios, data.uncs
+get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
 get_values(data::CountData) = get_values(SurvivalData(data))
 
 function map_params{F}(f::F, data::SortedData)
@@ -178,9 +179,11 @@ function map_params{F}(f::F, data::SortedData)
     nparams = length(params)
     SortedData([f(i, params[i]) for i in 1:nparams], data.values)
 end
+map_params{F}(f::F, data::Tuple) = map(d->map_params(f, d), data)
+map_params{F}(f::F, data::OrderedDict) = OrderedDict(k=>map_params(f, v) for (k, v) in data)
 
-function _split_data(data, offset, dict, spec::Dict)
-    return Dict(k=>_split_data(data, offset, dict, v) for (k, v) in spec)
+function _split_data(data, offset, dict, spec::OrderedDict)
+    return OrderedDict(k=>_split_data(data, offset, dict, v) for (k, v) in spec)
 end
 
 function _split_data(data, offset, dict, spec::Tuple)
