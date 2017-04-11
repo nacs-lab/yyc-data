@@ -170,6 +170,9 @@ SurvivalData{K} = SortedData{K,SurvivalValues}
 SurvivalData(data::CountData{K}) where K =
     SurvivalData{K}(data.params, SurvivalValues(data.values))
 
+get_values(data::SurvivalData) = data.params, data.ratios, data.uncs
+get_values(data::CountData) = get_values(SurvivalData(data))
+
 function map_params{F}(f::F, data::SortedData)
     params = data.params
     nparams = length(params)
