@@ -3,6 +3,219 @@
 using MAT
 import NaCsCalc.Utils: binomial_estimate
 
+abstract type AbstractValues end
+
+@inline to_arrayidx(idx::Integer) = idx:idx
+@inline to_arrayidx(idx) = idx
+
+function depth end
+function combiner_type end
+function combine end
+function create_values end
+
+struct SortedData{K,Vs<:AbstractValues}
+    params::Vector{K}
+    values::Vs
+end
+@inline function Base.getindex{K,Vs}(data::SortedData{K,Vs}, _arg0, _arg1=Colon())
+    arg0 = to_arrayidx(_arg0)
+    arg1 = to_arrayidx(_arg1)
+    return SortedData{K,Vs}(data.params[arg0], data.values[arg0, arg1])
+end
+@inline Base.size(data::SortedData) = endof(data), size(data.values, 2)
+@inline Base.endof(data::SortedData) = length(data.params)
+@inline Base.size(data::SortedData, dim) = if dim == 1
+    return endof(data)
+elseif dim == 2
+    return depth(data.values)
+else
+    return 1
+end
+@inline Base.ndims(::SortedData) = 2
+function Base.vcat{K,Vs}(datas::SortedData{K,Vs}...)
+    CT = combiner_type(Vs)
+    combiners = Dict{K,CT}()
+    params = Vector{K}()
+    for data in datas
+        ps = data.params
+        vals = data.values
+        nps = length(ps)
+        for i in 1:nps
+            p = ps[i]
+            if haskey(combiners, p)
+                combine(combiners[p], vals, i)
+            else
+                push!(params, p)
+                combiners[p] = CT(vals, i)
+            end
+        end
+    end
+    SortedData{K,Vs}(params, create_values(params, combiners))
+end
+
+struct CountValues <: AbstractValues
+    counts::Matrix{Int}
+end
+CountData{K} = SortedData{K,CountValues}
+function load_count_csv(fname)
+    data = readcsv(fname, Float64, skipstart=1)
+    params = data[:, 1]
+    counts = Int.(@view data[:, 2:end])
+    return CountData{Float64}(params, CountValues(counts))
+end
+@inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
+@inline depth(vals::CountValues) = size(vals.counts, 2)
+
+struct CountCombiner
+    counts::Vector{Int}
+end
+combiner_type(::Type{CountValues}) = CountCombiner
+CountCombiner(vals::CountValues, i) = CountCombiner(vals.counts[i, :])
+function combine(comb::CountCombiner, vals::CountValues, i)
+    for j in 1:length(comb.counts)
+        comb.counts[j] += vals.counts[i, j]
+    end
+end
+function create_values(params, dict::Dict{<:Any,CountCombiner})
+    nparams = length(params)
+    @assert nparams > 0
+    c0 = dict[params[1]].counts
+    ncnts = length(c0)
+    counts = Matrix{Int}(nparams, ncnts)
+    for i in 1:nparams
+        c = dict[params[i]].counts
+        for j in 1:ncnts
+            counts[i, j] = c[j]
+        end
+    end
+    return CountValues(counts)
+end
+
+struct SurvivalValues <: AbstractValues
+    ratios::Matrix{Float64}
+    uncs::Matrix{Float64}
+end
+function SurvivalValues(vals::CountValues)
+    counts = vals.counts
+    len, num_cnts = size(counts)
+    ratios = Matrix{Float64}(len, num_cnts - 1)
+    uncs = Matrix{Float64}(len, num_cnts - 1)
+    for i in 1:len
+        base = counts[i, 1]
+        for j in 1:(num_cnts - 1)
+            cur = counts[i, j + 1]
+            ratios[i, j], uncs[i, j] = binomial_estimate(cur, base)
+            base = cur
+        end
+    end
+    return SurvivalValues(ratios, uncs)
+end
+@inline function Base.getindex(vals::SurvivalValues, args...)
+    return SurvivalValues(vals.ratios[args...], vals.uncs[args...])
+end
+@inline depth(vals::SurvivalValues) = size(vals.ratios, 2)
+
+struct SurvivalCombiner
+    sums::Vector{Float64}
+    ws::Vector{Float64}
+end
+combiner_type(::Type{SurvivalValues}) = SurvivalCombiner
+function SurvivalCombiner(vals::SurvivalValues, i)
+    ratios = vals.ratios
+    uncs = vals.uncs
+    ncnts = size(ratios, 2)
+    sums = Vector{Float64}(ncnts)
+    ws = Vector{Float64}(ncnts)
+    for j in 1:ncnts
+        w = 1 / uncs[i, j]^2
+        ws[j] = w
+        sums[j] = ratios[i, j] * w
+    end
+    SurvivalCombiner(sums, ws)
+end
+function combine(comb::SurvivalCombiner, vals::SurvivalValues, i)
+    ratios = vals.ratios
+    uncs = vals.uncs
+    ncnts = size(ratios, 2)
+    sums = comb.sums
+    ws = comb.ws
+    for j in 1:ncnts
+        w = 1 / uncs[i, j]^2
+        ws[j] += w
+        sums[j] += ratios[i, j] * w
+    end
+end
+function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
+    nparams = length(params)
+    @assert nparams > 0
+    s0 = dict[params[1]].sums
+    ncnts = length(s0)
+    ratios = Matrix{Float64}(nparams, ncnts)
+    uncs = Matrix{Float64}(nparams, ncnts)
+    for i in 1:nparams
+        v = dict[params[i]]
+        ss = v.sums
+        ws = v.ws
+        for j in 1:ncnts
+            s = ss[j]
+            w = ws[j]
+            ratios[i, j] = s / w
+            uncs[i, j] = 1 / √(w)
+        end
+    end
+    return SurvivalValues(ratios, uncs)
+end
+
+SurvivalData{K} = SortedData{K,SurvivalValues}
+SurvivalData(data::CountData{K}) where K =
+    SurvivalData{K}(data.params, SurvivalValues(data.values))
+
+function map_params{F}(f::F, data::SortedData)
+    params = data.params
+    nparams = length(params)
+    SortedData([f(i, params[i]) for i in 1:nparams], data.values)
+end
+
+function _split_data(data, offset, dict, spec::Dict)
+    return Dict(k=>_split_data(data, offset, dict, v) for (k, v) in spec)
+end
+
+function _split_data(data, offset, dict, spec::Tuple)
+    return map(s->_split_data(data, offset, dict, s), spec)
+end
+
+function _split_data{T}(data, _offset, dict, spec::AbstractArray{T})
+    nspec = length(spec)
+    params = Vector{T}()
+    idxs = Vector{Int}()
+    offset = _offset[]
+    _offset[] = offset + nspec
+    for i in 1:nspec
+        if !haskey(dict, i + offset)
+            continue
+        end
+        push!(idxs, dict[i + offset])
+        push!(params, spec[i])
+    end
+    return SortedData(params, data.values[idxs, :])
+end
+
+function split_data(_data::SortedData, spec)
+    # Remove duplicates (not sure if it's an better API to do this implicitly or explicitly)
+    data = [_data;]
+    params = data.params
+
+    # Create a map from parameter value
+    dict = Dict{Int,Int}()
+    nparams = length(params)
+    for i in 1:nparams
+        dict[params[i]] = i
+    end
+
+    offset = Ref(0)
+    return _split_data(data, offset, dict, spec)
+end
+
 """
 Load a MAT scan file
 """
