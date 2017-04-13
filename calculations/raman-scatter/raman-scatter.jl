@@ -7,11 +7,14 @@
 # The decay matrix is `Γ`, the element `(i,j)` of this matrix represents the decay rate
 # from state `j` to state `i`.
 # The Rabi flopping happens on resonant from state `i1` to state `i2` with Rabi frequency `Ω`
-function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1)
+function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
     # Do propagation of coherent and dissipative part separately.
     # Use precise exponentiation for the (potentially fast) Rabi flopping and use linear
     # approximation for the decay probability.
     # Compute the decay probability in the middle of the time step to improve precision.
+    if nstep == 0
+        return ϕ
+    end
 
     # Half step
     @fastmath sinΩt_2 = sin(Ω * δt / 2)
@@ -34,11 +37,14 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1)
     ϕ1, ϕ2 = ϕ1 * cosΩt_2 + ϕ2 * sinΩt_2, ϕ2 * cosΩt_2 - ϕ1 * sinΩt_2
     ϕ[i1] = ϕ1
     ϕ[i2] = ϕ2
-    @inbounds for i in 1:nstep
+    @inbounds for i in 1:(nstep - 1)
         # We are at `t = (i - 1/2) * δt`
         # Decide if we need to decay first
-        buff1 .= abs2.(ϕ) .* rates .* δt
-        r = rand() * s
+        @simd for j in 1:nstate
+            buff1[j] = abs2(ϕ[j]) * rates[j] * δt
+        end
+        # buff1 .= abs2.(ϕ) .* rates .* δt
+        r = rand(rd) * s
         decay = 0
         for j in 1:nstate
             r -= buff1[j]
@@ -50,24 +56,24 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1)
         if decay != 0
             # decay happend from state `decay`
             # Decide which state it'll fall into
-            r = rand() * rates[decay]
-            local j = 0
-            for j in 1:nstate
-                r -= Γ[j, decay]
+            r = rand(rd) * rates[decay]
+            local k = 0
+            for k in 1:nstate
+                r -= Γ[k, decay]
                 if r < 0
                     break
                 end
             end
             s = 1
             ϕ .= 0
-            if i1 == j
+            if i1 == k
                 ϕ[i1] = cosΩt_2
                 ϕ[i2] = -sinΩt_2
-            elseif i2 == j
+            elseif i2 == k
                 ϕ[i1] = sinΩt_2
                 ϕ[i2] = cosΩt_2
             else
-                ϕ[j] = 1
+                ϕ[k] = 1
             end
             continue
         end
@@ -87,11 +93,16 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1)
         ϕ[i1] = ϕ1
         ϕ[i2] = ϕ2
     end
+    ϕ1 = ϕ[i1]
+    ϕ2 = ϕ[i2]
+    ϕ1, ϕ2 = ϕ1 * cosΩt_2 + ϕ2 * sinΩt_2, ϕ2 * cosΩt_2 - ϕ1 * sinΩt_2
+    ϕ[i1] = ϕ1
+    ϕ[i2] = ϕ2
     ϕ ./= √(s)
     return ϕ
 end
 
-function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates)
+function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
     len = length(ϕ0)
     ϕ = similar(ϕ0)
     sumϕ = zeros(real(eltype(ϕ0)), len)
@@ -100,7 +111,7 @@ function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates)
     buff1 = Vector{T}(len)
     @inbounds for i in 1:n
         ϕ .= ϕ0
-        propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, len, rates, buff1)
+        propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, len, rates, buff1, rd)
         for j in 1:len
             ϕi = abs2(ϕ[j])
             sumϕ[j] += ϕi
@@ -141,24 +152,25 @@ function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
         end
         rates[i] = s
     end
-    average(ϕ, 1.1e-7, pts[1], Γ, i1, i2, Ω, 1, rates)
+    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
+    # @show average(ϕ, 1.1e-7, 0, Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
     @time Threads.@threads for i in 1:length(pts)
-        average(ϕ, 1.1e-7, pts[i], Γ, i1, i2, Ω, 10000, rates)
-        # local a, s
-        # a, s = average(ϕ, 1.1e-7, pts[i], Γ, i1, i2, Ω, 10000, rates)
-        # res[i] = a[1]
-        # unc[i] = s[1]
+        local a, s
+        a, s = average(ϕ, 1.1e-7, pts[i], Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
+        res[i] = a[1]
+        unc[i] = s[1]
     end
 end
 f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
 errorbar(pts, res, unc)
-# for i in 1:npts
-#     a, s = average(ϕ, 1.1e-7, 10 * (i - 1), Γ, i1, i2, 0, 10000)
-#     res[i] = a[1]
-#     unc[i] = s[1]
-# end
-# errorbar(1:npts, res, unc)
+# # for i in 1:npts
+# #     a, s = average(ϕ, 1.1e-7, 10 * (i - 1), Γ, i1, i2, 0, 10000)
+# #     res[i] = a[1]
+# #     unc[i] = s[1]
+# # end
+# # errorbar(1:npts, res, unc)
 
+grid()
 show()
 
 # @time @show average(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
