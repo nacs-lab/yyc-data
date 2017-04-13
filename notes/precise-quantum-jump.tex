@@ -245,7 +245,11 @@ further assume that the drive is on-resonance, so there's no real diagonal term.
   \Gamma_1\equiv&\Gamma+\Delta\\
   \Gamma_2\equiv&\Gamma-\Delta\\
 }
-(note that the $\Delta$ is \textbf{not} detuning). Formally the time evolution is
+(note that the $\Delta$ is \textbf{not} detuning).
+
+\section{Time evolution}
+
+Formally the time evolution is
 \eqar{
   &\exp\paren{-\ui H't}\\
   =&\exp\paren{-\frac t2\begin{pmatrix}
@@ -253,7 +257,7 @@ further assume that the drive is on-resonance, so there's no real diagonal term.
       -\Omega&\Gamma-\Delta
     \end{pmatrix}}
 }
-In the underdamped regime, define $\Omega'=\sqrt{\Omega^2-\Delta^2}$
+Define $\Omega'=\sqrt{\Omega^2-\Delta^2}$
 \eqar{
   &\exp\paren{-\ui H't}\\
   =&\frac{\ue^{-\Gamma t/2}}{2\ui\Omega'}\begin{pmatrix}
@@ -283,7 +287,8 @@ Starting from the atom in state 1, the wave functions are
     \Omega\sin\dfrac{\Omega't}{2}
   \end{pmatrix}
 }
-Verify the solution, time derivative
+\subsection{Verify the solution}
+Time derivative
 \eqar{
   \diff{\psi}{t}=&\diff{}{t}\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
     -\Delta\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
@@ -300,7 +305,9 @@ Verify the solution, time derivative
     \Gamma\Delta\sin\dfrac{\Omega't}{2}-\Gamma\Omega'\cos\dfrac{\Omega't}{2}-\Omega'\Delta\cos\dfrac{\Omega't}{2}-\Omega'^2\sin\dfrac{\Omega't}{2}\\
     -\Gamma\Omega\sin\dfrac{\Omega't}{2}+\Omega'\Omega\cos\dfrac{\Omega't}{2}
   \end{pmatrix}
-  \intertext{Hamiltonian term,}
+}
+Hamiltonian term,
+\eqar{
   \ui H'\psi=&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
     \Gamma+\Delta&\Omega\\
     -\Omega&\Gamma-\Delta
@@ -315,10 +322,17 @@ Verify the solution, time derivative
   =&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
     \paren{-\Delta\paren{\Gamma+\Delta}\sin\dfrac{\Omega't}{2}+\Omega'\paren{\Gamma+\Delta}\cos\dfrac{\Omega't}{2}}+\Omega^2\sin\dfrac{\Omega't}{2}\\
     \Omega\paren{\Gamma\sin\dfrac{\Omega't}{2}-\Omega'\cos\dfrac{\Omega't}{2}}
-  \end{pmatrix}\\
-  &\paren{\diff{}{t}+\ui H'}\psi\\
-  =&0
+  \end{pmatrix}
 }
+\[\paren{\diff{}{t}+\ui H'}\psi=0\]
+
+
+\section{Decay probabilities}
+Now calculalte the decay probability from each states,
+this is the main quantity we care about in the simulation.
+The decay rates from each states are the expectation value of the jump operators
+that jumps from the state.
+The probability that decay has happened at a certain time is the integral of the rate.
 
 The decay rate for state 1 is
 \eqar{
@@ -354,13 +368,15 @@ Total decay proobability for state 2 is
   p_2(T)=&\int_0^T\ud t\frac{\paren{\Gamma-\Delta}\Omega^2}{2\paren{\Omega^2-\Delta^2}}\ue^{-\Gamma t}\paren{1-\cos\Omega't}\\
   =&\frac{\Omega^2\paren{\Gamma-\Delta}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}-\frac{\Omega^2\paren{\Gamma-\Delta}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\paren{\Omega^2+\Gamma^2-\Delta^2-\Gamma^2\cos\Omega't+\Gamma\Omega'\sin\Omega't}
 }
-Total decay proobability for both states is
+We also need the total decay probability in the simulation to decide the time
+at which the decay happens. Total decay proobability for both states is
 \eqar{
   &p_1(T)+p_2(T)\\
   =&\frac{\paren{\Delta+\Gamma}\paren{\Omega^2+2\Gamma^2-2\Delta\Gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}+\frac{\Omega^2\paren{\Gamma-\Delta}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}\\
   &-\frac{\paren{\Delta+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\\
   &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\Delta^2}+\Gamma\Omega'\paren{2\Delta^2-2\Delta\Gamma-\Omega^2}\sin\Omega't+\Gamma\paren{2\Delta^3-2\Delta^2\Gamma-2\Delta\Omega^2+\Gamma\Omega^2}\cos\Omega't}\\
-  &-\frac{\Omega^2\paren{\Gamma-\Delta}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\paren{\Omega^2+\Gamma^2-\Delta^2-\Gamma^2\cos\Omega't+\Gamma\Omega'\sin\Omega't}\\
+  &-\frac{\Omega^2\paren{\Gamma-\Delta}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\paren{\Omega^2+\Gamma^2-\Delta^2-\Gamma^2\cos\Omega't+\Gamma\Omega'\sin\Omega't}
+  \intertext{}
   =&1-\frac{\Omega^2\paren{\Delta+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}}\\
   &-\frac{\paren{\Delta+\Gamma}\paren{2\Delta^2-2\Delta\Gamma-\Omega^2}}{2\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\ue^{-\Gamma t}\Omega'\sin\Omega't\\
   &-\frac{\paren{\Delta+\Gamma}\paren{2\Delta^3-2\Delta^2\Gamma-2\Delta\Omega^2+\Gamma\Omega^2}}{2\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\ue^{-\Gamma t}\cos\Omega't\\
@@ -370,6 +386,7 @@ Total decay proobability for both states is
   =&1-\frac{\Omega^2\ue^{-\Gamma t}}{\Omega^2-\Delta^2}+\frac{\Delta\ue^{-\Gamma t}\Omega'\sin\Omega't}{\Omega^2-\Delta^2}+\frac{\Delta^2\ue^{-\Gamma t}\cos\Omega't}{\Omega^2-\Delta^2}\\
   =&1-\frac{\ue^{-\Gamma t}\paren{\Omega^2-\Delta\Omega'\sin\Omega't-\Delta^2\cos\Omega't}}{\Omega^2-\Delta^2}
 }
+\subsection{Verification}
 Compare this to the normalization of the wave function
 \eqar{
   \langle\psi|\psi\rangle=&\frac{\ue^{-\Gamma t}}{\Omega^2-\Delta^2}\paren{
@@ -392,5 +409,39 @@ Compare this to the normalization of the wave function
 }
 We have
 \[p_1 + p_2+\langle\psi|\psi\rangle=1\]
+
+\section{Overdamp regime}
+The results above should work for overdamping regime too.
+However, the calculation will have imaginary numbers and is not very convenient.
+We can reformulate the expressions using $\sinh$ and $\cosh$ functions so that it only involve
+real numbers. There's also the critical case but that is unlikely to show up in real calculation
+so it's ignored for now....
+
+Define $\Delta'\equiv-\ui\Omega'=\sqrt{\Delta^2-\Omega^2}$
+
+Wavefunctions
+\eqar{
+  \psi=&\frac{\ue^{-\Gamma t/2}}{\ui\Delta'}\begin{pmatrix}
+    -\Delta\sin\dfrac{\ui\Delta't}{2}+\ui\Delta'\cos\dfrac{\ui\Delta't}{2}\\
+    \Omega\sin\dfrac{\ui\Delta't}{2}
+  \end{pmatrix}\\
+  =&\frac{\ue^{-\Gamma t/2}}{\Delta'}\begin{pmatrix}
+    -\Delta\sinh\dfrac{\Delta't}{2}+\Delta'\cosh\dfrac{\Delta't}{2}\\
+    \Omega\sinh\dfrac{\Delta't}{2}
+  \end{pmatrix}
+}
+Decay probabilities
+\eqar{
+  p_1(T)=&\frac{\paren{\Delta+\Gamma}\paren{\Omega^2+2\Gamma^2-2\Delta\Gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}-\frac{\paren{\Delta+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\\
+  &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\Delta^2}+\Gamma\ui\Delta'\paren{2\Delta^2-2\Delta\Gamma-\Omega^2}\sin\ui\Delta't+\Gamma\paren{2\Delta^3-2\Delta^2\Gamma-2\Delta\Omega^2+\Gamma\Omega^2}\cos\ui\Delta't}\\
+  =&\frac{\paren{\Delta+\Gamma}\paren{\Omega^2+2\Gamma^2-2\Delta\Gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}-\frac{\paren{\Delta+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\\
+  &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\Delta^2}-\Gamma\Delta'\paren{2\Delta^2-2\Delta\Gamma-\Omega^2}\sinh\Delta't+\Gamma\paren{2\Delta^3-2\Delta^2\Gamma-2\Delta\Omega^2+\Gamma\Omega^2}\cosh\Delta't}
+}
+\eqar{
+  p_2(T)=&\frac{\Omega^2\paren{\Gamma-\Delta}}{2\Gamma\paren{\Omega^2+\Gamma^2-\Delta^2}}-\frac{\Omega^2\paren{\Gamma-\Delta}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\Delta^2}\paren{\Omega^2+\Gamma^2-\Delta^2}}\paren{\Omega^2+\Gamma^2-\Delta^2-\Gamma^2\cosh\Delta't-\Gamma\Delta'\sinh\Delta't}
+}
+\eqar{
+  p_1(T)+p_2(T)=&1-\frac{\ue^{-\Gamma t}\paren{\Omega^2+\Delta\Delta'\sinh\Delta't-\Delta^2\cosh\Delta't}}{\Omega^2-\Delta^2}
+}
 
 \end{document}
