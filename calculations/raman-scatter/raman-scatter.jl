@@ -82,7 +82,7 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
         @fastmath factor = 1 / 2 / sqrt(s)
         s = 0 # normalization
         @simd for j in 1:nstate
-            v = ϕ[j] * (1 - rates[j] * factor * δt)
+            v = ϕ[j] * (1 - rates[j] * δt) * factor
             s += abs2(v)
             ϕ[j] = v
         end
