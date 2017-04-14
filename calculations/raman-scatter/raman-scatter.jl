@@ -199,6 +199,27 @@ function propagate_underdamp(Ω::T, Γ::AbstractMatrix{T},
     return flipped ? (zero(T), one(T)) : (one(T), zero(T))
 end
 
+function average_underdamp(Ω::T, Γ::AbstractMatrix{T},
+                           rates::AbstractVector{T}, tmax, n, rd) where T
+    sumϕ = zeros(T, 2)
+    sumϕ² = zeros(T, 2)
+    @inbounds for i in 1:n
+        ψ = propagate_underdamp(Ω, Γ, rates, tmax, rd)
+        for j in 1:2
+            ψi = abs2(ψ[j])
+            sumϕ[j] += ψi
+            sumϕ²[j] += ψi^2
+        end
+    end
+    @inbounds for i in 1:2
+        avgϕi = sumϕ[i] / n
+        avgϕ²i = sumϕ²[i] / n
+        sumϕ[i] = avgϕi
+        sumϕ²[i] = (avgϕ²i - avgϕi^2) / sqrt(n - 1)
+    end
+    return sumϕ, sumϕ²
+end
+
 # Propagate the state `ϕ` by `nstep` number of time steps each of length `δt`
 # The decay matrix is `Γ`, the element `(i,j)` of this matrix represents the decay rate
 # from state `j` to state `i`.
@@ -213,11 +234,11 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
     end
 
     # Half step
-    @fastmath sinΩt_2 = sin(Ω * δt / 2)
-    @fastmath cosΩt_2 = cos(Ω * δt / 2)
+    @fastmath sinΩt_2 = sin(Ω * δt / 4)
+    @fastmath cosΩt_2 = cos(Ω * δt / 4)
     # Full step
-    @fastmath sinΩt = sin(Ω * δt)
-    @fastmath cosΩt = cos(Ω * δt)
+    @fastmath sinΩt = sin(Ω * δt / 2)
+    @fastmath cosΩt = cos(Ω * δt / 2)
     # Decay rate
     T = real(eltype(ϕ))
     s::T = 0
@@ -324,8 +345,7 @@ function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
 end
 
 
-# ϕ = [1.0, 0.0]
-# δt = 1e-7
+ϕ = [1.0, 0.0]
 Γ = [0 3e4
       2e4 0]
 rates = Vector{eltype(Γ)}(2)
@@ -336,65 +356,89 @@ for i in 1:2
     end
     rates[i] = s
 end
-# i1 = 1
-# i2 = 2
+i1 = 1
+i2 = 2
 Ω = 2π * 400e3
 
-# using PyPlot
-# pts = 0:10:1000
-# res = Vector{Float64}(length(pts))
-# unc = Vector{Float64}(length(pts))
+using PyPlot
+pts = 0:1023
+res = Vector{Float64}(length(pts))
+unc = Vector{Float64}(length(pts))
 
-# function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
-#     len = length(ϕ)
-#     rates = Vector{eltype(Γ)}(len)
-#     for i in 1:len
-#         local s = zero(eltype(Γ))
-#         for j in 1:len
-#             s += Γ[j, i]
-#         end
-#         rates[i] = s
-#     end
-#     rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-#     # @show average(ϕ, 1.1e-7, 0, Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
-#     @time Threads.@threads for i in 1:length(pts)
-#         local a, s
-#         a, s = average(ϕ, 1.1e-7, pts[i], Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
-#         res[i] = a[1]
-#         unc[i] = s[1]
-#     end
-#     errorbar(pts, res, unc)
-#     @time Threads.@threads for i in 1:length(pts)
-#         local a, s
-#         a, s = average(ϕ, 1.1e-7 * 5, pts[i] ÷ 5, Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
-#         res[i] = a[1]
-#         unc[i] = s[1]
-#     end
-#     errorbar(pts, res, unc)
-# end
-# f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
-# # # for i in 1:npts
-# # #     a, s = average(ϕ, 1.1e-7, 10 * (i - 1), Γ, i1, i2, 0, 10000)
-# # #     res[i] = a[1]
-# # #     unc[i] = s[1]
-# # # end
-# # # errorbar(1:npts, res, unc)
+function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
+    len = length(ϕ)
+    rates = Vector{eltype(Γ)}(len)
+    for i in 1:len
+        local s = zero(eltype(Γ))
+        for j in 1:len
+            s += Γ[j, i]
+        end
+        rates[i] = s
+    end
+    δt = 1.1e-7
+    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
+    # @show average(ϕ, δt, 0, Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
+    # @time Threads.@threads for i in 1:length(pts)
+    #     local a, s
+    #     a, s = average(ϕ, δt, pts[i], Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
+    #     res[i] = a[1]
+    #     unc[i] = s[1]
+    # end
+    # errorbar(pts * δt, res, unc, fmt=".", label="1.1")
+    # @time Threads.@threads for i in 1:length(pts)
+    #     local a, s
+    #     a, s = average(ϕ, δt / 100, pts[i] * 100, Γ, i1, i2, Ω, 10000,
+    #                    rates, rds[Threads.threadid()])
+    #     res[i] = a[1]
+    #     unc[i] = s[1]
+    # end
+    # errorbar(pts * δt, res, unc, fmt=".", label="0.55")
+    @time Threads.@threads for i in 1:length(pts)
+        local a, s
+        a, s = average_underdamp(Ω, Γ, rates, δt * pts[i], 100000, rds[Threads.threadid()])
+        res[i] = a[1]
+        unc[i] = s[1]
+    end
+    errorbar(pts * δt, res, unc, fmt="-", label="0")
+    res .= 0
+    unc .= 0
+    Ω32 = Float32(Ω)
+    Γ32 = Float32.(Γ)
+    rates32 = Float32.(rates)
+    δt32 = Float32(δt)
+    @time Threads.@threads for i in 1:length(pts)
+        local a, s
+        a, s = average_underdamp(Ω32, Γ32, rates32, δt32 * pts[i], 100000,
+                                 rds[Threads.threadid()])
+        res[i] = a[1]
+        unc[i] = s[1]
+    end
+    errorbar(pts * δt, res, unc, fmt="-", label="0")
+end
+f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
+# # for i in 1:npts
+# #     a, s = average(ϕ, δt, 10 * (i - 1), Γ, i1, i2, 0, 10000)
+# #     res[i] = a[1]
+# #     unc[i] = s[1]
+# # end
+# # errorbar(1:npts, res, unc)
 
-# grid()
-# show()
+legend()
+grid()
+show()
 
 # # @time @show average(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
 # # @time @show average(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
 # # @time @show average(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
 
-function f(Ω, Γ, rates)
-    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-    propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
-    @time Threads.@threads for i in 1:100000000
-        propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
-    end
-end
-f(Ω, Γ, rates)
+# function f(Ω, Γ, rates)
+#     rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
+#     propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+#     @time Threads.@threads for i in 1:100000000
+#         propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+#     end
+# end
+# f(Ω, Γ, rates)
 
 # @code_native propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
 # @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
