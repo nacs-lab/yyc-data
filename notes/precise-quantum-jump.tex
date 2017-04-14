@@ -409,6 +409,33 @@ Compare this to the normalization of the wave function
 }
 We have
 \[p_1 + p_2+\langle\psi|\psi\rangle=1\]
+\subsection{Derivative}
+Calculate the derivative of $\langle\psi|\psi\rangle$ to help root finding with Newton's method.
+\eqar{
+  \diff{}{t}\langle\psi|\psi\rangle=&\diff{}{t}\frac{\ue^{-\Gamma t}}{\Omega^2-\Delta^2}\paren{
+    \Omega^2-\Delta^2\cos\Omega't-\Delta\Omega'\sin\Omega't
+  }\\
+  =&-\frac{\Gamma\ue^{-\Gamma t}}{\Omega^2-\Delta^2}\paren{
+    \Omega^2-\Delta^2\cos\Omega't-\Delta\Omega'\sin\Omega't
+  }+\frac{\ue^{-\Gamma t}}{\Omega^2-\Delta^2}\paren{
+    \Delta^2\Omega'\sin\Omega't-\Delta\Omega'^2\cos\Omega't
+  }\\
+  =&-\frac{\ue^{-\Gamma t}}{\Omega^2-\Delta^2}\paren{
+    \Gamma\Omega^2
+    -\Delta\Omega'\paren{\Delta+\Gamma}\sin\Omega't
+    +\Delta\paren{\Omega'^2-\Gamma\Delta}\cos\Omega't
+  }
+}
+Another way to calculate this
+\eqar{
+  \diff{}{t}\langle\psi|\psi\rangle=&-\langle\psi|C_1^\dagger C_1|\psi\rangle-\langle\psi|C_2^\dagger C_2|\psi\rangle\\
+  =&-\frac{\paren{\Gamma+\Delta}\ue^{-\Gamma t}}{2\paren{\Omega^2-\Delta^2}}\paren{
+    \Omega^2+\paren{\Omega^2-2\Delta^2}\cos\Omega't-2\Delta\Omega'\sin\Omega't
+  }-\frac{\paren{\Gamma-\Delta}\Omega^2}{2\paren{\Omega^2-\Delta^2}}\ue^{-\Gamma t}\paren{1-\cos\Omega't}\\
+  =&-\frac{\ue^{-\Gamma t}}{\paren{\Omega^2-\Delta^2}}\paren{
+    \Gamma\Omega^2-\Delta\Omega'\paren{\Gamma+\Delta}\sin\Omega't+\Delta\paren{\Omega^2-\Delta^2-\Gamma\Delta}\cos\Omega't
+  }
+}
 
 \section{Overdamp regime}
 The results above should work for overdamping regime too.
