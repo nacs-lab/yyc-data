@@ -87,8 +87,8 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     absΔ = abs(params.Δ)
     exp_lo = r / params.Ω / (params.Ω + absΔ)
     exp_hi = r / params.Ω / (params.Ω - absΔ)
-    tlo::T = -log(exp_hi) / params.Γ
-    thi::T = -log(exp_lo) / params.Γ
+    @fastmath tlo::T = -log(exp_hi) / params.Γ
+    @fastmath thi::T = -log(exp_lo) / params.Γ
     if !(tlo > 0)
         tlo = 0
     end
