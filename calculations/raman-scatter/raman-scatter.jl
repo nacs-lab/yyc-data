@@ -19,25 +19,24 @@ struct RabiDecayParams{T}
     Ω²pΓ²mΔ²::T
     p2max::T
     overdamp::Bool
-end
-
-function RabiDecayParams(Ω::T, Γ₁::T, Γ₂::T) where T
-    Δ = (Γ₁ - Γ₂) / 2
-    Γ = (Γ₁ + Γ₂) / 2
-    Δ² = Δ^2
-    Ω² = Ω^2
-    Γ² = Γ^2
-    overdamp = Ω² < Δ²
-    if overdamp
-        Ω′² = Δ² - Ω²
-    else
-        Ω′² = Ω² - Δ²
+    @inline function RabiDecayParams{T}(Ω::T, Γ₁::T, Γ₂::T) where T
+        Δ = (Γ₁ - Γ₂) / 2
+        Γ = (Γ₁ + Γ₂) / 2
+        Δ² = Δ^2
+        Ω² = Ω^2
+        Γ² = Γ^2
+        overdamp = Ω² < Δ²
+        if overdamp
+            Ω′² = Δ² - Ω²
+        else
+            Ω′² = Ω² - Δ²
+        end
+        Ω′ = sqrt(Ω′²)
+        Ω²pΓ²mΔ² = Ω² + Γ² - Δ²
+        p2max = Ω^2 * Γ₂ / 2 / Γ / Ω²pΓ²mΔ²
+        return new(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, Δ * Ω′, Γ * Ω′,
+                   Ω²pΓ²mΔ², p2max, overdamp)
     end
-    Ω′ = sqrt(Ω′²)
-    Ω²pΓ²mΔ² = Ω² + Γ² - Δ²
-    p2max = Ω^2 * Γ₂ / 2 / Γ / Ω²pΓ²mΔ²
-    return RabiDecayParams{T}(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, Δ * Ω′, Γ * Ω′, Ω²pΓ²mΔ²,
-                              p2max, overdamp)
 end
 
 """
@@ -52,7 +51,7 @@ If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the st
 the decay occurs. `ψ` is unused.
 If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
 """
-function propagate_2states_underdamp{T}(params::RabiDecayParams{T}, tmax, rd)
+function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
     r = T(rand(rd)) * params.Ω′²
     # Now find the t for which `ψ^2(t) * Ω′² = r`.
     # First check if `ψ^2(tmax) * Ω′² > r`
@@ -70,20 +69,31 @@ function propagate_2states_underdamp{T}(params::RabiDecayParams{T}, tmax, rd)
         ψ1 = muladd(params.Ω′, cosΩ′t_2, -params.Δ * sinΩ′t_2)
         ψ2 = params.Ω * sinΩ′t_2
         @fastmath factor = sqrt(expΓt / ψ²)
-        return (t, 0, (ψ1 * factor, ψ2 * factor))
+        return t, 0, (ψ1 * factor, ψ2 * factor)
     end
     # Tolerance
     yδ = max(T(2e-7), eps(T) * 10) * params.Ω′²
     # Find the root using a combination of newton's method and bisecting.
     # The bisection is to avoid newton's method overshotting since the function we want
     # to solve is known to have partial oscillation.
-    tlo::T = 0
-    thi::T = t
     if r - ψ² <= yδ
         @goto ret
     end
     if params.Ω′² - r <= yδ
-        return (tlo, 1, (one(T), zero(T)))
+        return zero(T), 1, (one(T), zero(T))
+    end
+    # ψ² * Ω′² is bound between exp(-Γt) * Ω * (Ω ± Δ)
+    # Use this to compute a better bounds
+    absΔ = abs(params.Δ)
+    exp_lo = r / params.Ω / (params.Ω + absΔ)
+    exp_hi = r / params.Ω / (params.Ω - absΔ)
+    tlo::T = -log(exp_hi) / params.Γ
+    thi::T = -log(exp_lo) / params.Γ
+    if !(tlo > 0)
+        tlo = 0
+    end
+    if !(thi < t)
+        thi = t
     end
     if params.Ω′ > 0
         tthresh = min(T(2 / params.Ω′), T(tmax))
@@ -147,7 +157,46 @@ function propagate_2states_underdamp{T}(params::RabiDecayParams{T}, tmax, rd)
                                                             -(muladd(params.Γ², cosΩ′t,
                                                                      -params.Ω²pΓ²mΔ²))))
     ptotal = 1 - ψ² / params.Ω′²
-    return (t, ptotal * rand(rd) < p2 ? 2 : 1, (one(T), zero(T)))
+    return t, ptotal * rand(rd) < p2 ? 2 : 1, (one(T), zero(T))
+end
+
+function propagate_underdamp(Ω::T, Γ::AbstractMatrix{T},
+                             rates::AbstractVector{T}, _tmax, rd) where T
+    # @assert size(Γ) == (2, 2)
+    # @assert size(rates) == (2,)
+    Γ₁, Γ₂ = rates
+    tmax = _tmax
+    params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
+    params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
+    ψ = (one(T), zero(T))
+    flipped = false
+    @inbounds while tmax > 0
+        t, idx, ψ = propagate_2states_underdamp(params1, tmax, rd)
+        tmax -= t
+        if idx == 0
+            if flipped
+                return ψ[2], ψ[1]
+            else
+                return ψ
+            end
+        end
+        r = rand(rd)
+        if flipped
+            idx = 3 - idx
+        end
+        if r * rates[idx] > Γ[1, idx]
+            if !flipped
+                flipped = true
+                params1, params2 = params2, params1
+            end
+        else
+            if flipped
+                flipped = false
+                params1, params2 = params2, params1
+            end
+        end
+    end
+    return flipped ? (zero(T), one(T)) : (one(T), zero(T))
 end
 
 # Propagate the state `ϕ` by `nstep` number of time steps each of length `δt`
@@ -277,11 +326,19 @@ end
 
 # ϕ = [1.0, 0.0]
 # δt = 1e-7
-# Γ = [0 3e4
-#       2e4 0]
+Γ = [0 3e4
+      2e4 0]
+rates = Vector{eltype(Γ)}(2)
+for i in 1:2
+    local s = zero(eltype(Γ))
+    for j in 1:2
+        s += Γ[j, i]
+    end
+    rates[i] = s
+end
 # i1 = 1
 # i2 = 2
-# Ω = 2π * 400e3
+Ω = 2π * 400e3
 
 # using PyPlot
 # pts = 0:10:1000
@@ -330,12 +387,19 @@ end
 # # @time @show average(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
 # # @time @show average(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
 
-params = RabiDecayParams(2.0, 0.5, 0.4)
+function f(Ω, Γ, rates)
+    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
+    propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+    @time Threads.@threads for i in 1:100000000
+        propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+    end
+end
+f(Ω, Γ, rates)
 
-@code_native propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
-@show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @code_native propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
+# @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
