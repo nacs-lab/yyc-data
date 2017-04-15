@@ -15,9 +15,6 @@ struct RabiDecayParams{T}
     Ω′²::T # Or Δ′²
     Ω′::T # Or Δ′
     ΔΩ′::T # Or ΔΔ′
-    ΓΩ′::T # Or ΓΔ′
-    Ω²pΓ²mΔ²::T
-    p2max::T
     c1::T
     c2::T
     c3::T
@@ -35,13 +32,10 @@ struct RabiDecayParams{T}
             Ω′² = Ω² - Δ²
         end
         Ω′ = sqrt(Ω′²)
-        Ω²pΓ²mΔ² = Ω² + Γ² - Δ²
-        p2max = Ω^2 * Γ₂ / 2 / Γ / Ω²pΓ²mΔ²
         c1 = Γ * Ω²
         c2 = Δ * Ω′ * Γ₁
         c3 = Δ * muladd(Γ, -Δ, Ω′²)
-        return new(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, Δ * Ω′, Γ * Ω′,
-                   Ω²pΓ²mΔ², p2max, c1, c2, c3, overdamp)
+        return new(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, Δ * Ω′, c1, c2, c3, overdamp)
     end
 end
 
