@@ -3,6 +3,34 @@
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
+@inline function sincos(v::Float64)
+    Base.llvmcall("""
+    %f = bitcast i8 *%1 to void (double, double *, double *)*
+    %pres = alloca [2 x double]
+    %p1 = getelementptr inbounds [2 x double], [2 x double]* %pres, i64 0, i64 0
+    %p2 = getelementptr inbounds [2 x double], [2 x double]* %pres, i64 0, i64 1
+    call void %f(double %0, double *nocapture noalias %p1, double *nocapture noalias %p2)
+    %res = load [2 x double], [2 x double]* %pres
+    ret [2 x double] %res
+    """, Tuple{Float64,Float64}, Tuple{Float64,Ptr{Void}}, v, cglobal((:sincos, Base.libm_name)))
+end
+
+@inline function sincos(v::Float32)
+    Base.llvmcall("""
+    %f = bitcast i8 *%1 to void (float, float *, float *)*
+    %pres = alloca [2 x float]
+    %p1 = getelementptr inbounds [2 x float], [2 x float]* %pres, i64 0, i64 0
+    %p2 = getelementptr inbounds [2 x float], [2 x float]* %pres, i64 0, i64 1
+    call void %f(float %0, float *nocapture noalias %p1, float *nocapture noalias %p2)
+    %res = load [2 x float], [2 x float]* %pres
+    ret [2 x float] %res
+    """, Tuple{Float32,Float32}, Tuple{Float32,Ptr{Void}}, v, cglobal((:sincosf, Base.libm_name)))
+end
+
+@inline function sincos(v)
+    @fastmath (sin(v), cos(v))
+end
+
 struct RabiDecayParams{T}
     Γ₁::T
     Γ₂::T
@@ -32,10 +60,11 @@ struct RabiDecayParams{T}
             Ω′² = Ω² - Δ²
         end
         Ω′ = sqrt(Ω′²)
+        ΔΩ′ = Δ * Ω′
         c1 = Γ * Ω²
-        c2 = Δ * Ω′ * Γ₁
+        c2 = ΔΩ′ * Γ₁
         c3 = Δ * muladd(Γ, -Δ, Ω′²)
-        return new(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, Δ * Ω′, c1, c2, c3, overdamp)
+        return new(Γ₁, Γ₂, Δ, Ω, Γ, Δ², Ω², Γ², Ω′², Ω′, ΔΩ′, c1, c2, c3, overdamp)
     end
 end
 
@@ -74,15 +103,13 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     if !(thi < t)
         thi = t
         Ω′t = params.Ω′ * t
-        @fastmath sinΩ′t = sin(Ω′t)
-        @fastmath cosΩ′t = cos(Ω′t)
+        sinΩ′t, cosΩ′t = sincos(Ω′t)
         @fastmath expΓt = exp(-params.Γ * t)
         ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
         if ψ² > r
             # No decay happened, return the wave function at tmax
             Ω′t_2 = Ω′t / 2
-            @fastmath sinΩ′t_2 = sin(Ω′t_2)
-            @fastmath cosΩ′t_2 = cos(Ω′t_2)
+            sinΩ′t_2, cosΩ′t_2 = sincos(Ω′t_2)
             ψ1 = muladd(params.Ω′, cosΩ′t_2, -params.Δ * sinΩ′t_2)
             ψ2 = params.Ω * sinΩ′t_2
             @fastmath factor = sqrt(expΓt / ψ²)
@@ -111,8 +138,7 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
                 δt = thi - tlo
                 t = t2
                 Ω′t = params.Ω′ * t
-                @fastmath sinΩ′t = sin(Ω′t)
-                @fastmath cosΩ′t = cos(Ω′t)
+                sinΩ′t, cosΩ′t = sincos(Ω′t)
                 @fastmath expΓt = exp(-params.Γ * t)
                 ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
                 δ2 = ψ² - r
@@ -137,8 +163,7 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
         first_loop = false
         t = (thi + tlo) / 2
         Ω′t = params.Ω′ * t
-        @fastmath sinΩ′t = sin(Ω′t)
-        @fastmath cosΩ′t = cos(Ω′t)
+        sinΩ′t, cosΩ′t = sincos(Ω′t)
         @fastmath expΓt = exp(-params.Γ * t)
         ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
         δ2 = ψ² - r
