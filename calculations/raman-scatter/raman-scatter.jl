@@ -31,6 +31,14 @@ end
     @fastmath (sin(v), cos(v))
 end
 
+@inline function sincosh(v)
+    @fastmath expv = exp(v)
+    exp_v = 1 / expv
+    sinhv = (expv - exp_v) / 2
+    coshv = (expv + exp_v) / 2
+    return sinhv, coshv
+end
+
 struct RabiDecayParams{T}
     Γ₁::T
     Γ₂::T
@@ -184,15 +192,114 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
 end
 
-function propagate_underdamp(Ω::T, Γ::AbstractMatrix{T},
-                             rates::AbstractVector{T}, _tmax, rd) where T
+function propagate_2states_overdamp(params::RabiDecayParams{T}, tmax, rd) where T
+    r = T(rand(rd)) * params.Ω′²
+    # Now find the t for which `ψ^2(t) * Δ′² = r`.
+    # First check if `ψ^2(tmax) * Δ′² > r`
+    t::T = tmax
+    # Tolerance
+    yδ = max(T(2e-7), eps(T) * 10) * params.Ω′²
+    if params.Ω′² - r <= yδ
+        return zero(T), 1, (one(T), zero(T))
+    end
+    Δ′t::T = params.Ω′ * t
+    sinhΔ′t::T = 0
+    coshΔ′t::T = 0
+    sinhΔ′t, coshΔ′t = sincosh(Δ′t)
+    @fastmath expΓt::T = exp(-params.Γ * t)
+    ψ²::T = expΓt * muladd(params.Δ², coshΔ′t, -muladd(params.ΔΩ′, sinhΔ′t, params.Ω²))
+    if ψ² > r
+        # No decay happened, return the wave function at tmax
+        Δ′t_2 = Δ′t / 2
+        sinhΔ′t_2, coshΔ′t_2 = sincosh(Δ′t_2)
+        ψ1 = muladd(params.Ω′, coshΔ′t_2, -params.Δ * sinhΔ′t_2)
+        ψ2 = params.Ω * sinhΔ′t_2
+        @fastmath factor = sqrt(expΓt / ψ²)
+        return t, 0, (ψ1 * factor, ψ2 * factor)
+    elseif r - ψ² <= yδ
+        @goto ret
+    end
+    thi::T = t
+    tlo::T = 0
+    if r^2 > ψ² * params.Ω′²
+        # It's closer to t=0, start from there
+        t = 0
+        Δ′t = 0
+        sinhΔ′t = 0
+        coshΔ′t = 1
+        expΓt = 1
+        ψ² = params.Ω′²
+    end
+    # Find the root using a combination of newton's method and bisecting.
+    # The bisection is to avoid newton's method overshotting.
+    # It shouldn't be needed in this case since the function does not oscillate but is
+    # included just as a fallback.
+    while thi - tlo > 5 * eps(T) * thi
+        # Try Newton's method
+        diff = expΓt * muladd(params.c3, coshΔ′t, muladd(params.c2, sinhΔ′t, params.c1))
+        δ1 = (ψ² - r)
+        t2 = t - δ1 / diff
+        if tlo < t2 < thi
+            δt = thi - tlo
+            t = t2
+            Δ′t = params.Ω′ * t
+            sinhΔ′t, coshΔ′t = sincosh(Δ′t)
+            @fastmath expΓt = exp(-params.Γ * t)
+            ψ² = expΓt * muladd(params.Δ², coshΔ′t, -muladd(params.ΔΩ′, sinhΔ′t, params.Ω²))
+            δ2 = ψ² - r
+            # We've already computed this point, even if it's not enough this time,
+            # might as well use it to narrow down the range
+            if δ2 < 0
+                δ2 = -δ2
+                δ2 < yδ && @goto ret
+                thi = t
+            else
+                δ2 < yδ && @goto ret
+                tlo = t
+            end
+            δt2 = thi - tlo
+            # If we shrink either x or y by at least √2, keep using the Newton's method
+            # otherwise, shrink it further with bisect.
+            if δt2 * 1.4 <= δt || δ2 * 1.4 < abs(δ1)
+                continue
+            end
+        end
+        t = (thi + tlo) / 2
+        Δ′t = params.Ω′ * t
+        sinhΔ′t, coshΔ′t = sincosh(Δ′t)
+        @fastmath expΓt = exp(-params.Γ * t)
+        ψ² = expΓt * muladd(params.Δ², coshΔ′t, -muladd(params.ΔΩ′, sinhΔ′t, params.Ω²))
+        δ2 = ψ² - r
+        if δ2 < 0
+            -δ2 < yδ && @goto ret
+            thi = t
+        else
+            δ2 < yδ && @goto ret
+            tlo = t
+        end
+    end
+
+    @label ret
+    # Whether we decay through state 1 or 2 here depends on the instantaneous decay rate
+    # at `t`
+    rtotal = -2 * muladd(params.c3, coshΔ′t, muladd(params.c2, sinhΔ′t, params.c1))
+    r2 = params.Γ₂ * params.Ω² * (coshΔ′t - 1)
+    return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
+end
+
+function propagate2(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tmax, rd) where T
     Γ₁, Γ₂ = rates
     tmax::T = _tmax
     params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
     params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
+    overdamp = params1.overdamp
     flipped = false
     @inbounds while tmax > 0
-        t, idx, ψ = propagate_2states_underdamp(params1, tmax, rd)
+        t, idx, ψ = if overdamp
+            propagate_2states_overdamp(params1, tmax, rd)
+        else
+            propagate_2states_underdamp(params1, tmax, rd)
+        end
         tmax -= t
         if idx == 0
             if flipped
@@ -219,14 +326,13 @@ function propagate_underdamp(Ω::T, Γ::AbstractMatrix{T},
     return flipped ? (zero(T), one(T)) : (one(T), zero(T))
 end
 
-function average_underdamp(Ω::T, Γ::AbstractMatrix{T},
-                           rates::AbstractVector{T}, tmax, n, rd) where T
+function average2(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n, rd) where T
     sumϕ1 = zero(T)
     sumϕ2 = zero(T)
     sumϕ²1 = zero(T)
     sumϕ²2 = zero(T)
     @inbounds for i in 1:n
-        ψ = propagate_underdamp(Ω, Γ, rates, tmax, rd)
+        ψ = propagate2(Ω, Γ, rates, tmax, rd)
         ψ1 = abs2(ψ[1])
         ψ2 = abs2(ψ[2])
         sumϕ1 += ψ1
@@ -385,7 +491,7 @@ end
 ϕ = [1.0, 0.0]
 i1 = 1
 i2 = 2
-Ω = 2π * 400e3
+Ω = 2π * 2e3
 const δt = 1e-8
 
 using PyPlot
@@ -422,7 +528,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average_underdamp(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
+        a, s = average2(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -435,18 +541,17 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average_underdamp(Ω32, Γ32, rates32, δt32 * pts[i], 10000,
-                                 rds[Threads.threadid()])
+        a, s = average2(Ω32, Γ32, rates32, δt32 * pts[i], 10000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
     errorbar(pts * δt, res, unc, fmt="^-", label="0", color=color)
 end
 Γ = [2e4 0
-      0 3e4]
+      0 3e4] * 4
 f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "blue")
 Γ = [0 3e4
-      2e4 0]
+      2e4 0] * 4
 f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "red")
 # Γ = [0 3e4
 #       3e4 0] * 2
@@ -490,7 +595,7 @@ legend()
 grid()
 show()
 
-# @show propagate_underdamp(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
+# @show propagate2(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
 # # @time @show average(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
 # # @time @show average(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
 # # @time @show average(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
@@ -498,9 +603,9 @@ show()
 function f2(Ω, Γ)
     rates = Γ_to_rates(Γ)
     rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-    propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+    propagate2(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
     @time Threads.@threads for i in 1:100000000
-        propagate_underdamp(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+        propagate2(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
     end
 end
 f2(Ω, Γ)
