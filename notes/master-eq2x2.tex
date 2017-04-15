@@ -202,7 +202,7 @@
 \section{Master equation}
 Master equation for a driven two level system
 \eqar{
-  \diff{\rho}{t}=&-\ui\sqr{H, \rho}+\sum_m C_m\rho C^\dagger-\frac12\sum_m\paren{C^\dagger_m C_m\rho+\rho C^\dagger_m C_m}\\
+  \diff{\rho}{t}=&-\ui\sqr{H, \rho}+\sum_m C_m\rho C^\dagger_m-\frac12\sum_m\paren{C^\dagger_m C_m\rho+\rho C^\dagger_m C_m}\\
   H=&\frac12\begin{pmatrix}
     0&-\ui\Omega\\
     \ui\Omega&0
@@ -243,7 +243,7 @@ Jump operators
 }
 Decay terms
 \eqar{
-  &\sum_m C_m\rho C^\dagger\\
+  &\sum_m C_m\rho C^\dagger_m\\
   =&\begin{pmatrix}
     \Gamma\rho_{11}&0\\
     0&\Gamma\rho_{22}
@@ -311,6 +311,121 @@ Let $x=\rho_{12}+\rho_{21}$, $y=\rho_{22}-\rho_{11}$
   =&-\Omega^2y+\Gamma\Omega x\\
   =&-\Omega^2y-\Gamma\diff{y}{t}\\
   0=&\diff[2]{y}{t}+\Gamma\diff{y}{t}+\Omega^2y
+  \intertext{Assume underdamped ($4\Omega^2>\Gamma^2$). Let $\Omega'=\sqrt{4\Omega^2-\Gamma^2}/2$}
+  y=&\exp\paren{-\frac{\Gamma t}{2}}\paren{c_1\sin\Omega't+c_2\cos\Omega't}
+}
+Initial condition
+\eqar{
+  x\paren{0}=&0\\
+  y\paren{0}=&-1
+}
+So $c_2=-1$
+\eqar{
+  y=&\exp\paren{-\frac{\Gamma t}{2}}\paren{c_1\sin\Omega't-\cos\Omega't}\\
+  \left.\diff{y}{t}\right|_{t=0}=&\frac{\Gamma}{2}+c_1\Omega'\\
+  y=&-\exp\paren{-\frac{\Gamma t}{2}}\paren{\frac{\Gamma}{2\Omega'}\sin\Omega't+\cos\Omega't}\\
+}
+
+\section{State changing decay}
+Jump operators
+\eqar{
+  C_1=&\sqrt{\Gamma}\begin{pmatrix}
+    0&0\\
+    1&0
+  \end{pmatrix}\\
+  C_2=&\sqrt{\Gamma}\begin{pmatrix}
+    0&1\\
+    0&0
+  \end{pmatrix}\\
+  C^\dagger_1=&\sqrt{\Gamma}\begin{pmatrix}
+    0&1\\
+    0&0
+  \end{pmatrix}\\
+  C^\dagger_2=&\sqrt{\Gamma}\begin{pmatrix}
+    0&0\\
+    1&0
+  \end{pmatrix}\\
+  C^\dagger_1C_1=&\Gamma\begin{pmatrix}
+    1&0\\
+    0&0
+  \end{pmatrix}\\
+  C^\dagger_2C_2=&\Gamma\begin{pmatrix}
+    0&0\\
+    0&1
+  \end{pmatrix}
+}
+Decay terms
+\eqar{
+  &\sum_m C_m\rho C^\dagger_m\\
+  =&\begin{pmatrix}
+    \Gamma\rho_{22}&0\\
+    0&\Gamma\rho_{11}
+  \end{pmatrix}\\
+  &-\frac12\sum_m\paren{C^\dagger_m C_m\rho+\rho C^\dagger_m C_m}\\
+  =&-\frac12\paren{C^\dagger_1 C_1\rho+\rho C^\dagger_1 C_1+C^\dagger_2 C_2\rho+\rho C^\dagger_2 C_2}
+  \intertext{}
+  =&-\frac\Gamma2\paren{\begin{pmatrix}
+      1&0\\
+      0&0
+    \end{pmatrix}\rho+\rho\begin{pmatrix}
+      1&0\\
+      0&0
+    \end{pmatrix}}-\frac\Gamma2\paren{\begin{pmatrix}
+      0&0\\
+      0&1
+    \end{pmatrix}\rho+\rho\begin{pmatrix}
+      0&0\\
+      0&1
+    \end{pmatrix}}\\
+  =&-\begin{pmatrix}
+    \Gamma\rho_{11}&\Gamma\rho_{12}\\
+    \Gamma\rho_{21}&\Gamma\rho_{22}
+  \end{pmatrix}
+}
+\eqar{
+  \diff{\rho}{t}=&-\ui\sqr{H, \rho}+\begin{pmatrix}
+    \Gamma\rho_{22}&0\\
+    0&\Gamma\rho_{11}
+  \end{pmatrix}-\begin{pmatrix}
+    \Gamma\rho_{11}&\Gamma\rho_{12}\\
+    \Gamma\rho_{21}&\Gamma\rho_{22}
+  \end{pmatrix}\\
+  =&\frac12\paren{\begin{pmatrix}
+      0&-\Omega\\
+      \Omega&0
+    \end{pmatrix}\rho-\rho\begin{pmatrix}
+      0&-\Omega\\
+      \Omega&0
+    \end{pmatrix}}+\begin{pmatrix}
+    \Gamma\paren{\rho_{22}-\rho_{11}}&-\Gamma\rho_{12}\\
+    -\Gamma\rho_{21}&-\Gamma\paren{\rho_{22}-\rho_{11}}
+  \end{pmatrix}\\
+  =&\frac12\paren{\begin{pmatrix}
+      \Omega\rho_{12}&-\Omega\rho_{11}\\
+      \Omega\rho_{22}&-\Omega\rho_{21}
+    \end{pmatrix}-\begin{pmatrix}
+      -\Omega\rho_{21}&-\Omega\rho_{22}\\
+      \Omega\rho_{11}&\Omega\rho_{12}
+    \end{pmatrix}}+\begin{pmatrix}
+    \Gamma\paren{\rho_{22}-\rho_{11}}&-\Gamma\rho_{12}\\
+    -\Gamma\rho_{21}&-\Gamma\paren{\rho_{22}-\rho_{11}}
+  \end{pmatrix}\\
+  =&\begin{pmatrix}
+    \dfrac\Omega2\paren{\rho_{12}+\rho_{21}}+\Gamma\paren{\rho_{22}-\rho_{11}}&\dfrac\Omega2\paren{\rho_{22}-\rho_{11}}-\Gamma\rho_{12}\\
+    \dfrac\Omega2\paren{\rho_{22}-\rho_{11}}-\Gamma\rho_{21}&-\dfrac\Omega2\paren{\rho_{12}+\rho_{21}}-\Gamma\paren{\rho_{22}-\rho_{11}}
+  \end{pmatrix}
+}
+Let $x=\rho_{12}+\rho_{21}$, $y=\rho_{22}-\rho_{11}$
+\eqar{
+  \diff{x}{t}=&\Omega y-\Gamma x\\
+  \diff{y}{t}=&-\Omega x-2\Gamma y\\
+  \Omega x=&-\diff{y}{t}-2\Gamma y\\
+  \diff[2]{y}{t}=&-\Omega\diff{x}{t}-2\Gamma\diff{y}{t}\\
+  =&-\Omega\paren{\Omega y-\Gamma x}-2\Gamma\diff{y}{t}\\
+  =&-\Omega^2y+\Gamma\Omega x-2\Gamma\diff{y}{t}\\
+  =&-\Omega^2y-\Gamma\paren{\diff{y}{t}+2\Gamma y}-2\Gamma\diff{y}{t}\\
+  =&-3\Gamma\diff{y}{t}-\paren{\Omega^2+2\Gamma^2}y\\
+  0=&\diff[2]{y}{t}+3\Gamma\diff{y}{t}+\paren{\Omega^2+2\Gamma^2}y
   \intertext{Assume underdamped ($4\Omega^2>\Gamma^2$). Let $\Omega'=\sqrt{4\Omega^2-\Gamma^2}/2$}
   y=&\exp\paren{-\frac{\Gamma t}{2}}\paren{c_1\sin\Omega't+c_2\cos\Omega't}
 }
