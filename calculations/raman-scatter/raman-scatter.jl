@@ -56,45 +56,49 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     # Now find the t for which `ψ^2(t) * Ω′² = r`.
     # First check if `ψ^2(tmax) * Ω′² > r`
     t::T = tmax
-    Ω′t = params.Ω′ * t
-    @fastmath sinΩ′t = sin(Ω′t)
-    @fastmath cosΩ′t = cos(Ω′t)
-    @fastmath expΓt = exp(-params.Γ * t)
-    ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
-    if ψ² > r
-        # No decay happened, return the wave function at tmax
-        Ω′t_2 = Ω′t / 2
-        @fastmath sinΩ′t_2 = sin(Ω′t_2)
-        @fastmath cosΩ′t_2 = cos(Ω′t_2)
-        ψ1 = muladd(params.Ω′, cosΩ′t_2, -params.Δ * sinΩ′t_2)
-        ψ2 = params.Ω * sinΩ′t_2
-        @fastmath factor = sqrt(expΓt / ψ²)
-        return t, 0, (ψ1 * factor, ψ2 * factor)
-    end
     # Tolerance
     yδ = max(T(2e-7), eps(T) * 10) * params.Ω′²
-    # Find the root using a combination of newton's method and bisecting.
-    # The bisection is to avoid newton's method overshotting since the function we want
-    # to solve is known to have partial oscillation.
-    if r - ψ² <= yδ
-        @goto ret
-    end
     if params.Ω′² - r <= yδ
         return zero(T), 1, (one(T), zero(T))
     end
+    Ω′t::T = 0
+    sinΩ′t::T = 0
+    cosΩ′t::T = 0
+    expΓt::T = 0
+    ψ²::T = 0
     # ψ² * Ω′² is bound between exp(-Γt) * Ω * (Ω ± Δ)
     # Use this to compute a better bounds
     absΔ = abs(params.Δ)
     exp_lo = r / params.Ω / (params.Ω + absΔ)
+    @fastmath thi::T = -log(exp_lo) / params.Γ
+    if !(thi < t)
+        thi = t
+        Ω′t = params.Ω′ * t
+        @fastmath sinΩ′t = sin(Ω′t)
+        @fastmath cosΩ′t = cos(Ω′t)
+        @fastmath expΓt = exp(-params.Γ * t)
+        ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
+        if ψ² > r
+            # No decay happened, return the wave function at tmax
+            Ω′t_2 = Ω′t / 2
+            @fastmath sinΩ′t_2 = sin(Ω′t_2)
+            @fastmath cosΩ′t_2 = cos(Ω′t_2)
+            ψ1 = muladd(params.Ω′, cosΩ′t_2, -params.Δ * sinΩ′t_2)
+            ψ2 = params.Ω * sinΩ′t_2
+            @fastmath factor = sqrt(expΓt / ψ²)
+            return t, 0, (ψ1 * factor, ψ2 * factor)
+        elseif r - ψ² <= yδ
+            @goto ret
+        end
+    end
     exp_hi = r / params.Ω / (params.Ω - absΔ)
     @fastmath tlo::T = -log(exp_hi) / params.Γ
-    @fastmath thi::T = -log(exp_lo) / params.Γ
     if !(tlo > 0)
         tlo = 0
     end
-    if !(thi < t)
-        thi = t
-    end
+    # Find the root using a combination of newton's method and bisecting.
+    # The bisection is to avoid newton's method overshotting since the function we want
+    # to solve is known to have partial oscillation.
     if params.Ω′ > 0
         tthresh = min(T(2 / params.Ω′), T(tmax))
     else
@@ -103,8 +107,9 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     c1 = params.Γ * params.Ω²
     c2 = params.ΔΩ′ * params.Γ₁
     c3 = params.Δ * muladd(params.Γ, -params.Δ, params.Ω′²)
-    while thi - tlo > 5 * eps(T) * thi
-        if thi - tlo < tthresh
+    first_loop = true
+    while thi - tlo > 5 * eps(T) * thi || first_loop
+        if thi - tlo < tthresh && !first_loop
             # Try Newton's method
             diff = -expΓt * muladd(c3, cosΩ′t, -muladd(c2, sinΩ′t, - c1))
             δ1 = (ψ² - r)
@@ -136,6 +141,7 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
                 end
             end
         end
+        first_loop = false
         t = (thi + tlo) / 2
         Ω′t = params.Ω′ * t
         @fastmath sinΩ′t = sin(Ω′t)
@@ -180,11 +186,10 @@ function propagate_underdamp(Ω::T, Γ::AbstractMatrix{T},
                 return ψ
             end
         end
-        r = rand(rd)
         if flipped
             idx = 3 - idx
         end
-        if r * rates[idx] > Γ[1, idx]
+        if rand(rd) * rates[idx] > Γ[1, idx]
             if !flipped
                 flipped = true
                 params1, params2 = params2, params1
@@ -299,7 +304,7 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
         @fastmath factor = 1 / 2 / sqrt(s)
         s = 0 # normalization
         @simd for j in 1:nstate
-            v = ϕ[j] * (1 - rates[j] * δt) * factor
+            v = ϕ[j] * (1 - rates[j] * δt / 2) * factor
             s += abs2(v)
             ϕ[j] = v
         end
@@ -345,28 +350,8 @@ function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
 end
 
 
-ϕ = [1.0, 0.0]
-Γ = [0 3e4
-      2e4 0]
-rates = Vector{eltype(Γ)}(2)
-for i in 1:2
-    local s = zero(eltype(Γ))
-    for j in 1:2
-        s += Γ[j, i]
-    end
-    rates[i] = s
-end
-i1 = 1
-i2 = 2
-Ω = 2π * 400e3
-
-using PyPlot
-pts = 0:1023
-res = Vector{Float64}(length(pts))
-unc = Vector{Float64}(length(pts))
-
-function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
-    len = length(ϕ)
+function Γ_to_rates(Γ)
+    len = size(Γ, 1)
     rates = Vector{eltype(Γ)}(len)
     for i in 1:len
         local s = zero(eltype(Γ))
@@ -375,16 +360,37 @@ function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
         end
         rates[i] = s
     end
-    δt = 1.1e-7
+    return rates
+end
+
+ϕ = [1.0, 0.0]
+i1 = 1
+i2 = 2
+Ω = 2π * 400e3
+
+using PyPlot
+pts = 0:15:2400
+res = Vector{Float64}(length(pts))
+unc = Vector{Float64}(length(pts))
+
+function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
+    len = length(ϕ)
+    rates = Γ_to_rates(Γ)
+    Γ₁, Γ₂ = rates
+    params1 = RabiDecayParams{Float64}(Ω, Γ₁, Γ₂)
+    dump(params1)
+    δt = 1e-8
     rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
     # @show average(ϕ, δt, 0, Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
-    # @time Threads.@threads for i in 1:length(pts)
-    #     local a, s
-    #     a, s = average(ϕ, δt, pts[i], Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
-    #     res[i] = a[1]
-    #     unc[i] = s[1]
-    # end
-    # errorbar(pts * δt, res, unc, fmt=".", label="1.1")
+    res .= 0
+    unc .= 0
+    @time Threads.@threads for i in 1:length(pts)
+        local a, s
+        a, s = average(ϕ, δt, pts[i], Γ, i1, i2, Ω, 10000, rates, rds[Threads.threadid()])
+        res[i] = a[1]
+        unc[i] = s[1]
+    end
+    errorbar(pts * δt, res, unc, fmt=".", label="1.1", color=color)
     # @time Threads.@threads for i in 1:length(pts)
     #     local a, s
     #     a, s = average(ϕ, δt / 100, pts[i] * 100, Γ, i1, i2, Ω, 10000,
@@ -393,40 +399,61 @@ function f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
     #     unc[i] = s[1]
     # end
     # errorbar(pts * δt, res, unc, fmt=".", label="0.55")
-    @time Threads.@threads for i in 1:length(pts)
-        local a, s
-        a, s = average_underdamp(Ω, Γ, rates, δt * pts[i], 100000, rds[Threads.threadid()])
-        res[i] = a[1]
-        unc[i] = s[1]
-    end
-    errorbar(pts * δt, res, unc, fmt="-", label="0")
     res .= 0
     unc .= 0
-    Ω32 = Float32(Ω)
-    Γ32 = Float32.(Γ)
-    rates32 = Float32.(rates)
-    δt32 = Float32(δt)
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average_underdamp(Ω32, Γ32, rates32, δt32 * pts[i], 100000,
-                                 rds[Threads.threadid()])
+        a, s = average_underdamp(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
-    errorbar(pts * δt, res, unc, fmt="-", label="0")
+    errorbar(pts * δt, res, unc, fmt="-", label="0", color=color)
+    # Ω32 = Float32(Ω)
+    # Γ32 = Float32.(Γ)
+    # rates32 = Float32.(rates)
+    # δt32 = Float32(δt)
+    # @time Threads.@threads for i in 1:length(pts)
+    #     local a, s
+    #     a, s = average_underdamp(Ω32, Γ32, rates32, δt32 * pts[i], 10000,
+    #                              rds[Threads.threadid()])
+    #     res[i] = a[1]
+    #     unc[i] = s[1]
+    # end
+    # errorbar(pts * δt, res, unc, fmt="-", label="0")
 end
-f(pts, ϕ, Γ, i1, i2, Ω, res, unc)
-# # for i in 1:npts
-# #     a, s = average(ϕ, δt, 10 * (i - 1), Γ, i1, i2, 0, 10000)
-# #     res[i] = a[1]
-# #     unc[i] = s[1]
-# # end
-# # errorbar(1:npts, res, unc)
+# Γ = [0 0e4
+#       6e4 0] * 2
+# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "blue")
+# Γ = [0 2e4
+#       4e4 0] * 2
+# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "green")
+Γ = [0 3e4
+      3e4 0] * 2
+f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "red")
+Γ = [3e4 0
+      0 3e4] * 2
+f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "blue")
+# Γ = [0 4e4
+#       2e4 0] * 2
+# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "cyan")
+# Γ = [0 6e4
+#       0e4 0] * 2
+# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
+# Γ = [0 3e4
+#       3e4 0] * 2
+# f(pts, Γ, ϕ, i1, i2, 0.1e3, res, unc, "blue")
+# for i in 1:npts
+#     a, s = average(ϕ, δt, 10 * (i - 1), Γ, i1, i2, 0, 10000)
+#     res[i] = a[1]
+#     unc[i] = s[1]
+# end
+# errorbar(1:npts, res, unc)
 
 legend()
 grid()
 show()
 
+# @show propagate_underdamp(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
 # # @time @show average(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
 # # @time @show average(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
 # # @time @show average(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
