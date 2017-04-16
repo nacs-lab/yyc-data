@@ -361,10 +361,13 @@ Propagate this system using the quantum jump method by `n` times.
 Returns the averaged probability distribution and its uncertainty after the propagation.
 """
 function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n, rd) where T
-    sumϕ1 = zero(T)
-    sumϕ2 = zero(T)
-    sumϕ²1 = zero(T)
-    sumϕ²2 = zero(T)
+    # Always use Float64 for the sum so that the order of summing does not matter as much
+    # we could also be fancier and use the real type with the optimum summing order but
+    # using Float64 for sum is cheap and the easiest way to implement.
+    sumϕ1 = 0.0
+    sumϕ2 = 0.0
+    sumϕ²1 = 0.0
+    sumϕ²2 = 0.0
     @inbounds for i in 1:n
         ψ = propagate(Ω, Γ, rates, tmax, rd)
         ψ1 = abs2(ψ[1])
@@ -403,7 +406,7 @@ i2 = 2
 const δt = 1e-8
 
 using PyPlot
-pts = 0:200:10000
+pts = 0:20:1000
 res = Vector{Float64}(length(pts))
 unc = Vector{Float64}(length(pts))
 
@@ -418,7 +421,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
+        a, s = average(Ω, Γ, rates, δt * pts[i], 1000000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -431,7 +434,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 10000, rds[Threads.threadid()])
+        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 1000000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
