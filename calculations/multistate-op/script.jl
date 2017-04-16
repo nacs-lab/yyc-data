@@ -1,5 +1,6 @@
 #!/usr/bin/julia
 
+push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 using NaCsCalc.Atomic: all_scatter_D
 
 const δf1 = -25.0e9
