@@ -3,6 +3,8 @@
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
+using NaCsCalc.Utils: thread_rng, trand
+
 @inline function sincos(v::Float64)
     Base.llvmcall("""
     %f = bitcast i8 *%1 to void (double, double *, double *)*
@@ -305,7 +307,7 @@ else
 end
 
 """
-    propagate(Ω, Γ, rates, tmax, rd) -> ψ
+    propagate(Ω, Γ, rates, tmax, rd=thread_rng()) -> ψ
 
 The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
 to state 2.
@@ -315,7 +317,8 @@ Propagate this system using the quantum jump method once.
 
 Returns the wave function after the propagation.
 """
-function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tmax, rd) where T
+function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
+                   _tmax, rd=thread_rng()) where T
     Γ₁, Γ₂ = rates
     tmax::T = _tmax
     params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
@@ -350,7 +353,7 @@ function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tmax
 end
 
 """
-    average(Ω, Γ, rates, tmax, n, rd) -> ψ, σψ
+    average(Ω, Γ, rates, tmax, n, rd=thread_rng()) -> ψ, σψ
 
 The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
 to state 2.
@@ -360,7 +363,8 @@ Propagate this system using the quantum jump method by `n` times.
 
 Returns the averaged probability distribution and its uncertainty after the propagation.
 """
-function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n, rd) where T
+function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n,
+                 rd=thread_rng()) where T
     # Always use Float64 for the sum so that the order of summing does not matter as much
     # we could also be fancier and use the real type with the optimum summing order but
     # using Float64 for sum is cheap and the easiest way to implement.
@@ -406,7 +410,7 @@ i2 = 2
 const δt = 1e-8
 
 using PyPlot
-pts = 0:20:1000
+pts = 0:200:10000
 res = Vector{Float64}(length(pts))
 unc = Vector{Float64}(length(pts))
 
@@ -416,16 +420,15 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     Γ₁, Γ₂ = rates
     params1 = RabiDecayParams{Float64}(Ω, Γ₁, Γ₂)
     dump(params1)
-    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-    res .= 0
-    unc .= 0
-    @time Threads.@threads for i in 1:length(pts)
-        local a, s
-        a, s = average(Ω, Γ, rates, δt * pts[i], 1000000, rds[Threads.threadid()])
-        res[i] = a[1]
-        unc[i] = s[1]
-    end
-    errorbar(pts * δt, res, unc, fmt="-", label="0", color=color)
+    # res .= 0
+    # unc .= 0
+    # @time Threads.@threads for i in 1:length(pts)
+    #     local a, s
+    #     a, s = average(Ω, Γ, rates, δt * pts[i], 10000)
+    #     res[i] = a[1]
+    #     unc[i] = s[1]
+    # end
+    # errorbar(pts * δt, res, unc, fmt="-", label="0", color=color)
     Ω32 = Float32(Ω)
     Γ32 = Float32.(Γ)
     rates32 = Float32.(rates)
@@ -434,7 +437,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 1000000, rds[Threads.threadid()])
+        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 10000)
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -490,19 +493,19 @@ f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
 
 legend()
 grid()
-show()
 
 # @show propagate(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
 
 function f2(Ω, Γ)
     rates = Γ_to_rates(Γ)
-    rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-    propagate(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
-    @time Threads.@threads for i in 1:10000000
-        propagate(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+    propagate(Ω, Γ, rates, 0.11e-3)
+    @time Threads.@threads for i in 1:100000000
+        propagate(Ω, Γ, rates, 0.11e-3)
     end
 end
 f2(Ω, Γ)
+
+show()
 
 # @code_native propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
 # @show propagate_2states_underdamp(params, 100, Base.Random.GLOBAL_RNG)
