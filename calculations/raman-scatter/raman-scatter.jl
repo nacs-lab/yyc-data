@@ -74,18 +74,6 @@ struct RabiDecayParams{T}
     end
 end
 
-"""
-    propagate_2states(params::RabiDecayParams, tmax) -> (t, i, ψ)
-
-The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
-to state 2. The state 1(2) has a decay rate of `Γ₁`(`Γ₂`). Propagate this system under the
-modified Hamiltonian for quantum jump method for at most `tmax` or until a decay happens.
-
-Returns the actual time propagated `t`.
-If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the state from which
-the decay occurs. `ψ` is unused.
-If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
-"""
 function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
     r = T(rand(rd)) * params.Ω′²
     # Now find the t for which `ψ^2(t) * Ω′² = r`.
@@ -298,19 +286,43 @@ function propagate_2states_overdamp(params::RabiDecayParams{T}, tmax, rd) where 
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
 end
 
-function propagate2(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tmax, rd) where T
+"""
+    propagate_2states(params::RabiDecayParams, tmax, rd) -> (t, i, ψ)
+
+The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
+to state 2. The state 1(2) has a decay rate of `Γ₁`(`Γ₂`). Propagate this system under the
+modified Hamiltonian for quantum jump method for at most `tmax` or until a decay happens.
+
+Returns the actual time propagated `t`.
+If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the state from which
+the decay occurs. `ψ` is unused.
+If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
+"""
+@inline propagate_2states(params::RabiDecayParams, tmax, rd) = if params.overdamp
+    propagate_2states_overdamp(params, tmax, rd)
+else
+    propagate_2states_underdamp(params, tmax, rd)
+end
+
+"""
+    propagate(Ω, Γ, rates, tmax, rd) -> ψ
+
+The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
+to state 2.
+The decay rates and matrix are given by `Γ` and `rates` which are assumed to satisfy
+`ratesⱼ = ∑ᵢΓᵢⱼ`.
+Propagate this system using the quantum jump method once.
+
+Returns the wave function after the propagation.
+"""
+function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tmax, rd) where T
     Γ₁, Γ₂ = rates
     tmax::T = _tmax
     params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
     params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
-    overdamp = params1.overdamp
     flipped = false
     @inbounds while tmax > 0
-        t, idx, ψ = if overdamp
-            propagate_2states_overdamp(params1, tmax, rd)
-        else
-            propagate_2states_underdamp(params1, tmax, rd)
-        end
+        t, idx, ψ = propagate_2states(params1, tmax, rd)
         tmax -= t
         if idx == 0
             if flipped
@@ -337,13 +349,24 @@ function propagate2(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, _tma
     return flipped ? (zero(T), one(T)) : (one(T), zero(T))
 end
 
-function average2(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n, rd) where T
+"""
+    average(Ω, Γ, rates, tmax, n, rd) -> ψ, σψ
+
+The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
+to state 2.
+The decay rates and matrix are given by `Γ` and `rates` which are assumed to satisfy
+`ratesⱼ = ∑ᵢΓᵢⱼ`.
+Propagate this system using the quantum jump method by `n` times.
+
+Returns the averaged probability distribution and its uncertainty after the propagation.
+"""
+function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n, rd) where T
     sumϕ1 = zero(T)
     sumϕ2 = zero(T)
     sumϕ²1 = zero(T)
     sumϕ²2 = zero(T)
     @inbounds for i in 1:n
-        ψ = propagate2(Ω, Γ, rates, tmax, rd)
+        ψ = propagate(Ω, Γ, rates, tmax, rd)
         ψ1 = abs2(ψ[1])
         ψ2 = abs2(ψ[2])
         sumϕ1 += ψ1
@@ -365,7 +388,7 @@ end
 # The decay matrix is `Γ`, the element `(i,j)` of this matrix represents the decay rate
 # from state `j` to state `i`.
 # The Rabi flopping happens on resonant from state `i1` to state `i2` with Rabi frequency `Ω`
-function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
+function propagate0(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
     # Do propagation of coherent and dissipative part separately.
     # Use precise exponentiation for the (potentially fast) Rabi flopping and use linear
     # approximation for the decay probability.
@@ -460,7 +483,7 @@ function propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, nstate, rates, buff1, rd)
     return ϕ
 end
 
-function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
+function average0(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
     len = length(ϕ0)
     ϕ = similar(ϕ0)
     sumϕ = zeros(real(eltype(ϕ0)), len)
@@ -469,7 +492,7 @@ function average(ϕ0, δt, nstep, Γ, i1, i2, Ω, n, rates, rd)
     buff1 = Vector{T}(len)
     @inbounds for i in 1:n
         ϕ .= ϕ0
-        propagate(ϕ, δt, nstep, Γ, i1, i2, Ω, len, rates, buff1, rd)
+        propagate0(ϕ, δt, nstep, Γ, i1, i2, Ω, len, rates, buff1, rd)
         for j in 1:len
             ϕi = abs2(ϕ[j])
             sumϕ[j] += ϕi
@@ -521,16 +544,16 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average(ϕ, δt, pts[i], Γ, i1, i2, Ω, 2000, rates,
-                       rds[Threads.threadid()])
+        a, s = average0(ϕ, δt, pts[i], Γ, i1, i2, Ω, 2000, rates,
+                        rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
     errorbar(pts * δt, res, unc, fmt=".", label="1.1", color=color)
     # @time Threads.@threads for i in 1:length(pts)
     #     local a, s
-    #     a, s = average(ϕ, δt / 100, pts[i] * 100, Γ, i1, i2, Ω, 10000,
-    #                    rates, rds[Threads.threadid()])
+    #     a, s = average0(ϕ, δt / 100, pts[i] * 100, Γ, i1, i2, Ω, 10000,
+    #                     rates, rds[Threads.threadid()])
     #     res[i] = a[1]
     #     unc[i] = s[1]
     # end
@@ -539,7 +562,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average2(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
+        a, s = average(Ω, Γ, rates, δt * pts[i], 10000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -552,7 +575,7 @@ function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average2(Ω32, Γ32, rates32, δt32 * pts[i], 10000, rds[Threads.threadid()])
+        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 10000, rds[Threads.threadid()])
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -596,7 +619,7 @@ f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "red")
 #       3e4 0] * 2
 # f(pts, Γ, ϕ, i1, i2, 0.1e3, res, unc, "blue")
 # for i in 1:npts
-#     a, s = average(ϕ, δt, 10 * (i - 1), Γ, i1, i2, 0, 10000)
+#     a, s = average0(ϕ, δt, 10 * (i - 1), Γ, i1, i2, 0, 10000)
 #     res[i] = a[1]
 #     unc[i] = s[1]
 # end
@@ -606,17 +629,17 @@ legend()
 grid()
 show()
 
-# @show propagate2(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
-# # @time @show average(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
-# # @time @show average(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
-# # @time @show average(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
+# @show propagate(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
+# # @time @show average0(ϕ, 5.5e-7, 200, Γ, i1, i2, 0, 1)
+# # @time @show average0(ϕ, 2.75e-7, 40_000, Γ, i1, i2, Ω, 100)
+# # @time @show average0(ϕ, 1.1e-7, 100_000, Γ, i1, i2, Ω, 100)
 
 function f2(Ω, Γ)
     rates = Γ_to_rates(Γ)
     rds = [MersenneTwister(0) for i in 1:Threads.nthreads()]
-    propagate2(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+    propagate(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
     @time Threads.@threads for i in 1:10000000
-        propagate2(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
+        propagate(Ω, Γ, rates, 0.11e-3, rds[Threads.threadid()])
     end
 end
 f2(Ω, Γ)
