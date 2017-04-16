@@ -112,4 +112,29 @@ function binomial_estimate{T<:AbstractFloat}(x, n, z::T=1.0)
     return p′, unc
 end
 
+const ThreadRNG = MersenneTwister[]
+function __init__()
+    # Allocate the random number generator on the thread's own heap
+    # instead of the master thread heap to minimize memory conflict
+    nth = Threads.nthreads()
+    resize!(ThreadRNG, nth)
+    init_rng = function ()
+        tid = Threads.threadid()
+        ThreadRNG[tid] = MersenneTwister(0)
+    end
+    ccall(:jl_threading_run, Ref{Void}, (Any,), init_rng)
+end
+
+@inline function thread_rng()
+    # Bypass bounds check and NULL check
+    Base.llvmcall(
+        """
+        %p = load i8**, i8*** %0
+        ret i8** %p
+        """, MersenneTwister, Tuple{Ptr{Ptr{Ptr{Void}}}},
+        Ptr{Ptr{Ptr{Void}}}(pointer(ThreadRNG) + (Threads.threadid() - 1) * sizeof(Int)))
+end
+
+@inline trand() = rand(thread_rng())
+
 end
