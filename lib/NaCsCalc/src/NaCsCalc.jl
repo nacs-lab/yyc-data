@@ -7,5 +7,6 @@ module NaCsCalc
 include("utils.jl")
 include("trap.jl")
 include("format.jl")
+include("atomic.jl")
 
 end
