@@ -50,7 +50,7 @@ struct RabiDecayParams{T}
     end
 end
 
-function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
+function propagate_step_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
     r = T(rand(rd)) * params.Ω′²
     # Now find the t for which `ψ^2(t) * Ω′² = r`.
     # First check if `ψ^2(tmax) * Ω′² > r`
@@ -154,7 +154,7 @@ function propagate_2states_underdamp(params::RabiDecayParams{T}, tmax, rd) where
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
 end
 
-function propagate_2states_overdamp(params::RabiDecayParams{T}, tmax, rd) where T
+function propagate_step_overdamp(params::RabiDecayParams{T}, tmax, rd) where T
     r0 = T(rand(rd))
     # Now find the t for which `ψ^2(t) = r0`.
     t::T = tmax
@@ -263,7 +263,7 @@ function propagate_2states_overdamp(params::RabiDecayParams{T}, tmax, rd) where 
 end
 
 """
-    propagate_2states(params::RabiDecayParams, tmax, rd) -> (t, i, ψ)
+    propagate_step(params::RabiDecayParams, tmax, rd) -> (t, i, ψ)
 
 The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
 to state 2. The state 1(2) has a decay rate of `Γ₁`(`Γ₂`). Propagate this system under the
@@ -274,10 +274,10 @@ If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the st
 the decay occurs. `ψ` is unused.
 If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
 """
-@inline propagate_2states(params::RabiDecayParams, tmax, rd) = if params.overdamp
-    propagate_2states_overdamp(params, tmax, rd)
+@inline propagate_step(params::RabiDecayParams, tmax, rd) = if params.overdamp
+    propagate_step_overdamp(params, tmax, rd)
 else
-    propagate_2states_underdamp(params, tmax, rd)
+    propagate_step_underdamp(params, tmax, rd)
 end
 
 """
@@ -299,7 +299,7 @@ function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
     params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
     flipped = false
     @inbounds while tmax > 0
-        t, idx, ψ = propagate_2states(params1, tmax, rd)
+        t, idx, ψ = propagate_step(params1, tmax, rd)
         tmax -= t
         if idx == 0
             if flipped
