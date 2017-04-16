@@ -3,23 +3,16 @@
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
-using NaCsCalc.Utils: thread_rng, trand, sincos
 using NaCsSim.DecayRabi: propagate, average, Γ_to_rates
-
-ϕ = [1.0, 0.0]
-i1 = 1
-i2 = 2
-const δt = 1e-8
-
 using PyPlot
-pts = 0:200:10000
-res = Vector{Float64}(length(pts))
-unc = Vector{Float64}(length(pts))
 
-function f(pts, Γ, ϕ, i1, i2, Ω, res, unc, color)
-    len = length(ϕ)
+δt = 1e-8
+pts = 0:200:10000
+
+function f(δt, pts, Γ, Ω, color)
+    res = Vector{Float64}(length(pts))
+    unc = Vector{Float64}(length(pts))
     rates = Γ_to_rates(Γ)
-    Γ₁, Γ₂ = rates
     # res .= 0
     # unc .= 0
     # @time Threads.@threads for i in 1:length(pts)
@@ -46,22 +39,22 @@ end
 Ω = 2π * 20e3
 Γ = [2e4 0
       0 3e4] * 4
-f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "blue")
+f(δt, pts, Γ, Ω, "blue")
 Ω = 2π * 20e3
 Γ = [0 1e4
       3e4 0] * 4
-f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "red")
+f(δt, pts, Γ, Ω, "red")
 Ω = 2π * 2e3
 Γ = [2e4 0
       0 3e4] * 4
-f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "green")
+f(δt, pts, Γ, Ω, "green")
 Ω = 2π * 2e3
 Γ = [0 1e4
       3e4 0] * 4
-f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
+f(δt, pts, Γ, Ω, "orange")
 # Γ = [0 3e4
 #       3e4 0] * 2
-# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "red")
+# f(δt, pts, Γ, Ω, "red")
 # ts = δt * pts
 # function y(t, _Ω)
 #     _Γ = 3e4 * 2
@@ -73,7 +66,7 @@ f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
 # plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
 # Γ = [3e4 0
 #       0 3e4] * 2
-# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "blue")
+# f(δt, pts, Γ, Ω, "blue")
 # ts = δt * pts
 # function y(t, Ω)
 #     Γ = 3e4 * 2
@@ -83,13 +76,13 @@ f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
 # plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
 # Γ = [0 4e4
 #       2e4 0] * 2
-# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "cyan")
+# f(δt, pts, Γ, Ω, "cyan")
 # Γ = [0 6e4
 #       0e4 0] * 2
-# f(pts, Γ, ϕ, i1, i2, Ω, res, unc, "orange")
+# f(δt, pts, Γ, Ω, "orange")
 # Γ = [0 3e4
 #       3e4 0] * 2
-# f(pts, Γ, ϕ, i1, i2, 0.1e3, res, unc, "blue")
+# f(δt, pts, Γ, 0.1e3, "blue")
 
 legend()
 grid()
