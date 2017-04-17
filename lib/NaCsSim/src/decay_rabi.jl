@@ -440,7 +440,7 @@ function average_multistates(Ω::T, i1::Integer, i2::Integer, Γ::AbstractMatrix
 end
 
 # Not sure if this would be useful in the long term but it does the job for now.
-function average_multistates(Ωs::AbstractVector{T}, pΩ::AbstractVector,
+function average_multistates(Ωs::AbstractArray{T}, pΩ::AbstractArray,
                              i1::Integer, i2::Integer, Γ::AbstractMatrix{T},
                              rates::AbstractVector{T}, iinit::Integer, tmax::T, n::Integer,
                              rd=thread_rng()) where T<:AbstractFloat
