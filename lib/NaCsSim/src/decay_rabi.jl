@@ -262,6 +262,16 @@ function propagate_step_overdamp(params::RabiDecayParams{T}, tmax, rd) where T
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
 end
 
+function propagate_step_nodrive(Γ::T, tmax, rd) where T
+    r = T(rand(rd))
+    t = -@fastmath(log(r)) / Γ
+    if t > tmax
+        return tmax, 0, (one(T), zero(T))
+    else
+        return t, 1, (one(T), zero(T))
+    end
+end
+
 """
     propagate_step(params::RabiDecayParams, tmax, rd) -> (t, i, ψ)
 
@@ -274,10 +284,12 @@ If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the st
 the decay occurs. `ψ` is unused.
 If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
 """
-@inline propagate_step(params::RabiDecayParams, tmax, rd) = if params.overdamp
-    propagate_step_overdamp(params, tmax, rd)
-else
+@inline propagate_step(params::RabiDecayParams, tmax, rd) = if !params.overdamp
     propagate_step_underdamp(params, tmax, rd)
+elseif params.Ω == 0
+    propagate_step_nodrive(params.Γ₁, tmax, rd)
+else
+    propagate_step_overdamp(params, tmax, rd)
 end
 
 """

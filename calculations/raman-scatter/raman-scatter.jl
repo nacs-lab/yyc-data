@@ -7,7 +7,7 @@ using NaCsSim.DecayRabi: propagate, average, Γ_to_rates
 using PyPlot
 
 δt = 1e-8
-pts = 0:2:10000
+pts = 0:200:10000
 
 function f(δt, pts, Γ, Ω, color)
     res = Vector{Float64}(length(pts))
@@ -30,7 +30,7 @@ function f(δt, pts, Γ, Ω, color)
     unc .= 0
     @time Threads.@threads for i in 1:length(pts)
         local a, s
-        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 1000)
+        a, s = average(Ω32, Γ32, rates32, δt32 * pts[i], 100000)
         res[i] = a[1]
         unc[i] = s[1]
     end
@@ -40,10 +40,14 @@ end
 # Γ = [2e4 0
 #       0 3e4] * 4
 # f(δt, pts, Γ, Ω, "blue")
-# Ω = 2π * 20e3
-# Γ = [0 1e4
-#       3e4 0] * 4
-# f(δt, pts, Γ, Ω, "red")
+Ω = 2π * 0.0001e3
+Γ = [0 1e4
+      3e4 0] * 4
+f(δt, pts, Γ, Ω, "red")
+Ω = 2π * 0.000e3
+Γ = [0 1e4
+      3e4 0] * 4
+f(δt, pts, Γ, Ω, "blue")
 # Ω = 2π * 2e3
 # Γ = [2e4 0
 #       0 3e4] * 4
@@ -64,17 +68,17 @@ end
 #     -exp(-Γ * t / 2) * (Γ / 2 / Ω′ * sin(Ω′ * t) + cos(Ω′ * t))
 # end
 # plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
-Ω = 2π * 400e3
-Γ = [3e4 0
-      0 3e4] * 2
-f(δt, pts, Γ, Ω, "blue")
-ts = δt * pts
-function y(t, Ω)
-    Γ = 3e4 * 2
-    Ω′ = √(Ω^2 - Γ^2 / 4)
-    -exp(-Γ * t / 2) * (Γ / 2 / Ω′ * sin(Ω′ * t) + cos(Ω′ * t))
-end
-plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
+# Ω = 2π * 400e3
+# Γ = [3e4 0
+#       0 3e4] * 2
+# f(δt, pts, Γ, Ω, "blue")
+# ts = δt * pts
+# function y(t, Ω)
+#     Γ = 3e4 * 2
+#     Ω′ = √(Ω^2 - Γ^2 / 4)
+#     -exp(-Γ * t / 2) * (Γ / 2 / Ω′ * sin(Ω′ * t) + cos(Ω′ * t))
+# end
+# plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
 # Γ = [0 4e4
 #       2e4 0] * 2
 # f(δt, pts, Γ, Ω, "cyan")
@@ -85,6 +89,7 @@ plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
 #       3e4 0] * 2
 # f(δt, pts, Γ, 0.1e3, "blue")
 
+ylim([0, 1])
 legend()
 grid()
 
