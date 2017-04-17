@@ -376,7 +376,7 @@ function propagate_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::Abst
         end
         # Now a decay has happend on state `i_cur`, figure out which state it should be in
         # next.
-        r = rand(rd)
+        r = rand(rd) * rates[i_cur]
         for j in 1:nstates
             r -= Γ[j, i_cur]
             if r < 0
