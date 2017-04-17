@@ -7,7 +7,7 @@ using NaCsSim.DecayRabi: propagate, average, average_multistates, Γ_to_rates
 using PyPlot
 
 δt = 1e-8
-pts = 0:200:10000
+pts = 0:50:5000
 
 function f(δt, pts, Γ, Ω, color)
     res = Vector{Float64}(length(pts))
@@ -40,7 +40,7 @@ end
 # Γ = [0 1e4
 #       3e4 0] * 4
 # f(δt, pts, Γ, Ω, "red")
-Ω = 2π * 0e3
+Ω = 2π * 100e3
 Γ = [0 1e4
       3e4 0] * 4
 f(δt, pts, Γ, Ω, "blue")
@@ -76,6 +76,15 @@ f(δt, pts, Γ, Ω, "blue")
 # end
 # plot(ts, (1 .- y.(ts, Ω)) ./ 2, color="orange")
 
+function f2(Ω, Γ)
+    rates = Γ_to_rates(Γ)
+    propagate(Ω, Γ, rates, 0.11e-3)
+    @time Threads.@threads for i in 1:100000000
+        propagate(Ω, Γ, rates, 0.11e-3)
+    end
+end
+# f2(Ω, Γ)
+
 function f3(δt, pts, Γ, Ω, color)
     res = Vector{Float64}(length(pts))
     unc = Vector{Float64}(length(pts))
@@ -94,21 +103,14 @@ function f3(δt, pts, Γ, Ω, color)
     end
     errorbar(pts * δt, res, unc, fmt="^-", label="0", color=color)
 end
+Γ = [0 0e4 2e4
+      1e4 0 0
+      4e4 0 0] * 4
 f3(δt, pts, Γ, Ω, "cyan")
+f3(δt, pts, Γ, 0.0, "red")
 
 ylim([0, 1])
 legend()
 grid()
-
-# @show propagate(Ω, Γ, rates, 2e-9 * 1000, Base.Random.GLOBAL_RNG)
-
-function f2(Ω, Γ)
-    rates = Γ_to_rates(Γ)
-    propagate(Ω, Γ, rates, 0.11e-3)
-    @time Threads.@threads for i in 1:100000000
-        propagate(Ω, Γ, rates, 0.11e-3)
-    end
-end
-# f2(Ω, Γ)
 
 show()
