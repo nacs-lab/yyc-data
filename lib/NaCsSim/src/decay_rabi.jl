@@ -427,12 +427,36 @@ function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n
     return (avgϕ1, avgϕ2), (σϕ1, σϕ2)
 end
 
-function average_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
-                             iinit, tmax::T, n, rd=thread_rng()) where T
+function average_multistates(Ω::T, i1::Integer, i2::Integer, Γ::AbstractMatrix{T},
+                             rates::AbstractVector{T}, iinit::Integer, tmax::T, n::Integer,
+                             rd=thread_rng()) where T<:AbstractFloat
     nstates = length(rates)
     counts = zeros(Int, nstates)
     for i in 1:n
         i_final = propagate_multistates(Ω, i1, i2, Γ, rates, iinit, tmax, rd)
+        counts[i_final] += 1
+    end
+    return counts
+end
+
+# Not sure if this would be useful in the long term but it does the job for now.
+function average_multistates(Ωs::AbstractVector{T}, pΩ::AbstractVector,
+                             i1::Integer, i2::Integer, Γ::AbstractMatrix{T},
+                             rates::AbstractVector{T}, iinit::Integer, tmax::T, n::Integer,
+                             rd=thread_rng()) where T<:AbstractFloat
+    nΩ = length(Ωs)
+    nstates = length(rates)
+    counts = zeros(Int, nstates)
+    for i in 1:n
+        r = rand(rd)
+        j = 0
+        @inbounds for j in 1:nΩ
+            r -= pΩ[j]
+            if r < 0
+                break
+            end
+        end
+        i_final = propagate_multistates(Ωs[j], i1, i2, Γ, rates, iinit, tmax, rd)
         counts[i_final] += 1
     end
     return counts
