@@ -5,7 +5,7 @@ module DecayRabi
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
-using NaCsCalc.Utils: thread_rng, sincos, binomial_estimate
+using NaCsCalc.Utils: thread_rng, sincos
 
 struct RabiDecayParams{T}
     Γ₁::T
@@ -435,12 +435,7 @@ function average_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::Abstra
         i_final = propagate_multistates(Ω, i1, i2, Γ, rates, iinit, tmax, rd)
         counts[i_final] += 1
     end
-    avg = Vector{T}(nstates)
-    unc = Vector{T}(nstates)
-    @inbounds for i in 1:nstates
-        avg[i], unc[i] = binomial_estimate(counts[i], n)
-    end
-    avg, unc
+    return counts
 end
 
 """

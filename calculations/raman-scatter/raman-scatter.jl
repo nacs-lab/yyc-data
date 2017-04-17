@@ -4,6 +4,7 @@
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
 using NaCsSim.DecayRabi: propagate, average, average_multistates, Γ_to_rates
+using NaCsCalc.Utils: binomial_estimate
 using PyPlot
 
 δt = 1e-8
@@ -95,11 +96,11 @@ function f3(δt, pts, Γ, Ω, color)
     δt32 = Float32(δt)
     res .= 0
     unc .= 0
+    ntrial = 100000
     @time Threads.@threads for i in 1:length(pts)
-        local a, s
-        a, s = average_multistates(Ω32, 1, 2, Γ32, rates32, 1, δt32 * pts[i], 100000)
-        res[i] = a[1]
-        unc[i] = s[1]
+        local n
+        n = average_multistates(Ω32, 1, 2, Γ32, rates32, 1, δt32 * pts[i], ntrial)
+        res[i], unc[i] = binomial_estimate(n[1] + n[3], ntrial)
     end
     errorbar(pts * δt, res, unc, fmt="^-", label="0", color=color)
 end
