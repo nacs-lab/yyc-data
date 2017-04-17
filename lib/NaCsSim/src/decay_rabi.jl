@@ -5,7 +5,7 @@ module DecayRabi
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
-using NaCsCalc.Utils: thread_rng, sincos
+using NaCsCalc.Utils: thread_rng, sincos, binomial_estimate
 
 struct RabiDecayParams{T}
     Γ₁::T
@@ -338,6 +338,56 @@ function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
     return flipped ? (zero(T), one(T)) : (one(T), zero(T))
 end
 
+@noinline function throw_size_error(Γ, rates)
+    throw(ArgumentError("Size mismatch between Γ $(size(Γ)) and rates $(size(rates))"))
+end
+
+function propagate_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
+                               iinit, tmax::T, rd=thread_rng()) where T
+    nstates = length(rates)
+    size(Γ) == (nstates, nstates) || throw_size_error(Γ, rates)
+    Γ₁ = rates[i1]
+    Γ₂ = rates[i2]
+    params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
+    params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
+    i_cur = iinit
+    @inbounds while tmax > 0
+        if i_cur == i1
+            t, idx, ψ = propagate_step(params1, tmax, rd)
+            tmax -= t
+            if idx == 0
+                return rand(rd) > abs2(ψ[1]) ? i2 : i1
+            elseif idx == 2
+                i_cur = i2
+            end
+        elseif i_cur == i2
+            t, idx, ψ = propagate_step(params2, tmax, rd)
+            tmax -= t
+            if idx == 0
+                return rand(rd) > abs2(ψ[1]) ? i1 : i2
+            elseif idx == 2
+                i_cur = i1
+            end
+        else
+            t, idx, ψ = propagate_step_nodrive(rates[i_cur], tmax, rd)
+            if idx == 0
+                return i_cur
+            end
+        end
+        # Now a decay has happend on state `i_cur`, figure out which state it should be in
+        # next.
+        r = rand(rd)
+        for j in 1:nstates
+            r -= Γ[j, i_cur]
+            if r < 0
+                i_cur = j
+                break
+            end
+        end
+    end
+    return i_cur
+end
+
 """
     average(Ω, Γ, rates, tmax, n, rd=thread_rng()) -> ψ, σψ
 
@@ -375,6 +425,22 @@ function average(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T}, tmax, n
     avgϕ²2 = sumϕ²2 / n
     σϕ2 = (avgϕ²2 - avgϕ2^2) / sqrtn
     return (avgϕ1, avgϕ2), (σϕ1, σϕ2)
+end
+
+function average_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
+                             iinit, tmax::T, n, rd=thread_rng()) where T
+    nstates = length(rates)
+    counts = zeros(Int, nstates)
+    for i in 1:n
+        i_final = propagate_multistates(Ω, i1, i2, Γ, rates, iinit, tmax, rd)
+        counts[i_final] += 1
+    end
+    avg = Vector{T}(nstates)
+    unc = Vector{T}(nstates)
+    @inbounds for i in 1:nstates
+        avg[i], unc[i] = binomial_estimate(counts[i], n)
+    end
+    avg, unc
 end
 
 """
