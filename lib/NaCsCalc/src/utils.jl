@@ -141,6 +141,7 @@ end
 end
 
 const ThreadRNG = MersenneTwister[]
+const _interactive = Ref(true)
 function __init__()
     # Allocate the random number generator on the thread's own heap
     # instead of the master thread heap to minimize memory conflict
@@ -151,6 +152,10 @@ function __init__()
         ThreadRNG[tid] = MersenneTwister(0)
     end
     ccall(:jl_threading_run, Ref{Void}, (Any,), init_rng)
+    interactive_str = get(ENV, "NACS_INTERACT", "true")
+    if interactive_str == "false" || interactive_str == "0"
+        _interactive[] = false
+    end
 end
 
 @inline function thread_rng()
@@ -164,5 +169,6 @@ end
 end
 
 @inline trand() = rand(thread_rng())
+@inline interactive() = _interactive[]
 
 end

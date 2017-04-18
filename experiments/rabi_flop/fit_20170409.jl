@@ -4,7 +4,7 @@
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
-using NaCsCalc.Utils: binomial_estimate, thread_rng
+using NaCsCalc.Utils: binomial_estimate, thread_rng, interactive
 using NaCsCalc.Atomic: all_scatter_D
 import NaCsCalc: Trap
 using NaCsSim.DecayRabi: propagate_multistates, average_multistates, Γ_to_rates
@@ -109,10 +109,8 @@ function plot_data(data, scale=1; kws...)
     errorbar(params, ratios, uncs; kws...)
 end
 
-const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
-
 function maybe_save(name)
-    if save_fig
+    if !interactive()
         savefig("$name.png"; bbox_inches="tight", transparent=true)
         savefig("$name.svg", bbox_inches="tight", transparent=true)
         close()
@@ -120,7 +118,7 @@ function maybe_save(name)
 end
 
 function maybe_show()
-    if !save_fig
+    if interactive()
         show()
     end
 end
@@ -209,44 +207,48 @@ end
 const τ_r3 = 11.445e-6
 const p_r3 = [0.9, 0.077, 0.023]
 
-# figure()
-# ts_r3_0 = linspace(0, 80e-6, 1001)
-# plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
-# plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
-# title("Radial 3 carrier")
-# grid()
+figure()
+ts_r3_0 = linspace(0, 80e-6, 1001)
+plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
+plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
+title("Radial 3 carrier")
+grid()
+maybe_save("$(prefix)_r3_0")
 
-# figure()
-# ts_r3_p1 = linspace(0, 180e-6, 1001)
-# plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
-# plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
-# title("Radial 3 heating")
-# grid()
+figure()
+ts_r3_p1 = linspace(0, 180e-6, 1001)
+plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
+plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
+title("Radial 3 heating")
+grid()
+maybe_save("$(prefix)_r3_p1")
 
 const τ_r2 = 11.608e-6
 const p_r2 = [0.896, 0.048, 0.056]
 
-# figure()
-# ts_r2_0 = linspace(0, 80e-6, 201)
-# plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="red", label="Fit")
-# plot_data(data_after_r2_0, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
-# title("Radial 2 carrier")
-# grid()
+figure()
+ts_r2_0 = linspace(0, 80e-6, 201)
+plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="red", label="Fit")
+plot_data(data_after_r2_0, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
+title("Radial 2 carrier")
+grid()
+maybe_save("$(prefix)_r2_0")
 
-# figure()
-# ts_r2_p1 = linspace(0, 180e-6, 201)
-# plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="red", label="Fit")
-# plot_data(data_after_r2_p1, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
-# title("Radial 2 heating")
-# grid()
+figure()
+ts_r2_p1 = linspace(0, 180e-6, 201)
+plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="red", label="Fit")
+plot_data(data_after_r2_p1, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
+title("Radial 2 heating")
+grid()
+maybe_save("$(prefix)_r2_p1")
 
 # function diviation_a1(τ, p)
 #     np = length(p)
@@ -278,6 +280,7 @@ ylim([0, 1])
 xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
 title("Axial carrier")
 grid()
+maybe_save("$(prefix)_a1_0")
 
 figure()
 ts_a1_p1 = linspace(0, 450e-6, 201)
@@ -288,5 +291,6 @@ ylim([0, 1])
 xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
 title("Axial heating")
 grid()
+maybe_save("$(prefix)_a1_p1")
 
-show()
+maybe_show()
