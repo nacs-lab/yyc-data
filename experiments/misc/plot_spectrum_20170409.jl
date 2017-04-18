@@ -2,6 +2,7 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
+using NaCsCalc.Utils: interactive
 using NaCsData
 using PyPlot
 using DataStructures
@@ -81,10 +82,8 @@ function plot_data(data, scale=1; kws...)
     errorbar(params, ratios, uncs; kws...)
 end
 
-const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
-
 function maybe_save(name)
-    if save_fig
+    if !interactive()
         savefig("$name.png"; bbox_inches="tight", transparent=true)
         savefig("$name.svg", bbox_inches="tight", transparent=true)
         close()
@@ -92,7 +91,7 @@ function maybe_save(name)
 end
 
 function maybe_show()
-    if !save_fig
+    if interactive()
         show()
     end
 end
@@ -101,21 +100,34 @@ const prefix = joinpath(@__DIR__, "imgs", "data_spectrum_20170409")
 
 to_sideband(f) = (i, v)->(v - f) * 1000
 
-figure()
-# Without cooling
 data_nocool_r2 = NaCsData.map_params(to_sideband(-18.4625), split_a[:nocool_pm12][1])
 data_nocool_r2_0 = NaCsData.map_params(to_sideband(-18.4625), split_a[:nocool_0][1])
+data_cool_r2 =  NaCsData.map_params(to_sideband(-18.4575), split_d[1])
+
+data_nocool_r3 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_pm12][2])
+data_nocool_r3_0 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_0][2])
+data_cool_r3 =  NaCsData.map_params(to_sideband(-18.480), split_d[2])
+
+data_nocool_a1 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_pm12][3])
+data_nocool_a1_0 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_0][3])
+data_nocool_a1_hi = [NaCsData.map_params(to_sideband(-18.5015), split_a[:nocool_a8]);
+                     NaCsData.map_params(to_sideband(-18.4965), split_b[4])]
+data_cool_a1 =  NaCsData.map_params(to_sideband(-18.488), split_d[3])
+data_cool_a1_hi =  NaCsData.map_params(to_sideband(-18.488), split_c[4])
+
+figure()
+# Without cooling
 plot_data(data_nocool_r2[1], 1 / 0.95, fmt="ro-", label="Before")
 plot_data(data_nocool_r2[2], 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_r2[3], 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_r2_0, 1 / 0.95, fmt="ro-")
 # With cooling
-data_cool_r2 =  NaCsData.map_params(to_sideband(-18.4575), split_d[1])
 plot_data(data_cool_r2[1], 1 / 0.85, fmt="bo-", label="After")
 plot_data(data_cool_r2[2], 1 / 0.85, fmt="bo-")
 plot_data(data_cool_r2[3], 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 1])
+xlim([-550, 1000])
 title("Radial 2")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Normalized survival")
@@ -124,19 +136,17 @@ maybe_save("$(prefix)_r2")
 
 figure()
 # Without cooling
-data_nocool_r3 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_pm12][2])
-data_nocool_r3_0 = NaCsData.map_params(to_sideband(-18.485), split_a[:nocool_0][2])
 plot_data(data_nocool_r3[1], 1 / 0.95, fmt="ro-", label="Before")
 plot_data(data_nocool_r3[2], 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_r3[3], 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_r3_0, 1 / 0.95, fmt="ro-")
 # With cooling
-data_cool_r3 =  NaCsData.map_params(to_sideband(-18.480), split_d[2])
 plot_data(data_cool_r3[1], 1 / 0.85, fmt="bo-", label="After")
 plot_data(data_cool_r3[2], 1 / 0.85, fmt="bo-")
 plot_data(data_cool_r3[3], 1 / 0.85, fmt="bo-")
 grid()
 ylim([0, 0.9])
+xlim([-700, 1400])
 title("Radial 3")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Normalized survival")
@@ -145,26 +155,63 @@ maybe_save("$(prefix)_r3")
 
 figure(figsize=[2.5, 1] * 4.8)
 # Without cooling
-data_nocool_a1 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_pm12][3])
-data_nocool_a1_0 = NaCsData.map_params(to_sideband(-18.4965), split_a[:nocool_0][3])
-data_nocool_a1_hi = [NaCsData.map_params(to_sideband(-18.5015), split_a[:nocool_a8]);
-                     NaCsData.map_params(to_sideband(-18.4965), split_b[4])]
 plot_data(data_nocool_a1[1], 1 / 0.95, fmt="ro-", label="Before")
 plot_data(data_nocool_a1[2], 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_a1_0, 1 / 0.95, fmt="ro-")
 plot_data(data_nocool_a1_hi, 1 / 0.95, fmt="r^-", label="Before")
 # With cooling
-data_cool_a1 =  NaCsData.map_params(to_sideband(-18.488), split_d[3])
-data_cool_a1_hi =  NaCsData.map_params(to_sideband(-18.488), split_c[4])
 plot_data(data_cool_a1[1], 1 / 0.85, fmt="bo-", label="After")
 plot_data(data_cool_a1[2], 1 / 0.85, fmt="bo-")
 plot_data(data_cool_a1_hi, 1 / 0.85, fmt="b^-", label="After")
 grid()
 ylim([0, 0.8])
+xlim([-100, 620])
 title("Axial 1")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Normalized survival")
 legend()
 maybe_save("$(prefix)_a1")
+
+figure()
+# Without cooling
+plot_data(data_nocool_r2[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_r2[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r2[3], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r2_0, 1 / 0.95, fmt="ro-")
+grid()
+ylim([0, 1])
+xlim([-550, 1000])
+title("Radial 2")
+xlabel("Detuning from carrier (kHz)")
+ylabel("Normalized survival")
+maybe_save("$(prefix)_r2_before")
+
+figure()
+# Without cooling
+plot_data(data_nocool_r3[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_r3[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r3[3], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_r3_0, 1 / 0.95, fmt="ro-")
+grid()
+ylim([0, 0.9])
+xlim([-700, 1400])
+title("Radial 3")
+xlabel("Detuning from carrier (kHz)")
+ylabel("Normalized survival")
+maybe_save("$(prefix)_r3_before")
+
+figure(figsize=[2.5, 1] * 4.8)
+# Without cooling
+plot_data(data_nocool_a1[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_a1[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_0, 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_hi, 1 / 0.95, fmt="r^-", label="Before")
+grid()
+ylim([0, 0.8])
+xlim([-100, 620])
+title("Axial 1")
+xlabel("Detuning from carrier (kHz)")
+ylabel("Normalized survival")
+maybe_save("$(prefix)_a1_before")
 
 maybe_show()
