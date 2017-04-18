@@ -192,28 +192,53 @@ function plot_f1(f, ts, Ωs, pΩ; kws...)
     plot(ts * 1e6, res; kws...)
 end
 
-const τ_r3 = 11.45e-6
-p_r3 = [0.9, 0.08, 0.02]
+function diviation(f, data, Ωs, pΩ, scale=1 / 0.85)
+    params, ratios, uncs = NaCsData.get_values(data)
+    perm = sortperm(params)
+    params = params[perm] * 1e-6
+    ratios = ratios[perm, 2] .* scale
+    uncs = uncs[perm, 2] .* scale
+    n = length(params)
+    s = 0.0
+    for i in 1:n
+        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001) - ratios[i]) / uncs[i])^2
+    end
+    return s, n
+end
+# function diviation_r3(τ, p)
+#     np = length(p)
+#     d1, n1 = diviation(f_r3, data_after_r3_0, 2π / τ * meles_r3_0[1:np], p)
+#     d2, n2 = diviation(f_r3, data_after_r3_p1, 2π / τ * meles_r3_p1[1:np], p)
+#     return (d1 + d2) / (n1 + n2)
+# end
+# function objective(x)
+#     r = diviation_r3(x[1] * 1e-6, [x[2:end]; 1.0])
+#     @show x r
+#     return r
+# end
+# using Optim
+# @show optimize(objective, [11.448, 0.90, 0.07])
 
-# figure()
-# ts_r3_0 = linspace(0, 80e-6, 1001)
-# plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
-# plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
-# title("Radial 3 carrier")
-# legend()
-# grid()
+const τ_r3 = 11.445e-6
+p_r3 = [0.9, 0.077, 0.023]
 
-# figure()
-# ts_r3_p1 = linspace(0, 180e-6, 1001)
-# plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
-# plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
-# ylim([0, 1])
-# xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
-# title("Radial 3 heating")
-# legend()
-# grid()
+figure()
+ts_r3_0 = linspace(0, 80e-6, 1001)
+plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
+plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
+title("Radial 3 carrier")
+grid()
+
+figure()
+ts_r3_p1 = linspace(0, 180e-6, 1001)
+plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
+plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
+title("Radial 3 heating")
+grid()
 
 # const τ_r2 = 11.55e-6
 
