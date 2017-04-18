@@ -184,7 +184,7 @@ const f_r3 = f1_prop_getter(rates_r3)
 const f_r2 = f1_prop_getter(rates_r2)
 const f_a1 = f1_prop_getter(rates_a1)
 
-function f3(f, ts, Ωs, pΩ; kws...)
+function plot_f1(f, ts, Ωs, pΩ; kws...)
     res = zeros(length(ts))
     @time Threads.@threads for i in 1:length(ts)
         res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002)
@@ -195,34 +195,34 @@ end
 const τ_r3 = 11.45e-6
 p_r3 = [0.9, 0.08, 0.02]
 
-figure()
-ts_r3_0 = linspace(0, 80e-6, 1001)
-f3(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
-plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
-ylim([0, 1])
-xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
-title("Radial 3 carrier")
-legend()
-grid()
+# figure()
+# ts_r3_0 = linspace(0, 80e-6, 1001)
+# plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="red", label="Fit")
+# plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="Measure")
+# ylim([0, 1])
+# xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
+# title("Radial 3 carrier")
+# legend()
+# grid()
 
-figure()
-ts_r3_p1 = linspace(0, 180e-6, 1001)
-f3(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
-plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
-ylim([0, 1])
-xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
-title("Radial 3 heating")
-legend()
-grid()
+# figure()
+# ts_r3_p1 = linspace(0, 180e-6, 1001)
+# plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="red", label="Fit")
+# plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="Measure")
+# ylim([0, 1])
+# xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
+# title("Radial 3 heating")
+# legend()
+# grid()
 
 # const τ_r2 = 11.55e-6
 
 # figure()
 # ts_r2_0 = linspace(0, 80e-6, 201)
-# f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [1.0, 0, 0],
-#    color="blue", label="100%")
-# f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [0.9, 0.05, 0.05],
-#    color="red", label="90%")
+# plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], [1.0, 0, 0],
+#         color="blue", label="100%")
+# plot_f1(f_r3, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], [0.9, 0.05, 0.05],
+#         color="red", label="90%")
 # ylim([0, 1])
 # xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
 # title("Radial 2 carrier")
@@ -231,10 +231,10 @@ grid()
 
 # figure()
 # ts_r2_p1 = linspace(0, 180e-6, 201)
-# f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [1.0, 0, 0],
-#    color="cyan", label="100%")
-# f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [0.9, 0.05, 0.05],
-#    color="orange", label="90%")
+# plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], [1.0, 0, 0],
+#         color="cyan", label="100%")
+# plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], [0.9, 0.05, 0.05],
+#         color="orange", label="90%")
 # ylim([0, 1])
 # xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
 # title("Radial 2 heating")
@@ -245,12 +245,12 @@ grid()
 
 # figure()
 # ts_a1_0 = linspace(0, 300e-6, 201)
-# f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-#    [1.0, 0.0, 0.0] * [0.9, 0.1]',
-#    color="blue", label="100%")
-# f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-#    [0.9, 0.1, 0.0] * [0.9, 0.1]',
-#    color="red", label="90%")
+# plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
+#         [1.0, 0.0, 0.0] * [0.9, 0.1]',
+#         color="blue", label="100%")
+# plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
+#         [0.9, 0.1, 0.0] * [0.9, 0.1]',
+#         color="red", label="90%")
 # ylim([0, 1])
 # xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
 # title("Axial carrier")
@@ -259,12 +259,12 @@ grid()
 
 # figure()
 # ts_a1_p1 = linspace(0, 450e-6, 201)
-# f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-#    [1.0, 0.0, 0.0] * [0.9, 0.1]',
-#    color="blue", label="100%")
-# f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-#    [0.9, 0.1, 0.0] * [0.9, 0.1]',
-#    color="orange", label="90%")
+# plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
+#         [1.0, 0.0, 0.0] * [0.9, 0.1]',
+#         color="blue", label="100%")
+# plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
+#         [0.9, 0.1, 0.0] * [0.9, 0.1]',
+#         color="orange", label="90%")
 # ylim([0, 1])
 # xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
 # title("Axial heating")
