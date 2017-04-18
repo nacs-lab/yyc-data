@@ -252,21 +252,22 @@ const p_r2 = [0.896, 0.048, 0.056]
 #     np = length(p)
 #     d1, n1 = diviation(f_a1, data_after_a1_0, 2π / τ * meles_a1_0[1:np] * meles_r3_0[1:3]',
 #                        p * p_r3')
-#     # d2, n2 = diviation(f_a1, data_after_a1_p1, 2π / τ * meles_a1_p1[1:np], p)
-#     # return (d1 + d2) / (n1 + n2)
-#     return d1 / n1
+#     d2, n2 = diviation(f_a1, data_after_a1_p1, 2π / τ * meles_a1_p1[1:np] * meles_r3_0[1:3]',
+#                        p * p_r3')
+#     return (d1 + d2) / (n1 + n2)
+#     # return d1 / n1
 # end
 # function objective(x)
 #     r = diviation_a1(x[1] * 1e-6, [x[2:end]; 1.0])
 #     @show x r
 #     return r
 # end
-# @show objective([59.85, 0.977, 0.023])
+# @show objective([60.1833, 0.92, 0.04])
 # using Optim
-# @show optimize(objective, [59.85, 0.977, 0.023])
+# @show optimize(objective, [60.1833, 0.92, 0.04])
 
-const τ_a1 = 59.85e-6
-const p_a1 = [0.977, 0.023, 0.0]
+const τ_a1 = 60.1833e-6
+const p_a1 = [0.92, 0.08, 0.0]
 
 figure()
 ts_a1_0 = linspace(0, 300e-6, 201)
