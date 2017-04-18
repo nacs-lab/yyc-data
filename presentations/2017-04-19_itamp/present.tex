@@ -345,7 +345,7 @@
       \fill[white,path fading=fade img right] (4, 2.1) rectangle (7, 6);
       \fill[white,path fading=fade img right] (4, 2.1) rectangle (7, 6);
       \path (4, 4) node[fill=blue!80!white,opacity=0.8,text opacity=1,
-      text=white!85!yellow,right,align=center,
+      text=white!90!yellow,right,align=center,
       rounded corners=0.2cm,inner sep=0.2cm] {
         \textbf{3D ground state:} $79.5(3.6)\%$\\
         \textbf{Loss after cooling:} $15\%$\\\\
@@ -357,24 +357,36 @@
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Status}
-  \begin{columns}
-    \column{5cm}
-    \begin{itemize}
-    \item Radial-only cooling
-    \item<2-> Axial-only cooling
-    \item<3-> 3D cooling\\
-      (Survival: $\approx 89\%$)
-    \end{itemize}
-    \vspace{0.5cm}
-    \visible<3>{
-      \includegraphics[width=5cm]{../../experiments/misc/imgs/data_20170324_010638_a1.png}
+\begin{frame}{Rabi flopping (radial)}
+  \begin{center}
+    \visible<+->{
+      \includegraphics[width=10cm]{../../experiments/rabi_flop/imgs/fit_20170409_r2_0_ba.png}\\
     }
-    \column{6cm}
-    \begin{center}
-      \vspace{-1cm}
-    \end{center}
-  \end{columns}
+    \visible<+->{
+      Good agreement between spectrum and Rabi flopping data.
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}{Rabi flopping (axial)}
+  \begin{center}
+    \includegraphics[width=10cm]{../../experiments/rabi_flop/imgs/fit_20170409_a1_p1_ba.png}\\
+    Decoherence caused by magnetic field fluctuation.
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+  \begin{block}{Conclusion}
+    $67.6(3.1)\%$ ground state preparation fidelity {\small ($79.5(3.6)\%$ without loss)}
+  \end{block}
+  \vspace{1cm}
+  \begin{block}{Improvements}
+    \begin{itemize}
+    \item Reduce off-resonance scattering from Raman beams
+    \item Reduce magnetic field fluctuation
+    \item Reduce loss during cooling
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \begin{frame}{}
@@ -382,14 +394,19 @@
 
 \begin{frame}{Axial matrix element}
   \begin{center}
-    \includegraphics[width=5cm]{../../calculations/sideband_strength/imgs/coupling.png}
-    \includegraphics[width=6.5cm]{{../../calculations/sideband_strength/imgs/coupling_0.46_0-6}.png}
+    \includegraphics[width=6.5cm]{{../../calculations/sideband_strength/imgs/coupling_0.43_0-6}.png}
   \end{center}
 \end{frame}
 
-\begin{frame}{Radial matrix element}
+\begin{frame}{Radial 2 matrix element}
   \begin{center}
     \includegraphics[width=6.5cm]{{../../calculations/sideband_strength/imgs/coupling_0.35_0-2}.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Radial 3 matrix element}
+  \begin{center}
+    \includegraphics[width=6.5cm]{{../../calculations/sideband_strength/imgs/coupling_0.29_0-2}.png}
   \end{center}
 \end{frame}
 
