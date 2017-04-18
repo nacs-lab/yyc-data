@@ -43,7 +43,7 @@ const rates_coprop = rates_f1_coprop + rates_f2_coprop
 
 # Matrix elements
 const m_Na = 23e-3 / 6.02e23
-const η_a1 = Trap.η(m_Na, 67e3, 2π / 589e-9) / √(2)
+const η_a1 = Trap.η(m_Na, 68.8e3, 2π / 589e-9) / √(2)
 const η_r2 = Trap.η(m_Na, 430e3, 2π / 589e-9) * √(2)
 const η_r3 = Trap.η(m_Na, 589.5e3, 2π / 589e-9) * √(2)
 
@@ -206,8 +206,8 @@ function diviation(f, data, Ωs, pΩ, scale=1 / 0.85)
     return s, n
 end
 
-# const τ_r3 = 11.445e-6
-# const p_r3 = [0.9, 0.077, 0.023]
+const τ_r3 = 11.445e-6
+const p_r3 = [0.9, 0.077, 0.023]
 
 # figure()
 # ts_r3_0 = linspace(0, 80e-6, 1001)
@@ -227,72 +227,65 @@ end
 # title("Radial 3 heating")
 # grid()
 
-# function diviation_r2(τ, p)
-#     np = length(p)
-#     d1, n1 = diviation(f_r2, data_after_r2_0, 2π / τ * meles_r2_0[1:np], p)
-#     d2, n2 = diviation(f_r2, data_after_r2_p1, 2π / τ * meles_r2_p1[1:np], p)
-#     return (d1 + d2) / (n1 + n2)
-# end
-# function objective(x)
-#     r = diviation_r2(x[1] * 1e-6, [x[2:end]; 1.0])
-#     @show x r
-#     return r
-# end
-# @show objective([11.608, 0.896, 0.048])
-# using Optim
-# @show optimize(objective, [11.58, 0.90, 0.05])
-
 const τ_r2 = 11.608e-6
 const p_r2 = [0.896, 0.048, 0.056]
 
-figure()
-ts_r2_0 = linspace(0, 80e-6, 201)
-plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="red", label="Fit")
-plot_data(data_after_r2_0, 1 / 0.85, fmt="bo", label="Measure")
-ylim([0, 1])
-xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
-title("Radial 2 carrier")
-legend()
-grid()
-
-figure()
-ts_r2_p1 = linspace(0, 180e-6, 201)
-plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="red", label="Fit")
-plot_data(data_after_r2_p1, 1 / 0.85, fmt="bo", label="Measure")
-ylim([0, 1])
-xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
-title("Radial 2 heating")
-legend()
-grid()
-
-# const τ_a1 = 61.1e-6
-
 # figure()
-# ts_a1_0 = linspace(0, 300e-6, 201)
-# plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-#         [1.0, 0.0, 0.0] * [0.9, 0.1]',
-#         color="blue", label="100%")
-# plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-#         [0.9, 0.1, 0.0] * [0.9, 0.1]',
-#         color="red", label="90%")
+# ts_r2_0 = linspace(0, 80e-6, 201)
+# plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="red", label="Fit")
+# plot_data(data_after_r2_0, 1 / 0.85, fmt="bo", label="Measure")
 # ylim([0, 1])
-# xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
-# title("Axial carrier")
-# legend()
+# xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
+# title("Radial 2 carrier")
 # grid()
 
 # figure()
-# ts_a1_p1 = linspace(0, 450e-6, 201)
-# plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-#         [1.0, 0.0, 0.0] * [0.9, 0.1]',
-#         color="blue", label="100%")
-# plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-#         [0.9, 0.1, 0.0] * [0.9, 0.1]',
-#         color="orange", label="90%")
+# ts_r2_p1 = linspace(0, 180e-6, 201)
+# plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="red", label="Fit")
+# plot_data(data_after_r2_p1, 1 / 0.85, fmt="bo", label="Measure")
 # ylim([0, 1])
-# xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
-# title("Axial heating")
-# legend()
+# xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
+# title("Radial 2 heating")
 # grid()
+
+# function diviation_a1(τ, p)
+#     np = length(p)
+#     d1, n1 = diviation(f_a1, data_after_a1_0, 2π / τ * meles_a1_0[1:np] * meles_r3_0[1:3]',
+#                        p * p_r3')
+#     # d2, n2 = diviation(f_a1, data_after_a1_p1, 2π / τ * meles_a1_p1[1:np], p)
+#     # return (d1 + d2) / (n1 + n2)
+#     return d1 / n1
+# end
+# function objective(x)
+#     r = diviation_a1(x[1] * 1e-6, [x[2:end]; 1.0])
+#     @show x r
+#     return r
+# end
+# @show objective([59.85, 0.977, 0.023])
+# using Optim
+# @show optimize(objective, [59.85, 0.977, 0.023])
+
+const τ_a1 = 59.85e-6
+const p_a1 = [0.977, 0.023, 0.0]
+
+figure()
+ts_a1_0 = linspace(0, 300e-6, 201)
+plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
+        p_a1 * p_r3', color="red", label="Fit")
+plot_data(data_after_a1_0, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
+title("Axial carrier")
+grid()
+
+figure()
+ts_a1_p1 = linspace(0, 450e-6, 201)
+plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
+        p_a1 * p_r3', color="red", label="Fit")
+plot_data(data_after_a1_p1, 1 / 0.85, fmt="bo", label="Measure")
+ylim([0, 1])
+xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
+title("Axial heating")
+grid()
 
 show()
