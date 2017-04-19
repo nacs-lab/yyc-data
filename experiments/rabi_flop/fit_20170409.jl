@@ -287,8 +287,10 @@ maybe_save("$(prefix)_r2_p1_ba")
 const τ_a1 = 60.1833e-6
 const p_a1 = [0.92, 0.08, 0.0]
 
-figure()
 ts_a1_0 = linspace(0, 300e-6, 201)
+ts_a1_p1 = linspace(0, 450e-6, 201)
+
+figure()
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
 plot_data(data_after_a1_0, 1 / 0.85, fmt="bo", label="With RSC")
@@ -303,7 +305,19 @@ grid()
 maybe_save("$(prefix)_a1_0_ba")
 
 figure()
-ts_a1_p1 = linspace(0, 450e-6, 201)
+plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
+        p_a1 * p_r3', color="darkslateblue", label="Fit")
+plot_data(data_after_a1_0, 1 / 0.85, fmt="bo", label="With RSC")
+plot_data(data_before_a1_0, 1 / 0.95, fmt="ro-", label="No RSC")
+ylim([0, 1])
+xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
+xlabel("Time (\$\\mu s\$)")
+ylabel("Normalized survival")
+title("Axis 1 (axial) carrier")
+grid()
+maybe_save("$(prefix)_a1_0_ba_nol")
+
+figure()
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
 plot_data(data_after_a1_p1, 1 / 0.85, fmt="bo", label="With RSC")
@@ -316,5 +330,18 @@ title("Axis 1 (axial) heating")
 legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 maybe_save("$(prefix)_a1_p1_ba")
+
+figure()
+plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
+        p_a1 * p_r3', color="darkslateblue", label="Fit")
+plot_data(data_after_a1_p1, 1 / 0.85, fmt="bo", label="With RSC")
+plot_data(data_before_a1_p1, 1 / 0.95, fmt="ro-", label="No RSC")
+ylim([0, 1])
+xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
+xlabel("Time (\$\\mu s\$)")
+ylabel("Normalized survival")
+title("Axis 1 (axial) heating")
+grid()
+maybe_save("$(prefix)_a1_p1_ba_nol")
 
 maybe_show()
