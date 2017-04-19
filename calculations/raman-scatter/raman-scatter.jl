@@ -8,7 +8,7 @@ using NaCsCalc.Utils: binomial_estimate
 using NaCsCalc.Atomic: all_scatter_D
 import NaCsCalc: Trap
 using NaCsSim.DecayRabi: propagate, average, average_multistates, Γ_to_rates
-using PyPlot
+# using PyPlot
 
 const δf1 = -25.0e9
 const δf2 = -25.0e9 - 1.77e9
@@ -84,9 +84,9 @@ end
 # Γ = [0 1e4
 #       3e4 0] * 4
 # f(ts, Γ, Ω, "red")
-# Ω = 2π * 100e3
-# Γ = [0 1e4
-#       3e4 0] * 4
+Ω = 2π * 100e3
+Γ = [0 1e4
+      3e4 0] * 4
 # f(ts, Γ, Ω, "blue")
 # Ω = 2π * 2e3
 # Γ = [2e4 0
@@ -126,7 +126,7 @@ function f2(Ω, Γ)
         propagate(Ω, Γ, rates, 0.11e-3)
     end
 end
-# f2(Ω, Γ)
+f2(Ω, Γ)
 
 function f3(ts, Γ, Ωs, pΩ; kws...)
     res = Vector{Float64}(length(ts))
@@ -147,86 +147,86 @@ function f3(ts, Γ, Ωs, pΩ; kws...)
     errorbar(ts32 * 1e6, res, unc; kws...)
 end
 
-const τ_r3 = 11.5e-6
+# const τ_r3 = 11.5e-6
 
-figure()
-ts_r3_0 = linspace(0, 80e-6, 201)
-f3(ts_r3_0, rates_r3, 2π / τ_r3 * meles_r3_0[1:3], [1.0, 0, 0],
-   fmt="-", color="blue", label="100%")
-f3(ts_r3_0, rates_r3, 2π / τ_r3 * meles_r3_0[1:3], [0.9, 0.1, 0],
-   fmt="-", color="red", label="90%")
-ylim([0, 1])
-xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
-title("Radial 3 carrier")
-legend()
-grid()
+# figure()
+# ts_r3_0 = linspace(0, 80e-6, 201)
+# f3(ts_r3_0, rates_r3, 2π / τ_r3 * meles_r3_0[1:3], [1.0, 0, 0],
+#    fmt="-", color="blue", label="100%")
+# f3(ts_r3_0, rates_r3, 2π / τ_r3 * meles_r3_0[1:3], [0.9, 0.1, 0],
+#    fmt="-", color="red", label="90%")
+# ylim([0, 1])
+# xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
+# title("Radial 3 carrier")
+# legend()
+# grid()
 
-figure()
-ts_r3_p1 = linspace(0, 180e-6, 201)
-f3(ts_r3_p1, rates_r3, 2π / τ_r3 * meles_r3_p1[1:3], [1.0, 0, 0],
-   fmt="-", color="cyan", label="100%")
-f3(ts_r3_p1, rates_r3, 2π / τ_r3 * meles_r3_p1[1:3], [0.9, 0.1, 0],
-   fmt="-", color="orange", label="90%")
-ylim([0, 1])
-xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
-title("Radial 3 heating")
-legend()
-grid()
+# figure()
+# ts_r3_p1 = linspace(0, 180e-6, 201)
+# f3(ts_r3_p1, rates_r3, 2π / τ_r3 * meles_r3_p1[1:3], [1.0, 0, 0],
+#    fmt="-", color="cyan", label="100%")
+# f3(ts_r3_p1, rates_r3, 2π / τ_r3 * meles_r3_p1[1:3], [0.9, 0.1, 0],
+#    fmt="-", color="orange", label="90%")
+# ylim([0, 1])
+# xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
+# title("Radial 3 heating")
+# legend()
+# grid()
 
-const τ_r2 = 11.55e-6
+# const τ_r2 = 11.55e-6
 
-figure()
-ts_r2_0 = linspace(0, 80e-6, 201)
-f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [1.0, 0, 0],
-   fmt="-", color="blue", label="100%")
-f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [0.9, 0.05, 0.05],
-   fmt="-", color="red", label="90%")
-ylim([0, 1])
-xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
-title("Radial 2 carrier")
-legend()
-grid()
+# figure()
+# ts_r2_0 = linspace(0, 80e-6, 201)
+# f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [1.0, 0, 0],
+#    fmt="-", color="blue", label="100%")
+# f3(ts_r2_0, rates_r2, 2π / τ_r2 * meles_r2_0[1:3], [0.9, 0.05, 0.05],
+#    fmt="-", color="red", label="90%")
+# ylim([0, 1])
+# xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
+# title("Radial 2 carrier")
+# legend()
+# grid()
 
-figure()
-ts_r2_p1 = linspace(0, 180e-6, 201)
-f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [1.0, 0, 0],
-   fmt="-", color="cyan", label="100%")
-f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [0.9, 0.05, 0.05],
-   fmt="-", color="orange", label="90%")
-ylim([0, 1])
-xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
-title("Radial 2 heating")
-legend()
-grid()
+# figure()
+# ts_r2_p1 = linspace(0, 180e-6, 201)
+# f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [1.0, 0, 0],
+#    fmt="-", color="cyan", label="100%")
+# f3(ts_r2_p1, rates_r2, 2π / τ_r2 * meles_r2_p1[1:3], [0.9, 0.05, 0.05],
+#    fmt="-", color="orange", label="90%")
+# ylim([0, 1])
+# xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
+# title("Radial 2 heating")
+# legend()
+# grid()
 
-const τ_a1 = 61.1e-6
+# const τ_a1 = 61.1e-6
 
-figure()
-ts_a1_0 = linspace(0, 300e-6, 201)
-f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-   [1.0, 0.0, 0.0] * [0.9, 0.1]',
-   fmt="-", color="blue", label="100%")
-f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
-   [0.9, 0.1, 0.0] * [0.9, 0.1]',
-   fmt="-", color="red", label="90%")
-ylim([0, 1])
-xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
-title("Axial carrier")
-legend()
-grid()
+# figure()
+# ts_a1_0 = linspace(0, 300e-6, 201)
+# f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
+#    [1.0, 0.0, 0.0] * [0.9, 0.1]',
+#    fmt="-", color="blue", label="100%")
+# f3(ts_a1_0, rates_a1, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:2]'),
+#    [0.9, 0.1, 0.0] * [0.9, 0.1]',
+#    fmt="-", color="red", label="90%")
+# ylim([0, 1])
+# xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
+# title("Axial carrier")
+# legend()
+# grid()
 
-figure()
-ts_a1_p1 = linspace(0, 450e-6, 201)
-f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-   [1.0, 0.0, 0.0] * [0.9, 0.1]',
-   fmt="-", color="blue", label="100%")
-f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
-   [0.9, 0.1, 0.0] * [0.9, 0.1]',
-   fmt="-", color="orange", label="90%")
-ylim([0, 1])
-xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
-title("Axial heating")
-legend()
-grid()
+# figure()
+# ts_a1_p1 = linspace(0, 450e-6, 201)
+# f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
+#    [1.0, 0.0, 0.0] * [0.9, 0.1]',
+#    fmt="-", color="blue", label="100%")
+# f3(ts_a1_p1, rates_a1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:2]'),
+#    [0.9, 0.1, 0.0] * [0.9, 0.1]',
+#    fmt="-", color="orange", label="90%")
+# ylim([0, 1])
+# xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
+# title("Axial heating")
+# legend()
+# grid()
 
-show()
+# show()
