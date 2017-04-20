@@ -25,14 +25,17 @@ const branching_21 = Float32[0 1 / 3 0
 const branching_22 = Float32[1 / 3 0 0
                              1 / 6 0 0
                              1 / 2 0 0]
-const η_raman1 = (η(60f3) / sqrt(2f0), 0f0, 0f0)
+const η_raman1 = (η(60f3) / sqrt(2f0), η(420f3) / sqrt(2f0), η(580f3) / sqrt(2f0))
 const η_raman2 = (0f0, η(420f3) * sqrt(2f0), 0f0)
-const η_raman3 = (0f0, 0f0, η(420f3) * sqrt(2f0))
+const η_raman3 = (0f0, 0f0, η(580f3) * sqrt(2f0))
 const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
 export statec
-const statec = System.StateC(sz...)
+const statec = Vector{System.StateC}(Threads.nthreads())
+Threads.@threads for i in 1:Threads.nthreads()
+    statec[i] = System.StateC(sz...)
+end
 function op_pulse(t, γ1, γ2, γ2′=0.01f0 * γ2, ηs=η_op, ηdri=η_op_dri)
     branching = (branching_11 .* γ1 .+ branching_21 .* γ2 .+
                  branching_22 .* γ2′)
@@ -224,7 +227,12 @@ const params = linspace(0.0, 1, 21)
 # const params = 0:88
 const xname = "\$Raman\\Gamma\$"
 
-res = pmap(p->Setup.run(create_sequence(p), statec, nothing, 100000), params)
+# res = @time pmap(p->Setup.run(create_sequence(p), statec, nothing, 100000), params)
+res = Vector{Any}(length(params))
+@time Threads.@threads for i in 1:length(params)
+    res[i] = Setup.run(create_sequence(params[i]), statec[Threads.threadid()], nothing, 100000)
+end
+res = [r for r in res]
 
 using PyPlot
 PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 15,
