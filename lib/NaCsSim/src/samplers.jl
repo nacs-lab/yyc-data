@@ -7,7 +7,7 @@ import NaCsCalc: Trap
 
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
-function sideband{T}(n::Int, η::T, nmax::Int)
+function sideband{T}(n::Int, η::T, nmax::Int, rng)
     # Estimate the range of final states with non-zero matrix elements.
     # By starting with the ones with high probability we can minimize the
     # average evaluation time.
@@ -36,7 +36,7 @@ function sideband{T}(n::Int, η::T, nmax::Int)
     n_start = max(0, floor(Int, n_center - n_width))
     n_end = min(ceil(Int, n_center + n_width), nmax)
 
-    v::T = T(rand())
+    v::T = rand(rng)
 
     for i in n_start:n_end
         v -= Trap.sideband(n, i, η)^2
@@ -66,7 +66,7 @@ function sideband{T}(n::Int, η::T, nmax::Int)
     return -1
 end
 
-function emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
+function emission(::Type{T}, isσ::Bool, rng) where T<:AbstractFloat
     # Returns `(cosθ, φ)`. The caller should be ready to handle `|cosθ| > 1`
     # The PDFs of the `θ` distribution are
     # `3 / 4 * (1 - cos²θ) * sinθ` for π light and
@@ -81,8 +81,8 @@ function emission{T<:AbstractFloat}(::Type{T}, isσ::Bool)
     # `cosθ = x + 1 / x` where `x = ∛(2√(v² - v) - 2v + 1)` for π light and
     # `cosθ = x - 1 / x` where `x = ∛(√(16v² - 16v + 5) + 4v - 2)` for σ± light
     # Note that the `x` for
-    v = T(rand()) # This is faster than `rand(T)`....
-    φ = T(rand()) * T(2π)
+    v = T(rand(rng)) # This is faster than `rand(T)`....
+    φ = T(rand(rng)) * T(2π)
     if isσ
         y = muladd(v, 4, -2)
         x = @fastmath cbrt(sqrt(muladd(y, y, 1)) + y)
@@ -96,9 +96,9 @@ end
 
 # This currently can't handle misalignment between the quantization axis
 # and trap axis. Hopefully it's not very important
-function op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int},
-                              ηs::NTuple{3,T}, ηdri::NTuple{3,T}, isσ::Bool)
-    cosθ, φ = emission(T, isσ)
+function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri::NTuple{3,T},
+            isσ::Bool, rng) where T<:AbstractFloat
+    cosθ, φ = emission(T, isσ, rng)
     ηx = ηs[1] * cosθ
     if -1 < cosθ < 1
         # @fastmath on comparison is currently problematic
@@ -112,30 +112,30 @@ function op{T<:AbstractFloat}(n_init::NTuple{3,Int}, n_max::NTuple{3,Int},
     ηx = abs(ηx - ηdri[1])
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
-    nx = sideband(n_init[1], ηx, n_max[1])
+    nx = sideband(n_init[1], ηx, n_max[1], rng)
     nx == -1 && @goto escape
-    ny = sideband(n_init[2], ηy, n_max[2])
+    ny = sideband(n_init[2], ηy, n_max[2], rng)
     ny == -1 && @goto escape
-    nz = sideband(n_init[3], ηz, n_max[3])
+    nz = sideband(n_init[3], ηz, n_max[3], rng)
     nz == -1 && @goto escape
     return (nx, ny, nz)
     @label escape
     return default_index(Val{3}(), Val{-1}())
 end
 
-function thermal(nbar, nmax)
+function thermal(nbar, nmax, rng)
     α = @fastmath 1 / log(nbar / (nbar + 1))
     while true
-        n = @fastmath floor(Int, log(rand()) * α)
+        n = @fastmath floor(Int, log(rand(rng)) * α)
         if n <= nmax
             return n
         end
     end
 end
 
-function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T})
+function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T}, rng)
     total = sum(weights)
-    v = T(rand()) * total
+    v = T(rand(rng)) * total
     nstates = length(rates)
     if length(weights) != nstates
         throw(ArgumentError("Decay rates and weights should have the same size"))
@@ -151,9 +151,9 @@ function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T})
     return T(Inf), 1
 end
 
-decay{T<:AbstractFloat}(rate::T) = -log(T(rand())) / rate
-function select{T}(total::T, weights::AbstractArray{T})
-    v = T(rand()) * total
+decay{T<:AbstractFloat}(rate::T, rng) = -log(T(rand(rng))) / rate
+function select{T}(total::T, weights::AbstractArray{T}, rng)
+    v = T(rand(rng)) * total
     @inbounds for i in 1:length(weights)
         v -= weights[i]
         v <= 0 && return i

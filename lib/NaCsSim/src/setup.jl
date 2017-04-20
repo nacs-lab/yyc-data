@@ -2,25 +2,27 @@
 
 module Setup
 
+import NaCsCalc.Utils: thread_rng
+
 import FunctionWrappers: FunctionWrapper
 
 struct Sequence{AS,ES,IA,I,M}
     init_atom::IA
     init::I
-    pulses::Vector{FunctionWrapper{Bool,Tuple{AS,ES}}}
+    pulses::Vector{FunctionWrapper{Bool,Tuple{AS,ES,MersenneTwister}}}
     measure::M
 end
 
 function run(seq::Sequence{AS,ES}, atomic_state::AS, extern_state::ES,
-             res=create_measure(seq)) where {AS,ES}
-    seq.init_atom(atomic_state)
-    seq.init(atomic_state, extern_state)
+             res=create_measure(seq), rng=thread_rng()) where {AS,ES}
+    seq.init_atom(atomic_state, rng)
+    seq.init(atomic_state, extern_state, rng)
     @inbounds for p in seq.pulses
-        if !p(atomic_state, extern_state)
+        if !p(atomic_state, extern_state, rng)
             break
         end
     end
-    return seq.measure(res, atomic_state, extern_state)
+    return seq.measure(res, atomic_state, extern_state, rng)
 end
 
 # TODO, run in parallel/run multiple sequences
@@ -43,7 +45,7 @@ end
 function (::Type{SeqBuilder{AS,ES}})(init_atom::IA, init::I,
                                      measure::M) where {AS,ES,IA,I,M}
     seq = Sequence{AS,ES,IA,I,M}(init_atom, init,
-                                 FunctionWrapper{Bool,Tuple{AS,ES}}[],
+                                 FunctionWrapper{Bool,Tuple{AS,ES,MersenneTwister}}[],
                                  measure)
     return SeqBuilder(seq, Dict{Any,Any}(), Dict{Any,Any}())
 end
@@ -61,8 +63,7 @@ end
 
 struct Dummy
 end
-(::Dummy)(a_s, e_s) = true
-(::Dummy)(res, a_s, e_s) = nothing
+@inline (::Dummy)(args...) = true
 
 struct CombinedMeasure{T<:Tuple}
     measures::T
@@ -77,11 +78,11 @@ CombinedMeasure(measures...) = CombinedMeasure{typeof(measures)}(measures)
         ($((:(create_measure(ms[$i], seq)) for i in 1:N)...),)
     end
 end
-@generated function (m::CombinedMeasure{T})(res, state, extern_state) where {T}
+@generated function (m::CombinedMeasure{T})(res, state, extern_state, rng) where {T}
     N = length(T.parameters)
     quote
         ms = m.measures
-        ($((:(ms[$i](res[$i], state, extern_state)) for i in 1:N)...),)
+        ($((:(ms[$i](res[$i], state, extern_state, rng)) for i in 1:N)...),)
     end
 end
 @generated function finalize_measure(m::CombinedMeasure{T}, res, n) where {T}

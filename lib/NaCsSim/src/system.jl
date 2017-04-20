@@ -34,11 +34,11 @@ struct ThermalInit{Idx,T<:AbstractFloat}
     nz::T
 end
 
-function (init::ThermalInit{Idx,T}){Idx,T}(state::StateC)
+function (init::ThermalInit{Idx,T}){Idx,T}(state::StateC, rng)
     nmax = state.nmax
-    nx = Samplers.thermal(init.nx, nmax[1])
-    ny = Samplers.thermal(init.ny, nmax[2])
-    nz = Samplers.thermal(init.nz, nmax[3])
+    nx = Samplers.thermal(init.nx, nmax[1], rng)
+    ny = Samplers.thermal(init.ny, nmax[2], rng)
+    nz = Samplers.thermal(init.nz, nmax[3], rng)
     set_ns!(state, Idx, nx, ny, nz)
     state.lost = false
     return
@@ -103,22 +103,22 @@ function Setup.compile_pulse{T}(pulse::OP{T}, cache)
                       pulse.ηs, pulse.ηdri, pulse.isσ)
 end
 
-function propagate_op!{T}(pulse::OPPulse{T}, state::StateC, maxt::T)
+function propagate_op!{T}(pulse::OPPulse{T}, state::StateC, maxt::T, rng)
     # First, decide which hyperfine state should be pumped and
     # at what time should it happen
     hf0 = state.hf
     v_i = state.n
     nmax = state.nmax
 
-    t = Samplers.decay(pulse.rates[hf0])
+    t = Samplers.decay(pulse.rates[hf0], rng)
     0 < t < maxt || return zero(T), true
 
     # Next, if we want to do a OP, decide which branch it should take
-    hf1 = Samplers.select(one(T), pulse.branchings[hf0])
+    hf1 = Samplers.select(one(T), pulse.branchings[hf0], rng)
 
     # Finally, given the initial hyperfine+vibrational and final hyperfine
     # state, pick the final vibrational state.
-    v_f = Samplers.op(v_i, nmax, pulse.ηs, pulse.ηdri, pulse.isσ[hf1, hf0])
+    v_f = Samplers.op(v_i, nmax, pulse.ηs, pulse.ηdri, pulse.isσ[hf1, hf0], rng)
     if v_f[1] < 0
         state.lost = true
         return zero(T), false
@@ -127,10 +127,10 @@ function propagate_op!{T}(pulse::OPPulse{T}, state::StateC, maxt::T)
     return maxt - t, true
 end
 
-function (pulse::OPPulse)(state::StateC, extern_state)
+function (pulse::OPPulse)(state::StateC, extern_state, rng)
     maxt = pulse.t
     while maxt > 0
-        maxt, cont = propagate_op!(pulse, state, maxt)
+        maxt, cont = propagate_op!(pulse, state, maxt, rng)
         cont || return false
     end
     return true
@@ -173,7 +173,7 @@ function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
     return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, exp(-pulse.Γ * pulse.t))
 end
 
-function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
+function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state, rng)
     hf0 = state.hf
     v_i = state.n
     nmax = state.nmax
@@ -206,7 +206,7 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state)
               pulse.Ωs[3][v_f[3] + 1])
     end
     p = (1 - cos(2 * Ω * pulse.t) * pulse.expΓ) / 2
-    if rand() < p
+    if rand(rng) < p
         set_ns!(state, hf1, v_f...)
     end
     return true
@@ -227,8 +227,7 @@ end
 struct HyperFineMeasure{N}
 end
 Setup.create_measure{N}(::HyperFineMeasure{N}, seq) = zeros(Int, N + 1)
-function (::HyperFineMeasure{N}){N}(res::Vector{Int}, state::StateC,
-                                    extern_state)
+function (::HyperFineMeasure{N})(res::Vector{Int}, state::StateC, extern_state, rng) where N
     if !state.lost
         res[state.hf] += 1
         res[N + 1] += 1
@@ -263,7 +262,7 @@ mutable struct NBarResult
                        0.0, 0.0, 0.0)
 end
 Setup.create_measure(::NBarMeasure, seq) = NBarResult()
-function (::NBarMeasure)(res::NBarResult, state::StateC, extern_state)
+function (::NBarMeasure)(res::NBarResult, state::StateC, extern_state, rng)
     state.lost && return res
     n = state.n
     res.nx += n[1]
@@ -308,7 +307,7 @@ struct FilterMeasure{F}
     cb::F
 end
 Setup.create_measure(::FilterMeasure, seq) = Ref{Int}(0)
-function (measure::FilterMeasure)(res::Ref{Int}, state::StateC, extern_state)
+function (measure::FilterMeasure)(res::Ref{Int}, state::StateC, extern_state, rng)
     if !state.lost && measure.cb(state.n, state.hf)
         res[] += 1
     end
