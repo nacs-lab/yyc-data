@@ -10,7 +10,7 @@ import ..Setup
 
 # Atomic state
 
-type StateC
+mutable struct StateC
     nmax::NTuple{3,Int}
     n::NTuple{3,Int}
     hf::Int
@@ -28,7 +28,7 @@ end
 
 # Initial condition
 
-immutable ThermalInit{Idx,T<:AbstractFloat}
+struct ThermalInit{Idx,T<:AbstractFloat}
     nx::T
     ny::T
     nz::T
@@ -46,7 +46,7 @@ end
 
 # Pulses
 
-immutable OP{T}
+struct OP{T}
     t::T
     rates::Matrix{T}
     ηs::NTuple{3,T}
@@ -54,7 +54,7 @@ immutable OP{T}
     isσ::Matrix{Bool}
 end
 
-immutable OPPulse{T}
+struct OPPulse{T}
     t::T
     rates::Vector{T}
     branchings::Vector{Vector{T}}
@@ -136,7 +136,7 @@ function (pulse::OPPulse)(state::StateC, extern_state)
     return true
 end
 
-immutable Raman{T,N1,N2}
+struct Raman{T,N1,N2}
     t::T
     Ω::T
     ηs::NTuple{3,T}
@@ -146,7 +146,7 @@ immutable Raman{T,N1,N2}
     Raman{T,N1,N2}(t, Ω, ηs, Δn, nmax, Γ=0) where {T,N1,N2} = new(t, Ω, ηs, Δn, nmax, Γ)
 end
 
-immutable RamanPulse{T,N1,N2}
+struct RamanPulse{T,N1,N2}
     t::T
     Δn::NTuple{3,Int}
     Ωs::NTuple{3,Vector{T}}
@@ -224,7 +224,7 @@ binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
 end
 
 # External state / measure
-immutable HyperFineMeasure{N}
+struct HyperFineMeasure{N}
 end
 Setup.create_measure{N}(::HyperFineMeasure{N}, seq) = zeros(Int, N + 1)
 function (::HyperFineMeasure{N}){N}(res::Vector{Int}, state::StateC,
@@ -249,9 +249,9 @@ function Setup.abort_measure(::HyperFineMeasure, res::Vector{Int}, n)
     return check_abort(total, n)
 end
 
-immutable NBarMeasure
+struct NBarMeasure
 end
-type NBarResult
+mutable struct NBarResult
     nx::Int
     ny::Int
     nz::Int
@@ -304,7 +304,7 @@ function Setup.abort_measure(::NBarMeasure, res::NBarResult, n)
     return check_abort(total, n)
 end
 
-immutable FilterMeasure{F}
+struct FilterMeasure{F}
     cb::F
 end
 Setup.create_measure(::FilterMeasure, seq) = Ref{Int}(0)

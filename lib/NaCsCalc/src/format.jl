@@ -44,7 +44,7 @@ end
 
 @enum ExpType Exp Ten Sci
 
-immutable Unc{T<:AbstractFloat}
+struct Unc{T<:AbstractFloat}
     a::T
     s::T
     exp_type::ExpType

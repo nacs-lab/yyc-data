@@ -4,7 +4,7 @@ module Setup
 
 import FunctionWrappers: FunctionWrapper
 
-immutable Sequence{AS,ES,IA,I,M}
+struct Sequence{AS,ES,IA,I,M}
     init_atom::IA
     init::I
     pulses::Vector{FunctionWrapper{Bool,Tuple{AS,ES}}}
@@ -36,7 +36,7 @@ function run{AS,ES}(seq::Sequence{AS,ES},
     return finalize_measure(seq, res, n)
 end
 
-immutable SeqBuilder{AS,ES,IA,I,M}
+struct SeqBuilder{AS,ES,IA,I,M}
     seq::Sequence{AS,ES,IA,I,M}
     pulsemap::Dict{Any,Any}
     datacache::Dict{Any,Any}
@@ -60,12 +60,12 @@ function add_pulse(builder::SeqBuilder, pulse)
     return
 end
 
-immutable Dummy
+struct Dummy
 end
 (::Dummy)(a_s, e_s) = true
 (::Dummy)(res, a_s, e_s) = nothing
 
-immutable CombinedMeasure{T<:Tuple}
+struct CombinedMeasure{T<:Tuple}
     measures::T
     # Kill default constructors
     (::Type{CombinedMeasure{T}}){T}(measures) = new{T}(measures)

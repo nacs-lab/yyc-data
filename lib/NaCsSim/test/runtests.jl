@@ -47,12 +47,12 @@ end
     return p + delta * (i - 1)
 end
 
-immutable OPParams
+struct OPParams
     γ1::Float32
     γ2::Float32
     darkness::Float32
 end
-immutable OPDelta
+struct OPDelta
     γ1::Float32
     γ2::Float32
     darkness::Float32
@@ -66,13 +66,13 @@ OPDelta(;γ1=0, γ2=0, darkness=0) = OPDelta(γ1, γ2, darkness)
 pulse(params::OPParams) =
     op_pulse(1, params.γ1, params.γ2, params.γ2 * params.darkness)
 
-immutable RamanParams
+struct RamanParams
     ax::Int
     order::Int
     t::Float32
     Γ::Float32
 end
-immutable RamanDelta
+struct RamanDelta
     t::Float32
 end
 Base.:*(delta::RamanDelta, n) = RamanDelta(delta.t * n)
@@ -84,7 +84,7 @@ pulse(params::RamanParams) = raman_pulse(params.ax, params.order, params.t, para
 add_pulse(builder, params) = Setup.add_pulse(builder, pulse(params))
 
 # Group with two axial cooling per loop
-immutable Grp2AParams
+struct Grp2AParams
     op::OPParams
     raman11::RamanParams
     raman12::RamanParams
