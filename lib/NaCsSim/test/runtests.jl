@@ -1,6 +1,5 @@
 #!/usr/bin/julia
 
-@everywhere module TestSequence
 import NaCsSim: Setup, System
 import NaCsCalc: Trap
 
@@ -31,7 +30,6 @@ const η_raman3 = (0f0, 0f0, η(580f3) * sqrt(2f0))
 const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
-export statec
 const statec = Vector{System.StateC}(Threads.nthreads())
 Threads.@threads for i in 1:Threads.nthreads()
     statec[i] = System.StateC(sz...)
@@ -128,7 +126,6 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-export create_sequence
 function create_sequence(ramanΓ)
     ncycles = 88
     op_defect = 0.01
@@ -218,21 +215,33 @@ function create_sequence(ramanΓ)
     return builder.seq
 end
 
-end
-
-@everywhere import NaCsSim: Setup, System
-@everywhere using TestSequence
-
 const params = linspace(0.0, 1, 21)
 # const params = 0:88
 const xname = "\$Raman\\Gamma\$"
 
-# res = @time pmap(p->Setup.run(create_sequence(p), statec, nothing, 100000), params)
-res = Vector{Any}(length(params))
-@time Threads.@threads for i in 1:length(params)
-    res[i] = Setup.run(create_sequence(params[i]), statec[Threads.threadid()], nothing, 100000)
+function threadmap(f, arg)
+    # A really simple work queue
+    n = length(arg)
+    counter = Threads.Atomic{Int}(1)
+    T = Core.Inference.return_type(f, Tuple{eltype(arg)})
+    res = Vector{T}(n)
+    nt = Threads.nthreads()
+    Threads.@threads for _ in 1:nt
+        while true
+            i = Threads.atomic_add!(counter, 1)
+            if i > n
+                break
+            end
+            res[i] = f(arg[i])
+        end
+    end
+    if !isleaftype(T)
+        return [v for v in res]
+    end
+    return res
 end
-res = [r for r in res]
+res = @time threadmap(p->Setup.run(create_sequence(p), statec[Threads.threadid()],
+                                   nothing, 100000), params)
 
 using PyPlot
 PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 15,
