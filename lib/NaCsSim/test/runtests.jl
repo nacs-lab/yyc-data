@@ -11,8 +11,8 @@ const m_Na = 23f-3 / 6.02f23
 const k_Na = Float32(2π) / 589f-9
 η(freq) = Trap.η(m_Na, freq, k_Na)
 
-const η_op = (η(60f3), η(420f3), η(420f3))
-const η_op_dri = (0f0, η(420f3) / sqrt(2f0), η(420f3) / sqrt(2f0))
+const η_op = (η(67f3), η(420f3), η(580f3))
+const η_op_dri = (0f0, η(420f3) / sqrt(2f0), η(580f3) / sqrt(2f0))
 const isσ = [false false false
               true true true
               true true true]
@@ -127,12 +127,12 @@ function add_pulse(builder, params::Grp2AParams)
     end
 end
 
-function create_sequence(ramanΓ)
-    ncycles = 88
-    op_defect = 0.01
+function create_sequence(ncycles)
+    # ncycles = 88
+    op_defect = 0.005
     pulses_left = Ref(ncycles)
     cooling_on = true
-    # ramanΓ = 0
+    ramanΓ = 0
 
     take_pulses = function (n)::Int
         cooling_on || return 0
@@ -148,7 +148,7 @@ function create_sequence(ramanΓ)
     end
     raman_params(ax, order, t) = RamanParams(ax, order, t, ramanΓ)
 
-    builder = BuilderT(System.ThermalInit{3,Float32}(15, 4, 4), Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{1,Float32}(15, 4, 4), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{3}()))
@@ -216,8 +216,8 @@ function create_sequence(ramanΓ)
     return builder.seq
 end
 
-const params = linspace(0.0, 1, 21)
-# const params = 0:88
+# const params = linspace(0.0, 1, 21)
+const params = 0:88
 const xname = "\$Raman\\Gamma\$"
 
 function threadmap(f, arg)
