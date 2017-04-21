@@ -2,6 +2,7 @@
 
 import NaCsSim: Setup, System
 import NaCsCalc: Trap
+import NaCsCalc.Utils: interactive
 
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 const sz = 500, 100, 100
@@ -315,24 +316,38 @@ function plot_hf{T<:Tuple}(params, res::Vector{T})
     grid()
 end
 
-function plot_result(params, res)
-    plot_ground_state(params, (r[2] for r in res))
-    savefig(joinpath(ARGS[1], "ground.svg"), bbox_inches="tight", transparent=true)
-    savefig(joinpath(ARGS[1], "ground.png"), bbox_inches="tight", transparent=true)
-
-    plot_total(params, (r[1][2] for r in res))
-    savefig(joinpath(ARGS[1], "loss.svg"), bbox_inches="tight", transparent=true)
-    savefig(joinpath(ARGS[1], "loss.png"), bbox_inches="tight", transparent=true)
-
-    plot_nbars(params, (r[1][1] for r in res))
-    savefig(joinpath(ARGS[1], "nbar.svg"), bbox_inches="tight", transparent=true)
-    savefig(joinpath(ARGS[1], "nbar.png"), bbox_inches="tight", transparent=true)
-
-    plot_hf(params, (r[3][1] for r in res))
-    savefig(joinpath(ARGS[1], "hf.svg"), bbox_inches="tight", transparent=true)
-    savefig(joinpath(ARGS[1], "hf.png"), bbox_inches="tight", transparent=true)
+function maybe_save(name)
+    if !interactive()
+        savefig("$name.png"; bbox_inches="tight", transparent=true)
+        savefig("$name.svg", bbox_inches="tight", transparent=true)
+        close()
+    end
 end
 
-mkpath(ARGS[1], 0o750)
-plot_result(params, res)
-show()
+function maybe_show()
+    if interactive()
+        show()
+    end
+end
+
+function plot_result(params, res, prefix)
+    plot_ground_state(params, (r[2] for r in res))
+    maybe_save(joinpath(prefix, "ground.svg"))
+
+    plot_total(params, (r[1][2] for r in res))
+    maybe_save(joinpath(prefix, "loss.svg"))
+
+    plot_nbars(params, (r[1][1] for r in res))
+    maybe_save(joinpath(prefix, "nbar.svg"))
+
+    plot_hf(params, (r[3][1] for r in res))
+    maybe_save(joinpath(prefix, "hf.svg"))
+end
+
+if interactive()
+    plot_result(params, res, "")
+else
+    mkpath(ARGS[1], 0o750)
+    plot_result(params, res, ARGS[1])
+end
+maybe_show()
