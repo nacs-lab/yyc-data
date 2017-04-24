@@ -34,7 +34,7 @@ struct ThermalInit{Idx,T<:AbstractFloat}
     nz::T
 end
 
-function (init::ThermalInit{Idx,T}){Idx,T}(state::StateC, rng)
+function (init::ThermalInit{Idx,T})(state::StateC, rng) where {Idx,T}
     nmax = state.nmax
     nx = Samplers.thermal(init.nx, nmax[1], rng)
     ny = Samplers.thermal(init.ny, nmax[2], rng)
@@ -65,7 +65,7 @@ end
 
 OPCache{T} = Tuple{Vector{T},Vector{Vector{T}}}
 
-function Setup.compile_pulse{T}(pulse::OP{T}, cache)
+function Setup.compile_pulse(pulse::OP{T}, cache) where {T}
     if size(pulse.isσ) != size(pulse.rates)
         throw(ArgumentError("rates and isσ should have the same sizes"))
     end
@@ -101,7 +101,7 @@ function Setup.compile_pulse{T}(pulse::OP{T}, cache)
                       pulse.ηs, pulse.ηdri, pulse.isσ)
 end
 
-function propagate_op!{T}(pulse::OPPulse{T}, state::StateC, maxt::T, rng)
+function propagate_op!(pulse::OPPulse{T}, state::StateC, maxt::T, rng) where {T}
     # First, decide which hyperfine state should be pumped and
     # at what time should it happen
     hf0 = state.hf
@@ -154,10 +154,10 @@ end
 RamanKey{T} = Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
 RamanCache{T} = NTuple{3,Vector{T}}
 
-computeΩs{T}(Ω::T, η::T, Δn, nmax) =
+computeΩs(Ω::T, η::T, Δn, nmax) where {T} =
     T[Trap.sideband(n - 1, n - 1 + Δn, η) * Ω for n in 1:(nmax + abs(Δn) + 1)]
 
-function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
+function Setup.compile_pulse(pulse::Raman{T,N1,N2}, cache) where {T,N1,N2}
     @assert N1 != N2
     type_cache = get!(cache, Raman{T}) do
         Dict{RamanKey{T},RamanCache{T}}()
@@ -171,7 +171,7 @@ function Setup.compile_pulse{T,N1,N2}(pulse::Raman{T,N1,N2}, cache)
     return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, exp(-pulse.Γ * pulse.t))
 end
 
-function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state, rng)
+function (pulse::RamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T,N1,N2}
     hf0 = state.hf
     v_i = state.n
     nmax = state.nmax
@@ -224,7 +224,7 @@ end
 # External state / measure
 struct HyperFineMeasure{N}
 end
-Setup.create_measure{N}(::HyperFineMeasure{N}, seq) = zeros(Int, N + 1)
+Setup.create_measure(::HyperFineMeasure{N}, seq) where {N} = zeros(Int, N + 1)
 function (::HyperFineMeasure{N})(res::Vector{Int}, state::StateC, extern_state, rng) where N
     if !state.lost
         res[state.hf] += 1
@@ -232,7 +232,7 @@ function (::HyperFineMeasure{N})(res::Vector{Int}, state::StateC, extern_state, 
     end
     return res
 end
-function Setup.finalize_measure{N}(::HyperFineMeasure{N}, m, n)
+function Setup.finalize_measure(::HyperFineMeasure{N}, m, n) where {N}
     total = m[N + 1]
     return (ntuple(i->binomial_unc(m[i], total), Val{N}),
             binomial_unc(total, n))
