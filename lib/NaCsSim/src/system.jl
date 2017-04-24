@@ -58,13 +58,12 @@ struct OPPulse{T}
     t::T
     rates::Vector{T}
     branchings::Vector{Vector{T}}
-    weights_buf::Vector{T}
     ηs::NTuple{3,T}
     ηdri::NTuple{3,T}
     isσ::Matrix{Bool}
 end
 
-OPCache{T} = Tuple{Vector{T},Vector{Vector{T}},Vector{T}}
+OPCache{T} = Tuple{Vector{T},Vector{Vector{T}}}
 
 function Setup.compile_pulse{T}(pulse::OP{T}, cache)
     if size(pulse.isσ) != size(pulse.rates)
@@ -73,15 +72,14 @@ function Setup.compile_pulse{T}(pulse::OP{T}, cache)
     type_cache = get!(cache, OP{T}) do
         Dict{Matrix{T},OPCache{T}}()
     end::Dict{Matrix{T},OPCache{T}}
-    rates, branchings, weights_buf = get!(type_cache, pulse.rates) do
-        local rates_2d, rates_1d, branchings, weights_buf
+    rates, branchings = get!(type_cache, pulse.rates) do
+        local rates_2d, rates_1d, branchings
         rates_2d = pulse.rates
         nx, ny = size(rates_2d)
         nx == ny || throw(ArgumentError("Decay rate must be a square matrix"))
         nx >= 1 || throw(ArgumentError("Must have at least one state"))
         rates_1d = Vector{T}(nx)
         branchings = Vector{Vector{T}}(nx)
-        weights_buf = Vector{T}(nx)
         @inbounds for i in 1:nx
             r = zero(T)
             @simd for j in 1:nx
@@ -97,9 +95,9 @@ function Setup.compile_pulse{T}(pulse::OP{T}, cache)
                 end
             end
         end
-        return rates_1d, branchings, weights_buf
+        return rates_1d, branchings
     end
-    return OPPulse{T}(pulse.t, rates, branchings, weights_buf,
+    return OPPulse{T}(pulse.t, rates, branchings,
                       pulse.ηs, pulse.ηdri, pulse.isσ)
 end
 
@@ -184,12 +182,12 @@ function (pulse::RamanPulse{T,N1,N2}){T,N1,N2}(state::StateC, extern_state, rng)
         hf1 = N2
     elseif hf0 == N2
         # backward
-        Δn = (-).(pulse.Δn)
+        Δn = .-pulse.Δn
         hf1 = N1
     else
         return true
     end
-    v_f = (+).(v_i, Δn)
+    v_f = v_i .+ Δn
     if v_f[1] < 0 || v_f[2] < 0 || v_f[3] < 0
         return true
     end
