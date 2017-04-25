@@ -231,7 +231,7 @@ struct RealRaman{T,N1,N2}
     nmax::NTuple{3,Int}
     scatters::Vector{Scatter{T}}
     RealRaman{T,N1,N2}(t, Ω, ηs, Δn, nmax, scatters) where {T,N1,N2} =
-        new(t, Ω, ηs, Δn, nmax, Γ)
+        new(t, Ω, ηs, Δn, nmax, scatters)
 end
 
 struct ScatterPulse{T}
@@ -311,9 +311,8 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
     nmax = state.nmax
     nmax_x, nmax_y, nmax_z = nmax
 
-    t::T = 0
     tmax = pulse.t
-    while t < tmax
+    while tmax > 0
         if hf == N1
             # forward
             Δn = pulse.Δn
@@ -343,11 +342,12 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
             Ω = (pulse.Ωs[1][v1[1] + 1] * pulse.Ωs[2][v1[2] + 1] * pulse.Ωs[3][v1[3] + 1])
         end
         rabi_param = DecayRabi.Params{T}(Ω, Γ₁, Γ₂)
-        t, idx, ψ = DecayRabi.propagate_step(rabi_param, tmax, rd)
+        tmax2 = tmax
+        t, idx, ψ = DecayRabi.propagate_step(rabi_param, tmax, rng)
         tmax -= t
         if idx == 0
             # No decay happened, pick the state and set it
-            if rand(rng) < ψ[1]
+            if rand(rng) < abs2(ψ[1])
                 set_ns!(state, hf, v...)
             else
                 set_ns!(state, hf1, v1...)
@@ -372,18 +372,20 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
         end
 
         @label do_scatter
-        # So now we have a scattering even from state `hf` + `v`.
-        # First decide which drive it is to blame.
-        sidx = Samplers.select(one(T), pulse.branchings[hf], rng)
-        scatter = pulse.scatters[sidx]
-        # Now figure out the final state
-        hf1 = Samplers.select(one(T), scatter.branchings[hf], rng)
-        # Finally, figure out the vibrational states
-        v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng)
-        hf = hf1
-        if v[1] < 0
-            state.lost = true
-            return false
+        if hf <= length(pulse.branchings)
+            # So now we have a scattering even from state `hf` + `v`.
+            # First decide which drive it is to blame.
+            sidx = Samplers.select(one(T), pulse.branchings[hf], rng)
+            scatter = pulse.scatters[sidx]
+            # Now figure out the final state
+            hf1 = Samplers.select(one(T), scatter.branchings[hf], rng)
+            # Finally, figure out the vibrational states
+            v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng)
+            hf = hf1
+            if v[1] < 0
+                state.lost = true
+                return false
+            end
         end
     end
 

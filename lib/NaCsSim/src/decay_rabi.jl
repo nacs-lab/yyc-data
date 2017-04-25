@@ -57,9 +57,6 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
     t::T = tmax
     # Tolerance
     yδ = max(T(2e-7), eps(T) * 10) * params.Ω′²
-    if params.Ω′² - r <= yδ
-        return zero(T), 1, (one(T), zero(T))
-    end
     Ω′t::T = 0
     sinΩ′t::T = 0
     cosΩ′t::T = 0
@@ -69,14 +66,14 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
     # Use this to compute a better bounds
     absΔ = abs(params.Δ)
     exp_lo = r / params.Ω / (params.Ω + absΔ)
-    @fastmath thi::T = -log(exp_lo) / params.Γ
+    thi::T = -@fastmath(log(exp_lo)) / params.Γ
     if !(thi < t)
         thi = t
         Ω′t = params.Ω′ * t
         sinΩ′t, cosΩ′t = sincos(Ω′t)
         @fastmath expΓt = exp(-params.Γ * t)
         ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
-        if ψ² > r
+        if ψ² >= r
             # No decay happened, return the wave function at tmax
             Ω′t_2 = Ω′t / 2
             sinΩ′t_2, cosΩ′t_2 = sincos(Ω′t_2)
@@ -152,6 +149,11 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
     rtotal = 2 * muladd(params.c3, cosΩ′t, -muladd(params.c2, sinΩ′t, -params.c1))
     r2 = params.Γ₂ * params.Ω² * (1 - cosΩ′t)
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
+end
+
+function propagate_step_nodamp(params::Params{T}, tmax, rd) where T
+    s, c = sincos(params.Ω′ * tmax / 2)
+    return tmax, 0, (c, s)
 end
 
 function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
@@ -285,7 +287,11 @@ the decay occurs. `ψ` is unused.
 If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
 """
 @inline propagate_step(params::Params, tmax, rd) = if !params.overdamp
-    propagate_step_underdamp(params, tmax, rd)
+    if params.Γ == 0
+        propagate_step_nodamp(params, tmax, rd)
+    else
+        propagate_step_underdamp(params, tmax, rd)
+    end
 elseif params.Ω == 0
     propagate_step_nodrive(params.Γ₁, tmax, rd)
 else
