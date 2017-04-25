@@ -209,7 +209,7 @@ function (pulse::RamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T
         Ω = (pulse.Ωs[1][v_f[1] + 1] * pulse.Ωs[2][v_f[2] + 1] *
               pulse.Ωs[3][v_f[3] + 1])
     end
-    p = (1 - cos(2 * Ω * pulse.t) * pulse.expΓ) / 2
+    p = (1 - cos(Ω * pulse.t) * pulse.expΓ) / 2
     if rand(rng) < p
         set_ns!(state, hf1, v_f...)
     end

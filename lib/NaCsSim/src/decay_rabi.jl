@@ -152,8 +152,9 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
 end
 
 function propagate_step_nodamp(params::Params{T}, tmax, rd) where T
-    s, c = sincos(params.Ω′ * tmax / 2)
-    return tmax, 0, (c, s)
+    t::T = tmax
+    s, c = sincos(params.Ω * t / 2)
+    return t, 0, (c, s)
 end
 
 function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
