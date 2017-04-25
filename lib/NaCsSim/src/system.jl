@@ -65,16 +65,11 @@ end
 
 OPCache{T} = Tuple{Vector{T},Vector{Vector{T}}}
 
-function Setup.compile_pulse(pulse::OP{T}, cache) where {T}
-    if size(pulse.isσ) != size(pulse.rates)
-        throw(ArgumentError("rates and isσ should have the same sizes"))
-    end
+function compute_cached_op_branching(cache, rates_2d::Matrix{T}) where T
     type_cache = get!(cache, OP{T}) do
         Dict{Matrix{T},OPCache{T}}()
     end::Dict{Matrix{T},OPCache{T}}
-    rates, branchings = get!(type_cache, pulse.rates) do
-        local rates_2d, rates_1d, branchings
-        rates_2d = pulse.rates
+    return get!(type_cache, rates_2d) do
         nx, ny = size(rates_2d)
         nx == ny || throw(ArgumentError("Decay rate must be a square matrix"))
         nx >= 1 || throw(ArgumentError("Must have at least one state"))
@@ -97,8 +92,14 @@ function Setup.compile_pulse(pulse::OP{T}, cache) where {T}
         end
         return rates_1d, branchings
     end
-    return OPPulse{T}(pulse.t, rates, branchings,
-                      pulse.ηs, pulse.ηdri, pulse.isσ)
+end
+
+function Setup.compile_pulse(pulse::OP{T}, cache) where {T}
+    if size(pulse.isσ) != size(pulse.rates)
+        throw(ArgumentError("rates and isσ should have the same sizes"))
+    end
+    rates, branchings = compute_cached_op_branching(cache, pulse.rates)
+    return OPPulse{T}(pulse.t, rates, branchings, pulse.ηs, pulse.ηdri, pulse.isσ)
 end
 
 function propagate_op!(pulse::OPPulse{T}, state::StateC, maxt::T, rng) where {T}
@@ -151,23 +152,27 @@ struct RamanPulse{T,N1,N2}
     expΓ::T
 end
 
-RamanKey{T} = Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
+RamanKey{T} = Tuple{T,NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
 RamanCache{T} = NTuple{3,Vector{T}}
 
 computeΩs(Ω::T, η::T, Δn, nmax) where {T} =
     T[Trap.sideband(n - 1, n - 1 + Δn, η) * Ω for n in 1:(nmax + abs(Δn) + 1)]
 
-function Setup.compile_pulse(pulse::Raman{T,N1,N2}, cache) where {T,N1,N2}
-    @assert N1 != N2
+function compute_cached_raman(cache, Ω::T, ηs, Δn, nmax) where T
     type_cache = get!(cache, Raman{T}) do
         Dict{RamanKey{T},RamanCache{T}}()
     end::Dict{RamanKey{T},RamanCache{T}}
-    Ωs = get!(type_cache, (pulse.ηs, pulse.Δn, pulse.nmax)) do
-        Ωs1 = computeΩs(pulse.Ω, pulse.ηs[1], pulse.Δn[1], pulse.nmax[1])
-        Ωs2 = computeΩs(pulse.Ω, pulse.ηs[2], pulse.Δn[2], pulse.nmax[2])
-        Ωs3 = computeΩs(pulse.Ω, pulse.ηs[3], pulse.Δn[3], pulse.nmax[3])
+    return get!(type_cache, (Ω, ηs, Δn, nmax)) do
+        Ωs1 = computeΩs(Ω, ηs[1], Δn[1], nmax[1])
+        Ωs2 = computeΩs(Ω, ηs[2], Δn[2], nmax[2])
+        Ωs3 = computeΩs(Ω, ηs[3], Δn[3], nmax[3])
         return Ωs1, Ωs2, Ωs3
     end
+end
+
+function Setup.compile_pulse(pulse::Raman{T,N1,N2}, cache) where {T,N1,N2}
+    @assert N1 != N2
+    Ωs = compute_cached_raman(cache, pulse.Ω, pulse.ηs, pulse.Δn, pulse.nmax)
     return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, exp(-pulse.Γ * pulse.t))
 end
 

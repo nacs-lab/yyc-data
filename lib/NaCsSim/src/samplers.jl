@@ -152,7 +152,7 @@ function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T}, rng)
 end
 
 decay{T<:AbstractFloat}(rate::T, rng) = -log(T(rand(rng))) / rate
-function select{T}(total::T, weights::AbstractArray{T}, rng)
+function select{T}(total::T, weights::Union{AbstractArray{T},Tuple{Vararg{T}}}, rng)
     v = T(rand(rng)) * total
     @inbounds for i in 1:length(weights)
         v -= weights[i]
