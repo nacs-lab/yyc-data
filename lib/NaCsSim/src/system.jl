@@ -7,6 +7,7 @@ import NaCsCalc.Utils: binomial_estimate
 import NaCsCalc.Format: Unc
 import ..Samplers
 import ..Setup
+import ..DecayRabi
 
 # Atomic state
 
@@ -212,6 +213,181 @@ function (pulse::RamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T
     if rand(rng) < p
         set_ns!(state, hf1, v_f...)
     end
+    return true
+end
+
+struct Scatter{T}
+    rates::Matrix{T}
+    ηs::NTuple{3,T}
+    ηdri::NTuple{3,T}
+    isσ::Matrix{Bool}
+end
+
+struct RealRaman{T,N1,N2}
+    t::T
+    Ω::T
+    ηs::NTuple{3,T}
+    Δn::NTuple{3,Int}
+    nmax::NTuple{3,Int}
+    scatters::Vector{Scatter{T}}
+    RealRaman{T,N1,N2}(t, Ω, ηs, Δn, nmax, scatters) where {T,N1,N2} =
+        new(t, Ω, ηs, Δn, nmax, Γ)
+end
+
+struct ScatterPulse{T}
+    # From a given state, the probabilities of going into each states
+    branchings::Vector{Vector{T}}
+    # Max Lamb-Dicke parameter in the three axis for the scattered photon
+    ηs::NTuple{3,T}
+    # Lamb-Dicke parameter for the drive beam
+    ηdri::NTuple{3,T}
+    # The polarization of the decay
+    isσ::Matrix{Bool}
+end
+
+struct RealRamanPulse{T,N1,N2}
+    t::T
+    # The change in motional state on different axis
+    Δn::NTuple{3,Int}
+    # The Raman transition matrix element as a function of the initial state motional level
+    Ωs::NTuple{3,Vector{T}}
+    # Total scattering rates for different HF states
+    Γs::Vector{T}
+    # Normalized "branching ratio" to each scattering source from different initial HF states
+    branchings::Vector{Vector{T}}
+    scatters::Vector{ScatterPulse{T}}
+end
+
+function num_states(sp::Scatter)
+    size1 = size(sp.rates)
+    size2 = size(sp.isσ)
+    @assert size1 == size2
+    @assert size1[1] == size1[2]
+    return size1[1]
+end
+
+function normalize0!(ary)
+    s = sum(ary)
+    if s == 0
+        return
+    end
+    ary ./= s
+    return
+end
+
+function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
+    @assert N1 != N2
+    Ωs = compute_cached_raman(cache, pulse.Ω, pulse.ηs, pulse.Δn, pulse.nmax)
+    ns = length(pulse.scatters)
+    if ns == 0
+        return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, zeros(max(N1, N2)),
+                                       Vector{T}[], ScatterPulse{T}[])
+    end
+    nhf = num_states(pulse.scatters[1])
+    @assert nhf >= N1
+    @assert nhf >= N2
+    Γs = zeros(T, nhf)
+    branchings = [zeros(T, ns) for i in 1:nhf]
+    scatters = Vector{ScatterPulse{T}}(ns)
+    for i in 1:ns
+        st = pulse.scatters[i]
+        @assert nhf == num_states(st)
+        rates, branchings = compute_cached_op_branching(cache, st.rates)
+        for j in 1:nhf
+            branchings[j][i] += rates[j]
+            Γs[j] += rates[j]
+        end
+        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, si.isσ)
+    end
+    for b in branchings
+        normalize0!(b)
+    end
+    return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, Γs, branchings, scatters)
+end
+
+function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T,N1,N2}
+    hf = state.hf
+    v = state.n
+    nmax = state.nmax
+    nmax_x, nmax_y, nmax_z = nmax
+
+    t::T = 0
+    tmax = pulse.t
+    while t < tmax
+        if hf == N1
+            # forward
+            Δn = pulse.Δn
+            hf1 = N2
+            Γ₁, Γ₂ = pulse.Γs[N1], pulse.Γs[N2]
+        elseif hf == N2
+            # backward
+            Δn = .-pulse.Δn
+            hf1 = N1
+            Γ₁, Γ₂ = pulse.Γs[N2], pulse.Γs[N1]
+        else
+            @goto do_op
+        end
+        v1 = v .+ Δn
+        if v1[1] < 0 || v1[2] < 0 || v1[3] < 0
+            # Order too high, no Raman
+            @goto do_op
+        end
+        if v1[1] > nmax_x || v1[2] > nmax_y || v1[3] > nmax_z
+            # State too high. Lost.
+            state.lost = true
+            return false
+        end
+        if hf == N1
+            Ω = (pulse.Ωs[1][v[1] + 1] * pulse.Ωs[2][v[2] + 1] * pulse.Ωs[3][v[3] + 1])
+        else
+            Ω = (pulse.Ωs[1][v1[1] + 1] * pulse.Ωs[2][v1[2] + 1] * pulse.Ωs[3][v1[3] + 1])
+        end
+        rabi_param = DecayRabi.Params{T}(Ω, Γ₁, Γ₂)
+        t, idx, ψ = DecayRabi.propagate_step(rabi_param, tmax, rd)
+        tmax -= t
+        if idx == 0
+            # No decay happened, pick the state and set it
+            if rand(rng) < ψ[1]
+                set_ns!(state, hf, v...)
+            else
+                set_ns!(state, hf1, v1...)
+            end
+            return true
+        end
+        if idx == 2
+            hf = hf1
+            v = v1
+        end
+
+        @goto do_scatter
+        @label do_op
+        if hf > length(pulse.Γs)
+            # No scattering on this state, it can stay forever
+            break
+        end
+        t2 = Samplers.decay(pulse.Γs[hf], rng)
+        tmax -= t2
+        if !(tmax > 0)
+            break
+        end
+
+        @label do_scatter
+        # So now we have a scattering even from state `hf` + `v`.
+        # First decide which drive it is to blame.
+        sidx = Samplers.select(one(T), pulse.branchings[hf], rng)
+        scatter = pulse.scatters[sidx]
+        # Now figure out the final state
+        hf1 = Samplers.select(one(T), scatter.branchings[hf], rng)
+        # Finally, figure out the vibrational states
+        v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng)
+        hf = hf1
+        if v[1] < 0
+            state.lost = true
+            return false
+        end
+    end
+
+    set_ns!(state, hf, v...)
     return true
 end
 

@@ -7,7 +7,7 @@ module DecayRabi
 
 using NaCsCalc.Utils: thread_rng, sincos
 
-struct RabiDecayParams{T}
+struct Params{T}
     Γ₁::T
     Γ₂::T
     Δ::T
@@ -23,7 +23,7 @@ struct RabiDecayParams{T}
     c2::T
     c3::T
     overdamp::Bool
-    @inline function RabiDecayParams{T}(Ω::T, Γ₁::T, Γ₂::T) where T
+    @inline function Params{T}(Ω::T, Γ₁::T, Γ₂::T) where T
         Δ = (Γ₁ - Γ₂) / 2
         Γ = (Γ₁ + Γ₂) / 2
         Δ² = Δ^2
@@ -50,7 +50,7 @@ struct RabiDecayParams{T}
     end
 end
 
-function propagate_step_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
+function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
     r = T(rand(rd)) * params.Ω′²
     # Now find the t for which `ψ^2(t) * Ω′² = r`.
     # First check if `ψ^2(tmax) * Ω′² > r`
@@ -154,7 +154,7 @@ function propagate_step_underdamp(params::RabiDecayParams{T}, tmax, rd) where T
     return t, rtotal * rand(rd) < r2 ? 2 : 1, (one(T), zero(T))
 end
 
-function propagate_step_overdamp(params::RabiDecayParams{T}, tmax, rd) where T
+function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
     r0 = T(rand(rd))
     # Now find the t for which `ψ^2(t) = r0`.
     t::T = tmax
@@ -273,7 +273,7 @@ function propagate_step_nodrive(Γ::T, tmax, rd) where T
 end
 
 """
-    propagate_step(params::RabiDecayParams, tmax, rd) -> (t, i, ψ)
+    propagate_step(params::Params, tmax, rd) -> (t, i, ψ)
 
 The atom start in state 1 and is doing Rabi flopping with (angular) Rabi frequency `Ω`
 to state 2. The state 1(2) has a decay rate of `Γ₁`(`Γ₂`). Propagate this system under the
@@ -284,7 +284,7 @@ If a decay has happend, `t` is the decay time. `i` (either `1` or `2`) is the st
 the decay occurs. `ψ` is unused.
 If no decay happens, `t == tmax`, `i == 0`, `ψ` is a tuple of the wavefunctions
 """
-@inline propagate_step(params::RabiDecayParams, tmax, rd) = if !params.overdamp
+@inline propagate_step(params::Params, tmax, rd) = if !params.overdamp
     propagate_step_underdamp(params, tmax, rd)
 elseif params.Ω == 0
     propagate_step_nodrive(params.Γ₁, tmax, rd)
@@ -307,8 +307,8 @@ function propagate(Ω::T, Γ::AbstractMatrix{T}, rates::AbstractVector{T},
                    _tmax, rd=thread_rng()) where T
     Γ₁, Γ₂ = rates
     tmax::T = _tmax
-    params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
-    params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
+    params1 = Params{T}(Ω, Γ₁, Γ₂)
+    params2 = Params{T}(Ω, Γ₂, Γ₁)
     flipped = false
     @inbounds while tmax > 0
         t, idx, ψ = propagate_step(params1, tmax, rd)
@@ -348,8 +348,8 @@ function propagate_multistates(Ω::T, i1, i2, Γ::AbstractMatrix{T}, rates::Abst
     size(Γ) == (nstates, nstates) || throw_size_error(Γ, rates)
     Γ₁ = rates[i1]
     Γ₂ = rates[i2]
-    params1 = RabiDecayParams{T}(Ω, Γ₁, Γ₂)
-    params2 = RabiDecayParams{T}(Ω, Γ₂, Γ₁)
+    params1 = Params{T}(Ω, Γ₁, Γ₂)
+    params2 = Params{T}(Ω, Γ₂, Γ₁)
     i_cur = iinit
     @inbounds while tmax > 0
         if i_cur == i1
