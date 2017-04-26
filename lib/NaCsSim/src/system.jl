@@ -287,22 +287,22 @@ function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
     @assert nhf >= N1
     @assert nhf >= N2
     Γs = zeros(T, nhf)
-    branchings = [zeros(T, ns) for i in 1:nhf]
+    sc_branchings = [zeros(T, ns) for i in 1:nhf]
     scatters = Vector{ScatterPulse{T}}(ns)
     for i in 1:ns
         st = pulse.scatters[i]
         @assert nhf == num_states(st)
         rates, branchings = compute_cached_op_branching(cache, st.rates)
         for j in 1:nhf
-            branchings[j][i] += rates[j]
+            sc_branchings[j][i] += rates[j]
             Γs[j] += rates[j]
         end
-        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, si.isσ)
+        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, st.isσ)
     end
-    for b in branchings
+    for b in sc_branchings
         normalize0!(b)
     end
-    return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, Γs, branchings, scatters)
+    return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, Γs, sc_branchings, scatters)
 end
 
 function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T,N1,N2}
