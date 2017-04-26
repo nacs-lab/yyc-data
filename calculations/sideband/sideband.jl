@@ -129,6 +129,8 @@ function threadmap(f, arg)
     return res
 end
 
+## End of helper parts
+
 const m_Na = 23f-3 / 6.02f23
 const k_Na = Float32(2π) / 589f-9
 η(freq) = Trap.η(m_Na, freq, k_Na)
@@ -156,11 +158,42 @@ const rates_f1_down = all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1
 const rates_f2_coprop = all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2)
 const rates_f2_counterop = all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2)
 
-rates_f1_coprop .*= 4.46e8
-rates_f2_coprop .*= 4.1e8
-rates_f1_up .*= 1.05e9
-rates_f1_down .*= 8.2e8
-rates_f2_counterop .*= 3.25e9
+rates_f1_coprop .*= 4.46e8 # Amp 0.25
+rates_f2_coprop .*= 4.1e8 # Amp 0.22
+rates_f1_up .*= 1.05e9 # Amp 1.0
+rates_f1_down .*= 8.2e8 # Amp 0.22
+rates_f2_counterop .*= 3.25e9 # Amp 0.05
+
+## Raman powers
+# The list of amplitudes we used for Raman transitions
+# Axial 1:
+#     F1 Up 0.4 + F2 coprop 0.14
+#     F1 Up 0.4 + F2 coprop 0.22 (ramp)
+#     F1 Up 0.2 + F2 coprop 0.22 (ramp)
+# Radial 2:
+#     F1 Up 1.0 (ramp) + F2 counterop 0.05
+# Radial 3:
+#     F1 Down 0.22 (ramp) + F2 counterop 0.05
+
+# Power normalizations:
+# We normalize the powers to the ones we calibrated the off-resonance scattering on
+# since that is the only single photon measurement we have.
+# From there we can calculate the normalized intensities for the conditions listed above.
+# Relative powers used for Raman transitions
+# Axial 1:
+#     F1 Up 0.351 + F2 coprop 0.740
+#     F1 Up 0.351 + F2 coprop 1.000 (ramp)
+#     F1 Up 0.100 + F2 coprop 1.000 (ramp)
+# Radial 2:
+#     F1 Up 1.000 (ramp) + F2 counterop 1.000
+# Radial 3:
+#     F1 Down 1.000 (ramp) + F2 counterop 1.000
+
+# As for the effect of the ramp, since we are doing it only on one beam, the scattering does
+# not scale linearly with the instantaneous power.
+# Experimentally we see the π time is roughly doubled so we can expect that corresponds to a
+# decrease in scattering rate between 2 (square pulse) and 4 (linear ramp).
+# Let's just assume the scattering rate is decreased by 3x.
 
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 const sz = 500, 100, 100
