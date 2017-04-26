@@ -156,23 +156,23 @@ fig[:text](0.0, 0.5, "Normalized survival", ha="center", va="center", rotation="
 
 maybe_save("$(prefix)_r")
 
-# figure(figsize=[2.5, 1] * 4.8)
-# # Without cooling
-# plot_data(data_nocool_a1[1], 1 / 0.95, fmt="ro-", label="Before")
-# plot_data(data_nocool_a1[2], 1 / 0.95, fmt="ro-")
-# plot_data(data_nocool_a1_0, 1 / 0.95, fmt="ro-")
-# plot_data(data_nocool_a1_hi, 1 / 0.95, fmt="r^-", label="Before")
-# # With cooling
-# plot_data(data_cool_a1[1], 1 / 0.85, fmt="bo-", label="After")
-# plot_data(data_cool_a1[2], 1 / 0.85, fmt="bo-")
-# plot_data(data_cool_a1_hi, 1 / 0.85, fmt="b^-", label="After")
-# grid()
-# ylim([0, 0.8])
-# xlim([-100, 620])
-# title("Axis 1 (axial)")
-# xlabel("Detuning from carrier (kHz)")
-# ylabel("Normalized survival")
-# legend()
-# maybe_save("$(prefix)_a1")
+figure(figsize=[2.5, 1] * 4.8)
+# Without cooling
+plot_data(data_nocool_a1[1], 1 / 0.95, fmt="ro-", label="Before")
+plot_data(data_nocool_a1[2], 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_0, 1 / 0.95, fmt="ro-")
+plot_data(data_nocool_a1_hi, 1 / 0.95, fmt="r^-", label="Before")
+# With cooling
+plot_data(data_cool_a1[1], 1 / 0.85, fmt="bo-", label="After")
+plot_data(data_cool_a1[2], 1 / 0.85, fmt="bo-")
+plot_data(data_cool_a1_hi, 1 / 0.85, fmt="b^-", label="After")
+grid()
+ylim([0, 0.8])
+xlim([-100, 620])
+title("Axis 1 (axial)")
+xlabel("Detuning from carrier (kHz)")
+ylabel("Normalized survival")
+legend()
+maybe_save("$(prefix)_a1")
 
 maybe_show()
