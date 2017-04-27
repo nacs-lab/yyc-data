@@ -176,6 +176,28 @@ const rlof_f1 = (61.542e6 / (δf1 - 1.107266e9))^2
 const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
 const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
 const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
+const δzeeman = 12.33e6
+
+function gen_fscale(D2::Bool, δ0, zeeman)
+    Γ = D2 ? 61.542e6 : 61.353e6
+    offset′ = if D2
+        (66.097e6, 50.288e6, 15.944e6, -42.382e6)
+    else
+        (0.0, 118.05e6, -70.830e6, 0.0)
+    end
+    g1 = if D2
+        (2 / 3, 2 / 3, 2 / 3, 2 / 3)
+    else
+        (0.0, -1 / 6, 1 / 6, 0.0)
+    end
+    return function (F1x2, mF1x2, F′x2, mF′x2)
+        offset = F1x2 == 2 ? -1.107266e9 : 664.360e6
+        g0 = F1x2 == 2 ? -0.5 : 0.5
+        offset += offset′[F′x2 ÷ 2 + 1]
+        offset += (g0 - g1[F′x2 ÷ 2 + 1]) * zeeman
+        return Γ / (δ0 + offset)
+    end
+end
 
 # Decay rates and Rabi frequencies are measured in MHz (or us⁻¹)
 # Times are measured in μs
@@ -190,7 +212,7 @@ struct BeamSpec{T}
     η::NTuple{3,T}
     rates::Vector{Tuple{Matrix{T},Matrix{Bool}}}
 end
-function (::Type{BeamSpec{T}})(η, pol::NTuple{3,Any}, rhi, rlo) where T
+function (::Type{BeamSpec{T}})(D2::Bool, η, pol::NTuple{3,Any}, δ0, scale) where T
     rates2 = Tuple{Matrix{T},Matrix{Bool}}[]
     all_pols = ((1, 0, 0),
                 (0, 1, 0),
@@ -198,23 +220,22 @@ function (::Type{BeamSpec{T}})(η, pol::NTuple{3,Any}, rhi, rlo) where T
     for i in 1:3
         p = pol[i]
         p == 0 && continue
-        rate = all_scatter_D(true, 3, all_pols[i], rhi, rlo)
-        push!(rates2, (T.(rate .* p), isσs_all[i]))
+        rate = all_scatter_D(D2, 3, all_pols[i], gen_fscale(D2, δ0, δzeeman))
+        push!(rates2, (T.(rate .* p .* scale), isσs_all[i]))
     end
     return BeamSpec{T}(η, rates2)
 end
 
-const bs_f1_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.5, 0.0, 0.5),
-                                       rhif_f1 * rscale_f1_coprop, rlof_f1 * rscale_f1_coprop)
-const bs_f2_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.25, 0.5, 0.25),
-                                       rhif_f2 * rscale_f2_coprop, rlof_f2 * rscale_f2_coprop)
-const bs_f1_up = BeamSpec{Float32}(ηs_Na(0, sqrt(0.5), -sqrt(0.5)), (0.25, 0.5, 0.25),
-                                   rhif_f1 * rscale_f1_up, rlof_f1 * rscale_f1_up)
-const bs_f1_down = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), sqrt(0.5)), (0.25, 0.5, 0.25),
-                                     rhif_f1 * rscale_f1_down, rlof_f1 * rscale_f1_down)
-const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), (0.1, 0.0, 0.9),
-                                          rhif_f2 * rscale_f2_counterop,
-                                          rlof_f2 * rscale_f2_counterop)
+const bs_f1_coprop = BeamSpec{Float32}(true, ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.5, 0.0, 0.5),
+                                       δf1, rscale_f1_coprop)
+const bs_f2_coprop = BeamSpec{Float32}(true, ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.25, 0.5, 0.25),
+                                       δf2, rscale_f2_coprop)
+const bs_f1_up = BeamSpec{Float32}(true, ηs_Na(0, sqrt(0.5), -sqrt(0.5)), (0.25, 0.5, 0.25),
+                                   δf1, rscale_f1_up)
+const bs_f1_down = BeamSpec{Float32}(true, ηs_Na(0, -sqrt(0.5), sqrt(0.5)), (0.25, 0.5, 0.25),
+                                     δf1, rscale_f1_down)
+const bs_f2_counterop = BeamSpec{Float32}(true, ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), (0.1, 0.0, 0.9),
+                                          δf2, rscale_f2_counterop)
 
 ## Raman powers
 # The list of amplitudes we used for Raman transitions
