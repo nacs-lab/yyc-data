@@ -133,9 +133,13 @@ end
 
 const m_Na = 23f-3 / 6.02f23
 const k_Na = Float32(2π) / 589f-9
+const k_trap = Float32(2π) / 700f-9
+const trap_freq = (67f3, 420f3, 580f3)
 η(freq) = Trap.η(m_Na, freq, k_Na)
-const η_full = (η(67f3), η(420f3), η(580f3))
+const η_full = η.(trap_freq)
 ηs_Na(a, b, c) = Float32.((a, b, c)) .* η_full
+const η_full_trap = Trap.η.(m_Na, trap_freq, k_trap)
+ηs_trap(a, b, c) = Float32.((a, b, c)) .* η_full_trap
 
 const η_op = ηs_Na(1, 1, 1)
 const η_op_dri = ηs_Na(0, sqrt(0.5), sqrt(0.5))
@@ -262,6 +266,10 @@ const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), rat
 # The Rabi frequencies (2π times) here are for full matrix element
 
 const sz = 500, 100, 100
+const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3,
+                                            ηs_trap(1, 1, 1), ηs_trap(1, 0, 0),
+                                            zeros(Bool, 8, 8),
+                                            (0, 1, 1))
 
 function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec, Ω0, Δn)
     Ω = sqrt(p1 * p2) * Ω0
@@ -278,7 +286,8 @@ function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec,
                                    (0, 1, 1)) for r in bs1.rates]
     s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2],
                                    (0, 1, 1)) for r in bs2.rates]
-    return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz, [s1s; s2s])
+    return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz,
+                                         [s1s; s2s; [trapscatter]])
 end
 
 struct RamanSpec{T}
@@ -313,6 +322,7 @@ function create_raman(t, p1, p2, ramp1, ramp2, ax, Δn=0)
     rs = raman_specs[ax + 1]
     return create_raman_raw(t, p1, p2, ramp1, ramp2, rs.bs1, rs.bs2, rs.Ω0, get_Δns(ax, Δn))
 end
+create_wait(t) = System.MultiOP{Float32}(t, [trapscatter])
 
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
@@ -322,19 +332,12 @@ function create_sequence(t)
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    # Setup.add_pulse(builder, System.OP{Float32}(t, eye(Float32, 8) .* 0.1, η_op, ηs_Na(1, 0, 0),
-    #                                             zeros(Bool, 8, 8), (0, 1, 1)))
-    trapscatters = [System.Scatter{Float32}(eye(Float32, 8) .* 0.1,
-                                            η_op, ηs_Na(1, 0, 0),
-                                            zeros(Bool, 8, 8),
-                                            (0, 1, 1))]
-    Setup.add_pulse(builder, System.MultiOP{Float32}(t, trapscatters))
-    p = create_raman(81, 0.100, 0.461, false, true, 1, -1)
-    Setup.add_pulse(builder, p)
+    Setup.add_pulse(builder, create_wait(t * 1e3))
+    Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
     return builder.seq
 end
 
-const params = linspace(0, 200, 100)
+const params = linspace(0, 300, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
