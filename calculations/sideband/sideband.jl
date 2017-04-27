@@ -203,15 +203,6 @@ function (::Type{BeamSpec{T}})(η, pol::NTuple{3,Any}, rhi, rlo) where T
     end
     return BeamSpec{T}(η, rates2)
 end
-function (::Type{BeamSpec{T}})(η, rates::Matrix, pol::NTuple{3,Any}) where T
-    rates2 = Tuple{Matrix{T},Matrix{Bool}}[]
-    for i in 1:3
-        p = pol[i]
-        p == 0 && continue
-        push!(rates2, (T.(rates .* p), isσs_all[i]))
-    end
-    return BeamSpec{T}(η, rates2)
-end
 
 const bs_f1_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.5, 0.0, 0.5),
                                        rhif_f1 * rscale_f1_coprop, rlof_f1 * rscale_f1_coprop)
