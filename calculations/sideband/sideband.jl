@@ -177,24 +177,31 @@ const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
 const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
 const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
 
-const rates_f1_coprop = Float32.(all_scatter_D(true, 3, (0.5, 0.0, 0.5), rhif_f1, rlof_f1))
-const rates_f1_up = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
-const rates_f1_down = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
-const rates_f2_coprop = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2))
-const rates_f2_counterop = Float32.(all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2))
-
 # Decay rates and Rabi frequencies are measured in MHz (or us⁻¹)
 # Times are measured in μs
 
-rates_f1_coprop .*= 4.46e8 / 1e6 # Amp 0.25
-rates_f2_coprop .*= 4.1e8 / 1e6 # Amp 0.22
-rates_f1_up .*= 1.05e9 / 1e6 # Amp 1.0
-rates_f1_down .*= 8.2e8 / 1e6 # Amp 0.22
-rates_f2_counterop .*= 3.25e9 / 1e6 # Amp 0.05
+const rscale_f1_coprop = 4.46e8 / 1e6 # Amp 0.25
+const rscale_f2_coprop = 4.1e8 / 1e6 # Amp 0.22
+const rscale_f1_up = 1.05e9 / 1e6 # Amp 1.0
+const rscale_f1_down = 8.2e8 / 1e6 # Amp 0.22
+const rscale_f2_counterop = 3.25e9 / 1e6 # Amp 0.05
 
 struct BeamSpec{T}
     η::NTuple{3,T}
     rates::Vector{Tuple{Matrix{T},Matrix{Bool}}}
+end
+function (::Type{BeamSpec{T}})(η, pol::NTuple{3,Any}, rhi, rlo) where T
+    rates2 = Tuple{Matrix{T},Matrix{Bool}}[]
+    all_pols = ((1, 0, 0),
+                (0, 1, 0),
+                (0, 0, 1))
+    for i in 1:3
+        p = pol[i]
+        p == 0 && continue
+        rate = all_scatter_D(true, 3, all_pols[i], rhi, rlo)
+        push!(rates2, (T.(rate .* p), isσs_all[i]))
+    end
+    return BeamSpec{T}(η, rates2)
 end
 function (::Type{BeamSpec{T}})(η, rates::Matrix, pol::NTuple{3,Any}) where T
     rates2 = Tuple{Matrix{T},Matrix{Bool}}[]
@@ -206,16 +213,17 @@ function (::Type{BeamSpec{T}})(η, rates::Matrix, pol::NTuple{3,Any}) where T
     return BeamSpec{T}(η, rates2)
 end
 
-const bs_f1_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), rates_f1_coprop,
-                                       (0.5, 0.0, 0.5))
-const bs_f2_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), rates_f2_coprop,
-                                       (0.25, 0.5, 0.25))
-const bs_f1_up = BeamSpec{Float32}(ηs_Na(0, sqrt(0.5), -sqrt(0.5)), rates_f1_up,
-                                   (0.25, 0.5, 0.25))
-const bs_f1_down = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), sqrt(0.5)), rates_f1_down,
-                                     (0.25, 0.5, 0.25))
-const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), rates_f2_counterop,
-                                          (0.1, 0.0, 0.9))
+const bs_f1_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.5, 0.0, 0.5),
+                                       rhif_f1 * rscale_f1_coprop, rlof_f1 * rscale_f1_coprop)
+const bs_f2_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), (0.25, 0.5, 0.25),
+                                       rhif_f2 * rscale_f2_coprop, rlof_f2 * rscale_f2_coprop)
+const bs_f1_up = BeamSpec{Float32}(ηs_Na(0, sqrt(0.5), -sqrt(0.5)), (0.25, 0.5, 0.25),
+                                   rhif_f1 * rscale_f1_up, rlof_f1 * rscale_f1_up)
+const bs_f1_down = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), sqrt(0.5)), (0.25, 0.5, 0.25),
+                                     rhif_f1 * rscale_f1_down, rlof_f1 * rscale_f1_down)
+const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), (0.1, 0.0, 0.9),
+                                          rhif_f2 * rscale_f2_counterop,
+                                          rlof_f2 * rscale_f2_counterop)
 
 ## Raman powers
 # The list of amplitudes we used for Raman transitions
@@ -334,11 +342,11 @@ function create_sequence(t)
                                              System.HyperFineMeasure{8}()))
     # Setup.add_pulse(builder, create_wait(t * 1e3))
     # Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
-    Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 0, 0))
+    Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 3, 1))
     return builder.seq
 end
 
-const params = linspace(600, 700, 100)
+const params = linspace(270, 300, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
