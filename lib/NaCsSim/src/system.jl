@@ -228,6 +228,9 @@ struct Scatter{T}
     ηs::NTuple{3,T}
     ηdri::NTuple{3,T}
     isσ::Matrix{Bool}
+    qax::NTuple{3,T}
+    Scatter{T}(rates, ηs, ηdri, isσ, qax=(T(1), T(0), T(0))) where T =
+        new(rates, ηs, ηdri, isσ, qax)
 end
 
 struct RealRaman{T,N1,N2}
@@ -250,6 +253,7 @@ struct ScatterPulse{T}
     ηdri::NTuple{3,T}
     # The polarization of the decay
     isσ::Matrix{Bool}
+    qtrans::NTuple{3,NTuple{3,T}}
 end
 
 struct RealRamanPulse{T,N1,N2}
@@ -305,7 +309,8 @@ function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
             sc_branchings[j][i] += rates[j]
             Γs[j] += rates[j]
         end
-        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, st.isσ)
+        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, st.isσ,
+                                      Samplers.vec3d_to_trans(st.qax))
     end
     for b in sc_branchings
         normalize0!(b)
@@ -390,7 +395,8 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
             # Now figure out the final state
             hf1 = Samplers.select(one(T), scatter.branchings[hf], rng)
             # Finally, figure out the vibrational states
-            v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng)
+            v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng,
+                            scatter.qtrans)
             hf = hf1
             if v[1] < 0
                 state.lost = true
