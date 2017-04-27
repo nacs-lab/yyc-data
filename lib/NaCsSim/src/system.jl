@@ -148,33 +148,34 @@ end
 
 struct RamanPulse{T,N1,N2}
     t::T
+    Ω::T
     Δn::NTuple{3,Int}
-    Ωs::NTuple{3,Vector{T}}
+    Meles::NTuple{3,Vector{T}}
     expΓ::T
 end
 
-RamanKey{T} = Tuple{T,NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
+RamanKey{T} = Tuple{NTuple{3,T},NTuple{3,T},NTuple{3,Int}}
 RamanCache{T} = NTuple{3,Vector{T}}
 
-computeΩs(Ω::T, η::T, Δn, nmax) where {T} =
-    T[Trap.sideband(n - 1, n - 1 + Δn, η) * Ω for n in 1:(nmax + abs(Δn) + 1)]
+computeMeles(η::T, Δn, nmax) where {T} =
+    T[Trap.sideband(n - 1, n - 1 + Δn, η) for n in 1:(nmax + abs(Δn) + 1)]
 
-function compute_cached_raman(cache, Ω::T, ηs, Δn, nmax) where T
+function compute_cached_raman(cache, ηs::NTuple{3,T}, Δn, nmax) where T
     type_cache = get!(cache, Raman{T}) do
         Dict{RamanKey{T},RamanCache{T}}()
     end::Dict{RamanKey{T},RamanCache{T}}
-    return get!(type_cache, (Ω, ηs, Δn, nmax)) do
-        Ωs1 = computeΩs(Ω, ηs[1], Δn[1], nmax[1])
-        Ωs2 = computeΩs(Ω, ηs[2], Δn[2], nmax[2])
-        Ωs3 = computeΩs(Ω, ηs[3], Δn[3], nmax[3])
-        return Ωs1, Ωs2, Ωs3
+    return get!(type_cache, (ηs, Δn, nmax)) do
+        Meles1 = computeMeles(ηs[1], Δn[1], nmax[1])
+        Meles2 = computeMeles(ηs[2], Δn[2], nmax[2])
+        Meles3 = computeMeles(ηs[3], Δn[3], nmax[3])
+        return Meles1, Meles2, Meles3
     end
 end
 
 function Setup.compile_pulse(pulse::Raman{T,N1,N2}, cache) where {T,N1,N2}
     @assert N1 != N2
-    Ωs = compute_cached_raman(cache, pulse.Ω, pulse.ηs, pulse.Δn, pulse.nmax)
-    return RamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, exp(-pulse.Γ * pulse.t))
+    Meles = compute_cached_raman(cache, pulse.ηs, pulse.Δn, pulse.nmax)
+    return RamanPulse{T,N1,N2}(pulse.t, pulse.Ω, pulse.Δn, Meles, exp(-pulse.Γ * pulse.t))
 end
 
 function (pulse::RamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T,N1,N2}
@@ -203,11 +204,11 @@ function (pulse::RamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T
         return false
     end
     if hf0 == N1
-        Ω = (pulse.Ωs[1][v_i[1] + 1] * pulse.Ωs[2][v_i[2] + 1] *
-              pulse.Ωs[3][v_i[3] + 1])
+        Ω = pulse.Ω * (pulse.Meles[1][v_i[1] + 1] * pulse.Meles[2][v_i[2] + 1] *
+                         pulse.Meles[3][v_i[3] + 1])
     else
-        Ω = (pulse.Ωs[1][v_f[1] + 1] * pulse.Ωs[2][v_f[2] + 1] *
-              pulse.Ωs[3][v_f[3] + 1])
+        Ω = pulse.Ω * (pulse.Meles[1][v_f[1] + 1] * pulse.Meles[2][v_f[2] + 1] *
+                         pulse.Meles[3][v_f[3] + 1])
     end
     p = (1 - cos(Ω * pulse.t) * pulse.expΓ) / 2
     if rand(rng) < p
@@ -247,10 +248,11 @@ end
 
 struct RealRamanPulse{T,N1,N2}
     t::T
+    Ω::T
     # The change in motional state on different axis
     Δn::NTuple{3,Int}
     # The Raman transition matrix element as a function of the initial state motional level
-    Ωs::NTuple{3,Vector{T}}
+    Meles::NTuple{3,Vector{T}}
     # Total scattering rates for different HF states
     Γs::Vector{T}
     # Normalized "branching ratio" to each scattering source from different initial HF states
@@ -277,10 +279,10 @@ end
 
 function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
     @assert N1 != N2
-    Ωs = compute_cached_raman(cache, pulse.Ω, pulse.ηs, pulse.Δn, pulse.nmax)
+    Meles = compute_cached_raman(cache, pulse.ηs, pulse.Δn, pulse.nmax)
     ns = length(pulse.scatters)
     if ns == 0
-        return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, zeros(max(N1, N2)),
+        return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Ω, pulse.Δn, Meles, zeros(max(N1, N2)),
                                        Vector{T}[], ScatterPulse{T}[])
     end
     nhf = num_states(pulse.scatters[1])
@@ -302,7 +304,7 @@ function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
     for b in sc_branchings
         normalize0!(b)
     end
-    return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Δn, Ωs, Γs, sc_branchings, scatters)
+    return RealRamanPulse{T,N1,N2}(pulse.t, pulse.Ω, pulse.Δn, Meles, Γs, sc_branchings, scatters)
 end
 
 function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) where {T,N1,N2}
@@ -337,9 +339,11 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
             return false
         end
         if hf == N1
-            Ω = (pulse.Ωs[1][v[1] + 1] * pulse.Ωs[2][v[2] + 1] * pulse.Ωs[3][v[3] + 1])
+            Ω = pulse.Ω * (pulse.Meles[1][v[1] + 1] * pulse.Meles[2][v[2] + 1] *
+                             pulse.Meles[3][v[3] + 1])
         else
-            Ω = (pulse.Ωs[1][v1[1] + 1] * pulse.Ωs[2][v1[2] + 1] * pulse.Ωs[3][v1[3] + 1])
+            Ω = pulse.Ω * (pulse.Meles[1][v1[1] + 1] * pulse.Meles[2][v1[2] + 1] *
+                             pulse.Meles[3][v1[3] + 1])
         end
         rabi_param = DecayRabi.Params{T}(Ω, Γ₁, Γ₂)
         tmax2 = tmax
