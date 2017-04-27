@@ -326,26 +326,6 @@ function create_sequence(t)
                                                 zeros(Bool, 8, 8), (0, 1, 1)))
     p = create_raman(81, 0.100, 0.461, false, true, 1, -1)
     Setup.add_pulse(builder, p)
-    # s1 = System.Scatter{Float32}(Float32[0 0 0
-    #                                      0 1 0
-    #                                      1 0 0] * 0.001f0,
-    #                              η_op,
-    #                              η_op_dri,
-    #                              [false false false
-    #                               false false false
-    #                               false false false])
-    # s2 = System.Scatter{Float32}(Float32[0 0 1
-    #                                      0 1 0
-    #                                      0 0 0] * 0.001f0,
-    #                              η_op,
-    #                              η_op_dri,
-    #                              [false false false
-    #                               false false false
-    #                               false false false])
-    # Setup.add_pulse(builder, System.RealRaman{Float32,1,3}(t, π / 5, (0f0, 0f0, 0f0),
-    #                                                        (0, 0, 0), sz, [s1, s2]))
-    # Setup.add_pulse(builder, System.Raman{Float32,1,3}(t, π / 5, (0f0, 0f0, 0f0),
-    #                                                    (0, 0, 0), sz))
     return builder.seq
 end
 
