@@ -98,6 +98,53 @@ unit_3d_transformation(::Type{T}) where T = ((T(1), T(0), T(0)),
                                              (T(0), T(1), T(0)),
                                              (T(0), T(0), T(1)))
 
+vec3d_norm2(vec::NTuple{3,<:Number}) = abs2(vec[1]) + abs2(vec[2]) + abs2(vec[3])
+vec3d_cross(vec1::NTuple{3,<:Number}, vec2::NTuple{3,<:Number}) =
+    (muladd(vec1[2], vec2[3], -(vec1[3] * vec2[2])),
+     muladd(vec1[3], vec2[1], -(vec1[1] * vec2[3])),
+     muladd(vec1[1], vec2[2], -(vec1[2] * vec2[1])))
+
+"""
+    vec3d_to_trans(ax::NTuple{3,T}) where T<:AbstractFloat
+
+Given an (unnormlized) 3D vector `ax` compute 3 orthonormal vectors in which the first
+vector is parallel with `ax`. The direction of the two other vectors are arbitrarily chosen.
+"""
+function vec3d_to_trans(ax::NTuple{3,T}) where T<:AbstractFloat
+    na = vec3d_norm2(ax)
+    @assert na != 0
+    ax = ax ./ sqrt(na)
+    v1 = vec3d_cross((1, 0, 0), ax)
+    v2 = vec3d_cross((0, 1, 0), ax)
+    v3 = vec3d_cross((0, 0, 1), ax)
+    n1 = vec3d_norm2(v1)
+    n2 = vec3d_norm2(v2)
+    n3 = vec3d_norm2(v3)
+    if n3 >= n1
+        if n3 >= n2
+            v = v3
+            nv = n3
+        else
+            # n3 >= n1
+            # n2 > n3
+            v = v2
+            nv = n2
+        end
+    elseif n1 >= n2
+        v = v1
+        nv = n1
+    else
+        # n1 > n3
+        # n2 > n1
+        v = v2
+        nv = n2
+    end
+    v = v ./ sqrt(nv)
+    # Should be normalized already
+    vy = vec3d_cross(ax, v)
+    return (ax, v, vy)
+end
+
 # This currently can't handle misalignment between the quantization axis
 # and trap axis. Hopefully it's not very important
 function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri::NTuple{3,T},

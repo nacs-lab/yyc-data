@@ -53,6 +53,9 @@ struct OP{T}
     ηs::NTuple{3,T}
     ηdri::NTuple{3,T}
     isσ::Matrix{Bool}
+    qax::NTuple{3,T}
+    OP{T}(t, rates, ηs, ηdri, isσ, qax=(T(1), T(0), T(0))) where T =
+        new(t, rates, ηs, ηdri, isσ, qax)
 end
 
 struct OPPulse{T}
@@ -62,6 +65,7 @@ struct OPPulse{T}
     ηs::NTuple{3,T}
     ηdri::NTuple{3,T}
     isσ::Matrix{Bool}
+    qtrans::NTuple{3,NTuple{3,T}}
 end
 
 OPCache{T} = Tuple{Vector{T},Vector{Vector{T}}}
@@ -100,7 +104,8 @@ function Setup.compile_pulse(pulse::OP{T}, cache) where {T}
         throw(ArgumentError("rates and isσ should have the same sizes"))
     end
     rates, branchings = compute_cached_op_branching(cache, pulse.rates)
-    return OPPulse{T}(pulse.t, rates, branchings, pulse.ηs, pulse.ηdri, pulse.isσ)
+    return OPPulse{T}(pulse.t, rates, branchings, pulse.ηs, pulse.ηdri, pulse.isσ,
+                      Samplers.vec3d_to_trans(pulse.qax))
 end
 
 function propagate_op!(pulse::OPPulse{T}, state::StateC, maxt::T, rng) where {T}
@@ -118,7 +123,8 @@ function propagate_op!(pulse::OPPulse{T}, state::StateC, maxt::T, rng) where {T}
 
     # Finally, given the initial hyperfine+vibrational and final hyperfine
     # state, pick the final vibrational state.
-    v_f = Samplers.op(v_i, nmax, pulse.ηs, pulse.ηdri, pulse.isσ[hf1, hf0], rng)
+    v_f = Samplers.op(v_i, nmax, pulse.ηs, pulse.ηdri, pulse.isσ[hf1, hf0], rng,
+                      pulse.qtrans)
     if v_f[1] < 0
         state.lost = true
         return zero(T), false

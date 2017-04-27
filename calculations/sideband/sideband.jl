@@ -321,7 +321,7 @@ function create_sequence(t)
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
     Setup.add_pulse(builder, System.OP{Float32}(t, eye(Float32, 8) .* 0.1, η_op, ηs_Na(1, 0, 0),
-                                                zeros(Bool, 8, 8)))
+                                                zeros(Bool, 8, 8), (0, 1, 1)))
     p = create_raman(81, 0.100, 0.461, false, true, 1, -1)
     Setup.add_pulse(builder, p)
     # s1 = System.Scatter{Float32}(Float32[0 0 0
