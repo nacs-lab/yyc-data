@@ -140,11 +140,6 @@ const η_full = (η(67f3), η(420f3), η(580f3))
 const η_op = ηs_Na(1, 1, 1)
 const η_op_dri = ηs_Na(0, sqrt(0.5), sqrt(0.5))
 
-const η_raman1 = ηs_Na(sqrt(0.5), sqrt(0.5) - 0.5, sqrt(0.5) + 0.5)
-const η_raman2 = ηs_Na(0, sqrt(2), 0)
-const η_raman3 = ηs_Na(0, 0, sqrt(2))
-const η_ramans = (η_raman1, η_raman2, η_raman3)
-
 const δf1 = -25.0e9
 const δf2 = -25.0e9 - 1.77e9
 const rlof_f1 = (61.542e6 / (δf1 - 1.107266e9))^2
@@ -152,20 +147,76 @@ const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
 const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
 const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
 
-const rates_f1_coprop = all_scatter_D(true, 3, (0.5, 0.0, 0.5), rhif_f1, rlof_f1)
-const rates_f1_up = all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1)
-const rates_f1_down = all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1)
-const rates_f2_coprop = all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2)
-const rates_f2_counterop = all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2)
+const rates_f1_coprop = Float32.(all_scatter_D(true, 3, (0.5, 0.0, 0.5), rhif_f1, rlof_f1))
+const rates_f1_up = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
+const rates_f1_down = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
+const rates_f2_coprop = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2))
+const rates_f2_counterop = Float32.(all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2))
 
-rates_f1_coprop .*= 4.46e8 # Amp 0.25
-rates_f2_coprop .*= 4.1e8 # Amp 0.22
-rates_f1_up .*= 1.05e9 # Amp 1.0
-rates_f1_down .*= 8.2e8 # Amp 0.22
-rates_f2_counterop .*= 3.25e9 # Amp 0.05
+# Decay rates and Rabi frequencies are measured in MHz (or us⁻¹)
+# Times are measured in μs
+
+rates_f1_coprop .*= 4.46e8 / 1e6 # Amp 0.25
+rates_f2_coprop .*= 4.1e8 / 1e6 # Amp 0.22
+rates_f1_up .*= 1.05e9 / 1e6 # Amp 1.0
+rates_f1_down .*= 8.2e8 / 1e6 # Amp 0.22
+rates_f2_counterop .*= 3.25e9 / 1e6 # Amp 0.05
+
+function gen_isσ(Δdri)
+    res = zeros(Bool, 8, 8)
+    idx_to_state = function (idx)
+        if idx > 5
+            # low F
+            return idx - 7
+        else
+            # high F
+            return idx - 3
+        end
+    end
+    for i in 1:8
+        mF1 = idx_to_state(i)
+        for j in 1:8
+            mF2 = idx_to_state(j)
+            # From i to j, from mF1 to mF2
+            if abs(mF1 + Δdri - mF2) == 1
+                res[j, i] = true
+            end
+        end
+    end
+    res
+end
+
+const isσs_all = [gen_isσ(-1), gen_isσ(0), gen_isσ(1)]
+
+struct BeamSpec{T}
+    η::NTuple{3,T}
+    rates::Vector{Tuple{Matrix{T},Matrix{Bool}}}
+end
+function (::Type{BeamSpec{T}})(η, rates::Matrix, pol::NTuple{3,Any}) where T
+    rates2 = Tuple{Matrix{T},Matrix{Bool}}[]
+    for i in 1:3
+        p = pol[i]
+        p == 0 && continue
+        push!(rates2, (T.(rates .* p), isσs_all[i]))
+    end
+    return BeamSpec{T}(η, rates2)
+end
+
+const bs_f1_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), rates_f1_coprop,
+                                       (0.5, 0.0, 0.5))
+const bs_f2_coprop = BeamSpec{Float32}(ηs_Na(-sqrt(0.5), 0.5, 0.5), rates_f2_coprop,
+                                       (0.25, 0.5, 0.25))
+const bs_f1_up = BeamSpec{Float32}(ηs_Na(0, sqrt(0.5), -sqrt(0.5)), rates_f1_up,
+                                   (0.25, 0.5, 0.25))
+const bs_f1_down = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), sqrt(0.5)), rates_f1_down,
+                                     (0.25, 0.5, 0.25))
+const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), rates_f2_counterop,
+                                          (0.1, 0.0, 0.9))
 
 ## Raman powers
 # The list of amplitudes we used for Raman transitions
+# Co-prop:
+#     F1 coprop 0.25 + F2 coprop 0.22
 # Axial 1:
 #     F1 Up 0.4 + F2 coprop 0.14
 #     F1 Up 0.4 + F2 coprop 0.22 (ramp)
@@ -180,6 +231,8 @@ rates_f2_counterop .*= 3.25e9 # Amp 0.05
 # since that is the only single photon measurement we have.
 # From there we can calculate the normalized intensities for the conditions listed above.
 # Relative powers used for Raman transitions
+# Co-prop:
+#     F1 coprop 1.000 + F2 coprop 1.000
 # Axial 1:
 #     F1 Up 0.351 + F2 coprop 0.740
 #     F1 Up 0.351 + F2 coprop 1.000 (ramp)
@@ -195,37 +248,86 @@ rates_f2_counterop .*= 3.25e9 # Amp 0.05
 # decrease in scattering rate between 2 (square pulse) and 4 (linear ramp).
 # Let's just assume the scattering rate is decreased by 3x.
 
-const BuilderT = Setup.SeqBuilder{System.StateC,Void}
+# Now for the calibrated full Rabi frequency with the corresponding normalized powers
+# Co-prop:
+#     F1 coprop 1.000 + F2 coprop 1.000: Ω = 2π / 26.0us
+# Axial 1:
+#     F1 Up 0.100 + F2 coprop 0.462: Ω = 2π / 60.2us
+# Radial 2:
+#     F1 Up 1.000 + F2 counterop 1.000: Ω = 2π / 11.61us
+# Radial 3:
+#     F1 Down 1.000 + F2 counterop 1.000: Ω = 2π / 11.45us
+# The Rabi frequencies (2π times) here are for full matrix element
+
 const sz = 500, 100, 100
+
+function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec, Ω0, Δn)
+    Ω = sqrt(p1 * p2) * Ω0
+    if ramp1
+        p1 /= 3
+        Ω /= 2
+        @assert !ramp2
+    end
+    if ramp2
+        p2 /= 3
+        Ω /= 2
+    end
+    s1s = [System.Scatter{Float32}(p1 * r[1], η_op, abs.(bs1.η), r[2]) for r in bs1.rates]
+    s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2]) for r in bs2.rates]
+    return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz, [s1s; s2s])
+end
+
+struct RamanSpec{T}
+    Ω0::T
+    bs1::BeamSpec{T}
+    bs2::BeamSpec{T}
+end
+
+const raman_specs = [RamanSpec{Float32}(0.2417, bs_f1_coprop, bs_f2_coprop), # co-prop
+                     RamanSpec{Float32}(0.4856, bs_f1_up, bs_f2_coprop), # axial 1
+                     RamanSpec{Float32}(0.5412, bs_f1_up, bs_f2_counterop), # radial 2
+                     RamanSpec{Float32}(0.5487, bs_f1_down, bs_f2_counterop) # radial 3
+                     ]
+
+function create_raman(t, p1, p2, ramp1, ramp2, Δn, ax)
+    rs = raman_specs[ax + 1]
+    return create_raman_raw(t, p1, p2, ramp1, ramp2, rs.bs1, rs.bs2, rs.Ω0, Δn)
+end
+
+const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
 
 function create_sequence(t)
     builder = BuilderT(System.ThermalInit{1,Float32}(15, 4, 4), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
-                                             System.HyperFineMeasure{3}()))
-    s1 = System.Scatter{Float32}(Float32[0 0 0
-                                         0 1 0
-                                         1 0 0] * 0.1f0,
-                                 η_op,
-                                 η_op_dri,
-                                 [false false false
-                                  false false false
-                                  false false false])
-    s2 = System.Scatter{Float32}(Float32[0 0 1
-                                         0 1 0
-                                         0 0 0] * 0.1f0,
-                                 η_op,
-                                 η_op_dri,
-                                 [false false false
-                                  false false false
-                                  false false false])
-    Setup.add_pulse(builder, System.RealRaman{Float32,1,3}(t, 1, (0f0, 0f0, 0f0),
-                                                           (0, 0, 0), sz, [s1, s2]))
+                                             System.HyperFineMeasure{8}()))
+    p = create_raman(t, 1, 1, false, false, (0, 0, 0), 0)
+    Setup.add_pulse(builder, p)
+    # s1 = System.Scatter{Float32}(Float32[0 0 0
+    #                                      0 1 0
+    #                                      1 0 0] * 0.001f0,
+    #                              η_op,
+    #                              η_op_dri,
+    #                              [false false false
+    #                               false false false
+    #                               false false false])
+    # s2 = System.Scatter{Float32}(Float32[0 0 1
+    #                                      0 1 0
+    #                                      0 0 0] * 0.001f0,
+    #                              η_op,
+    #                              η_op_dri,
+    #                              [false false false
+    #                               false false false
+    #                               false false false])
+    # Setup.add_pulse(builder, System.RealRaman{Float32,1,3}(t, π / 5, (0f0, 0f0, 0f0),
+    #                                                        (0, 0, 0), sz, [s1, s2]))
+    # Setup.add_pulse(builder, System.Raman{Float32,1,3}(t, π / 5, (0f0, 0f0, 0f0),
+    #                                                    (0, 0, 0), sz))
     return builder.seq
 end
 
-const params = linspace(0, 50, 1000)
+const params = linspace(0, 80, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
