@@ -274,8 +274,10 @@ function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec,
         p2 /= 3
         Ω /= 2
     end
-    s1s = [System.Scatter{Float32}(p1 * r[1], η_op, abs.(bs1.η), r[2]) for r in bs1.rates]
-    s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2]) for r in bs2.rates]
+    s1s = [System.Scatter{Float32}(p1 * r[1], η_op, abs.(bs1.η), r[2],
+                                   (0, 1, 1)) for r in bs1.rates]
+    s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2],
+                                   (0, 1, 1)) for r in bs2.rates]
     return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz, [s1s; s2s])
 end
 
