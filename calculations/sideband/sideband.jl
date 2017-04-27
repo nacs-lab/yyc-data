@@ -221,6 +221,7 @@ const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), rat
 #     F1 Up 0.4 + F2 coprop 0.14
 #     F1 Up 0.4 + F2 coprop 0.22 (ramp)
 #     F1 Up 0.2 + F2 coprop 0.22 (ramp)
+#     F1 Up 0.2 + F2 coprop 0.1 (ramp)
 # Radial 2:
 #     F1 Up 1.0 (ramp) + F2 counterop 0.05
 # Radial 3:
@@ -237,6 +238,7 @@ const bs_f2_counterop = BeamSpec{Float32}(ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), rat
 #     F1 Up 0.351 + F2 coprop 0.740
 #     F1 Up 0.351 + F2 coprop 1.000 (ramp)
 #     F1 Up 0.100 + F2 coprop 1.000 (ramp)
+#     F1 Up 0.100 + F2 coprop 0.461 (ramp)
 # Radial 2:
 #     F1 Up 1.000 (ramp) + F2 counterop 1.000
 # Radial 3:
@@ -289,20 +291,38 @@ const raman_specs = [RamanSpec{Float32}(0.2417, bs_f1_coprop, bs_f2_coprop), # c
                      RamanSpec{Float32}(0.5487, bs_f1_down, bs_f2_counterop) # radial 3
                      ]
 
-function create_raman(t, p1, p2, ramp1, ramp2, Δn, ax)
+get_Δns(ax, Δn::NTuple{3,Any}) = Δn
+function get_Δns(ax, Δn)
+    if ax == 0
+        @assert Δn == 0
+        return (0, 0, 0)
+    elseif ax == 1
+        return (Δn, 0, 0)
+    elseif ax == 2
+        return (0, Δn, 0)
+    elseif ax == 3
+        return (0, 0, Δn)
+    else
+        error("Invalid axis number $ax")
+    end
+end
+
+function create_raman(t, p1, p2, ramp1, ramp2, ax, Δn=0)
     rs = raman_specs[ax + 1]
-    return create_raman_raw(t, p1, p2, ramp1, ramp2, rs.bs1, rs.bs2, rs.Ω0, Δn)
+    return create_raman_raw(t, p1, p2, ramp1, ramp2, rs.bs1, rs.bs2, rs.Ω0, get_Δns(ax, Δn))
 end
 
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
 
 function create_sequence(t)
-    builder = BuilderT(System.ThermalInit{1,Float32}(15, 4, 4), Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{1,Float32}(0, 0, 0), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    p = create_raman(t, 1, 1, false, false, (0, 0, 0), 0)
+    Setup.add_pulse(builder, System.OP{Float32}(t, eye(Float32, 8) .* 0.1, η_op, ηs_Na(1, 0, 0),
+                                                zeros(Bool, 8, 8)))
+    p = create_raman(81, 0.100, 0.461, false, true, 1, -1)
     Setup.add_pulse(builder, p)
     # s1 = System.Scatter{Float32}(Float32[0 0 0
     #                                      0 1 0
@@ -327,7 +347,7 @@ function create_sequence(t)
     return builder.seq
 end
 
-const params = linspace(0, 80, 100)
+const params = linspace(0, 200, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
