@@ -409,6 +409,80 @@ function (pulse::RealRamanPulse{T,N1,N2})(state::StateC, extern_state, rng) wher
     return true
 end
 
+struct MultiOP{T}
+    t::T
+    scatters::Vector{Scatter{T}}
+    MultiOP{T}(t, scatters) where {T} = new(t, scatters)
+end
+
+struct MultiOPPulse{T}
+    t::T
+    # Total scattering rates for different HF states
+    Γs::Vector{T}
+    # Normalized "branching ratio" to each scattering source from different initial HF states
+    branchings::Vector{Vector{T}}
+    scatters::Vector{ScatterPulse{T}}
+end
+
+function Setup.compile_pulse{T}(pulse::MultiOP{T}, cache)
+    ns = length(pulse.scatters)
+    @assert(ns != 0)
+    nhf = num_states(pulse.scatters[1])
+    Γs = zeros(T, nhf)
+    sc_branchings = [zeros(T, ns) for i in 1:nhf]
+    scatters = Vector{ScatterPulse{T}}(ns)
+    for i in 1:ns
+        st = pulse.scatters[i]
+        @assert nhf == num_states(st)
+        rates, branchings = compute_cached_op_branching(cache, st.rates)
+        for j in 1:nhf
+            sc_branchings[j][i] += rates[j]
+            Γs[j] += rates[j]
+        end
+        scatters[i] = ScatterPulse{T}(branchings, st.ηs, st.ηdri, st.isσ,
+                                      Samplers.vec3d_to_trans(st.qax))
+    end
+    for b in sc_branchings
+        normalize0!(b)
+    end
+    return MultiOPPulse{T}(pulse.t, Γs, sc_branchings, scatters)
+end
+
+function (pulse::MultiOPPulse{T})(state::StateC, extern_state, rng) where {T}
+    hf = state.hf
+    v = state.n
+    nmax = state.nmax
+
+    tmax = pulse.t
+    while tmax > 0
+        t2 = Samplers.decay(pulse.Γs[hf], rng)
+        tmax -= t2
+        if !(tmax > 0)
+            break
+        end
+
+        if hf <= length(pulse.branchings)
+            # So now we have a scattering even from state `hf` + `v`.
+            # First decide which drive it is to blame.
+            sidx = Samplers.select(one(T), pulse.branchings[hf], rng)
+            scatter = pulse.scatters[sidx]
+            # Now figure out the final state
+            hf1 = Samplers.select(one(T), scatter.branchings[hf], rng)
+            # Finally, figure out the vibrational states
+            v = Samplers.op(v, nmax, scatter.ηs, scatter.ηdri, scatter.isσ[hf1, hf], rng,
+                            scatter.qtrans)
+            hf = hf1
+            if v[1] < 0
+                state.lost = true
+                return false
+            end
+        end
+    end
+
+    set_ns!(state, hf, v...)
+    return true
+end
+
 binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
 
 @inline function check_abort(r, n)

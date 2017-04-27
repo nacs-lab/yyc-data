@@ -322,8 +322,13 @@ function create_sequence(t)
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    Setup.add_pulse(builder, System.OP{Float32}(t, eye(Float32, 8) .* 0.1, η_op, ηs_Na(1, 0, 0),
-                                                zeros(Bool, 8, 8), (0, 1, 1)))
+    # Setup.add_pulse(builder, System.OP{Float32}(t, eye(Float32, 8) .* 0.1, η_op, ηs_Na(1, 0, 0),
+    #                                             zeros(Bool, 8, 8), (0, 1, 1)))
+    trapscatters = [System.Scatter{Float32}(eye(Float32, 8) .* 0.1,
+                                            η_op, ηs_Na(1, 0, 0),
+                                            zeros(Bool, 8, 8),
+                                            (0, 1, 1))]
+    Setup.add_pulse(builder, System.MultiOP{Float32}(t, trapscatters))
     p = create_raman(81, 0.100, 0.461, false, true, 1, -1)
     Setup.add_pulse(builder, p)
     return builder.seq
