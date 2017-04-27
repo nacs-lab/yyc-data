@@ -144,28 +144,6 @@ const η_full_trap = Trap.η.(m_Na, trap_freq, k_trap)
 const η_op = ηs_Na(1, 1, 1)
 const η_op_dri = ηs_Na(0, sqrt(0.5), sqrt(0.5))
 
-const δf1 = -25.0e9
-const δf2 = -25.0e9 - 1.77e9
-const rlof_f1 = (61.542e6 / (δf1 - 1.107266e9))^2
-const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
-const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
-const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
-
-const rates_f1_coprop = Float32.(all_scatter_D(true, 3, (0.5, 0.0, 0.5), rhif_f1, rlof_f1))
-const rates_f1_up = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
-const rates_f1_down = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
-const rates_f2_coprop = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2))
-const rates_f2_counterop = Float32.(all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2))
-
-# Decay rates and Rabi frequencies are measured in MHz (or us⁻¹)
-# Times are measured in μs
-
-rates_f1_coprop .*= 4.46e8 / 1e6 # Amp 0.25
-rates_f2_coprop .*= 4.1e8 / 1e6 # Amp 0.22
-rates_f1_up .*= 1.05e9 / 1e6 # Amp 1.0
-rates_f1_down .*= 8.2e8 / 1e6 # Amp 0.22
-rates_f2_counterop .*= 3.25e9 / 1e6 # Amp 0.05
-
 function gen_isσ(Δdri)
     res = zeros(Bool, 8, 8)
     idx_to_state = function (idx)
@@ -191,6 +169,28 @@ function gen_isσ(Δdri)
 end
 
 const isσs_all = [gen_isσ(-1), gen_isσ(0), gen_isσ(1)]
+
+const δf1 = -25.0e9
+const δf2 = -25.0e9 - 1.77e9
+const rlof_f1 = (61.542e6 / (δf1 - 1.107266e9))^2
+const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
+const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
+const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
+
+const rates_f1_coprop = Float32.(all_scatter_D(true, 3, (0.5, 0.0, 0.5), rhif_f1, rlof_f1))
+const rates_f1_up = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
+const rates_f1_down = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f1, rlof_f1))
+const rates_f2_coprop = Float32.(all_scatter_D(true, 3, (0.25, 0.5, 0.25), rhif_f2, rlof_f2))
+const rates_f2_counterop = Float32.(all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_f2, rlof_f2))
+
+# Decay rates and Rabi frequencies are measured in MHz (or us⁻¹)
+# Times are measured in μs
+
+rates_f1_coprop .*= 4.46e8 / 1e6 # Amp 0.25
+rates_f2_coprop .*= 4.1e8 / 1e6 # Amp 0.22
+rates_f1_up .*= 1.05e9 / 1e6 # Amp 1.0
+rates_f1_down .*= 8.2e8 / 1e6 # Amp 0.22
+rates_f2_counterop .*= 3.25e9 / 1e6 # Amp 0.05
 
 struct BeamSpec{T}
     η::NTuple{3,T}
@@ -332,12 +332,13 @@ function create_sequence(t)
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    Setup.add_pulse(builder, create_wait(t * 1e3))
-    Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
+    # Setup.add_pulse(builder, create_wait(t * 1e3))
+    # Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
+    Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 0, 0))
     return builder.seq
 end
 
-const params = linspace(0, 300, 100)
+const params = linspace(600, 700, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
