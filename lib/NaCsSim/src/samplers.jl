@@ -94,21 +94,30 @@ function emission(::Type{T}, isσ::Bool, rng) where T<:AbstractFloat
     end
 end
 
+unit_3d_transformation(::Type{T}) where T = ((T(1), T(0), T(0)),
+                                             (T(0), T(1), T(0)),
+                                             (T(0), T(0), T(1)))
+
 # This currently can't handle misalignment between the quantization axis
 # and trap axis. Hopefully it's not very important
 function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri::NTuple{3,T},
-            isσ::Bool, rng) where T<:AbstractFloat
+            isσ::Bool, rng,
+            trans::NTuple{3,NTuple{3,T}}=unit_3d_transformation(T)) where T<:AbstractFloat
     cosθ, φ = emission(T, isσ, rng)
-    ηx = ηs[1] * cosθ
+    η1 = ηs[1] * cosθ
     if -1 < cosθ < 1
         # @fastmath on comparison is currently problematic
         sinθ = @fastmath sqrt(1 - cosθ * cosθ)
-        ηy = @fastmath ηs[2] * sinθ * cos(φ)
-        ηz = @fastmath ηs[3] * sinθ * sin(φ)
+        η2 = @fastmath ηs[2] * sinθ * cos(φ)
+        η3 = @fastmath ηs[3] * sinθ * sin(φ)
     else
-        ηy = zero(T)
-        ηz = zero(T)
+        η2 = zero(T)
+        η3 = zero(T)
     end
+    transx, transy, transz = trans
+    ηx = muladd(η1, transx[1], muladd(η2, transx[2], η3 * transx[3]))
+    ηy = muladd(η1, transy[1], muladd(η2, transy[2], η3 * transy[3]))
+    ηz = muladd(η1, transz[1], muladd(η2, transz[2], η3 * transz[3]))
     ηx = abs(ηx - ηdri[1])
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
