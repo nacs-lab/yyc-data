@@ -358,18 +358,17 @@ const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
 
 function create_sequence(t)
-    builder = BuilderT(System.ThermalInit{1,Float32}(0, 0, 0), Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{1,Float32}(18, 3, 2), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    # Setup.add_pulse(builder, create_wait(t * 1e3))
     # Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
-    # Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 3, 1))
-    Setup.add_pulse(builder, create_op(t, 0, 0))
+    Setup.add_pulse(builder, create_raman(t, 0.351, 0.740, false, false, 1, -6))
+    # Setup.add_pulse(builder, create_op(t, 0, 0))
     return builder.seq
 end
 
-const params = linspace(0, 100 * 1000, 100)
+const params = linspace(0, 200, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
