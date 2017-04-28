@@ -287,7 +287,7 @@ gen_f2op_spec(p, pol) =
 #     F1 Down 1.000 + F2 counterop 1.000: Ω = 2π / 11.45us
 # The Rabi frequencies (2π times) here are for full matrix element
 
-const sz = 500, 100, 100
+const sz = 300, 30, 30
 const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3,
                                             ηs_trap(1, 1, 1), ηs_trap(1, 0, 0),
                                             zeros(Bool, 8, 8),
