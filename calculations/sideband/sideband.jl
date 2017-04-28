@@ -142,7 +142,6 @@ const η_full_trap = Trap.η.(m_Na, trap_freq, k_trap)
 ηs_trap(a, b, c) = Float32.((a, b, c)) .* η_full_trap
 
 const η_op = ηs_Na(1, 1, 1)
-const η_op_dri = ηs_Na(0, sqrt(0.5), sqrt(0.5))
 
 function gen_isσ(Δdri)
     res = zeros(Bool, 8, 8)
@@ -240,14 +239,6 @@ gen_f1op_spec(p, pol) =
 gen_f2op_spec(p, pol) =
     BeamSpec{Float32}(false, ηs_Na(0, sqrt(0.5), sqrt(0.5)), pol, δD1f2, p)
 
-function create_op(t, p1, p2, pol)
-    bs1 = gen_f1op_spec(p1, pol)
-    bs2 = gen_f2op_spec(p1, pol)
-    s1s = [System.Scatter{Float32}(r[1], η_op, abs.(bs1.η), r[2], (0, 1, 1)) for r in bs1.rates]
-    s2s = [System.Scatter{Float32}(r[1], η_op, abs.(bs2.η), r[2], (0, 1, 1)) for r in bs2.rates]
-    System.MultiOP{Float32}(t, [s1s; s2s; trapscatter])
-end
-
 ## Raman powers
 # The list of amplitudes we used for Raman transitions
 # Co-prop:
@@ -301,6 +292,14 @@ const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3,
                                             ηs_trap(1, 1, 1), ηs_trap(1, 0, 0),
                                             zeros(Bool, 8, 8),
                                             (0, 1, 1))
+
+function create_op(t, p1, p2, pol)
+    bs1 = gen_f1op_spec(p1, pol)
+    bs2 = gen_f2op_spec(p2, pol)
+    s1s = [System.Scatter{Float32}(r[1], η_op, abs.(bs1.η), r[2], (0, 1, 1)) for r in bs1.rates]
+    s2s = [System.Scatter{Float32}(r[1], η_op, abs.(bs2.η), r[2], (0, 1, 1)) for r in bs2.rates]
+    System.MultiOP{Float32}(t, [s1s; s2s; trapscatter])
+end
 
 function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec, Ω0, Δn)
     Ω = sqrt(p1 * p2) * Ω0
@@ -359,17 +358,18 @@ const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
 
 function create_sequence(t)
-    builder = BuilderT(System.ThermalInit{1,Float32}(0, 0, 0), Setup.Dummy(),
+    builder = BuilderT(System.ThermalInit{6,Float32}(0, 0, 0), Setup.Dummy(),
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
     # Setup.add_pulse(builder, create_wait(t * 1e3))
     # Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
-    Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 3, 1))
+    # Setup.add_pulse(builder, create_raman(t, 1, 1, false, false, 3, 1))
+    Setup.add_pulse(builder, create_op(t, 1, 0, (1, 0, 0)))
     return builder.seq
 end
 
-const params = linspace(270, 300, 100)
+const params = linspace(0, 100, 100)
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
