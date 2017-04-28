@@ -192,7 +192,7 @@ function gen_fscale(D2::Bool, δ0, zeeman)
         g0 = F1x2 == 2 ? -0.5 : 0.5
         offset += offset′[F′x2 ÷ 2 + 1]
         offset += (g0 * mF1x2 - g1[F′x2 ÷ 2 + 1] * mF′x2) * zeeman / 2
-        return Γ / (δ0 + offset + Γ / 2 * im)
+        return Γ / (δ0 + offset + Γ / (4π) * im)
     end
 end
 
