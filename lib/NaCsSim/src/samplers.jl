@@ -4,6 +4,7 @@ module Samplers
 
 using Base.Cartesian
 import NaCsCalc: Trap
+import NaCsCalc.Utils: sincos
 
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
@@ -151,20 +152,21 @@ function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri
             isσ::Bool, rng,
             trans::NTuple{3,NTuple{3,T}}=unit_3d_transformation(T)) where T<:AbstractFloat
     cosθ, φ = emission(T, isσ, rng)
-    η1 = ηs[1] * cosθ
+    η1 = cosθ
     if -1 < cosθ < 1
         # @fastmath on comparison is currently problematic
         sinθ = @fastmath sqrt(1 - cosθ * cosθ)
-        η2 = @fastmath ηs[2] * sinθ * cos(φ)
-        η3 = @fastmath ηs[3] * sinθ * sin(φ)
+        s, c = sincos(φ)
+        η2 = sinθ * c
+        η3 = sinθ * s
     else
         η2 = zero(T)
         η3 = zero(T)
     end
     transx, transy, transz = trans
-    ηx = muladd(η1, transx[1], muladd(η2, transy[1], η3 * transz[1]))
-    ηy = muladd(η1, transx[2], muladd(η2, transy[2], η3 * transz[2]))
-    ηz = muladd(η1, transz[3], muladd(η2, transy[3], η3 * transz[3]))
+    ηx = ηs[1] * muladd(η1, transx[1], muladd(η2, transy[1], η3 * transz[1]))
+    ηy = ηs[2] * muladd(η1, transx[2], muladd(η2, transy[2], η3 * transz[2]))
+    ηz = ηs[3] * muladd(η1, transz[3], muladd(η2, transy[3], η3 * transz[3]))
     ηx = abs(ηx - ηdri[1])
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
