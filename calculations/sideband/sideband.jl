@@ -362,8 +362,22 @@ function create_sequence(n)
                        Setup.CombinedMeasure(System.NBarMeasure(),
                                              System.GroundStateMeasure(),
                                              System.HyperFineMeasure{8}()))
-    op = create_op(40, 4, 2)
-    for i in 1:5
+    # n = typemax(Int)
+    nloop = Ref{Int}(n)
+    function take_pulse(np)
+        local n
+        n = nloop[]
+        if n >= np
+            nloop[] = n - np
+            return np
+        else
+            nloop[] = 0
+            return n
+        end
+    end
+    # Setup.add_pulse(builder, create_op(t, 0, 1.11))
+    op = create_op(40, 37.5, 1.11)
+    for i in 1:take_pulse(5)
         Setup.add_pulse(builder, create_raman(25, 1, 1, true, false, 2, -2))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(25, 1, 1, true, false, 2, -1))
@@ -373,7 +387,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(21, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:5
+    for i in 1:take_pulse(5)
         Setup.add_pulse(builder, create_raman(80, 0.351, 0.740, false, false, 1, -8))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(80, 0.351, 0.740, false, false, 1, -7))
@@ -391,7 +405,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(21, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:6
+    for i in 1:take_pulse(6)
         Setup.add_pulse(builder, create_raman(80, 0.351, 0.740, false, false, 1, -7))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(80, 0.351, 0.740, false, false, 1, -6))
@@ -409,7 +423,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(21, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:7
+    for i in 1:take_pulse(7)
         Setup.add_pulse(builder, create_raman(80, 0.351, 0.740, false, false, 1, -6))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(60, 0.351, 0.740, false, false, 1, -5))
@@ -427,7 +441,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(21, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:7
+    for i in 1:take_pulse(7)
         Setup.add_pulse(builder, create_raman(90, 0.351, 0.740, false, true, 1, -5))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(38, 1, 1, true, false, 2, -1))
@@ -445,7 +459,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(28, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:8
+    for i in 1:take_pulse(8)
         Setup.add_pulse(builder, create_raman(75, 0.351, 0.740, false, true, 1, -4))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(38, 1, 1, true, false, 2, -1))
@@ -463,7 +477,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(28, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:10
+    for i in 1:take_pulse(10)
         Setup.add_pulse(builder, create_raman(60, 0.351, 0.740, false, true, 1, -3))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(38, 1, 1, true, false, 2, -1))
@@ -481,7 +495,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(28, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:10
+    for i in 1:take_pulse(10)
         Setup.add_pulse(builder, create_raman(60, 0.351, 0.740, false, true, 1, -2))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(38, 1, 1, true, false, 2, -1))
@@ -499,7 +513,7 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(28, 1, 1, true, false, 3, -1))
         Setup.add_pulse(builder, op)
     end
-    for i in 1:n
+    for i in 1:take_pulse(40)
         Setup.add_pulse(builder, create_raman(70, 0.1, 1, false, true, 1, -1))
         Setup.add_pulse(builder, op)
         Setup.add_pulse(builder, create_raman(100, 0.1, 1, false, true, 1, -1))
@@ -526,14 +540,12 @@ function create_sequence(n)
         Setup.add_pulse(builder, create_raman(38, 1, 1, true, false, 2, -1))
         Setup.add_pulse(builder, op)
     end
-    # Setup.add_pulse(builder, create_raman(81, 0.100, 0.461, false, true, 1, -1))
-    # Setup.add_pulse(builder, create_raman(t, 0.351, 0.740, false, false, 1, -8))
-    # Setup.add_pulse(builder, create_op(t, 0, 2))
+    Setup.add_pulse(builder, System.Filter((hf, v)->sum(v .* trap_freq) <= 12000f3))
     return builder.seq
 end
 
-# const params = linspace(0, 40, 100)
-const params = 0:40
+# const params = linspace(0, 50000, 100)
+const params = 0:98
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
