@@ -162,9 +162,9 @@ function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri
         η3 = zero(T)
     end
     transx, transy, transz = trans
-    ηx = muladd(η1, transx[1], muladd(η2, transx[2], η3 * transx[3]))
-    ηy = muladd(η1, transy[1], muladd(η2, transy[2], η3 * transy[3]))
-    ηz = muladd(η1, transz[1], muladd(η2, transz[2], η3 * transz[3]))
+    ηx = muladd(η1, transx[1], muladd(η2, transy[1], η3 * transz[1]))
+    ηy = muladd(η1, transx[2], muladd(η2, transy[2], η3 * transz[2]))
+    ηz = muladd(η1, transz[3], muladd(η2, transy[3], η3 * transz[3]))
     ηx = abs(ηx - ηdri[1])
     ηy = abs(ηy - ηdri[2])
     ηz = abs(ηz - ηdri[3])
