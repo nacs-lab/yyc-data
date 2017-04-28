@@ -483,6 +483,20 @@ function (pulse::MultiOPPulse{T})(state::StateC, extern_state, rng) where {T}
     return true
 end
 
+struct Filter{F}
+    f::F
+end
+
+function (l::Filter)(state::StateC, extern_state, rng)
+    hf = state.hf
+    v = state.n
+    if !l.f(hf, v)
+        state.lost = true
+        return false
+    end
+    return true
+end
+
 binomial_unc(a, s) = Unc(binomial_estimate(a, s)...)
 
 @inline function check_abort(r, n)
