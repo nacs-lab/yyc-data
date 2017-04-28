@@ -19,10 +19,10 @@ function coupling_LS(L1x2::Integer, L2x2::Integer, J1x2::Integer, J2x2::Integer,
         return 0
     elseif abs(J1x2 - L1x2) != 1 || abs(J2x2 - L2x2) != 1
         throw(ArgumentError("Illegal J"))
-    elseif !(abs(J1x2 - Ix2) <= F1x2 <= J1x2 + Ix2 && abs(J2x2 - Ix2) <= F2x2 <= J2x2 + Ix2)
-        throw(ArgumentError("Illegal F"))
     elseif (F1x2 + J1x2 + Ix2) % 2 != 0 || (F2x2 + J2x2 + Ix2) % 2 != 0
         throw(ArgumentError("Illegal F"))
+    elseif !(abs(J1x2 - Ix2) <= F1x2 <= J1x2 + Ix2 && abs(J2x2 - Ix2) <= F2x2 <= J2x2 + Ix2)
+        return 0
     elseif !((F1x2 - F2x2) in (-2, 0, 2) && (mF1x2 - mF2x2) in (-2, 0, 2))
         return 0
     end

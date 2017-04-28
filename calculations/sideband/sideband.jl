@@ -172,11 +172,9 @@ const isσs_all = [gen_isσ(-1), gen_isσ(0), gen_isσ(1)]
 
 const δf1 = -25.0e9
 const δf2 = -25.0e9 - 1.77e9
-const rlof_f1 = (61.542e6 / (δf1 - 1.107266e9))^2
-const rlof_f2 = (61.542e6 / (δf2 - 1.107266e9))^2
-const rhif_f1 = (61.542e6 / (δf1 + 664.360e6))^2
-const rhif_f2 = (61.542e6 / (δf2 + 664.360e6))^2
 const δzeeman = 12.33e6
+const δD1f2 = -664.360e6 - (118.05e6 - 70.836e6) / 2 + 95e6
+const δD2f1 = (1.107266e9 - 664.360e6) / 2 - 15.944e6 + 380e6 * 2 + 120e6
 
 function gen_fscale(D2::Bool, δ0, zeeman)
     Γ = D2 ? 61.542e6 : 61.353e6
@@ -194,8 +192,8 @@ function gen_fscale(D2::Bool, δ0, zeeman)
         offset = F1x2 == 2 ? -1.107266e9 : 664.360e6
         g0 = F1x2 == 2 ? -0.5 : 0.5
         offset += offset′[F′x2 ÷ 2 + 1]
-        offset += (g0 - g1[F′x2 ÷ 2 + 1]) * zeeman
-        return Γ / (δ0 + offset)
+        offset += (g0 * mF1x2 - g1[F′x2 ÷ 2 + 1] * mF′x2) * zeeman / 2
+        return Γ / (δ0 + offset + Γ / 2 * im)
     end
 end
 
@@ -236,6 +234,19 @@ const bs_f1_down = BeamSpec{Float32}(true, ηs_Na(0, -sqrt(0.5), sqrt(0.5)), (0.
                                      δf1, rscale_f1_down)
 const bs_f2_counterop = BeamSpec{Float32}(true, ηs_Na(0, -sqrt(0.5), -sqrt(0.5)), (0.1, 0.0, 0.9),
                                           δf2, rscale_f2_counterop)
+
+gen_f1op_spec(p, pol) =
+    BeamSpec{Float32}(true, ηs_Na(0, sqrt(0.5), sqrt(0.5)), pol, δD2f1, p)
+gen_f2op_spec(p, pol) =
+    BeamSpec{Float32}(false, ηs_Na(0, sqrt(0.5), sqrt(0.5)), pol, δD1f2, p)
+
+function create_op(t, p1, p2, pol)
+    bs1 = gen_f1op_spec(p1, pol)
+    bs2 = gen_f2op_spec(p1, pol)
+    s1s = [System.Scatter{Float32}(r[1], η_op, abs.(bs1.η), r[2], (0, 1, 1)) for r in bs1.rates]
+    s2s = [System.Scatter{Float32}(r[1], η_op, abs.(bs2.η), r[2], (0, 1, 1)) for r in bs2.rates]
+    System.MultiOP{Float32}(t, [s1s; s2s; trapscatter])
+end
 
 ## Raman powers
 # The list of amplitudes we used for Raman transitions
