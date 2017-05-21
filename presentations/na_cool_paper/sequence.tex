@@ -48,8 +48,8 @@
       ({\x}, {sin((\x-2.8*\i) * 112.5)^4}) -- (2.8*\i + 2.8, 0);
     }
     \foreach \i in {0,...,3} {
-      \path (5.6*\i + 0.8, 1) node[above,blue,align=center] {$n$-th\\order};
-      \path (5.6*\i + 3.6, 1) node[above,blue,align=center] {$(n-1)$-th\\order};
+      \path (5.6*\i + 0.8, 1) node[above,blue,align=center] {\textbf{$n$-th}\\\textbf{order}};
+      \path (5.6*\i + 3.6, 1) node[above,blue,align=center] {\textbf{$(n-1)$-th}\\\textbf{order}};
     }
 
     %% Radial 2
@@ -78,21 +78,21 @@
       (2.8*\i+2.48, -6) rectangle (2.8*\i+2.81, -4.5);
     }
     \draw[line width=2,orange] (0,-6) -- (22.4,-6);
-
-    \fill[white,path fading=fade img right] (16.8, -7) rectangle (17.81, 4);
-    \fill[white,path fading=fade img right] (16.8, -7) rectangle (17.81, 4);
-    \fill[white,path fading=fade img right] (16.8, -7) rectangle (17.81, 4);
-
-    \fill[white,path fading=fade img left] (5.6, -7) rectangle (4.59, 4);
-    \fill[white,path fading=fade img left] (5.6, -7) rectangle (4.59, 4);
-    \fill[white,path fading=fade img left] (5.6, -7) rectangle (4.59, 4);
   \end{scope}
 
-  \path (4.95, 2.3) node[left,purple,align=center] {\textbf{Tweezer}};
+  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
+  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
+  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
+
+  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
+  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
+  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
+
+  \path (5.0, 2.3) node[left,purple,align=center] {\textbf{Tweezer}};
   \path (4.8, 0.5) node[left,blue,align=center] {\textbf{Axis 1}\\\textit{Axial}};
   \path (4.8, -1.5) node[left,red,align=center] {\textbf{Axis 2}\\\textit{Radial}};
   \path (4.8, -3.5) node[left,black,align=center] {\textbf{Axis 3}\\\textit{Radial}};
-  \path (5.1, -5.5) node[left,orange,align=center] {\textbf{Optical}\\\textbf{pumping}};
+  \path (5.15, -5.5) node[left,orange,align=center] {\textbf{Optical}\\\textbf{pumping}};
   \draw[line width=2,orange,->] (5.6,-6) -- (17.8,-6) node[right, below] {\scalebox{2}{$t$}};
 
   %% Cycle mark
