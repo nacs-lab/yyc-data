@@ -71,7 +71,7 @@
 
 \begin{document}
 \tikzstyle{every picture}+=[remember picture]
-\title{Raman sideband cooling of single Na atoms to 3D motional ground state}
+\title{Raman sideband cooling of single Na atoms to 3D vibrational ground state}
 \author{....}
 \date{\today}
 \affiliation{Harvard Department of Physics}
@@ -97,8 +97,8 @@ Why do we need to cool (for STIRAP/transfer to molecular state)\\
 * Small wavefunction span\\
 
 \begin{figure*}
-  \includegraphics[height=7cm]{imgs/Na_RSC_schematic.pdf}
-  \includegraphics[height=7cm]{sequence.pdf}
+  \includegraphics[height=6.5cm]{imgs/Na_RSC_schematic.pdf}
+  \includegraphics[height=6.5cm]{sequence.pdf}
   \caption{(A) Energy diagram. D1 OP
     (B) Beam diretions and polarizations
     (C) Sequence description
@@ -107,43 +107,96 @@ Why do we need to cool (for STIRAP/transfer to molecular state)\\
 
 We achieve the high ground state preparation fidelity needed for molecule formation
 using Raman sideband cooling. The process consists of multiple cycles of laser pulses
-to manipulate the internal and vibrational state of the atom.
+to manipulate the internal and vibrational states of the atoms.
 Figure \ref{f-setup}A shows the schematic of the energy levels and the cooling sequence
 in our setup.
 Each cooling cycle starts with the Sodium atom in the $|F=2, m_F=-2\rangle$
-ground electronic state and a certain vibration level $n$.
-In the first step, a Raman pulse drives a transition on the motional sideband to lower
-the vibrational state to $n-\Delta n$ while also changing the internal state
-to $|F=1, m_F=-1\rangle$.
+ground electronic state and a certain vibration state $n$.
+In the first step, a Raman pulse drives a transition to the vibrational state $n-\Delta n$
+to reduce the vibrational energy while also changing the internal state to $|F=1, m_F=-1\rangle$.
 In the second step, which finishes the cooling cycle,
 an optical pumping pulse bring the atom back to the $|F=2, m_F=-2\rangle$ state to take away
-the entropy.
-The geometry of the relavant beams and their polarizations is showed in figure \ref{f-setup}B.
+the entropy. The second step could also change the vibrational state of the atoms which
+could cause heating. The possiblity for this to happen for an atom in the vibrational level $n$
+is approximately proportional to the effective Lamb-Dicke parameter
+$\eta^{OP}_{eff}=\sqrt{2n+1}\eta^{OP}$ where $\eta^{OP}=???$ is the Lamb-Dicke parameter for
+optical pumping.
+The geometry of the relavant beams (???and their polarizations) is showed in figure \ref{f-setup}B.
 The optical tweezer has one weakly confined axial direction (axis $1$) and
 two more strongly confined radial directions (axis $2$ and $3$).
 Multiple pairs of beams are used to drive the Raman transition during cooling in order to
 isolate and maximize the coupling to different trap axis.
 
-The optical pumping step may also change the vibrational level of the atom which
-will cause heating. The possiblity for this to happen for an atom in the vibrational level $n$
-is proportional to the effective Lamb-Dicke parameter $\eta^{eff}=\sqrt{n}\eta$ where $\eta=???$ is the Lamb-Dicke parameter.\\
+Although Raman sideband cooling to vibrational ground state has already been successfully
+implemented on neutral atoms in other experiments using heavier species like Rubidium [????]
+and Cesium [????], such experiments generally use good polarization gradient cooling
+and a tight confinement to achieve a small Lamb-Dicke parameter and effective Lamb-Dicke parameter.
+However, this regime is harder to achieve with Sodium atoms, creating additional challenges for
+us to realize ground state cooling. On the other hand, since these conditions can also be difficult
+to meet for other interesting systemd like directly laser cooled molecules, the techniques we
+use to overcome these challenges could be useful for a wider variety of systems.
 
-Therefore, in order to perform Raman sideband cooling efficiently and minimize the heating during the optical pumping, we need to have a low initial temperature and a small Lamb-Dicke parameter. Comparing to previous realizations of Raman sideband cooling on heavier neutral alkali atoms like Rubidium[?] and Cesium[?], a few properties of Sodium makes this harder to achieve. Due to the unresolved(?) hyperfine structure in the $3^2P_{3/2}$ manifold, the sub-doppler cooling in Sodium is less efficient and we starts the Raman sideband cooling with a initial temperature of $40\mu K$, compare to $??\mu K$ for Cesium. Since the Lamb-Dicke parameter $\eta$ is inversely proportional to $\sqrt{m}$, it is also larger due for Sodium. With $45mW$ of power (??limited by trap switching??) at the focus of the trap, we measured a trapping frequency of $\{\omega_1,\omega_2,\omega_3\}/2\pi = \{67, 420, 580\} kHz$ which corresponds to an optical pumping Lamb-Dicke parameters of $\{\eta_{OP1},\eta_{OP2},\eta_{OP3}\} = \{???, ???, ???\}$. As a result, there is a very high probability of heating during the optical pumping step in the initial part of the cooling sequence.
-This can be seen in figure [?], showing the probability distribution
-of $n$ after optical pumping when the atom starts with different initial state. The probability
-of staying in the same state drops very quickly as $n$ increases.\\
+\begin{figure}
+  \includegraphics[width=9cm]{../../calculations/sideband_strength/imgs/coupling_0.46_0-6.png}
+  \includegraphics[width=7cm]{imgs/heating_op.png}
+  \caption{(A) Matrix elements as a function of $n$ and $\Delta n$ (showing complex dependency and zeros) (B) State changing probability. Large and increases as $n$ gets larger
+    \label{f-ld}}
+\end{figure}
 
-In additional to the high $\eta_{OP}$ for optical pumping, the Lamb-Dicke parameter for the Raman
-transition $\eta_{Raman}$ is also very high on all three axis. For our geometry, we have $\{\eta_{Raman1},\eta_{Raman2},\eta_{Raman3}\} = \{???, ???, ???\}$.
-The high $\eta_{Raman}$ means the sideband strength will not simple be proportional to $\sqrt{n}$ as it would be in the Lamb-Dicke regime. Instead, the sideband strength as a function of vibrational level $n$ in the axial direction is shown in figure [?].
-Since the usual sideband thermometry, which measures $n/(n + 1)$ based on the ratio between heating and cooling sidebands, relies on the $\sqrt{n}$ scaling of the coupling strength, it breaks down
-in our setup, making it harder to determing the temperature of the atom accurately. The strength
-of the $-1$ order sideband also shows multiple points where the coupling strengh is very closed to
-$0$, which means we cannot use this sideband to efficiently cool atom that is in those states.\\
+As mentioned previously, in order to perform Raman sideband cooling efficiently and
+minimize the heating during the optical pumping, we need to have a low initial temperature and
+a small Lamb-Dicke parameter. However, since the Lamb-Dicke parameter $\eta$ is inversely
+proportional to $\sqrt{m}$ (???) where $m$ is the mass of the atom, it is larger for Sodium
+given the same trap depth (???). With $45mW$ of power at the focus of the trap,
+we measured a trapping frequency of $\{\omega_1,\omega_2,\omega_3\}/2\pi = \{67, 420, 580\}\ \text{kHz}$
+which corresponds to optical pumping Lamb-Dicke parameters of
+$\{\eta^{OP}_1,\eta^{OP}_2,\eta^{OP}_3\} = \{???, ???, ???\}$.
+Moreover, due to the unresolved(?) hyperfine structure in the $3^2P_{3/2}$ manifold,
+the sub-doppler cooling in Sodium is also less efficient and we start the
+Raman sideband cooling with a initial temperature of $40\mu K$. Combined with the high Lamb-Dicke
+parameters, this gives us a initial effective optical pumping Lamb-Dicke parameters of
+$\{\eta^{OP}_{1eff},\eta^{OP}_{2eff},\eta^{OP}_{3eff}\} = \{???, ???, ???\}$
+As a result, there is a very high probability of heating during the optical pumping step
+(figure \ref{f-ld}B) causing a $30\%$ average heating probability during optical pumping
+in the weakly confined axial direction. Fortunately, the high Lamb-Dicke parameters also
+provide us tools to overcome this issue. From our geometry, the Lamb-Dicke parameters for
+Raman transitions are $\{\eta^R_{1},\eta^R_{2},\eta^R_{3}\} = \{???, ???, ???\}$. As shown in
+figure \ref{f-ld}A, the high Raman Lamb-Dicke parameters causes a strong coupling to higher orders
+of cooling sidebands, especially for high vibrational states.
+This enables us to cool atoms in high vibrational states by driving on high order Raman sidebands,
+removing more vibrational energy in a single cooling pulse and offsetting the effect of
+strong heating. Since the heating probability is higher for high vibrational states,
+cooling on these high order sidebands can greately suppress the high heating during
+optical pumping during the initial cooling. Since the coupling strength of different orders
+do not reach their minimums at the same time, using multiple orders of vibrational sidebands
+for cooling also avoids accumulation of population near the coupling minimum of a particular
+order, which improves the overall efficiency of the cooling process.
 
-Finally, the large number of populated vibrational level also means that the atom explores a larger percentage of the trap and is therefore more sensitive to trap anharmonicity.
-This sets a lower limit on the minimum Raman Rabi frequency we can use in order to drive all
-vibrational states efficiently.\\
+In additional to improving the cooling efficiency, the large Raman Lamb-Dicke parameters $\eta^R$
+also creates difficulties for measuring the temperature. Traditional sideband thermometry uses
+the ratio of the cooling and heating sidebands to measure $\bar n / (\bar n + 1)$, which relies
+on the coupling strength to be proportional to $\sqrt{n}$. However, since we are not in the
+Lamb-Dicke regime, the coupling strength diviates from this simple scaling rule quickly as already
+shown in figure \ref{f-ld}A, causing the normal sideband thermometry to break down.
+In order to solve this problem, when the atom temperature is still high,
+we measure the heights of multiple sidebands to make sure no population is hidden at the
+minimum of one sideband order. And when the atom is cooled down, we estimate the temperature
+and ground state population under the assumption that only a few states are populated.
+This result is then varified using independent measure of Rabi flopping on the carrier and heating
+sidebands since they provide more information about the distribution of coupling strength.
+
+Another issue caused by the high initial temperature is trap anharmonicity.
+Although the potential near the center of a focused Gaussian beam can be approximated
+by a harmonic trap, when a large number of levels are populated due to high initial temperature
+the anharmonicity of the trap can lead to broadening of the sideband and the decrease of
+the sideband signal. In our setup, this effect limits the Rabi frequency of the Raman pulse
+on the radial sidebands to be no lower than tens of kilo-Hertz in order to drive atoms in
+different vibrational states equally.
+
+Finally, another important feature of our setup is the strong AC starck shift in the excited state.
+The deep trap that is needed to trap and image single Sodium atom creates a light shift on the
+
+the deep trap needed to ... also creates a large differential ..., which makes it impossible to load .... The same effect also happens on OP causing not only ... but also .... due to the breakdown of excited state HF structure.... We use switching....
 
 % * Loose confinement
 % ** More heating
@@ -153,24 +206,6 @@ vibrational states efficiently.\\
 % * High occupation
 % ** Need more cooling
 % ** Trap anharmonicity
-
-\begin{figure}
-  \includegraphics[width=9cm]{../../calculations/sideband_strength/imgs/coupling_0.46_0-6.png}
-  \includegraphics[width=9cm]{../../calculations/sideband_strength/imgs/coupling_0.61_op-pi.png}
-  \caption{(A) Matrix elements as a function of $n$ and $\Delta n$ (showing complex dependency and zeros) (B) State changing probability. Large and increases as $n$ gets larger
-    \label{f-ld}}
-\end{figure}
-
-Fortunately, the features that make cooling Sodium challenging also provide us unique tools to
-overcome these difficulties. As shown in figure [???], the high $\eta_{Raman}$ also causes the
-coupling to higher order sideband during the Raman transition to be stronger,
-especially for high vibrational states. This enables us to drive on high order Raman sidebands
-to remove more vibrational energy in a single cooling pulse.
-Since the heating from optical pumping is also worse for high vibrational states,
-cooling on the high order sidebands can greately suppress the high heating during optical pumping.
-The sideband strength for different orders are also oscillating out of phase, so we can generally
-use a different sideband order to address vibrational states that cannot be efficiently addressed
-by one sideband order.\\
 
 % * Loose confinement
 % ** Use higher orders to cool
