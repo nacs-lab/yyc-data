@@ -7,22 +7,8 @@
 \usepackage{color}
 \usepackage{graphics}
 \usepackage[pdftex]{graphicx}
-\usepackage{grffile}
-\usepackage{longtable}
-\usepackage{epsf}
-\usepackage{bm}
-\usepackage{tikz}
-\usepackage{asymptote}
-\usepackage{thumbpdf}
-\usepackage{bbm}
-\usepackage{amscd}
-\usepackage{units}
-\usepackage{textcomp}
 \usepackage[utf8x]{inputenc}
-\usepackage{feyn}
-\usepackage{feynmp}
 \usepackage[colorlinks=true]{hyperref}
-\newcommand{\drelectron}[1]{\node at #1 [circle, draw, inner sep=0pt, minimum size=1pt] {\_}}
 
 \newcommand{\ud}{\mathrm{d}}
 \newcommand{\ue}{\mathrm{e}}
@@ -34,18 +20,6 @@
 \newcommand{\dlim}{\displaystyle\lim}
 \newcommand{\dint}{\displaystyle\int}
 \newcommand{\fsno}[1]{{\!\not\!{#1}}}
-\newcommand{\eqar}[1]
-{
-  \begin{align*}
-    #1
-  \end{align*}
-}
-\newcommand{\eqarn}[1]
-{
-  \begin{align}
-    #1
-  \end{align}
-}
 \newcommand{\texp}[2]{\ensuremath{{#1}\times10^{#2}}}
 \newcommand{\dexp}[2]{\ensuremath{{#1}\cdot10^{#2}}}
 \newcommand{\eval}[2]{{\left.{#1}\right|_{#2}}}
@@ -70,7 +44,6 @@
 \newcommand{\sddiff}[3][{}]{{\frac{\ud^{#1}}{\ud {#3}{}^{#1}} {#2}}}
 
 \begin{document}
-\tikzstyle{every picture}+=[remember picture]
 \title{Raman sideband cooling of single Na atoms to 3D vibrational ground state}
 \author{....}
 \date{\today}
@@ -90,6 +63,10 @@
 \end{abstract}
 
 \maketitle
+
+% Here's why single atom is great.
+
+% Here's how you do it, sodium is hard.
 
 Why do we need to cool (for STIRAP/transfer to molecular state)\\
 
@@ -137,8 +114,8 @@ to meet for other interesting systems like directly laser cooled molecules, the 
 use to overcome these challenges could be useful for a wider variety of systems.
 
 \begin{figure}
-  \includegraphics[width=9cm]{../../calculations/sideband_strength/imgs/coupling_0.46_0-6.png}
-  \includegraphics[width=7cm]{imgs/heating_op.png}
+  \includegraphics[width=4cm]{imgs/coupling_ax.png}
+  \includegraphics[width=4cm]{imgs/heating_op.png}
   \caption{(A) Matrix elements as a function of $n$ and $\Delta n$ (showing complex dependency and zeros) (B) State changing probability. Large and increases as $n$ gets larger
     \label{f-ld}}
 \end{figure}
@@ -229,106 +206,7 @@ For the more tightly confined radial directions, we starts the cooling with $\{\
 \end{figure*}
 
 As mentioned previously, the axial direction is much less confined and therefore has a much higher
-effective Lamb-Dicke parameter of $\sqrt{n}\eta_{Raman1}\approx2.4$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the 8th order suggesting that we have many vibrational states populated in this direction.\\
-
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
-\ \\
+effective Lamb-Dicke parameter of $\sqrt{n}\eta_{Raman1}\approx2.4$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the 8th order suggesting that we have many vibrational states populated in this direction.
 
 % Missing:
 % ?? Switching helps OP fidelity
