@@ -7,8 +7,7 @@ import NaCsCalc.Utils: interactive, sincos
 using Cubature
 using PyPlot
 
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                            "font.weight" => "bold"))
+PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20))
 PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
