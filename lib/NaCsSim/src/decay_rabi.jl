@@ -5,7 +5,7 @@ module DecayRabi
 # Compute Rabi flopping with the present of decay terms
 # The Hamiltonian is assumed to be time independent and the Rabi drive is on-resonance
 
-using NaCsCalc.Utils: thread_rng, sincos
+using NaCsCalc.Utils: thread_rng
 
 struct Params{T}
     Γ₁::T
@@ -70,23 +70,23 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
     if !(thi < t)
         thi = t
         Ω′t = params.Ω′ * t
-        sinΩ′t, cosΩ′t = sincos(Ω′t)
-        @fastmath expΓt = exp(-params.Γ * t)
+        sinΩ′t, cosΩ′t = @fastmath sincos(Ω′t)
+        expΓt = @fastmath exp(-params.Γ * t)
         ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
         if ψ² >= r
             # No decay happened, return the wave function at tmax
             Ω′t_2 = Ω′t / 2
-            sinΩ′t_2, cosΩ′t_2 = sincos(Ω′t_2)
+            sinΩ′t_2, cosΩ′t_2 = @fastmath sincos(Ω′t_2)
             ψ1 = muladd(params.Ω′, cosΩ′t_2, -params.Δ * sinΩ′t_2)
             ψ2 = params.Ω * sinΩ′t_2
-            @fastmath factor = sqrt(expΓt / ψ²)
+            factor = @fastmath sqrt(expΓt / ψ²)
             return t, 0, (ψ1 * factor, ψ2 * factor)
         elseif r - ψ² <= yδ
             @goto ret
         end
     end
     exp_hi = r / params.Ω / (params.Ω - absΔ)
-    @fastmath tlo::T = -log(exp_hi) / params.Γ
+    tlo::T = -@fastmath(log(exp_hi)) / params.Γ
     if !(tlo > 0)
         tlo = 0
     end
@@ -105,8 +105,8 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
                 δt = thi - tlo
                 t = t2
                 Ω′t = params.Ω′ * t
-                sinΩ′t, cosΩ′t = sincos(Ω′t)
-                @fastmath expΓt = exp(-params.Γ * t)
+                sinΩ′t, cosΩ′t = @fastmath sincos(Ω′t)
+                expΓt = @fastmath exp(-params.Γ * t)
                 ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
                 δ2 = ψ² - r
                 # We've already computed this point, even if it's not enough this time,
@@ -130,8 +130,8 @@ function propagate_step_underdamp(params::Params{T}, tmax, rd) where T
         first_loop = false
         t = (thi + tlo) / 2
         Ω′t = params.Ω′ * t
-        sinΩ′t, cosΩ′t = sincos(Ω′t)
-        @fastmath expΓt = exp(-params.Γ * t)
+        sinΩ′t, cosΩ′t = @fastmath sincos(Ω′t)
+        expΓt = @fastmath exp(-params.Γ * t)
         ψ² = -expΓt * muladd(params.ΔΩ′, sinΩ′t, muladd(params.Δ², cosΩ′t, -params.Ω²))
         δ2 = ψ² - r
         if δ2 < 0
@@ -153,7 +153,7 @@ end
 
 function propagate_step_nodamp(params::Params{T}, tmax, rd) where T
     t::T = tmax
-    s, c = sincos(params.Ω * t / 2)
+    s, c = @fastmath sincos(params.Ω * t / 2)
     return t, 0, (c, s)
 end
 
@@ -182,18 +182,18 @@ function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
     if !(thi < t)
         thi = t
         Δ′t = params.Ω′ * t
-        @fastmath expΔ′t = exp(Δ′t)
+        expΔ′t = @fastmath exp(Δ′t)
         exp_Δ′t = 1 / expΔ′t
-        @fastmath expΓt = exp(-params.Γ * t)
+        expΓt = @fastmath exp(-params.Γ * t)
         ψ² = expΓt * muladd(params.Δ, muladd(ΔmΔ′, expΔ′t, ΔpΔ′ * exp_Δ′t), -2 * params.Ω²)
         if ψ² > r
             # No decay happened, return the wave function at tmax
             Δ′t_2 = Δ′t / 2
-            @fastmath expΔ′t_2 = exp(Δ′t_2)
+            expΔ′t_2 = @fastmath exp(Δ′t_2)
             exp_Δ′t_2 = 1 / expΔ′t_2
             ψ1 = muladd(ΔpΔ′, exp_Δ′t_2, -ΔmΔ′ * expΔ′t_2)
             ψ2 = params.Ω * (expΔ′t_2 - exp_Δ′t_2)
-            @fastmath factor = sqrt(expΓt / ψ² / 2)
+            factor = @fastmath sqrt(expΓt / ψ² / 2)
             return t, 0, (ψ1 * factor, ψ2 * factor)
         elseif r - ψ² <= yδ
             @goto ret
@@ -202,9 +202,9 @@ function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
     tlo::T = -@fastmath(log(r0)) / (params.Γ + absΔ)
     t = tlo
     Δ′t = params.Ω′ * t
-    @fastmath expΔ′t = exp(Δ′t)
+    expΔ′t = @fastmath exp(Δ′t)
     exp_Δ′t = 1 / expΔ′t
-    @fastmath expΓt = exp(-params.Γ * t)
+    expΓt = @fastmath exp(-params.Γ * t)
     ψ² = expΓt * muladd(params.Δ, muladd(ΔmΔ′, expΔ′t, ΔpΔ′ * exp_Δ′t), -2 * params.Ω²)
     # Find the root using a combination of newton's method and bisecting.
     # The bisection is to avoid newton's method overshotting.
@@ -219,9 +219,9 @@ function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
             δt = thi - tlo
             t = t2
             Δ′t = params.Ω′ * t
-            @fastmath expΔ′t = exp(Δ′t)
+            expΔ′t = @fastmath exp(Δ′t)
             exp_Δ′t = 1 / expΔ′t
-            @fastmath expΓt = exp(-params.Γ * t)
+            expΓt = @fastmath exp(-params.Γ * t)
             ψ² = expΓt * muladd(params.Δ, muladd(ΔmΔ′, expΔ′t, ΔpΔ′ * exp_Δ′t), -2 * params.Ω²)
             δ2 = ψ² - r
             # We've already computed this point, even if it's not enough this time,
@@ -243,9 +243,9 @@ function propagate_step_overdamp(params::Params{T}, tmax, rd) where T
         end
         t = (thi + tlo) / 2
         Δ′t = params.Ω′ * t
-        @fastmath expΔ′t = exp(Δ′t)
+        expΔ′t = @fastmath exp(Δ′t)
         exp_Δ′t = 1 / expΔ′t
-        @fastmath expΓt = exp(-params.Γ * t)
+        expΓt = @fastmath exp(-params.Γ * t)
         ψ² = expΓt * muladd(params.Δ, muladd(ΔmΔ′, expΔ′t, ΔpΔ′ * exp_Δ′t), -2 * params.Ω²)
         δ2 = ψ² - r
         if δ2 < 0

@@ -4,7 +4,6 @@ module Samplers
 
 using Base.Cartesian
 import NaCsCalc: Trap
-import NaCsCalc.Utils: sincos
 
 @generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
 
@@ -156,7 +155,7 @@ function op(n_init::NTuple{3,Int}, n_max::NTuple{3,Int}, ηs::NTuple{3,T}, ηdri
     if -1 < cosθ < 1
         # @fastmath on comparison is currently problematic
         sinθ = @fastmath sqrt(1 - cosθ * cosθ)
-        s, c = sincos(φ)
+        s, c = @fastmath sincos(φ)
         η2 = sinθ * c
         η3 = sinθ * s
     else

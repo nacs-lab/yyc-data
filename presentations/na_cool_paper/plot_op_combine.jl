@@ -3,7 +3,7 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc: Trap
-import NaCsCalc.Utils: interactive, sincos
+import NaCsCalc.Utils: interactive
 using Cubature
 using PyPlot
 
@@ -16,8 +16,8 @@ const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9)
 const η_ra = Trap.η(m_Na, 580e3, 2π / 589e-9)
 
 function op_coupling_kernel(n1, n2, η::T, θ::T, ϕ::T, isσ) where T
-    sinθ, cosθ = sincos(θ)
-    @fastmath η_eff = η * cosθ * sin(ϕ)
+    sinθ, cosθ = @fastmath sincos(θ)
+    η_eff = @fastmath η * cosθ * sin(ϕ)
     factor = if isσ
         T(3 / (2π)) * sinθ^3
     else
