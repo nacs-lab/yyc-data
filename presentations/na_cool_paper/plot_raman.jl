@@ -21,10 +21,6 @@ function plot_sidebands(ns, Δns, η)
     for Δn in Δns
         plot(ns, abs.(Trap.sideband.(ns, ns .+ Δn, η)), ".-", label="\$\\Delta n=$(Δn)\$")
     end
-    xlim([0, xlim()[2]])
-    ylim([0, 1])
-    legend()
-    grid()
 end
 
 function maybe_save(name)
@@ -42,9 +38,17 @@ function maybe_show()
 end
 
 figure()
-plot_sidebands(0:50, -1:-1:-4, η_ax)
+plot_sidebands(0:70, -1:-1:-5, η_ax)
+xlim([0, 70])
+ylim([0, 0.79])
+grid()
 xlabel("Vibrational state")
 ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
+text(0, 0.65, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!1\$", color="C0")
+text(9, 0.55, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!2\$", color="C1")
+text(21, 0.47, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!3\$", color="C2")
+text(36, 0.44, "\$\\left|\\Delta n\\right|\\!\\!=\\!4\$", color="C3")
+text(53, 0.42, "\$\\left|\\Delta n\\right|\\!\\!=\\!5\$", color="C4")
 maybe_save(joinpath(@__DIR__, "imgs/coupling_ax"))
 
 maybe_show()
