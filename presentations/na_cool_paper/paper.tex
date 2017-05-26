@@ -85,8 +85,8 @@ Why do we need to cool (for STIRAP/transfer to molecular state)\\
 * Small wavefunction span\\
 
 \begin{figure*}
-  \includegraphics[height=6.5cm]{imgs/Na_RSC_schematic.pdf}
-  \includegraphics[height=6.5cm]{sequence.pdf}
+  \includegraphics[height=6cm]{imgs/Na_RSC_schematic.pdf}
+  \includegraphics[height=5cm]{sequence.pdf}
   \caption{(A) Energy diagram. D1 OP
     (B) Beam directions and polarizations
     (C) Sequence description
@@ -181,16 +181,17 @@ the sideband signal. In our setup, this effect limits the Rabi frequency of the 
 on the radial sidebands to be no lower than tens of kilo-Hertz in order to drive atoms in
 different vibrational states equally.
 
-<WIP>
-
 Finally, the deep trap that is needed to trap and image single Sodium atom also creates
-a very large AC Stark shift in the excited state.
-
-% impossible to load without switching
-% The same effect also happens on OP causing
-% *   cannot address atom in different position at the same time
-% *   breakdown of excited state HF structure
-% use switching
+a very large AC Stark shift in the excited state. For the trap depth we are using, the
+light shift in the center of the trap is as large as $300MHz$.
+In additional to creating a large and position dependent detuning for the optical pumping light,
+it also mixes the excited state state hyperfine levels,
+affecting the branching ratio and increasing the number of photons needed during optical pumping.
+Similar to our loading and imaging process [???], we solve this issue by switching the
+trapping light at $3MHz$ during the whole cooling sequence.
+Due to the large light shift, the optical pumping is effectively off when the trap light is on.
+Since the atom can only be addressed by the optical pumping light when the trap light is off,
+the effect of light shift on optical pumping fidelity is suppressed.
 
 Taking all the features of our system into account, we use a Monte-Carlo simulation to verify
 the validity of our method and explore the large parameter space for the cooling sequence.
@@ -217,7 +218,7 @@ For the more tightly confined radial directions, we starts the cooling with $\{\
 \end{figure*}
 
 As mentioned previously, the axial direction is much less confined and therefore has a much higher
-effective Lamb-Dicke parameter of $\sqrt{n}\eta_{Raman1}\approx2.4$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the 8th order suggesting that we have many vibrational states populated in this direction.
+effective Lamb-Dicke parameter of $\sqrt{n}\eta_{Raman1}\approx2.4$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the eighth order suggesting that we have many vibrational states populated in this direction.
 
 % Missing:
 % ?? Switching helps OP fidelity

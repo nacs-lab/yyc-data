@@ -26,17 +26,17 @@
   % 10.9 - 11.2 OP (0.3)
 
   \begin{scope}
-    \clip (4.6, -6.5) rectangle (17.8, 3.5);
+    \clip (4.6, -2.1) rectangle (17.8, 3.5);
     %% Pulse mark
     \foreach \i in {0,...,7} {
-      \draw[gray!20, line width=2] (2.8*\i, 1.8) -- (2.8*\i, -6.0);
-      \draw[gray!20, line width=2] (2.8*\i+1.9, 1.8) -- (2.8*\i+1.9, -6.0);
+      \draw[gray!20, line width=2] (2.8*\i, 1.5) -- (2.8*\i, -2.0);
+      \draw[gray!20, line width=2] (2.8*\i+1.9, 1.5) -- (2.8*\i+1.9, -2.0);
     }
 
     %% Tweezer
-    \draw[line width=1.5,purple] (0, 2) -- (22.4, 2);
+    \draw[line width=1.5,purple] (0, 2.4) -- (22.4, 2.4);
     \foreach \i in {0,...,99} {
-      \filldraw[line width=1,purple] (\i*22.4/100, 2) rectangle (\i*22.4/100+0.06, 3.5);
+      \filldraw[line width=1,purple] (\i*22.4/100, 2.4) rectangle (\i*22.4/100+0.06, 3.5);
     }
 
     %% Axial
@@ -47,6 +47,7 @@
       \draw[line width=1,blue] plot[domain={2.8*\i}:{2.8*\i+1.6},variable=\x]
       ({\x}, {sin((\x-2.8*\i) * 112.5)^4}) -- (2.8*\i + 2.8, 0);
     }
+    \path[blue] (2.8*2+0.8, 0) node[below,align=center] {\textbf{Axis 1}\\\textit{Axial}};
     \foreach \i in {0,...,3} {
       \path (5.6*\i + 0.8, 1) node[above,blue,align=center] {\textbf{$n$-th}\\\textbf{order}};
       \path (5.6*\i + 3.6, 1) node[above,blue,align=center] {\textbf{$(n-1)$-th}\\\textbf{order}};
@@ -55,49 +56,49 @@
     %% Radial 2
     \foreach \i in {0,...,3} {
       \fill[red!30]
-      plot[draw,samples=200,domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4 - 2})
+      plot[draw,samples=200,domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4})
       -- cycle;
-      \draw[line width=1,red] (5.6*\i, -2) -- plot[domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x]
-      ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4 - 2}) -- (5.6*\i+5.6, -2);
+      \draw[line width=1,red] (5.6*\i, 0) -- plot[domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x]
+      ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4}) -- (5.6*\i+5.6, 0);
     }
+    \path[red] (5.6*1+2.2, 1.5) node[above,align=center] {\textbf{Axis 2}\\\textit{Radial}};
 
     %% Radial 3
     \foreach \i in {0,...,3} {
       \fill[black!30]
-      plot[draw,samples=200,domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4 - 4})
+      plot[draw,samples=200,domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4})
       -- cycle;
-      \draw[line width=1,black] (5.6*\i, -4) -- plot[domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x]
-      ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4 - 4}) -- (5.6*\i+5.6, -4);
+      \draw[line width=1,black] (5.6*\i, 0) -- plot[domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x]
+      ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4}) -- (5.6*\i+5.6, 0);
     }
+    \path[black] (5.6*1+5.0, 1.5) node[above,align=center] {\textbf{Axis 3}\\\textit{Radial}};
 
     %% OP
     \foreach \i in {0,...,7} {
       \filldraw[fill=orange!30,draw=orange,line width=1.2]
-      (2.8*\i+1.58, -6) rectangle (2.8*\i+1.91, -4.5);
+      (2.8*\i+1.58, -2) rectangle (2.8*\i+1.91, -0.7);
       \filldraw[fill=orange!30,draw=orange,line width=1.2]
-      (2.8*\i+2.48, -6) rectangle (2.8*\i+2.81, -4.5);
+      (2.8*\i+2.48, -2) rectangle (2.8*\i+2.81, -0.7);
     }
-    \draw[line width=2,orange] (0,-6) -- (22.4,-6);
+    \draw[line width=2,orange] (0,-2) -- (22.4,-2);
   \end{scope}
 
-  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
-  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
-  \fill[white,path fading=fade img right] (16.8, -6.6) rectangle (17.81, 3.51);
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 3.51);
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 3.51);
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 3.51);
 
-  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
-  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
-  \fill[white,path fading=fade img left] (5.6, -6.6) rectangle (4.59, 3.51);
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 3.51);
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 3.51);
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 3.51);
 
   \path (5.0, 2.3) node[left,purple,align=center] {\textbf{Tweezer}};
-  \path (4.8, 0.5) node[left,blue,align=center] {\textbf{Axis 1}\\\textit{Axial}};
-  \path (4.8, -1.5) node[left,red,align=center] {\textbf{Axis 2}\\\textit{Radial}};
-  \path (4.8, -3.5) node[left,black,align=center] {\textbf{Axis 3}\\\textit{Radial}};
-  \path (5.15, -5.5) node[left,orange,align=center] {\textbf{Optical}\\\textbf{pumping}};
-  \draw[line width=2,orange,->] (5.6,-6) -- (17.8,-6) node[right, below] {\scalebox{2}{$t$}};
+  \path (4.8, 0.5) node[left,align=center] {\textbf{Raman}};
+  \path (5.15, -1.5) node[left,orange,align=center] {\textbf{Optical}\\\textbf{pumping}};
+  \draw[line width=2,orange,->] (5.6,-2) -- (17.8,-2) node[right, below] {\scalebox{2}{$t$}};
 
   %% Cycle mark
   \draw[decoration={brace,mirror,raise=3pt, amplitude=10pt},decorate,line width=2]
-  (5.6,-6) -- node[below=15pt] {\scalebox{1.5}{One cooling cycle}} (16.8,-6);
+  (5.6,-2) -- node[below=15pt] {\scalebox{1.5}{One cooling cycle}} (16.8,-2);
 
   %% Sub figure label
   \path (3.8,2.5) node[above=8pt] {\scalebox{1.2}{(C)}};
