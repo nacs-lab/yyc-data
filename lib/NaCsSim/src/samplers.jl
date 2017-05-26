@@ -80,7 +80,7 @@ function emission(::Type{T}, isσ::Bool, rng) where T<:AbstractFloat
     # The (real) solution is
     # `cosθ = x + 1 / x` where `x = ∛(2√(v² - v) - 2v + 1)` for π light and
     # `cosθ = x - 1 / x` where `x = ∛(√(16v² - 16v + 5) + 4v - 2)` for σ± light
-    # Note that the `x` for
+    # Note that the `x` for π polarization is complex
     v = T(rand(rng)) # This is faster than `rand(T)`....
     φ = T(rand(rng)) * T(2π)
     if isσ
