@@ -13,6 +13,7 @@ PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 const m_Na = 23e-3 / 6.02e23
 const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9) / √(2)
+const η_ax_op = Trap.η(m_Na, 67e3, 2π / 589e-9)
 const η_ra1 = Trap.η(m_Na, 430e3, 2π / 589e-9)
 const η_ra2 = Trap.η(m_Na, 590e3, 2π / 589e-9)
 
@@ -104,8 +105,8 @@ function op_heating_all(cb::Function, sz1, sz2, η::T, isσ) where T
     res
 end
 
-const coupling_ax = (op_heating_all(op_heating_ax, 100, 100, Float32(η_ax), false) *
-                     op_heating_all(op_heating_ax, 100, 100, Float32(η_ax), true))
+const coupling_ax = (op_heating_all(op_heating_ax, 100, 100, Float32(η_ax_op), false) *
+                     op_heating_all(op_heating_ax, 100, 100, Float32(η_ax_op), true))
 const coupling_ra1 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra1), false) *
                       op_heating_all(op_heating_ra, 30, 30, Float32(η_ra1), true))
 const coupling_ra2 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra2), false) *
@@ -160,6 +161,7 @@ text(9, 0.55, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!2\$", color="C1")
 text(21, 0.47, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!3\$", color="C2")
 text(36, 0.44, "\$\\left|\\Delta n\\right|\\!\\!=\\!4\$", color="C3")
 text(53, 0.42, "\$\\left|\\Delta n\\right|\\!\\!=\\!5\$", color="C4")
+text(60, 0.632, "(A)")
 setp(ax1[:get_xticklabels](), visible=false)
 
 ax2 = subplot(212)
@@ -167,9 +169,10 @@ subplots_adjust(hspace=0)
 plot(0:nmax, p_heat(coupling_ax, nmax + 1), label="Axial")
 plot(0:nmax_r, p_heat(coupling_ra1, nmax_r + 1), label="Radial (axis 2)")
 plot(0:nmax_r, p_heat(coupling_ra2, nmax_r + 1), label="Radial (axis 3)")
+text(60, 0.48, "(B)")
 grid()
 legend()
-ylim([0, 0.55])
+ylim([0, 0.57])
 xlim([0, nmax])
 ylabel("Heating\nprobability")
 xlabel("Motional state")
