@@ -67,13 +67,38 @@
   large differential AC Stark shift in the excited state,
   after applying a cooling sequence for a hundred milliseconds,
   we observed a ground state preparation fidelity of $70\%$ using sideband thermometry.
-  We demonstrated that Raman sideband cooling to vibrational ground state is applicable to
+  We demonstrated that Raman sideband cooling to motional ground state is applicable to
   systems where tight confinement or low initial cooling is hard to achieve.
   For example, the result provides new opportunities to achieve much lower temperatures
   in cold molecules with direct laser cooling.
 \end{abstract}
 
 \maketitle
+
+\begin{figure*}
+  \includegraphics[height=6cm]{imgs/Na_RSC_schematic.pdf}
+  \includegraphics[height=5cm]{sequence.pdf}
+  \caption{(A) Energy diagram. D1 OP
+    (B) Beam directions and polarizations
+    (C) Sequence description
+    \label{f-setup}}
+\end{figure*}
+\begin{figure}
+  \includegraphics[width=4cm]{imgs/coupling_ax.png}
+  \includegraphics[width=4cm]{imgs/heating_op.png}
+  \caption{(A) Matrix elements as a function of $n$ and $\Delta n$ (showing complex dependency and zeros) (B) State changing probability. Large and increases as $n$ gets larger
+    \label{f-ld}}
+\end{figure}
+\begin{figure*}
+  \includegraphics[width=8cm]{imgs/spectrum_r.png}
+  \includegraphics[width=8cm]{imgs/temp/fit_20170409_r2_0_ba.png}
+  \caption{(A) (B) \label{f-radial}}
+\end{figure*}
+\begin{figure*}
+  \includegraphics[width=8cm]{imgs/spectrum_a1.png}
+  \includegraphics[width=8cm]{imgs/temp/fit_20170409_a1_0_ba.png}
+  \caption{(A) (B) \label{f-axial}}
+\end{figure*}
 
 % Here's why single atom is great.
 
@@ -84,28 +109,19 @@ Why do we need to cool (for STIRAP/transfer to molecular state)\\
 * Pure initial state\\
 * Small wavefunction span\\
 
-\begin{figure*}
-  \includegraphics[height=6cm]{imgs/Na_RSC_schematic.pdf}
-  \includegraphics[height=5cm]{sequence.pdf}
-  \caption{(A) Energy diagram. D1 OP
-    (B) Beam directions and polarizations
-    (C) Sequence description
-    \label{f-setup}}
-\end{figure*}
-
 We achieve the high ground state preparation fidelity needed for molecule formation
 using Raman sideband cooling. The process consists of multiple cycles of laser pulses
-to manipulate the internal and vibrational states of the atoms.
+to manipulate the internal and motional states of the atoms.
 Figure \ref{f-setup}A shows the schematic of the energy levels and the cooling sequence
 in our setup.
 Each cooling cycle starts with the Sodium atom in the $|F=2, m_F=-2\rangle$
 ground electronic state and a certain vibration state $n$.
-In the first step, a Raman pulse drives a transition to the vibrational state $n-\Delta n$
-to reduce the vibrational energy while also changing the internal state to $|F=1, m_F=-1\rangle$.
+In the first step, a Raman pulse drives a transition to the motional state $n-\Delta n$
+to reduce the motional energy while also changing the internal state to $|F=1, m_F=-1\rangle$.
 In the second step, which finishes the cooling cycle,
 an optical pumping pulse bring the atom back to the $|F=2, m_F=-2\rangle$ state to take away
-the entropy. The second step could also change the vibrational state of the atoms which
-could cause heating. The possibility for this to happen for an atom in the vibrational level $n$
+the entropy. The second step could also change the motional state of the atoms which
+could cause heating. The possibility for this to happen for an atom in the motional level $n$
 is approximately proportional to the effective Lamb-Dicke parameter
 $\eta^{OP}_{eff}=\sqrt{2n+1}\eta^{OP}$ where $\eta^{OP}=???$ is the Lamb-Dicke parameter for
 optical pumping.
@@ -115,7 +131,7 @@ two more strongly confined radial directions (axis $2$ and $3$).
 Multiple pairs of beams are used to drive the Raman transition during cooling in order to
 isolate and maximize the coupling to different trap axis.
 
-Although Raman sideband cooling to vibrational ground state has already been successfully
+Although Raman sideband cooling to motional ground state has already been successfully
 implemented on neutral atoms in other experiments using heavier species like Rubidium [????]
 and Cesium [????], such experiments generally use good polarization gradient cooling
 and a tight confinement to achieve a small Lamb-Dicke parameter and effective Lamb-Dicke parameter.
@@ -124,19 +140,13 @@ us to realize ground state cooling. On the other hand, since these conditions ca
 to meet for other interesting systems like directly laser cooled molecules, the techniques we
 use to overcome these challenges could be useful for a wider variety of systems.
 
-\begin{figure}
-  \includegraphics[width=4cm]{imgs/coupling_ax.png}
-  \includegraphics[width=4cm]{imgs/heating_op.png}
-  \caption{(A) Matrix elements as a function of $n$ and $\Delta n$ (showing complex dependency and zeros) (B) State changing probability. Large and increases as $n$ gets larger
-    \label{f-ld}}
-\end{figure}
-
 As mentioned previously, in order to perform Raman sideband cooling efficiently and
 minimize the heating during the optical pumping, we need to have a low initial temperature and
 a small Lamb-Dicke parameter. However, since the Lamb-Dicke parameter $\eta$ is inversely
 proportional to $\sqrt{m}$ (???) where $m$ is the mass of the atom, it is larger for Sodium
-given the same trap depth (???). With $45mW$ of power at the focus of the trap,
-we measured a trapping frequency of $\{\omega_1,\omega_2,\omega_3\}/2\pi = \{67, 420, 580\}\ \text{kHz}$
+given the same trap depth (???).
+With $45mW$ of power at the focus of the trap, we measured a trapping frequency of
+$\{\omega_1,\omega_2,\omega_3\}/2\pi = \{67, 420, 580\}\ \text{kHz}$
 which corresponds to optical pumping Lamb-Dicke parameters of
 $\{\eta^{OP}_1,\eta^{OP}_2,\eta^{OP}_3\} = \{???, ???, ???\}$.
 Moreover, due to the unresolved(?) hyperfine structure in the $3^2P_{3/2}$ manifold,
@@ -150,13 +160,13 @@ in the weakly confined axial direction. Fortunately, the high Lamb-Dicke paramet
 provide us tools to overcome this issue. From our geometry, the Lamb-Dicke parameters for
 Raman transitions are $\{\eta^R_{1},\eta^R_{2},\eta^R_{3}\} = \{???, ???, ???\}$. As shown in
 figure \ref{f-ld}A, the high Raman Lamb-Dicke parameters causes a strong coupling to higher orders
-of cooling sidebands, especially for high vibrational states.
-This enables us to cool atoms in high vibrational states by driving on high order Raman sidebands,
-removing more vibrational energy in a single cooling pulse and offsetting the effect of
-strong heating. Since the heating probability is higher for high vibrational states,
+of cooling sidebands, especially for high motional states.
+This enables us to cool atoms in high motional states by driving on high order Raman sidebands,
+removing more motional energy in a single cooling pulse and offsetting the effect of
+strong heating. Since the heating probability is higher for high motional states,
 cooling on these high order sidebands can greatly suppress the high heating during
 optical pumping during the initial cooling. Since the coupling strength of different orders
-do not reach their minimums at the same time, using multiple orders of vibrational sidebands
+do not reach their minimums at the same time, using multiple orders of motional sidebands
 for cooling also avoids accumulation of population near the coupling minimum of a particular
 order, which improves the overall efficiency of the cooling process.
 
@@ -179,7 +189,7 @@ by a harmonic trap, when a large number of levels are populated due to high init
 the anharmonicity of the trap can lead to broadening of the sideband and the decrease of
 the sideband signal. In our setup, this effect limits the Rabi frequency of the Raman pulse
 on the radial sidebands to be no lower than tens of kilo-Hertz in order to drive atoms in
-different vibrational states equally.
+different motional states equally.
 
 Finally, the deep trap that is needed to trap and image single Sodium atom also creates
 a very large AC Stark shift in the excited state. For the trap depth we are using, the
@@ -194,37 +204,41 @@ Since the atom can only be addressed by the optical pumping light when the trap 
 the effect of light shift on optical pumping fidelity is suppressed.
 
 Taking all the features of our system into account, we use a Monte-Carlo simulation to verify
-the validity of our method and explore the large parameter space for the cooling sequence.
+the validity of our method.
 In the simulation, we can observe the high heating rate due to the high Lamb-Dicke parameters
-and confirm that high order of Raman sideband can be used to suppress this effect and reduces
-the vibrational energy of the atom faster.
-We also use the simulation to find a robust cooling strategy. As shown in figure (?),
+and confirm that by using high order Raman sideband transition in the cooling sequence we can
+suppress this effect and reduces the motional energy of the atom faster.
+The simulation is also used to guide the optimization of the cooling sequence by exploring the
+large parameter space and finding a robust cooling strategy. As shown in figure (?),
 we found that instead of cooling on only one sideband order at a time, it is generally more
-efficient to alternate the cooling pulse between two neighboring orders. A cooling sequence
-like this minimizes the accumulation of atom in a state not addressed by a particular sideband order.\\
+efficient to alternate the cooling pulse between two neighboring orders (axial) or pulse lengths.
+A cooling sequence like this minimizes the accumulation of atom in a state not addressed by a
+particular Raman pulse parameter.
 
-\begin{figure*}
-  \includegraphics[width=8cm]{imgs/spectrum_r.png}
-  \includegraphics[width=8cm]{imgs/temp/fit_20170409_r2_0_ba.png}
-  \caption{(A) (B) \label{f-radial}}
-\end{figure*}
-
-For the more tightly confined radial directions, we starts the cooling with $\{\bar n_2, \bar n_3\}=????, ????$. The sideband spectra of the initial distribution is shown in figure \ref{f-radial}A where we can clearly see the first order heating, first order cooling and second order cooling sidebands. After applying about 1000 cooling pulses cooling in all three dimensions starting with cooling on the radial second order, the Raman spectrum with the same parameter is shown in figure \ref{f-radial}B, where both cooling orders are suppressed. We can estimate the ground state probability in each direction based on the height of the first order cooling and heating sideband and the absence of the second order cooling sideband to be $......$. Due to the complexity of the sideband structure, we also use the Rabi flopping on the carrier and heating sideband as a independent measurement of the ground state population and gets $......$, showing good agreement between the two methods. (????? figure \ref{f-radial}C and \ref{f-radial}D)\\
-
-\begin{figure*}
-  \includegraphics[width=8cm]{imgs/spectrum_a1.png}
-  \includegraphics[width=8cm]{imgs/temp/fit_20170409_a1_0_ba.png}
-  \caption{(A) (B) \label{f-axial}}
-\end{figure*}
+For the more tightly confined radial directions,
+we starts the cooling with $\{\bar n_2, \bar n_3\}=????, ????$.
+The radial sideband spectra of the initial distribution is shown in figure \ref{f-radial}A
+where we can clearly see the first order heating, first order cooling and
+second order cooling sidebands.
+After applying about 1000 cooling pulses cooling in all three dimensions
+starting with cooling on the radial second order,
+the Raman spectrum with the same parameter is shown in figure \ref{f-radial}B,
+where the first and second order cooling sidebands on both axis are suppressed.
+Given the absence of the second order cooling sideband,
+we can estimate the ground state probability in each direction based on the height of
+the first order cooling and heating sideband to be $????$ and $????$.
+Due to the complexity of the sideband structure,
+we measured the Rabi flopping on the carrier and heating sideband before and after cooling
+(\ref{f-radial}C and \ref{f-radial}D)
+as a independent way to obtain the population in different motional states.
+Fitting the Rabi flopping data give a ground state probability of $????$ and $????$,
+showing good agreement between the two methods.
 
 As mentioned previously, the axial direction is much less confined and therefore has a much higher
-effective Lamb-Dicke parameter of $\sqrt{n}\eta_{Raman1}\approx2.4$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the eighth order suggesting that we have many vibrational states populated in this direction.
+effective Lamb-Dicke parameter of $\eta^{OP}_{eff1}\approx3.3$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the eighth order suggesting that we have many motional states populated in this direction.
 
 % Missing:
-% ?? Switching helps OP fidelity
-% ?? off-resonant scattering
 % ?? D1 OP
-% ?? Switching improves
 
 \bibliography{paper}
 \end{document}
