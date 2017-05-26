@@ -2,8 +2,8 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
-import NaCsCalc: Trap
 import NaCsCalc.Utils: interactive
+import NaCsCalc: Trap
 using Cubature
 using PyPlot
 
@@ -12,8 +12,9 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
 const m_Na = 23e-3 / 6.02e23
-const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9)
-const η_ra = Trap.η(m_Na, 580e3, 2π / 589e-9)
+const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9) / √(2)
+const η_ra1 = Trap.η(m_Na, 430e3, 2π / 589e-9)
+const η_ra2 = Trap.η(m_Na, 590e3, 2π / 589e-9)
 
 """
     emission(v, isσ::Bool) -> (sinθ, cosθ)
@@ -53,7 +54,7 @@ end
 
 Given an uniform distribution in `[0, 1]` of `v` and an uniform distribution in `[0, π]` of φ
 this function will return the distribution of matrix element of matrix element between `n1`
-and `n2` vibrational states after one photon scattering.
+and `n2` motional states after one photon scattering.
 
 The polarization of the emission is determined by `isσ`.
 The overlap between the axis and the drive beam direction is `cosθ_dri`.
@@ -74,13 +75,13 @@ end
 
 function op_heating_ax(n1, n2, η::T, isσ) where T
     hcubature(x->op_coupling(n1, n2, η, T(x[1]), T(x[2]), isσ, T(0), (T(1), T(0))),
-              [0.0, 0.0], [1.0, π], abstol=1e-5)[1]
+              [0.0, 0.0], [1.0, π], abstol=1e-6)[1]
 end
 
 function op_heating_ra(n1, n2, η::T, isσ) where T
     hcubature(x->op_coupling(n1, n2, η, T(x[1]), T(x[2]), isσ,
                              sqrt(T(0.5)), (sqrt(T(0.5)), sqrt(T(0.5)))),
-              [0.0, 0.0], [1.0, π], abstol=1e-5)[1]
+              [0.0, 0.0], [1.0, π], abstol=1e-6)[1]
 end
 
 function op_heating_all(cb::Function, sz1, sz2, η::T, isσ) where T
@@ -103,10 +104,12 @@ function op_heating_all(cb::Function, sz1, sz2, η::T, isσ) where T
     res
 end
 
-const coupling_ra = (op_heating_all(op_heating_ra, 100, 100, Float32(η_ra), false) *
-                     op_heating_all(op_heating_ra, 100, 100, Float32(η_ra), true))
 const coupling_ax = (op_heating_all(op_heating_ax, 100, 100, Float32(η_ax), false) *
                      op_heating_all(op_heating_ax, 100, 100, Float32(η_ax), true))
+const coupling_ra1 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra1), false) *
+                      op_heating_all(op_heating_ra, 30, 30, Float32(η_ra1), true))
+const coupling_ra2 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra2), false) *
+                      op_heating_all(op_heating_ra, 30, 30, Float32(η_ra2), true))
 
 function p_heat(coupling, sz)
     T = eltype(coupling)
@@ -120,8 +123,6 @@ function p_heat(coupling, sz)
     end
     return res
 end
-
-const colors = ["k", "r", "y", "g", "c", "b", "m"]
 
 function maybe_save(name)
     if !interactive()
@@ -139,14 +140,40 @@ end
 
 const nmax = 70
 const nmax_r = 15
+
+function plot_sidebands(ns, Δns, η)
+    for Δn in Δns
+        plot(ns, abs.(Trap.sideband.(ns, ns .+ Δn, η)), ".-", label="\$\\Delta n=$(Δn)\$")
+    end
+end
+
+figure(figsize=[1.5, 1.1] * 4.8)
+
+ax1 = subplot(211)
+plot_sidebands(0:nmax, -1:-1:-5, η_ax)
+xlim([0, nmax])
+ylim([0, 0.75])
+grid()
+ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
+text(0, 0.65, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!1\$", color="C0")
+text(9, 0.55, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!2\$", color="C1")
+text(21, 0.47, "\$\\left|\\Delta n\\right|\\!\\!=\\!\\!3\$", color="C2")
+text(36, 0.44, "\$\\left|\\Delta n\\right|\\!\\!=\\!4\$", color="C3")
+text(53, 0.42, "\$\\left|\\Delta n\\right|\\!\\!=\\!5\$", color="C4")
+setp(ax1[:get_xticklabels](), visible=false)
+
+ax2 = subplot(212)
+subplots_adjust(hspace=0)
 plot(0:nmax, p_heat(coupling_ax, nmax + 1), label="Axial")
-plot(0:nmax_r, p_heat(coupling_ra, nmax_r + 1), label="Radial")
+plot(0:nmax_r, p_heat(coupling_ra1, nmax_r + 1), label="Radial (axis 2)")
+plot(0:nmax_r, p_heat(coupling_ra2, nmax_r + 1), label="Radial (axis 3)")
 grid()
 legend()
-ylim([0, 0.5])
+ylim([0, 0.55])
 xlim([0, nmax])
-ylabel("Heating probability")
-xlabel("Vibrational state")
-maybe_save(joinpath(@__DIR__, "imgs/heating_op"))
+ylabel("Heating\nprobability")
+xlabel("Motional state")
+
+maybe_save(joinpath(@__DIR__, "imgs/fig2_raman_op"))
 
 maybe_show()
