@@ -107,18 +107,32 @@
   \caption{(A) (B) \label{f-axial}}
 \end{figure*}
 
-% Here's why single atom is great.
+Single neutral atoms trapped in optical tweezers provide a promising system
+for various applications including quantum information, quantum chemistry
+and quantum simulation of many-body systems.
+The interaction between different sites can be controlled by creating Rydberg excitation
+or by creating dipolar molecules from two trapped atoms.
+Combined with the ability to move, detect and manipulate individual sites,
+arrays of optical tweezers can be used to prepare complex interacting system
+with high fidelity.
+In order to achieve long coherence time and full quantum control of the system needed for
+these applications,
+it is usually necessary to control the thermal motion of the atoms by cooling to the
+three dimensional motional ground state in the optical tweezer,
+which has already been demonstrated with heavy alkali atoms including rubidium and cesium.
+However, some of the important properties of previous experiements,
+for example low initial temperature and small Lamb-Dicke parameter,
+may not be easily achievable for other systems and
+the versatility of this approach requires being able to perform ground motional state cooling
+in the more general case. In this letter, we present our work on cooling single sodium atoms
+trapped in optical tweezers to the motional ground state with Raman sideband cooling.
+Dispite having a large Lamb-Dicke parameter and high initial temperature,
+by utilizing several new cooling techniques and a well optimized cooling sequence,
+we are able to achieve a ground state probability of $80\%$.
 
-% Here's how you do it, sodium is hard.
-
-Why do we need to cool (for STIRAP/transfer to molecular state)\\
-
-* Pure initial state\\
-* Small wavefunction span\\
-
-We achieve the high ground state preparation fidelity needed for molecule formation
-using Raman sideband cooling. The process consists of multiple cycles of laser pulses
-to manipulate the internal and motional states of the atoms.
+The Raman sideband cooling we used to achieve the high ground state preparation fidelity
+consists of multiple cycles of laser pulses to manipulate the internal and
+motional states of the atoms.
 Figure \ref{f-setup}A shows the schematic of the energy levels and the cooling sequence
 in our setup.
 Each cooling cycle starts with the Sodium atom in the $|F=2, m_F=-2\rangle$
@@ -193,7 +207,7 @@ sidebands since they provide more information about the distribution of coupling
 Another issue caused by the high initial temperature is trap anharmonicity.
 Although the potential near the center of a focused Gaussian beam can be approximated
 by a harmonic trap, when a large number of levels are populated due to high initial temperature
-the anharmonicity of the trap can lead to broadening of the sideband and the decrease of
+the anharmonicity of the trap can lead to broadening of the sideband and decrease of
 the sideband signal. In our setup, this effect limits the Rabi frequency of the Raman pulse
 on the radial sidebands to be no lower than tens of kilo-Hertz in order to drive atoms in
 different motional states equally.
@@ -241,14 +255,16 @@ as a independent way to obtain the population in different motional states.
 Fitting the Rabi flopping data give a ground state probability of $????$ and $????$,
 showing good agreement between the two methods.
 
-The axial direction is much less confined and therefore has a much higher
-effective Lamb-Dicke parameter of $\eta^{OP}_{eff1}\approx3.3$. The Raman spectrum before applying Raman sideband cooling is shown in figure \ref{f-axial}A where we can see clearly resolved Raman cooling sidebands up to the eighth order suggesting that we have many motional states populated in this direction.
+The axial direction is much less confined and therefore has a much higher initial effective
+Lamb-Dicke parameter of $\eta^{OP}_{eff1}\approx3.3$.
+
+Figure \ref{f-axial}A shows the Raman spectrum in the axial direction before applying Raman sideband cooling where we can see clearly resolved Raman cooling sidebands up to the eighth order suggesting that we have many motional states populated in this direction.
+
+Limitation
 
 % Missing:
 % ?? D1 OP
+% ?? Blackman pulse
 
 \bibliography{paper}
 \end{document}
-
-% Generalization to other systems (properties that are shared with "more real" systems)
-% Inharmonicity -> gaussian beam. -> importance to use short/strong pulses.
