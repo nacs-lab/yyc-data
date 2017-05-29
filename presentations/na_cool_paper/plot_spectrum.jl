@@ -6,8 +6,7 @@ using NaCsCalc.Utils: interactive
 using NaCsData
 using PyPlot
 using DataStructures
-matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                     "font.weight" => "bold"))
+matplotlib["rcParams"][:update](Dict("font.size" => 20))
 matplotlib[:rc]("xtick", labelsize=15)
 matplotlib[:rc]("ytick", labelsize=15)
 
@@ -84,6 +83,7 @@ end
 
 function maybe_save(name)
     if !interactive()
+        savefig("$name.pdf"; bbox_inches="tight", transparent=true)
         savefig("$name.png"; bbox_inches="tight", transparent=true)
         savefig("$name.svg", bbox_inches="tight", transparent=true)
         close()
@@ -115,14 +115,14 @@ data_nocool_a1_hi = [NaCsData.map_params(to_sideband(-18.5015), split_a[:nocool_
 data_cool_a1 =  NaCsData.map_params(to_sideband(-18.488), split_d[3])
 data_cool_a1_hi =  NaCsData.map_params(to_sideband(-18.488), split_c[4])
 
-fig = figure(figsize=[1.5, 1] * 4.8)
+fig = figure(figsize=[1.6, 1] * 4.8)
 
 # Without cooling
 ax1 = subplot(211)
 # Radial 2
-plot_data(data_nocool_r2[1], 1, fmt="ro-", label="Axis 2")
-plot_data(data_nocool_r2[2], 1, fmt="ro-")
-plot_data(data_nocool_r2[3], 1, fmt="ro-")
+plot_data(data_nocool_r2[1], 1, fmt="C3o-", label="Axis 2")
+plot_data(data_nocool_r2[2], 1, fmt="C3o-")
+plot_data(data_nocool_r2[3], 1, fmt="C3o-")
 # Radial 3
 plot_data(data_nocool_r3[1], 1, fmt="ko-", label="Axis 3")
 plot_data(data_nocool_r3[2], 1, fmt="ko-")
@@ -132,6 +132,7 @@ grid()
 ylim([0, 1])
 xlim([-700, 1400])
 legend()
+text(-660, 0.8, "(A)")
 setp(ax1[:get_xticklabels](), visible=false)
 
 # With cooling
@@ -142,9 +143,9 @@ axvline(1210, linewidth=4, color="k", ls="--", alpha=0.3, ymin=0.05)
 axvline(430, linewidth=4, color="r", ls="--", alpha=0.3, ymin=0.1)
 axvline(860, linewidth=4, color="r", ls="--", alpha=0.3, ymin=0.05)
 # Radial 2
-plot_data(data_cool_r2[1], 1, fmt="ro-")
-plot_data(data_cool_r2[2], 1, fmt="ro-")
-plot_data(data_cool_r2[3], 1, fmt="ro-")
+plot_data(data_cool_r2[1], 1, fmt="C3o-")
+plot_data(data_cool_r2[2], 1, fmt="C3o-")
+plot_data(data_cool_r2[3], 1, fmt="C3o-")
 # Radial 3
 plot_data(data_cool_r3[1], 1, fmt="ko-")
 plot_data(data_cool_r3[2], 1, fmt="ko-")
@@ -153,30 +154,42 @@ axhline(0.85, linewidth=2, color="b", ls="--", alpha=0.3)
 grid()
 ylim([0, 1])
 xlim([-700, 1400])
+text(-660, 0.8, "(B)")
 yticklabels = ax2[:axes][:get_yticklabels]()
 yticklabels[end][:set_visible](false)
 fig[:text](0.5, 0.0, "Detuning from carrier (kHz)", ha="center", va="center")
-fig[:text](0.0, 0.5, "Survival", ha="center", va="center", rotation="vertical")
+fig[:text](0.03, 0.5, "Survival", ha="center", va="center", rotation="vertical")
 
 maybe_save("$(prefix)_r")
 
-figure(figsize=[2.5, 1] * 4.8)
+fig = figure(figsize=[1.6, 1] * 4.8)
+ax1 = subplot(211)
 # Without cooling
-plot_data(data_nocool_a1[1], 1, fmt="C1o-", label="Before")
-plot_data(data_nocool_a1[2], 1, fmt="C1o-")
-plot_data(data_nocool_a1_0, 1, fmt="C1o-")
-plot_data(data_nocool_a1_hi, 1, fmt="C1^-", label="Before")
-# With cooling
-plot_data(data_cool_a1[1], 1, fmt="C0o-", label="After")
-plot_data(data_cool_a1[2], 1, fmt="C0o-")
-plot_data(data_cool_a1_hi, 1, fmt="C0^-", label="After")
+plot_data(data_nocool_a1[1], 1, fmt="C0o-")
+plot_data(data_nocool_a1[2], 1, fmt="C0o-")
+plot_data(data_nocool_a1_0, 1, fmt="C0o-")
+plot_data(data_nocool_a1_hi, 1, fmt="C0^-")
 grid()
 ylim([0, 0.6])
 xlim([-100, 620])
-title("Axis 1 (axial)")
-xlabel("Detuning from carrier (kHz)")
-ylabel("Survival")
-legend()
+text(-50, 0.5, "(A)")
+setp(ax1[:get_xticklabels](), visible=false)
+
+# With cooling
+ax2 = subplot(212)
+subplots_adjust(hspace=0)
+axvline(72.5, linewidth=4, color="C0", ls="--", alpha=0.3, ymin=0.08)
+axvline(141, linewidth=4, color="C0", ls="--", alpha=0.3, ymin=0.03)
+axvline(209, linewidth=4, color="C0", ls="--", alpha=0.3, ymin=0.03)
+plot_data(data_cool_a1[1], 1, fmt="C0o-")
+plot_data(data_cool_a1[2], 1, fmt="C0o-")
+plot_data(data_cool_a1_hi, 1, fmt="C0^-")
+grid()
+ylim([0, 0.59])
+xlim([-100, 620])
+text(-50, 0.5, "(B)")
+fig[:text](0.5, 0.0, "Detuning from carrier (kHz)", ha="center", va="center")
+fig[:text](0.05, 0.5, "Survival", ha="center", va="center", rotation="vertical")
 maybe_save("$(prefix)_a1")
 
 maybe_show()
