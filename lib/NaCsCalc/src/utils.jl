@@ -4,7 +4,7 @@ module Utils
 
 # LGPLv3 implementation from libstdc++
 
-function poly_laguerre_large_n{Tp}(n::Integer, α, x::Tp)
+function poly_laguerre_large_n(n::Integer, α, x::Tp) where Tp
     a::Tp = -n
     b::Tp = α + 1
     η::Tp = 2b - 4a
@@ -32,7 +32,7 @@ function poly_laguerre_large_n{Tp}(n::Integer, α, x::Tp)
     return @fastmath exp(lnpre) * ser
 end
 
-function poly_laguerre_hyperg{Tp}(n::Integer, α, x::Tp)
+function poly_laguerre_hyperg(n::Integer, α, x::Tp) where Tp
     b::Tp = Tp(α) + 1
     mx = -x
     tc_sgn::Tp = x < 0 ? 1 : ((n % 2 == 1) ? -1 : 1)
@@ -51,7 +51,7 @@ function poly_laguerre_hyperg{Tp}(n::Integer, α, x::Tp)
     return _sum
 end
 
-function poly_laguerre_recursion{Tp}(n::Integer, α, x::Tp)
+function poly_laguerre_recursion(n::Integer, α, x::Tp) where Tp
     # Compute l_0.
     l_0::Tp = 1
     n == 0 && return l_0
@@ -74,7 +74,7 @@ function poly_laguerre_recursion{Tp}(n::Integer, α, x::Tp)
     return l_n
 end
 
-function genlaguerre{Tp<:AbstractFloat}(n::Integer, α, x::Tp)::Tp
+function (genlaguerre(n::Integer, α, x::Tp)::Tp) where Tp<:AbstractFloat
     if x < 0
         throw(DomainError())
     elseif isnan(α) || isnan(x)
@@ -100,7 +100,7 @@ function genlaguerre{Tp<:AbstractFloat}(n::Integer, α, x::Tp)::Tp
 end
 genlaguerre(n::Integer, α, x) = genlaguerre(n, α, float(x))
 
-function binomial_estimate{T<:AbstractFloat}(x, n, z::T=1.0)
+function binomial_estimate(x, n, z::T=1.0) where T<:AbstractFloat
     if n <= 0
         return T(0.5), T(0.5)
     end
@@ -110,6 +110,11 @@ function binomial_estimate{T<:AbstractFloat}(x, n, z::T=1.0)
     p′::T = (p + z²n / 2) / (1 + z²n)
     unc::T = sqrt(p * (1 - p) / n + z² / 4 / n^2) / (1 + z²n)
     return p′, unc
+end
+
+function binomial_interval(x, n, z::T=1.0) where T<:AbstractFloat
+    p, unc = binomial_estimate(x, n, z)
+    return p - unc, p + unc
 end
 
 const ThreadRNG = MersenneTwister[]
