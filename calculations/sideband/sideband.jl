@@ -292,7 +292,8 @@ const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3,
                                             ηs_trap(1, 1, 1), ηs_trap(1, 0, 0),
                                             zeros(Bool, 8, 8),
                                             (0, 1, 1))
-const op_pol = (0.99358, 0, 0.00642)
+# const op_pol = (0.99358, 0, 0.00642)
+const op_pol = (1, 0, 0)
 
 function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec, Ω0, Δn)
     Ω = sqrt(p1 * p2) * Ω0
@@ -309,8 +310,10 @@ function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec,
                                    (0, 1, 1)) for r in bs1.rates]
     s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2],
                                    (0, 1, 1)) for r in bs2.rates]
+    # return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz,
+    #                                      [s1s; s2s; trapscatter])
     return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz,
-                                         [s1s; s2s; trapscatter])
+                                         [trapscatter])
 end
 
 struct RamanSpec{T}
@@ -357,16 +360,16 @@ end
 const BuilderT = Setup.SeqBuilder{System.StateC,Void}
 statec() = System.StateC(sz...)
 
-function create_sequence(t)
-    builder = BuilderT(System.ThermalInit{1,Float32}(18, 3, 2), Setup.Dummy(),
-                       Setup.CombinedMeasure(System.NBarMeasure(),
-                                             System.GroundStateMeasure(),
-                                             System.HyperFineMeasure{8}()))
-    # builder = BuilderT(System.ThermalInit{1,Float32}(0, 0, 0), Setup.Dummy(),
+function create_sequence(n)
+    # builder = BuilderT(System.ThermalInit{1,Float32}(18, 3, 2), Setup.Dummy(),
     #                    Setup.CombinedMeasure(System.NBarMeasure(),
     #                                          System.GroundStateMeasure(),
     #                                          System.HyperFineMeasure{8}()))
-    n = typemax(Int)
+    builder = BuilderT(System.ThermalInit{1,Float32}(0, 0, 0), Setup.Dummy(),
+                       Setup.CombinedMeasure(System.NBarMeasure(),
+                                             System.GroundStateMeasure(),
+                                             System.HyperFineMeasure{8}()))
+    # n = typemax(Int)
     nloop = Ref{Int}(n)
     function take_pulse(np)
         local n
@@ -388,7 +391,6 @@ function create_sequence(t)
         Setup.add_pulse(builder, op)
     end
 
-    Setup.add_pulse(builder, create_wait(t))
     # for i in 1:take_pulse(5)
     #     add_raman_cool(25, 1, 1, true, false, 2, -2)
     #     add_raman_cool(25, 1, 1, true, false, 2, -1)
@@ -465,27 +467,27 @@ function create_sequence(t)
     #     add_raman_cool(60, 0.351, 0.740, false, true, 1, -1)
     #     add_raman_cool(28, 1, 1, true, false, 3, -1)
     # end
-    # for i in 1:take_pulse(1)
-    #     add_raman_cool(70, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(100, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(21, 1, 1, true, false, 3, -1)
-    #     add_raman_cool(70, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(100, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(25, 1, 1, true, false, 2, -1)
+    for i in 1:take_pulse(50)
+        add_raman_cool(70, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(100, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(21, 1, 1, true, false, 3, -1)
+        add_raman_cool(70, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(100, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(25, 1, 1, true, false, 2, -1)
 
-    #     add_raman_cool(70, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(100, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(43, 1, 1, true, false, 3, -1)
-    #     add_raman_cool(70, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(100, 0.1, 1, false, true, 1, -1)
-    #     add_raman_cool(38, 1, 1, true, false, 2, -1)
-    # end
+        add_raman_cool(70, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(100, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(43, 1, 1, true, false, 3, -1)
+        add_raman_cool(70, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(100, 0.1, 1, false, true, 1, -1)
+        add_raman_cool(38, 1, 1, true, false, 2, -1)
+    end
     Setup.add_pulse(builder, System.Filter((hf, v)->sum(v .* trap_freq) <= 12000f3))
     return builder.seq
 end
 
-const params = linspace(0, 3000000, 101)
-# const params = 0:2:50
+# const params = linspace(0, 3000000, 101)
+const params = 0:2:50
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 
 if interactive()
