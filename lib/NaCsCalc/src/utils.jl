@@ -120,32 +120,29 @@ end
 const ThreadRNG = MersenneTwister[]
 const _interactive = Ref(true)
 function __init__()
-    # Allocate the random number generator on the thread's own heap
-    # instead of the master thread heap to minimize memory conflict
     nth = Threads.nthreads()
     resize!(ThreadRNG, nth)
-    init_rng = function ()
-        tid = Threads.threadid()
-        ThreadRNG[tid] = MersenneTwister(0)
-    end
-    ccall(:jl_threading_run, Ref{Void}, (Any,), init_rng)
     interactive_str = get(ENV, "NACS_INTERACT", "true")
     if interactive_str == "false" || interactive_str == "0"
         _interactive[] = false
     end
 end
 
-@inline function thread_rng()
-    # Bypass bounds check and NULL check
-    Base.llvmcall(
-        """
-        %p = load i8**, i8*** %0
-        ret i8** %p
-        """, MersenneTwister, Tuple{Ptr{Ptr{Ptr{Void}}}},
-        Ptr{Ptr{Ptr{Void}}}(pointer(ThreadRNG) + (Threads.threadid() - 1) * sizeof(Int)))
+@noinline function init_thread_rng()
+    # Allocate the random number generator on the thread's own heap lazily
+    # instead of the master thread heap to minimize memory conflict.
+    ThreadRNG[Threads.threadid()] = MersenneTwister(0)
 end
 
-@inline trand() = rand(thread_rng())
+@inline function thread_rng()
+    # Bypass bounds check
+    x = unsafe_load(Ptr{Ptr{Void}}(pointer(ThreadRNG)), Threads.threadid())
+    if x == C_NULL
+        return init_thread_rng()
+    end
+    return ccall(:jl_value_ptr, Ref{MersenneTwister}, (Ptr{Void},), x)
+end
+
 @inline interactive() = _interactive[]
 
 end
