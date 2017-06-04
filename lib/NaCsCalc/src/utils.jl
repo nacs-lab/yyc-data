@@ -136,7 +136,7 @@ end
 
 @inline function thread_rng()
     # Bypass bounds check
-    x = unsafe_load(Ptr{Ptr{Void}}(pointer(ThreadRNG)), Threads.threadid())
+    x = Base.pointerref(Ptr{Ptr{Void}}(pointer(ThreadRNG)), Int(Threads.threadid()), 0)
     if x == C_NULL
         return init_thread_rng()
     end
