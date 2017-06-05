@@ -143,8 +143,8 @@ data_after_a1_0 = NaCsData.map_params((i, v)->v * 1e6, data_d)
 data_after_a1_p1 = NaCsData.map_params((i, v)->v * 1e6, data_c)
 
 function f1_prob(Ωs, pΩ::AbstractArray, Γ::AbstractMatrix{T},
-                 rates::AbstractVector{T}, tmax::T, atol=0.005, n::Integer=100000,
-                 rd=thread_rng()) where T<:AbstractFloat
+                 rates::AbstractVector{T}, tmax::T, atol=0.005, δΩ=T(0),
+                 n::Integer=100000, rd=thread_rng()) where T<:AbstractFloat
     nΩ = length(Ωs)
     nstates = length(rates)
     count = 0
@@ -157,7 +157,8 @@ function f1_prob(Ωs, pΩ::AbstractArray, Γ::AbstractMatrix{T},
                 break
             end
         end
-        i_final = propagate_multistates(T(Ωs[j]), 1, 6, Γ, rates, 1, tmax, rd)
+        Ω = T(sqrt(Ωs[j]^2 + (δΩ * randn(rd))^2))
+        i_final = propagate_multistates(Ω, 1, 6, Γ, rates, 1, tmax, rd)
         if i_final > 5
             # count F1
             count += 1
@@ -175,22 +176,22 @@ end
 function f1_prop_getter(Γ)
     Γ32 = Float32.(Γ)
     rates32 = Γ_to_rates(Γ32)
-    (Ωs, pΩ, t, atol=0.005)->f1_prob(Ωs, pΩ, Γ32, rates32, t, atol)
+    (Ωs, pΩ, t, atol=0.005, δΩ=0)->f1_prob(Ωs, pΩ, Γ32, rates32, t, atol, δΩ)
 end
 
 const f_r3 = f1_prop_getter(rates_r3)
 const f_r2 = f1_prop_getter(rates_r2)
 const f_a1 = f1_prop_getter(rates_a1)
 
-function plot_f1(f, ts, Ωs, pΩ; kws...)
+function plot_f1(f, ts, Ωs, pΩ, δΩ=0, scale=0.85; kws...)
     res = zeros(length(ts))
     @time Threads.@threads for i in 1:length(ts)
-        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002)
+        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002) * scale
     end
     plot(ts * 1e6, res; kws...)
 end
 
-function diviation(f, data, Ωs, pΩ, scale=1 / 0.85)
+function diviation(f, data, Ωs, pΩ, scale=1 / 0.85, δΩ=0)
     params, ratios, uncs = NaCsData.get_values(data)
     perm = sortperm(params)
     params = params[perm] * 1e-6
@@ -199,7 +200,7 @@ function diviation(f, data, Ωs, pΩ, scale=1 / 0.85)
     n = length(params)
     s = 0.0
     for i in 1:n
-        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001) - ratios[i]) / uncs[i])^2
+        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001, δΩ) - ratios[i]) / uncs[i])^2
     end
     return s, n
 end
@@ -210,8 +211,8 @@ const p_r3 = [0.9, 0.077, 0.023]
 figure()
 ts_r3_0 = linspace(0, 80e-6, 1001)
 plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="darkslateblue", label="Fit")
-plot_data(data_after_r3_0, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_r3_0, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_r3_0, 1, fmt="bo", label="With RSC")
+plot_data(data_before_r3_0, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_r3_0[1] * 1e6, ts_r3_0[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -224,8 +225,8 @@ maybe_save("$(prefix)_r3_0_ba")
 figure()
 ts_r3_p1 = linspace(0, 180e-6, 1001)
 plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="darkslateblue", label="Fit")
-plot_data(data_after_r3_p1, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_r3_p1, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_r3_p1, 1, fmt="bo", label="With RSC")
+plot_data(data_before_r3_p1, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_r3_p1[1] * 1e6, ts_r3_p1[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -241,8 +242,8 @@ const p_r2 = [0.896, 0.048, 0.056]
 figure()
 ts_r2_0 = linspace(0, 80e-6, 201)
 plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="darkslateblue", label="Fit")
-plot_data(data_after_r2_0, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_r2_0, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_r2_0, 1, fmt="bo", label="With RSC")
+plot_data(data_before_r2_0, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_r2_0[1] * 1e6, ts_r2_0[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -255,8 +256,8 @@ maybe_save("$(prefix)_r2_0_ba")
 figure()
 ts_r2_p1 = linspace(0, 180e-6, 201)
 plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="darkslateblue", label="Fit")
-plot_data(data_after_r2_p1, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_r2_p1, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_r2_p1, 1, fmt="bo", label="With RSC")
+plot_data(data_before_r2_p1, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_r2_p1[1] * 1e6, ts_r2_p1[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -293,8 +294,8 @@ ts_a1_p1 = linspace(0, 450e-6, 201)
 figure()
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
-plot_data(data_after_a1_0, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_a1_0, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_a1_0, 1, fmt="bo", label="With RSC")
+plot_data(data_before_a1_0, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -307,7 +308,7 @@ maybe_save("$(prefix)_a1_0_ba")
 figure()
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
-plot_data(data_after_a1_0, 1 / 0.85, fmt="bo", label="With RSC")
+plot_data(data_after_a1_0, 1, fmt="bo", label="With RSC")
 ylim([0, 1])
 xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -319,8 +320,8 @@ maybe_save("$(prefix)_a1_0_nol")
 figure()
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
-plot_data(data_after_a1_p1, 1 / 0.85, fmt="bo", label="With RSC")
-plot_data(data_before_a1_p1, 1 / 0.95, fmt="ro-", label="No RSC")
+plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
+plot_data(data_before_a1_p1, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
 xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
@@ -333,7 +334,7 @@ maybe_save("$(prefix)_a1_p1_ba")
 figure()
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', color="darkslateblue", label="Fit")
-plot_data(data_after_a1_p1, 1 / 0.85, fmt="bo", label="With RSC")
+plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
 ylim([0, 1])
 xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
