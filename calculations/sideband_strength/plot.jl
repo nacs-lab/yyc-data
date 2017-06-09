@@ -3,6 +3,7 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc: Trap
+import NaCsCalc.Utils: interactive
 using PyPlot
 
 PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20,
@@ -33,7 +34,7 @@ end
 const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
 
 function maybe_save(name)
-    if save_fig
+    if !interactive()
         savefig("$name.png"; bbox_inches="tight", transparent=true)
         savefig("$name.svg", bbox_inches="tight", transparent=true)
         close()
@@ -41,7 +42,7 @@ function maybe_save(name)
 end
 
 function maybe_show()
-    if !save_fig
+    if interactive()
         show()
     end
 end
