@@ -12,9 +12,32 @@ PyPlot.matplotlib[:rc]("xtick", labelsize=25)
 PyPlot.matplotlib[:rc]("ytick", labelsize=25)
 
 const m_Na = 23e-3 / 6.02e23
-const η_ax = Trap.η(m_Na, 67e3, 2π / 589e-9) / √(2)
-const η_rad1 = Trap.η(m_Na, 420e3, 2π / 589e-9) * √(2)
-const η_rad2 = Trap.η(m_Na, 580e3, 2π / 589e-9) * √(2)
+const η_ax = Trap.η(m_Na, 68.8e3, 2π / 589e-9) * 0.67
+const η_rad1 = Trap.η(m_Na, 430e3, 2π / 589e-9) * √(2)
+const η_rad2 = Trap.η(m_Na, 589.5e3, 2π / 589e-9) * √(2)
+
+function calc_fraction(η)
+    m1 = Trap.sideband(0, 1, η)
+    m2 = Trap.sideband(1, 2, η)
+    @assert m1 < m2
+    mmax = m2
+    i = 2
+    while true
+        m = Trap.sideband(i, i + 1, η)
+        if m > mmax
+            mmax = m
+        else
+            break
+        end
+    end
+    v1 = sin(m1 / mmax * π / 2)^2
+    v2 = sin(m2 / mmax * π / 2)^2
+    return v2 / v1
+end
+
+@show calc_fraction(η_ax)
+@show calc_fraction(η_rad1)
+@show calc_fraction(η_rad2)
 
 const colors = ["k", "r", "y", "g", "c", "b", "m"]
 function plot_sidebands(ns, Δns, η)
