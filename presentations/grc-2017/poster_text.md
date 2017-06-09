@@ -22,3 +22,9 @@
 [![](imgs/fit_20170409_a1_0.png)](imgs/fit_20170409_a1_0.pdf)
 [![](imgs/spectrum_r.png)](imgs/spectrum_r.pdf)
 [![](imgs/spectrum_a1.png)](imgs/spectrum_a1.pdf)
+
+Ground state ratio:
+* Axis 1 (Axial): 91.6(28)%
+* Axis 2 (Radial): 89.7(19)%
+* Axis 3 (Radial): 93.8(26)%
+* Combined: 77.1(35)%
