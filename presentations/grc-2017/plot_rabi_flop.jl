@@ -11,8 +11,7 @@ using NaCsSim.DecayRabi: propagate_multistates, average_multistates, Γ_to_rates
 using NaCsData
 using DataStructures
 using PyPlot
-matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                     "font.weight" => "bold"))
+matplotlib["rcParams"][:update](Dict("font.size" => 20))
 matplotlib[:rc]("xtick", labelsize=15)
 matplotlib[:rc]("ytick", labelsize=15)
 
@@ -202,7 +201,7 @@ const τ_r3 = 11.445e-6
 const p_r3 = [0.9, 0.077, 0.023]
 const δΩ_r3 = 0
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 ts_r3_0 = linspace(0, 80e-6, 1001)
 plot_f1(f_r3, ts_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p_r3, color="darkslateblue", label="Fit")
 plot_data(data_after_r3_0, 1, fmt="bo", label="With RSC")
@@ -216,7 +215,7 @@ legend(loc=1)
 grid()
 maybe_save("$(prefix)_r3_0")
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 ts_r3_p1 = linspace(0, 180e-6, 1001)
 plot_f1(f_r3, ts_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p_r3, color="darkslateblue", label="Fit")
 plot_data(data_after_r3_p1, 1, fmt="bo", label="With RSC")
@@ -236,7 +235,7 @@ const τ_r2 = 11.608e-6
 const p_r2 = [0.896, 0.044, 0.06]
 const δΩ_r2 = 0
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 ts_r2_0 = linspace(0, 80e-6, 201)
 plot_f1(f_r2, ts_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p_r2, color="darkslateblue", label="Fit")
 plot_data(data_after_r2_0, 1, fmt="bo", label="With RSC")
@@ -250,7 +249,7 @@ legend(loc=1)
 grid()
 maybe_save("$(prefix)_r2_0")
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 ts_r2_p1 = linspace(0, 180e-6, 201)
 plot_f1(f_r2, ts_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p_r2, color="darkslateblue", label="Fit")
 plot_data(data_after_r2_p1, 1, fmt="bo", label="With RSC")
@@ -271,7 +270,7 @@ const δΩ_a1 = 14.4923e3
 ts_a1_0 = linspace(0, 300e-6, 201)
 ts_a1_p1 = linspace(0, 450e-6, 201)
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_0, 1, fmt="bo", label="With RSC")
@@ -285,7 +284,7 @@ legend(loc=1)
 grid()
 maybe_save("$(prefix)_a1_0")
 
-figure()
+figure(figsize=[1.4, 1] * 4.8)
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
         p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
