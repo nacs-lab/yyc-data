@@ -1,6 +1,6 @@
 # Challenges and solutions
 
-[![](imgs/raman_op.pdf)](imgs/raman_op.pdf)
+[![](imgs/raman_op.png)](imgs/raman_op.pdf)
 
 ## Challenges
 * High initial temperature (40μK)
@@ -18,7 +18,7 @@
 
 # Results
 
-[![](imgs/fit_20170409_r3_0.pdf)](imgs/fit_20170409_r3_0.pdf)
-[![](imgs/fit_20170409_a1_0.pdf)](imgs/fit_20170409_a1_0.pdf)
-[![](imgs/spectrum_r.pdf)](imgs/spectrum_r.pdf)
-[![](imgs/spectrum_a1.pdf)](imgs/spectrum_a1.pdf)
+[![](imgs/fit_20170409_r3_0.png)](imgs/fit_20170409_r3_0.pdf)
+[![](imgs/fit_20170409_a1_0.png)](imgs/fit_20170409_a1_0.pdf)
+[![](imgs/spectrum_r.png)](imgs/spectrum_r.pdf)
+[![](imgs/spectrum_a1.png)](imgs/spectrum_a1.pdf)
