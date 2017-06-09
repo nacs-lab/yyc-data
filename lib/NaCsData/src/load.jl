@@ -23,7 +23,7 @@ end
     arg1 = to_arrayidx(_arg1)
     return SortedData{K,Vs}(data.params[arg0], data.values[arg0, arg1])
 end
-@inline Base.size(data::SortedData) = endof(data), size(data.values, 2)
+@inline Base.size(data::SortedData) = endof(data), depth(data.values)
 @inline Base.endof(data::SortedData) = length(data.params)
 @inline Base.size(data::SortedData, dim) = if dim == 1
     return endof(data)
