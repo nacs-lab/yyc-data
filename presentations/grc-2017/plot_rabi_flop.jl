@@ -286,7 +286,9 @@ maybe_save("$(prefix)_a1_0")
 
 figure(figsize=[1.4, 1] * 4.8)
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
-        p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
+        p_a1 * p_r3', 0, color="darkslateblue", label="Fit")
+plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
+        p_a1 * p_r3', δΩ_a1, color="g", label="Decohere")
 plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
 plot_data(data_before_a1_p1, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
@@ -294,7 +296,7 @@ xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
 xlabel("Time (\$\\mu s\$)")
 ylabel("Normalized survival")
 title("Axis 1 (axial) heating")
-legend(loc=1)
+legend(loc=1, ncol=2, mode="expand")
 grid()
 maybe_save("$(prefix)_a1_p1")
 
