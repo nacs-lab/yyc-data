@@ -135,12 +135,10 @@ end
 end
 
 @inline function thread_rng()
-    # Bypass bounds check
-    x = Base.pointerref(Ptr{Ptr{Void}}(pointer(ThreadRNG)), Int(Threads.threadid()), 0)
-    if x == C_NULL
-        return init_thread_rng()
+    @inbounds begin
+        tid = Threads.threadid()
+        return isassigned(ThreadRNG, tid) ? ThreadRNG[tid] : init_thread_rng()
     end
-    return ccall(:jl_value_ptr, Ref{MersenneTwister}, (Ptr{Void},), x)
 end
 
 @inline interactive() = _interactive[]
