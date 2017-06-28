@@ -295,12 +295,14 @@ gen_f2op_spec(p, pol) =
 #     F1 Down 1.000 + F2 counterop 1.000: Ω = 2π / 11.45us
 # The Rabi frequencies (2π times) here are for full matrix element
 
+const include_scatter = false
+
 const sz = 300, 30, 30
-const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3,
+const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3 * include_scatter,
                                             ηs_trap(1, 1, 1), ηs_trap(1, 0, 0),
                                             zeros(Bool, 8, 8),
                                             (0, 1, 1))
-const op_pol = (0.99358, 0, 0.00642)
+const op_pol = include_scatter ? (0.99358, 0, 0.00642) : (1, 0, 0)
 
 function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec, Ω0, Δn)
     Ω = sqrt(p1 * p2) * Ω0
@@ -313,16 +315,13 @@ function create_raman_raw(t, p1, p2, ramp1, ramp2, bs1::BeamSpec, bs2::BeamSpec,
         p2 /= 3
         Ω /= 2
     end
-    # s1s = [System.Scatter{Float32}(p1 * 0 * r[1], η_op, abs.(bs1.η), r[2],
-    #                                (0, 1, 1)) for r in bs1.rates]
-    # s2s = [System.Scatter{Float32}(p2 * 0 * r[1], η_op, abs.(bs2.η), r[2],
-    #                                (0, 1, 1)) for r in bs2.rates]
     s1s = [System.Scatter{Float32}(p1 * r[1], η_op, abs.(bs1.η), r[2],
                                    (0, 1, 1)) for r in bs1.rates]
     s2s = [System.Scatter{Float32}(p2 * r[1], η_op, abs.(bs2.η), r[2],
                                    (0, 1, 1)) for r in bs2.rates]
+    scatter = [s1s; s2s; trapscatter]
     return System.RealRaman{Float32,1,6}(t, Ω, abs.(bs1.η .- bs2.η), Δn, sz,
-                                         [s1s; s2s; trapscatter])
+                                         include_scatter ? scatter : System.Scatter{Float32}[])
 end
 
 struct RamanSpec{T}
