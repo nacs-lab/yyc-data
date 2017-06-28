@@ -3,8 +3,7 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 using PyPlot
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 15,
-                                            "font.weight" => "bold"))
+PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20))
 PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
@@ -15,7 +14,12 @@ using NaCsCalc.Atomic: all_scatter_D
 
 function maybe_save(name)
     if !interactive()
+        dir = dirname(name)
+        if !isempty(dir)
+            mkpath(dir, 0o755)
+        end
         savefig("$name.png"; bbox_inches="tight", transparent=true)
+        savefig("$name.pdf"; bbox_inches="tight", transparent=true)
         savefig("$name.svg", bbox_inches="tight", transparent=true)
         close()
     end
@@ -32,7 +36,7 @@ function plot_ground_state(params, res)
     gp = [r.a for r in res]
     gp_unc = [r.s for r in res]
     errorbar(params, gp, gp_unc)
-    title("Ground state probability")
+    ylabel("Ground state probability")
     if maximum(gp) > 0.5
         ylim([0, 1])
     end
@@ -45,7 +49,7 @@ function plot_total(params, res)
     total = [1 - t.a for t in res]
     total_unc = [t.s for t in res]
     errorbar(params, total, total_unc)
-    title("Total loss")
+    ylabel("Total loss")
     ylim([0, ylim()[2]])
     plot_hook()
     grid()
@@ -70,7 +74,7 @@ function plot_nbars(params, res)
     errorbar(params, nbary, nbary_unc, label="Y")
     errorbar(params, nbarz, nbarz_unc, label="Z")
     legend()
-    title("\$\\bar n\$")
+    ylabel("\$\\bar n\$")
     plot_hook()
     grid()
 end
@@ -87,22 +91,23 @@ function plot_hf{T<:Tuple}(params, res::Vector{T})
     legend()
     ylim([0, 1])
     title("Hyperfine")
+    ylabel("Probability")
     plot_hook()
     grid()
 end
 
 function plot_result(params, res, prefix)
     plot_ground_state(params, (r[2] for r in res))
-    maybe_save(joinpath(prefix, "ground.svg"))
+    maybe_save(joinpath(prefix, "ground"))
 
     plot_total(params, (r[1][2] for r in res))
-    maybe_save(joinpath(prefix, "loss.svg"))
+    maybe_save(joinpath(prefix, "loss"))
 
     plot_nbars(params, (r[1][1] for r in res))
-    maybe_save(joinpath(prefix, "nbar.svg"))
+    maybe_save(joinpath(prefix, "nbar"))
 
     plot_hf(params, (r[3][1] for r in res))
-    maybe_save(joinpath(prefix, "hf.svg"))
+    maybe_save(joinpath(prefix, "hf"))
 end
 
 const xname = Ref("")
@@ -487,8 +492,9 @@ function create_sequence(n)
 end
 
 # const params = linspace(0, 3000000, 101)
-const params = 0:2:100
+const params = 0:3:96
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
+xname[] = "Pulse group"
 
 if interactive()
     plot_result(params, res, "")
