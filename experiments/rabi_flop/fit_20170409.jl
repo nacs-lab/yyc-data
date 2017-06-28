@@ -43,7 +43,7 @@ const rates_coprop = rates_f1_coprop + rates_f2_coprop
 
 # Matrix elements
 const m_Na = 23e-3 / 6.02e23
-const η_a1 = Trap.η(m_Na, 68.8e3, 2π / 589e-9) / √(2)
+const η_a1 = Trap.η(m_Na, 68.8e3, 2π / 589e-9) * 0.67
 const η_r2 = Trap.η(m_Na, 430e3, 2π / 589e-9) * √(2)
 const η_r3 = Trap.η(m_Na, 589.5e3, 2π / 589e-9) * √(2)
 
@@ -186,27 +186,55 @@ const f_a1 = f1_prop_getter(rates_a1)
 function plot_f1(f, ts, Ωs, pΩ, δΩ=0, scale=0.85; kws...)
     res = zeros(length(ts))
     @time Threads.@threads for i in 1:length(ts)
-        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002) * scale
+        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002, δΩ) * scale
     end
     plot(ts * 1e6, res; kws...)
 end
 
-function diviation(f, data, Ωs, pΩ, scale=1 / 0.85, δΩ=0)
+function diviation(f, data, Ωs, pΩ, δΩ=0, scale=1 / 0.85)
     params, ratios, uncs = NaCsData.get_values(data)
     perm = sortperm(params)
     params = params[perm] * 1e-6
     ratios = ratios[perm, 2] .* scale
     uncs = uncs[perm, 2] .* scale
     n = length(params)
-    s = 0.0
-    for i in 1:n
-        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001, δΩ) - ratios[i]) / uncs[i])^2
+    s = Vector{Float64}(n)
+    Threads.@threads for i in 1:n
+        s[i] = ((f(Ωs, pΩ, Float32(params[i]), 0.001, δΩ) - ratios[i]) / uncs[i])^2
     end
-    return s, n
+    return sum(s), n
 end
+
+# r3 0.90±0.02
 
 const τ_r3 = 11.445e-6
 const p_r3 = [0.9, 0.077, 0.023]
+const δΩ_r3 = 0
+
+@show size(data_after_r3_0)
+@show size(data_after_r3_p1)
+
+# function div_r3_0(p0)
+#     p = copy(p_r3)
+#     p[2] = p0
+#     s, n = diviation(f_r3, data_after_r3_0, 2π / τ_r3 * meles_r3_0[1:3], p, δΩ_r3)
+#     return s / (n - 4)
+# end
+
+# function div_r3_p1(p0)
+#     p = copy(p_r3)
+#     p[2] = p0
+#     s, n = diviation(f_r3, data_after_r3_p1, 2π / τ_r3 * meles_r3_p1[1:3], p, δΩ_r3)
+#     return s / (n - 4)
+# end
+
+# @show div_r3_0(0.9)
+# @show div_r3_p1(0.9)
+
+# ps = linspace(0, 0.1, 41)
+# plot(ps, div_r3_0.(ps), label="Carrier")
+# plot(ps, div_r3_p1.(ps), label="Heating")
+# show()
 
 figure()
 ts_r3_0 = linspace(0, 80e-6, 1001)
@@ -236,8 +264,37 @@ legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 maybe_save("$(prefix)_r3_p1_ba")
 
+# r2 0.90±0.03
+
 const τ_r2 = 11.608e-6
-const p_r2 = [0.896, 0.048, 0.056]
+const p_r2 = [0.896, 0.044, 0.06]
+const δΩ_r2 = 0
+
+@show size(data_after_r2_0)
+@show size(data_after_r2_p1)
+
+# function div_r2_0(p0)
+#     p = copy(p_r2)
+#     p[1] = p0
+#     s, n = diviation(f_r2, data_after_r2_0, 2π / τ_r2 * meles_r2_0[1:3], p, δΩ_r2)
+#     return s / (n - 4)
+# end
+
+# function div_r2_p1(p0)
+#     p = copy(p_r2)
+#     p[1] = p0
+#     s, n = diviation(f_r2, data_after_r2_p1, 2π / τ_r2 * meles_r2_p1[1:3], p, δΩ_r2)
+#     return s / (n - 4)
+# end
+
+# @show div_r2_0(0.9)
+# @show div_r2_p1(0.9)
+
+# ps = linspace(0.8, 1.0, 41)
+# plot(ps, div_r2_0.(ps), label="Carrier")
+# plot(ps, div_r2_p1.(ps), label="Heating")
+# legend()
+# show()
 
 figure()
 ts_r2_0 = linspace(0, 80e-6, 201)
@@ -267,33 +324,63 @@ legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 maybe_save("$(prefix)_r2_p1_ba")
 
-# function diviation_a1(τ, p)
+# function diviation_a1(τ, p, δΩ)
 #     np = length(p)
 #     d1, n1 = diviation(f_a1, data_after_a1_0, 2π / τ * meles_a1_0[1:np] * meles_r3_0[1:3]',
-#                        p * p_r3')
+#                        p * p_r3', δΩ)
 #     d2, n2 = diviation(f_a1, data_after_a1_p1, 2π / τ * meles_a1_p1[1:np] * meles_r3_0[1:3]',
-#                        p * p_r3')
+#                        p * p_r3', δΩ)
 #     return (d1 + d2) / (n1 + n2)
 #     # return d1 / n1
 # end
 # function objective(x)
-#     r = diviation_a1(x[1] * 1e-6, [x[2:end]; 1.0])
+#     r = diviation_a1(x[1] * 1e-6, [x[3:end]; 1.0], x[2] * 1e3)
 #     @show x r
 #     return r
 # end
-# @show objective([60.1833, 0.92, 0.04])
+# init_params = [61.1871, 14.4923, 0.986943, 0.0519492] # [61.19, 14.49, 0.987, 0.01]
+# @show objective(init_params)
 # using Optim
-# @show optimize(objective, [60.1833, 0.92, 0.04])
+# @show optimize(objective, init_params)
 
-const τ_a1 = 60.1833e-6
-const p_a1 = [0.92, 0.08, 0.0]
+const τ_a1 = 61.1871e-6
+const p_a1 = [0.987, 0.02, 0.0]
+const δΩ_a1 = 14.4923e3
+
+@show size(data_after_a1_0)
+@show size(data_after_a1_p1)
+
+# function div_a1_0(p0)
+#     p = copy(p_a1)
+#     p[1] = p0
+#     s, n = diviation(f_a1, data_after_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
+#                      p * p_r3', δΩ_a1)
+#     return s / (n - 4)
+# end
+
+# function div_a1_p1(p0)
+#     p = copy(p_a1)
+#     p[1] = p0
+#     s, n = diviation(f_a1, data_after_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
+#                      p * p_r3', δΩ_a1)
+#     return s / (n - 4)
+# end
+
+# @show div_a1_0(0.987)
+# @show div_a1_p1(0.987)
+
+# ps = linspace(0.9, 1.0, 41)
+# plot(ps, div_a1_0.(ps), label="Carrier")
+# plot(ps, div_a1_p1.(ps), label="Heating")
+# legend()
+# show()
 
 ts_a1_0 = linspace(0, 300e-6, 201)
 ts_a1_p1 = linspace(0, 450e-6, 201)
 
 figure()
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
-        p_a1 * p_r3', color="darkslateblue", label="Fit")
+        p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_0, 1, fmt="bo", label="With RSC")
 plot_data(data_before_a1_0, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
@@ -307,7 +394,7 @@ maybe_save("$(prefix)_a1_0_ba")
 
 figure()
 plot_f1(f_a1, ts_a1_0, 2π / τ_a1 * (meles_a1_0[1:3] * meles_r3_0[1:3]'),
-        p_a1 * p_r3', color="darkslateblue", label="Fit")
+        p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_0, 1, fmt="bo", label="With RSC")
 ylim([0, 1])
 xlim([ts_a1_0[1] * 1e6, ts_a1_0[end] * 1e6])
@@ -319,7 +406,7 @@ maybe_save("$(prefix)_a1_0_nol")
 
 figure()
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
-        p_a1 * p_r3', color="darkslateblue", label="Fit")
+        p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
 plot_data(data_before_a1_p1, 1, fmt="ro-", label="No RSC")
 ylim([0, 1])
@@ -333,7 +420,7 @@ maybe_save("$(prefix)_a1_p1_ba")
 
 figure()
 plot_f1(f_a1, ts_a1_p1, 2π / τ_a1 * (meles_a1_p1[1:3] * meles_r3_0[1:3]'),
-        p_a1 * p_r3', color="darkslateblue", label="Fit")
+        p_a1 * p_r3', δΩ_a1, color="darkslateblue", label="Fit")
 plot_data(data_after_a1_p1, 1, fmt="bo", label="With RSC")
 ylim([0, 1])
 xlim([ts_a1_p1[1] * 1e6, ts_a1_p1[end] * 1e6])
