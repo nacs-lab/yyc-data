@@ -33,6 +33,9 @@ function plot_ground_state(params, res)
     gp_unc = [r.s for r in res]
     errorbar(params, gp, gp_unc)
     title("Ground state probability")
+    if maximum(gp) > 0.5
+        ylim([0, 1])
+    end
     plot_hook()
     grid()
 end
