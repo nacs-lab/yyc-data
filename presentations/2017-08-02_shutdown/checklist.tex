@@ -201,7 +201,7 @@
     \path (\f@size/50, \f@size/50) node[color=black!15] {\small #2};
   \end{tikzpicture}
 }
-\newcommand\DevBoxes{{\Large\ColorBox{color=red!50}{Off}\!\!\ColorBox{color=green!50}{On}}}
+\newcommand\DevBoxes{\mbox{{\Large\ColorBox{color=red!50}{Off}\!\!\ColorBox{color=green!50}{On}}}}
 \newcommand\OffBox{{\normalsize\ColorBox{color=orange!50}{}}}
 \newcommand\OnBox{{\normalsize\ColorBox{color=cyan!50}{}}}
 \makeatother
@@ -359,6 +359,7 @@
 \item\DevHeader{Benchtop power supply}
   \textbf{1st level above Cs tweezer/MOT lasers}\\
   Record voltage/current values:\\
+
   \begin{tabular}{|c|c|}
     \hline
     Left Voltage&\hphantom{\hspace{3.5cm}}\\\hline
@@ -366,6 +367,7 @@
     Right Voltage&\\\hline
     Right Current&\\\hline
   \end{tabular}\\
+
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug loads
@@ -382,10 +384,12 @@
 \item\DevHeader{1st version Till's current controller for Cs MOT}
   \textbf{1st level above Cs tweezer/MOT lasers}\\
   Record current value:\\
+
   \begin{tabular}{|c|c|}
     \hline
     Current&\hphantom{\hspace{3.5cm}}\\\hline
   \end{tabular}\\
+
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Turn off
@@ -408,6 +412,133 @@
   \begin{itemize}
   \item\OnBox Switch on
   \item\OnBox Plug the load back in
+  \end{itemize}
+\item\DevHeader{Cs 1.0 MOT lock box}
+  \textbf{1st level above Cs MOT lasers}
+  \begin{itemize}
+  \item\OffBox Make sure the laser is unlocked.
+  \end{itemize}
+\item\DevHeader{Novatech function generator}
+  \textbf{1st level above Cs MOT lasers}
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Save settings
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Restore settings
+  \end{itemize}\vspace{1cm}
+\item\DevHeader{New Focus Cs Raman lasers drivers (2x)}
+  \textbf{1st level above Cs Raman lasers}\\
+  Record Temperature, Current, Piezo voltage\\
+  Temperature is accessible in the menu under system status\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    F3 Current&\hphantom{\hspace{3.5cm}}\\\hline
+    F3 Piezo Voltage&\\\hline
+    F3 Temperature&\\\hline
+    F4 Current&\\\hline
+    F4 Piezo Voltage&\\\hline
+    F4 Temperature&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox (Turn on)
+  \end{itemize}
+\item\DevHeader{Benchtop power supply}
+  \textbf{1st level next to Cs Raman driver}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+\item\DevHeader{Homebuilt $24$V power supply}
+  \textbf{2nd level above Cs Raman lasers}\\
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug load
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Switch off on the back
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Switch on
+  \item\OnBox Plug the load back in
+  \end{itemize}
+\item\DevHeader{SRS shutter driver}
+  \textbf{1st level above Cs Raman lasers}\\
+  Switch off/on with the switch on the back.
+\item\DevHeader{New Focus lock box for Cs Raman}
+  \textbf{1st level above Cs Raman lasers}\\
+  Unplug power.
+\item\DevHeader{Timebase driver for Na Raman and Na D2 (x2)}
+  \textbf{1st level above Na Raman and D2 seed lasers}\\
+  Record current and T1 settings\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Raman Current&\hphantom{\hspace{3.5cm}}\\\hline
+    Raman T1&\\\hline
+    MOT Current&\hphantom{\hspace{3.5cm}}\\\hline
+    MOT T1&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Turn on
+  \item\OnBox Set current/temperature.
+  \item\OnBox Enable T1 survo
+  \item\OnBox Turn on current
+  \end{itemize}
+\item\DevHeader{Thorlabs temperature controller for Na Raman doubler}
+  \textbf{1st level above Na Raman and D2 seed lasers}\\
+  Record temperature settings\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Setpoint&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Check temperature setting
+  \item\OnBox Turn on
   \end{itemize}
 \end{itemize}
 
