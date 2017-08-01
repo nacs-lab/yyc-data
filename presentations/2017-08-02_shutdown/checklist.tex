@@ -1,6 +1,4 @@
 \documentclass[10pt,fleqn,twocolumn]{article}
-% \usepackage[journal=rsc]{chemstyle}
-% \usepackage{mhchem}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -76,14 +74,16 @@
 \usepackage{fancyhdr}
 \usepackage{multirow}
 \usepackage{fontenc}
+\usepackage{titlesec}
 % \usepackage{tipa}
 \usepackage{ulem}
 \usepackage{color}
 \usepackage{cancel}
+
 \newcommand{\hcancel}[2][black]{\setbox0=\hbox{#2}%
   \rlap{\raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}}#2}
 \pagestyle{fancy}
-\setlength{\headheight}{67pt}
+% \setlength{\headheight}{60pt}
 \fancyhead{}
 \fancyfoot{}
 \fancyfoot[C]{\thepage}
@@ -91,6 +91,7 @@
 \renewcommand{\footruleskip}{0pt}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
+\titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
 
 \newcommand\pgfmathsinandcos[3]{%
   \pgfmathsetmacro#1{sin(#3)}%
@@ -210,7 +211,7 @@
 \def\arraystretch{2}
 
 \newcommand\DevDef[2]{
-  \begin{minipage}{\linewidth}
+  \begin{minipage}[t]{\linewidth}
     \begin{itemize}
     \item\DevHeader{#1}
       #2
@@ -238,7 +239,8 @@ For powering up, go through the checklist in the following order
 \item\OnBox Turn on equipments
 \item\OnBox Check computer connection to devices
 \end{itemize}
-Also wait before everyone else finish their corresponding steps before starting the next one.
+Also wait before everyone else finish their corresponding steps before starting the next one.\\
+
 }
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
@@ -248,6 +250,9 @@ Also wait before everyone else finish their corresponding steps before starting 
 \begin{document}
 
 \Person{Yichao}
+\textbf{\Large
+  Equipments and power supplies are mostly located around the laser table on the library side.
+}\\
 \subsection{Equipments}
 \DevDef{Thorlabs temperature controller for Na Raman doubler}{
   \textbf{1st level above Na Raman and D2 seed lasers}\\
@@ -572,6 +577,19 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug the load back in
   \end{itemize}
 }
+\DevDef{UPS}{
+  \textbf{2nd level above laser table}\\
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on
+  \end{itemize}
+}
 \subsection{Computers}
 \DevDef{Computer control box for 1.0}{
   \textbf{Turn off check list}
@@ -597,6 +615,10 @@ Also wait before everyone else finish their corresponding steps before starting 
   \end{itemize}
 }
 \Person{Jon}
+\textbf{\Large
+  Equipments and power supplies are mostly located around the machine table facing the laser table
+  or the computer area.
+}\\
 \subsection{Equipments}
 \DevDef{Agilent function generator for Na 1.0 switching}{
   \textbf{1st level above TiSapph facing computers}\\
@@ -881,6 +903,10 @@ Also wait before everyone else finish their corresponding steps before starting 
   \end{itemize}
 }
 \Person{Lee}
+\textbf{\Large
+  Equipments and power supplies are mostly located around the laser table
+  on the computer area side.
+}\\
 \subsection{Equipments}
 \DevDef{PLL for 1.0 Cs MOT}{
   \textbf{Turn off check list}
@@ -1153,6 +1179,9 @@ Also wait before everyone else finish their corresponding steps before starting 
   \end{itemize}
 }
 \Person{Jessie}
+\textbf{\Large
+  Equipments and power supplies are mostly located around the machine table facing the 1.5 table.
+}\\
 \subsection{Equipments}
 \DevDef{TiSapph}{
   \textbf{Turn off check list}
@@ -1296,6 +1325,9 @@ Also wait before everyone else finish their corresponding steps before starting 
   \end{itemize}
 }
 \Person{Frederic}
+\textbf{\Large
+  Equipments and power supplies are mostly on the 1.5 rack.
+}\\
 \subsection{Equipments}
 \DevDef{Andor Camera for 1.5}{
   \textbf{Turn off check list}
