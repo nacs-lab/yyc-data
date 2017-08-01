@@ -209,13 +209,22 @@
 \newcommand\DevHeader[1]{{\Large\DevBoxes\textbf{#1}\\}}
 \def\arraystretch{2}
 
+\newcommand\DevDef[2]{
+  \begin{minipage}{\linewidth}
+    \begin{itemize}
+    \item\DevHeader{#1}
+      #2
+    \end{itemize}
+    \vspace{0.8cm}
+  \end{minipage}
+}
+
 \parindent=0pt
 \title{Checklist}
 \date{August 2nd, 2017}
 \begin{document}
 
-\begin{itemize}
-\item\DevHeader{1.0 Camera}
+\DevDef{1.0 Camera}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Switch off
@@ -228,7 +237,8 @@
   \item\OnBox Switch on chiller
   \item\OnBox Switch on
   \end{itemize}
-\item\DevHeader{1.5 Camera}
+}
+\DevDef{1.5 Camera}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Switch off
@@ -241,29 +251,34 @@
   \item\OnBox Switch on chiller
   \item\OnBox Switch on
   \end{itemize}
-\item\DevHeader{Tweezer 1 computer}
+}
+\DevDef{Tweezer 1 computer}{
   \textbf{Check following devices}
   \begin{itemize}
   \item\OnBox Thorlabs cameras
   \item\OnBox Na Raman amplifier
   \end{itemize}
-\item\DevHeader{Tweezer 2 computer}
+}
+\DevDef{Tweezer 2 computer}{
   \textbf{Check following devices}
   \begin{itemize}
   \item\OnBox Andor camera
   \end{itemize}
-\item\DevHeader{Tweezer 3 computer}
+}
+\DevDef{Tweezer 3 computer}{
   \textbf{Check following devices}
   \begin{itemize}
   \item\OnBox Software radio
   \end{itemize}
-\item\DevHeader{Tweezer 4 computer}
+}
+\DevDef{Tweezer 4 computer}{
   \textbf{Check following devices}
   \begin{itemize}
   \item\OnBox Andor camera
   \item\OnBox Thorlabs camera
   \end{itemize}
-\item\DevHeader{1.0 Cs MOT PLL}
+}
+\DevDef{1.0 Cs MOT PLL}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug all signals (zip tie together)
@@ -275,7 +290,8 @@
   \item\OnBox Plugin all signals
   \item\OnBox Apply settings according to note on Generic tab, Equipment Settings.
   \end{itemize}
-\item\DevHeader{1.0 Cs Raman PLL}
+}
+\DevDef{1.0 Cs Raman PLL}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug all signals (zip tie together)
@@ -287,7 +303,8 @@
   \item\OnBox Plugin all signals
   \item\OnBox Apply settings according to note on Generic tab, Equipment Settings.
   \end{itemize}
-\item\DevHeader{1.5 Cs MOT PLL}
+}
+\DevDef{1.5 Cs MOT PLL}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug all signals (zip tie together)
@@ -299,17 +316,20 @@
   \item\OnBox Plugin all signals
   \item\OnBox Apply settings ???
   \end{itemize}
-\item\DevHeader{1.5 Feshbach coils}
+}
+\DevDef{1.5 Feshbach coils}{
   \textbf{Before power shutdown}
   \begin{itemize}
   \item\OffBox Wrap exposed part in napkins to prevent condensations
   \end{itemize}
-\item\DevHeader{1.5 IGBT}
+}
+\DevDef{1.5 IGBT}{
   \textbf{Before power shutdown}
   \begin{itemize}
   \item\OffBox Wrap exposed part in napkins to prevent condensations
   \end{itemize}
-\item\DevHeader{1.0 computer control box}
+}
+\DevDef{1.0 computer control box}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox (Do following three steps quickly)
@@ -331,7 +351,8 @@
   \item\OnBox Plug in high voltage power supply.
   \item\OnBox Turn on the power switch of the box. The fans should start spinning.
   \end{itemize}
-\item\DevHeader{1.5 computer control box}
+}
+\DevDef{1.5 computer control box}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox (Do following three steps quickly)
@@ -353,10 +374,12 @@
   \item\OnBox Plug in high voltage power supply. The fans should start spinning.
   \item\OnBox Turn on the power switch of the box.
   \end{itemize}
-\item\DevHeader{Cs 1.0 MOT home built temperature servo}
+}
+\DevDef{Cs 1.0 MOT home built temperature servo}{
   \textbf{1st level above Cs tweezer/MOT lasers}\\
   Switch off/on the front switch
-\item\DevHeader{Benchtop power supply}
+}
+\DevDef{Benchtop power supply}{
   \textbf{1st level above Cs tweezer/MOT lasers}\\
   Record voltage/current values:\\
 
@@ -381,7 +404,8 @@
   \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
   \item\OnBox Plug the load back in
   \end{itemize}
-\item\DevHeader{1st version Till's current controller for Cs MOT}
+}
+\DevDef{1st version Till's current controller for Cs MOT}{
   \textbf{1st level above Cs tweezer/MOT lasers}\\
   Record current value:\\
 
@@ -400,7 +424,8 @@
   \item\OnBox Plug in power
   \item\OnBox Turn on
   \end{itemize}
-\item\DevHeader{Homebuilt $\pm15,5$V power supply}
+}
+\DevDef{Homebuilt $\pm15,5$V power supply}{
   \textbf{2nd level above Cs tweezer/MOT lasers}\\
   \textbf{Turn off check list}
   \begin{itemize}
@@ -413,12 +438,14 @@
   \item\OnBox Switch on
   \item\OnBox Plug the load back in
   \end{itemize}
-\item\DevHeader{Cs 1.0 MOT lock box}
+}
+\DevDef{Cs 1.0 MOT lock box}{
   \textbf{1st level above Cs MOT lasers}
   \begin{itemize}
   \item\OffBox Make sure the laser is unlocked.
   \end{itemize}
-\item\DevHeader{Novatech function generator}
+}
+\DevDef{Novatech function generator}{
   \textbf{1st level above Cs MOT lasers}
   \textbf{Turn off check list}
   \begin{itemize}
@@ -428,7 +455,8 @@
   \begin{itemize}
   \item\OnBox Restore settings
   \end{itemize}\vspace{1cm}
-\item\DevHeader{New Focus Cs Raman lasers drivers (2x)}
+}
+\DevDef{New Focus Cs Raman lasers drivers (2x)}{
   \textbf{1st level above Cs Raman lasers}\\
   Record Temperature, Current, Piezo voltage\\
   Temperature is accessible in the menu under system status\\
@@ -453,7 +481,8 @@
   \item\OnBox Plug in power
   \item\OnBox (Turn on)
   \end{itemize}
-\item\DevHeader{Benchtop power supply}
+}
+\DevDef{Benchtop power supply}{
   \textbf{1st level next to Cs Raman driver}\\
   Record voltage/current values:\\
 
@@ -476,7 +505,8 @@
   \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
   \item\OnBox Plug the load back in
   \end{itemize}
-\item\DevHeader{Homebuilt $24$V power supply}
+}
+\DevDef{Homebuilt $24$V power supply}{
   \textbf{2nd level above Cs Raman lasers}\\
   \textbf{Turn off check list}
   \begin{itemize}
@@ -489,13 +519,16 @@
   \item\OnBox Switch on
   \item\OnBox Plug the load back in
   \end{itemize}
-\item\DevHeader{SRS shutter driver}
+}
+\DevDef{SRS shutter driver}{
   \textbf{1st level above Cs Raman lasers}\\
   Switch off/on with the switch on the back.
-\item\DevHeader{New Focus lock box for Cs Raman}
+}
+\DevDef{New Focus lock box for Cs Raman}{
   \textbf{1st level above Cs Raman lasers}\\
   Unplug power.
-\item\DevHeader{Timebase driver for Na Raman and Na D2 (x2)}
+}
+\DevDef{Timebase driver for Na Raman and Na D2 (x2)}{
   \textbf{1st level above Na Raman and D2 seed lasers}\\
   Record current and T1 settings\\
 
@@ -520,7 +553,8 @@
   \item\OnBox Enable T1 survo
   \item\OnBox Turn on current
   \end{itemize}
-\item\DevHeader{Thorlabs temperature controller for Na Raman doubler}
+}
+\DevDef{Thorlabs temperature controller for Na Raman doubler}{
   \textbf{1st level above Na Raman and D2 seed lasers}\\
   Record temperature settings\\
 
@@ -540,6 +574,6 @@
   \item\OnBox Check temperature setting
   \item\OnBox Turn on
   \end{itemize}
-\end{itemize}
+}
 
 \end{document}
