@@ -199,12 +199,13 @@
 \newcommand\ColorBox[2]{
   \begin{tikzpicture}
     \fill[#1] (0, 0) rectangle (\f@size/25, \f@size/25);
+    \draw[color=gray!80] (0, 0) rectangle (\f@size/25, \f@size/25);
     \path (\f@size/50, \f@size/50) node[color=black!15] {\small #2};
   \end{tikzpicture}
 }
-\newcommand\DevBoxes{\mbox{{\Large\ColorBox{color=red!50}{Off}\!\!\ColorBox{color=green!50}{On}}}}
-\newcommand\OffBox{{\normalsize\ColorBox{color=orange!50}{}}}
-\newcommand\OnBox{{\normalsize\ColorBox{color=cyan!50}{}}}
+\newcommand\DevBoxes{\mbox{{\Large\ColorBox{color=red!35}{Off}\!\!\ColorBox{color=green!35}{On}}}}
+\newcommand\OffBox{{\normalsize\ColorBox{color=orange!40}{}}}
+\newcommand\OnBox{{\normalsize\ColorBox{color=cyan!40}{}}}
 \makeatother
 
 \newcommand\DevHeader[1]{{\Large\DevBoxes\textbf{#1}\\}}
@@ -219,7 +220,7 @@
     \vspace{0.8cm}
   \end{minipage}
 }
-\newcommand\Person[1]{
+\newcommand\Person[2]{
 \clearpage
 \section*{#1}
 \fancyhead[R]{#1}
@@ -241,6 +242,8 @@ For powering up, go through the checklist in the following order
 \end{itemize}
 Also wait before everyone else finish their corresponding steps before starting the next one.\\
 
+\textbf{\Large #2}
+\vfill
 }
 \renewcommand{\thesubsection}{\arabic{subsection}}
 
@@ -249,10 +252,9 @@ Also wait before everyone else finish their corresponding steps before starting 
 \date{August 2nd, 2017}
 \begin{document}
 
-\Person{Yichao}
-\textbf{\Large
+\Person{Yichao}{
   Equipments and power supplies are mostly located around the laser table on the library side.
-}\\
+}
 \subsection{Equipments}
 \DevDef{Thorlabs temperature controller for Na Raman doubler}{
   \textbf{1st level above Na Raman and D2 seed lasers}\\
@@ -614,11 +616,10 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Turn on the power switch of the box. The fans should start spinning.
   \end{itemize}
 }
-\Person{Jon}
-\textbf{\Large
+\Person{Jon}{
   Equipments and power supplies are mostly located around the machine table facing the laser table
   or the computer area.
-}\\
+}
 \subsection{Equipments}
 \DevDef{Agilent function generator for Na 1.0 switching}{
   \textbf{1st level above TiSapph facing computers}\\
@@ -902,11 +903,10 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Software radio
   \end{itemize}
 }
-\Person{Lee}
-\textbf{\Large
+\Person{Lee}{
   Equipments and power supplies are mostly located around the laser table
   on the computer area side.
-}\\
+}
 \subsection{Equipments}
 \DevDef{PLL for 1.0 Cs MOT}{
   \textbf{Turn off check list}
@@ -1178,10 +1178,9 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Na Raman amplifier
   \end{itemize}
 }
-\Person{Jessie}
-\textbf{\Large
+\Person{Jessie}{
   Equipments and power supplies are mostly located around the machine table facing the 1.5 table.
-}\\
+}
 \subsection{Equipments}
 \DevDef{TiSapph}{
   \textbf{Turn off check list}
@@ -1324,10 +1323,9 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Turn on the power switch of the box.
   \end{itemize}
 }
-\Person{Frederic}
-\textbf{\Large
+\Person{Frederic}{
   Equipments and power supplies are mostly on the 1.5 rack.
-}\\
+}
 \subsection{Equipments}
 \DevDef{Andor Camera for 1.5}{
   \textbf{Turn off check list}
