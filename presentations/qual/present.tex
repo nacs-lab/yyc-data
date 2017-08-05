@@ -7,6 +7,11 @@
   % \setbeamertemplate{navigation symbols}{}
   \setbeamercovered{transparent}
 }
+\mode<handout>{
+  \usepackage{pgfpages}
+  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+  \setbeamercolor{background canvas}{bg=black!10}
+}
 \usepackage[english]{babel}
 \usepackage[latin1]{inputenc}
 \usepackage{times}
@@ -33,95 +38,18 @@
   positioning,
   shapes
 }
+\usepgfmodule{oo}
 
-\mode<handout>{
-  \usepackage{pgfpages}
-  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
-  \setbeamercolor{background canvas}{bg=black!10}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
 }
 
-\newcommand\pgfmathsinandcos[3]{%
-  \pgfmathsetmacro#1{sin(#3)}%
-  \pgfmathsetmacro#2{cos(#3)}%
-}
-\newcommand\LongitudePlane[3][current plane]{%
-  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
-  \pgfmathsinandcos\sint\cost{#3} % azimuth
-  \tikzset{#1/.estyle={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
-}
-\newcommand\LatitudePlane[3][current plane]{%
-  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
-  \pgfmathsinandcos\sint\cost{#3} % latitude
-  \pgfmathsetmacro\yshift{\cosEl*\sint}
-  \tikzset{#1/.estyle={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
-}
-\newcommand\DrawLongitudeCircle[2][1]{
-  \LongitudePlane{\angEl}{#2}
-  \tikzset{current plane/.prefix style={scale=#1}}
-  % angle of "visibility"
-  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
-  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1);
-  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1);
-}
-\newcommand\DrawLatitudeCircleArrow[2][1]{
-  \LatitudePlane{\angEl}{#2}
-  \tikzset{current plane/.prefix style={scale=#1}}
-  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
-  % angle of "visibility"
-  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
-  \draw[current plane,decoration={markings, mark=at position 0.6 with {\arrow{<}}},postaction={decorate},line width=.6mm] (\angVis:1) arc (\angVis:-\angVis-180:1);
-  \draw[current plane,dashed,line width=.6mm] (180-\angVis:1) arc (180-\angVis:\angVis:1);
-}
-\newcommand\DrawLatitudeCircle[2][1]{
-  \LatitudePlane{\angEl}{#2}
-  \tikzset{current plane/.prefix style={scale=#1}}
-  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
-  % angle of "visibility"
-  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
-  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1);
-  \draw[current plane,dashed] (180-\angVis:1) arc (180-\angVis:\angVis:1);
-}
-\newcommand\coil[1]{
-  {\rh * cos(\t * pi r)}, {\apart * (2 * #1 + \t) + \rv * sin(\t * pi r)}
-}
-\makeatletter
-\define@key{DrawFromCenter}{style}[{->}]{
-  \tikzset{DrawFromCenterPlane/.style={#1}}
-}
-\define@key{DrawFromCenter}{r}[1]{
-  \def\@R{#1}
-}
-\define@key{DrawFromCenter}{center}[(0, 0)]{
-  \def\@Center{#1}
-}
-\define@key{DrawFromCenter}{theta}[0]{
-  \def\@Theta{#1}
-}
-\define@key{DrawFromCenter}{phi}[0]{
-  \def\@Phi{#1}
-}
-\presetkeys{DrawFromCenter}{style, r, center, theta, phi}{}
-\newcommand*\DrawFromCenter[1][]{
-  \setkeys{DrawFromCenter}{#1}{
-    \pgfmathsinandcos\sint\cost{\@Theta}
-    \pgfmathsinandcos\sinp\cosp{\@Phi}
-    \pgfmathsinandcos\sinA\cosA{\angEl}
-    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
-    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
-    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY);
-  }
-}
-\newcommand*\DrawFromCenterText[2][]{
-  \setkeys{DrawFromCenter}{#1}{
-    \pgfmathsinandcos\sint\cost{\@Theta}
-    \pgfmathsinandcos\sinp\cosp{\@Phi}
-    \pgfmathsinandcos\sinA\cosA{\angEl}
-    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
-    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
-    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY) node {#2};
-  }
-}
-\makeatother
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
 
 % not mandatory, but I though it was better to set it blank
 \setbeamertemplate{headline}{}
@@ -171,6 +99,10 @@
 
 \begin{document}
 
+%%
+% Talk about cold molecule assembly experiment
+% What we want to do, why we want to do it, how we do it, where we are now.
+
 {
   \usebackgroundtemplate{
     % \parbox[c][\paperheight][c]{\paperwidth}
@@ -186,21 +118,74 @@
   \end{frame}
 }
 
-%%
-% Talk about cold molecule assembly experiment
-% What we want to do, why we want to do it, how we do it, where we are now.
-
+\pgfdeclarelayer{tweezer}
+\pgfsetlayers{tweezer,main}
+\pgfooclass{tweezer}{
+  \method tweezer() {
+  }
+  \method drawTweezer(#1,#2) {
+    \begin{pgfonlayer}{tweezer}
+      \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
+      fill opacity=0.9,inner color=orange!50!yellow]
+      plot[draw,samples=200,domain=-2.5:2.5] function {sqrt(0.01 + x**2 / 10)}
+      -- plot[draw,samples=200,domain=2.5:-2.5] function {-sqrt(0.01 + x**2 / 10)};
+    \end{pgfonlayer}
+  }
+  \method up(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2);
+    \fill [blue,path fading=glow fading] (#1,#2+0.06) circle (0.12);
+    \fill [red,path fading=glow fading] (#1,#2-0.06) circle (0.16);
+  }
+  \method down(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2);
+    \fill [red,path fading=glow fading] (#1,#2+0.06) circle (0.16);
+    \fill [blue,path fading=glow fading] (#1,#2-0.06) circle (0.12);
+  }
+}
+\pgfoonew \mytweezer=new tweezer()
 %%
 % Array of trapped ultracold molecule
 % * High filling
 % * Strong and tunable interaction
-% * Single cite detection
-% * Single cite manipulation
-%
-% Achieve with optical tweezers
-% * Use established atomic cooling techniques
-% * Rearranging for high filling
-% * Take adtantage of molecules
+% * Single site detection
+% * Single site manipulation
+\begin{frame}{Molecules in optical tweezer}
+  \begin{columns}
+    \column{4.5cm}
+    \begin{block}{Features}
+      \begin{itemize}
+      \item<2-> Strong and tunable interaction
+      \item<3-> High filling fraction
+      \item<4-> Single site detection and manipulation
+      \end{itemize}
+    \end{block}
+    \column{7cm}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.9]
+        \mytweezer.up(0, 0)
+        \mytweezer.down(2, 0.8/2.5)
+        \mytweezer.up(4, 1.2/2.5)
+        \begin{pgfonlayer}{tweezer}
+          \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (2, 0.8/2.5);
+          \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (1, -1.7/2.5);
+          \draw[line width=1,dashed,color=cyan] (2, 0.8/2.5) -- (1, -1.7/2.5);
+          \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (1, -1.7/2.5);
+          \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (2, 0.8/2.5);
+          \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (2, 0.8/2.5);
+          \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (4, 1.2/2.5);
+          \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (5, -1.9/2.5);
+          \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (5, -1.9/2.5);
+          \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (4, 1.2/2.5);
+          \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (5, -1.9/2.5);
+        \end{pgfonlayer}
+        \mytweezer.down(1, -1.7/2.5)
+        \mytweezer.up(3, -2.1/2.5)
+        \mytweezer.down(5, -1.9/2.5)
+        \mytweezer.down(6.2, -0.9/2.5)
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
 
 %%
 % Like other ultracold atom and molecule toolboxs
@@ -223,6 +208,11 @@
 % * Cooling
 % * Merging
 % * Make molecule
+%
+% Achieve with optical tweezers
+% * Use established atomic cooling techniques
+% * Rearranging for high filling
+% * Take adtantage of molecules
 
 %%
 % Current state
@@ -243,23 +233,6 @@
 % Next step
 % * Merge
 % * Transfer
-
-\begin{frame}{Motivation}
-  \begin{center}
-    \begin{tikzpicture}
-      \visible<1> {
-        \path (0, 0) node
-        {\includegraphics[width=10cm]{../2015-05-05_cua/overall_full_min.png}};
-      }
-      \visible<2-> {
-        \path (0, 0) node
-        {\includegraphics[width=10cm]{../2015-05-05_cua/overall_trap_min.png}};
-        \path (3, -3) node
-        {\includegraphics[width=3cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
-      }
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
 
 \begin{frame}{Setup}
   \begin{center}
