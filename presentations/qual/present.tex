@@ -165,15 +165,26 @@
 % \def\timeleft{15:00->14:55}
 
 \title{Ultracold molecule assembly}
-\date{Aug 14, 2017}
+\date{Aug 11, 2017}
 \author{Yichao Yu}
 \institute{Ni Group/Harvard}
 
 \begin{document}
 
-\begin{frame}{}
-  \titlepage
-\end{frame}
+{
+  \usebackgroundtemplate{
+    % \parbox[c][\paperheight][c]{\paperwidth}
+    \makebox[\paperwidth][c]{\centering\includegraphics[height=\paperheight]{front_bg.png}}
+    % \includegraphics[height=\paperheight]{front_bg.png}
+  }
+  \setbeamercolor{title}{fg=cyan!30}
+  \setbeamercolor{author}{fg=white}
+  \setbeamercolor{institute}{fg=white}
+  \setbeamercolor{date}{fg=white}
+  \begin{frame}{}
+    \titlepage
+  \end{frame}
+}
 
 %%
 % Talk about cold molecule assembly experiment
