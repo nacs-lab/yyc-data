@@ -123,23 +123,46 @@
 \pgfooclass{tweezer}{
   \method tweezer() {
   }
-  \method drawTweezer(#1,#2) {
+  \method drawTweezer(#1,#2,#3) {
     \begin{pgfonlayer}{tweezer}
       \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
-      fill opacity=0.9,inner color=orange!50!yellow]
+      fill opacity=0.9,inner color=#3]
       plot[draw,samples=200,domain=-2.5:2.5] function {sqrt(0.01 + x**2 / 10)}
       -- plot[draw,samples=200,domain=2.5:-2.5] function {-sqrt(0.01 + x**2 / 10)};
     \end{pgfonlayer}
   }
+  \method drawAtom(#1,#2,#3,#4) {
+    \fill [#4,path fading=glow fading] (#1,#2) circle (#3);
+  }
+  \method drawNaAtom(#1,#2,#3) {
+    \fill [blue,path fading=glow fading] (#1,#2) circle (#3);
+  }
+  \method drawCsAtom(#1,#2,#3) {
+    \fill [red,path fading=glow fading] (#1,#2) circle (#3);
+  }
+  \method drawNaTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,green!50!orange);
+  }
+  \method drawCsTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,orange!50!yellow);
+  }
   \method up(#1,#2) {
-    \pgfoothis.drawTweezer(#1,#2);
-    \fill [blue,path fading=glow fading] (#1,#2+0.06) circle (0.12);
-    \fill [red,path fading=glow fading] (#1,#2-0.06) circle (0.16);
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2+0.06,0.12);
+    \pgfoothis.drawCsAtom(#1,#2-0.06,0.16);
   }
   \method down(#1,#2) {
-    \pgfoothis.drawTweezer(#1,#2);
-    \fill [red,path fading=glow fading] (#1,#2+0.06) circle (0.16);
-    \fill [blue,path fading=glow fading] (#1,#2-0.06) circle (0.12);
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2+0.06,0.16);
+    \pgfoothis.drawNaAtom(#1,#2-0.06,0.12);
+  }
+  \method naTrap(#1,#2) {
+    \pgfoothis.drawNaTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2,0.12);
+  }
+  \method csTrap(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2,0.16);
   }
 }
 \pgfoonew \mytweezer=new tweezer()
@@ -208,30 +231,78 @@
     \column{8cm}
     \begin{center}
       \begin{tikzpicture}
+        % TODO
       \end{tikzpicture}
     \end{center}
   \end{columns}
 \end{frame}
 
 %%
-% Experiment (Chamber picture)
+% * Use established atomic cooling techniques
+%
+% Experiment
 % * MOT
 % * Single atom
 % * Cooling
 % * Merging
 % * Make molecule
-%
-% Achieve with optical tweezers
-% * Use established atomic cooling techniques
-% * Rearranging for high filling
-% * Take adtantage of molecules
-\begin{frame}{Apparatus}
+\begin{frame}{Making molecules from atoms}
+  \begin{columns}
+    \column{4.5cm}
+    \begin{itemize}
+    \item<+-> MOT (Na + Cs)
+    \item<+-> Loading single atoms \only<+->{}
+    \item<+-> Raman sideband cooling
+    \item<+-> Merge traps
+    \item<+-> Make molecules!
+    \end{itemize}
+    \column{8cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{pgfonlayer}{tweezer}
+          \fill [opacity=0,white] (-3, -3) rectangle (3, 3);
+        \end{pgfonlayer}
+        \only<1-2>{
+          \begin{pgfonlayer}{tweezer}
+            \fill [red,fill opacity=0.2,path fading=glow fading] (-0.1,0) ellipse (2.5 and 1.5);
+            \fill [blue,fill opacity=0.2,path fading=glow fading] (0.1,0) ellipse (2.5 and 1.5);
+          \end{pgfonlayer}{tweezer}
+        }
+        \only<2-4>{
+          \mytweezer.drawNaTweezer(0.6, 0.0)
+          \mytweezer.drawCsTweezer(-0.6, 0.0)
+        }
+        \only<2-3>{
+          \mytweezer.drawNaAtom(0.66, 0.05, 0.27)
+          \mytweezer.drawCsAtom(-0.57, 0.04, 0.22)
+        }
+        \only<4>{
+          \mytweezer.drawNaAtom(0.6, 0.0, 0.12)
+          \mytweezer.drawCsAtom(-0.6, 0.0, 0.16)
+        }
+        \only<5>{
+          \mytweezer.drawCsTweezer(0.0, 0.0)
+          \mytweezer.drawNaAtom(0.06, 0.1, 0.12)
+          \mytweezer.drawCsAtom(-0.04, -0.08, 0.16)
+        }
+        \only<6>{
+          \mytweezer.up(0, 0)
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
 \end{frame}
 
 %%
 % Current state
-% * Dual loading
+% * Cs more or less works as planned
 % * Dual cooling
+\begin{frame}{Atom loading and cooling}
+  \begin{center}
+    \begin{tikzpicture}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
 
 %%
 % Na loading trap switching
