@@ -4,7 +4,7 @@
   \usefonttheme[onlylarge]{structurebold}
   \usefonttheme[stillsansseriflarge]{serif}
   \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
-  % \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{navigation symbols}{}
   \setbeamercovered{transparent}
 }
 \mode<handout>{
@@ -28,6 +28,70 @@
 \usepackage{multimedia}
 \usepackage{bm}
 \usepackage{siunitx}
+\usepackage[style=phys,citetracker=true,sorting=none,backend=bibtex]{biblatex}
+\addbibresource{../library.bib}
+
+\DeclareCiteCommand{\footfullcitetext}
+  [\let\thefootnote\relax\mkbibfootnotetext]
+  {\usebibmacro{prenote}}
+  {\mkbibbrackets{\thefield{labelnumber}}%
+   \addnbspace%
+   \usedriver
+     {\DeclareNameAlias{sortname}{default}}
+     {\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+\makeatletter
+\let\cbx@citehook=\empty
+\newtoggle{cbx@blockcite}
+
+\renewcommand{\@makefntext}[1]{%
+  \noindent\normalfont\@thefnmark#1}
+
+\DeclareCiteCommand{\sfcite}[\cbx@superscript]%
+  {\usebibmacro{cite:init}%
+   \let\multicitedelim=\supercitedelim
+   \iffieldundef{prenote}{}{\BibliographyWarning{Ignoring prenote argument}}%
+   \iffieldundef{postnote}{}{\BibliographyWarning{Ignoring postnote argument}}}
+  {\usebibmacro{citeindex}%
+   \ifciteseen
+     {\ifnumequal{\value{page}}{\csuse{cbx@page@\thefield{entrykey}}}
+       {}
+       {\ifnumequal{\value{framenumber}}{\csuse{cbx@frame@\thefield{entrykey}}}
+          {\usebibmacro{sfcite}}
+          {}}}
+     {\usebibmacro{sfcite}}%
+   \usebibmacro{cite:comp}}
+  {}
+  {\usebibmacro{cite:dump}}
+
+\newbibmacro*{sfcite}{%
+  \csnumgdef{cbx@page@\thefield{entrykey}}{\value{page}}%
+  \csnumgdef{cbx@frame@\thefield{entrykey}}{\value{framenumber}}%
+  \xappto\cbx@citehook{%
+    \noexpand\footfullcitetext{\thefield{entrykey}}}}
+
+\newrobustcmd*{\cbx@superscript}[1]{%
+  \mkbibsuperscript{\mkbibbrackets{#1}}%
+  \iftoggle{cbx@blockcite}
+    {}
+    {\cbx@citehook%
+     \global\let\cbx@citehook=\empty}}
+
+\BeforeBeginEnvironment{block}{\global\toggletrue{cbx@blockcite}}
+
+\def\metabox#1{\edef\theprevdepth{\the\prevdepth}\nointerlineskip
+  \vbox to0pt{#1\vss}\prevdepth=\theprevdepth}
+
+\AfterEndEnvironment{block}
+  {\metabox{%
+     \global\togglefalse{cbx@blockcite}%
+     \cbx@citehook%
+     \global\let\cbx@citehook=\empty}}
+
+\makeatother
+
 \usetikzlibrary{
   arrows,
   calc,
@@ -222,14 +286,20 @@
 % {* Quantum chemistry}
 % {* Test for fundamental physics}
 \begin{frame}{Applications}
-  \only<+>{
-    \begin{block}{Simulation of many-body system}
-    \end{block}
-  }
-  \only<+>{
-    \begin{block}{Quantum computation}
-    \end{block}
-  }
+  \begin{block}{\only<1>{Simulation of many-body system\sfcite{Yan2013}}
+      \only<2>{Quantum computation\sfcite{Yelin2006}}}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<1>{
+          \path (2.5, 0) node {\includegraphics[width=4cm]{many-body-oscillation.png}};
+          \path (-3.5, 0) node {\includegraphics[width=7cm]{many-body-coupling.jpg}};
+        }
+        \visible<2>{
+          \path (-1, 0) node {\includegraphics[width=7.5cm]{compute-geometry.png}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{block}
 \end{frame}
 
 %%
