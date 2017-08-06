@@ -222,19 +222,14 @@
 % {* Quantum chemistry}
 % {* Test for fundamental physics}
 \begin{frame}{Applications}
-  \begin{columns}
-    \column{4.5cm}
-    \begin{itemize}
-    \item<2-> Simulation of many-body system
-    \item<3-> Quantum computation
-    \end{itemize}
-    \column{8cm}
-    \begin{center}
-      \begin{tikzpicture}
-        % TODO
-      \end{tikzpicture}
-    \end{center}
-  \end{columns}
+  \only<+>{
+    \begin{block}{Simulation of many-body system}
+    \end{block}
+  }
+  \only<+>{
+    \begin{block}{Quantum computation}
+    \end{block}
+  }
 \end{frame}
 
 %%
@@ -296,17 +291,24 @@
 %%
 % Current state
 % * Cs more or less works as planned
-% * Dual cooling
 \begin{frame}{Atom loading and cooling}
   \begin{columns}
     \column{5cm}
     \begin{block}{Cesium}
-    \end{block}
-    \begin{block}{Sodium}
+      \begin{itemize}
+      \item<+-> Single atom
+      \item<+-> 85\% Ground state
+      \end{itemize}
     \end{block}
     \column{6.5cm}
     \begin{center}
       \begin{tikzpicture}
+        \visible<1>{
+          \path (0, 0) node {\includegraphics[width=6cm]{cs-histogram.png}};
+        }
+        \visible<2>{
+          \path (0, 0) node {\includegraphics[width=6cm]{cs-raman-combined.pdf}};
+        }
       \end{tikzpicture}
     \end{center}
   \end{columns}
@@ -314,6 +316,28 @@
 
 %%
 % Na loading trap switching
+\begin{frame}{Atom loading and cooling}
+  \begin{columns}
+    \column{5cm}
+    \begin{block}{Cesium}
+      \begin{itemize}
+      \item<+-> Single atom
+      \item<+-> 85\% Ground state
+      \end{itemize}
+    \end{block}
+    \column{6.5cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<1>{
+          \path (0, 0) node {\includegraphics[width=6cm]{cs-histogram.png}};
+        }
+        \visible<2>{
+          \path (0, 0) node {\includegraphics[width=6cm]{cs-raman-combined.pdf}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
 
 %%
 % Na cooling
