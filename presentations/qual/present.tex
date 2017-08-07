@@ -279,18 +279,19 @@
 % many applications
 %
 % Applications that are the most relevant
-% * Quantum simulation [link: simulation]
+% * Quantum simulation
 %
 % ** Long range (Anisotropy)
 % ** Rich internal level
 % ** Natural for spin model
 %
-% * Quantum computation (digital simulation) [READ-link: quantum computation]
+% * Quantum computation (digital simulation) [link: quantum computation]
 % {* Quantum chemistry}
 % {* Test for fundamental physics}
 \begin{frame}{Applications}
-  \begin{block}{\only<1>{Simulation of many-body system\sfcite{Yan2013}}
+  \begin{block}{\only<1>{\hyperlink{backup-many-body-echo}{Simulation of many-body system}\sfcite{Yan2013}}
       \only<2>{Quantum computation\sfcite{Yelin2006}}}
+    \hypertarget<1>{applications-many-body}{}
     \begin{center}
       \begin{tikzpicture}
         \visible<1>{
@@ -370,7 +371,7 @@
     \column{5cm}
     \begin{itemize}
     \item<+-> Single atoms
-    \item<+-> 85\% cround state after Cesium Raman sideband cooling
+    \item<+-> 85\% ground state after Cesium Raman sideband cooling
     \end{itemize}
     \column{6.5cm}
     \begin{center}
@@ -393,12 +394,12 @@
 % [link: excited state mixing due to strong lightshift (tensor lightshift)]
 % * High initial temperature
 % * High Lamb-Dicke parameter (Raman and OP)
-% * Large light shift (scalar and tensor)
+% * Large light shift
 \begin{frame}{Raman sideband cooling}
   \begin{columns}
     \column{5.5cm}
     \begin{tikzpicture}
-      \visible<1-2>{
+      \visible<1-2,6->{
         \path (0, 0) node {\includegraphics[width=5.5cm]{imgs/Na_RSC_schematic.pdf}};
       }
       \visible<3-4>{
@@ -411,36 +412,15 @@
         % TODO? Better figure
         \path (0, 0) node {\includegraphics[width=5cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_pdf.png}};
       }
-      \visible<6->{
-        \draw[line width=2] (-2.5, 3) -- (-1.5, 3);
-        \path (-2, 3) node[above,align=center] {$m_F\!\!=\!\!-2$};
-
-        \draw[line width=2] (-0.5, -2) -- (0.5, -2);
-        \path (0.3, -2) node[below,align=center] {$m_F\!\!=\!\!-1$};
-        \draw[line width=2] (-2.5, -2) -- (-1.5, -2);
-        \path (-2, -2) node[below,align=center] {$m_F\!\!=\!\!-2$};
-        \draw[line width=2] (-0.5, -3.5) -- (0.5, -3.5);
-        \path (0, -3.5) node[below,align=center] {$m_F\!\!=\!\!-1$};
-
-        \draw[->,red,line width=3] (0, -3.5) -- (-2, 3);
-        \draw[snakearrow,orange,line width=1.5] (-2.2, 3) -- (-0.2, -3.5);
-        \draw[snakearrow,orange,line width=1.5] (-2.2, 3) -- (-2.2, -2);
-        \draw[snakearrow,orange,line width=1.5] (-1.8, 3) -- (0, -2);
-
-        \path (0.7, 3) node[above right] {$(F=2)$};
-        \path (0.7, -2) node[above right] {$(F=2)$};
-        \path (0.7, -3.5) node[above right] {$(F=1)$};
-        \visible<7->{
-          \draw[snakearrow,orange!70,line width=1] (-1.8, 3) -- (1, -0.5);
-        }
-      }
     \end{tikzpicture}
     \column{6.3cm}
     \begin{itemize}
     \item<2-> High initial temperature ($70\mu K$)
     \item<3-> High Lamb Dicke parameter
-    \item<6-> Large light shift (scalar and tensor)
-    \item<8-> Trap anharmonicity
+    \item<6-> Large light shift
+    \item<7-> Trap anharmonicity
+    \item<8-> Off resonance scattering from Raman beams\\
+      $\approx0.2\sim0.5$kHz
     \end{itemize}
   \end{columns}
 \end{frame}
@@ -624,6 +604,16 @@
 \end{frame}
 
 \begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+  \hypertarget{backup-many-body-echo}{}
+  \begin{center}
+    \hyperlink{applications-many-body}{\includegraphics[width=11.5cm]{imgs/many-body-echo.png}}
+  \end{center}
 \end{frame}
 
 \end{document}
