@@ -169,9 +169,7 @@
 
 {
   \usebackgroundtemplate{
-    % \parbox[c][\paperheight][c]{\paperwidth}
-    \makebox[\paperwidth][c]{\centering\includegraphics[height=\paperheight]{front_bg.png}}
-    % \includegraphics[height=\paperheight]{front_bg.png}
+    \makebox[\paperwidth][c]{\centering\includegraphics[height=\paperheight]{imgs/front_bg.png}}
   }
   \setbeamercolor{title}{fg=cyan!30}
   \setbeamercolor{author}{fg=white}
@@ -281,7 +279,12 @@
 % many applications
 %
 % Applications that are the most relevant
-% * Quantum simulation [READ-link: simulation]
+% * Quantum simulation [link: simulation]
+%
+% ** Long range (Anisotropy)
+% ** Rich internal level
+% ** Natural for spin model
+%
 % * Quantum computation (digital simulation) [READ-link: quantum computation]
 % {* Quantum chemistry}
 % {* Test for fundamental physics}
@@ -291,11 +294,12 @@
     \begin{center}
       \begin{tikzpicture}
         \visible<1>{
-          \path (2.5, 0) node {\includegraphics[width=4cm]{many-body-oscillation.png}};
-          \path (-3.5, 0) node {\includegraphics[width=7cm]{many-body-coupling.jpg}};
+          \path (2.5, 2) node {$\displaystyle H\propto\sum \!\!V_{ij}\!\left(S_i^+S_j^-\!\!+\!S_i^-S_j^+\right)\!$};
+          \path (2.5, -1) node {\includegraphics[width=4cm]{imgs/many-body-oscillation.png}};
+          \path (-3.5, 0) node {\includegraphics[width=7cm]{imgs/many-body-coupling.jpg}};
         }
         \visible<2>{
-          \path (-1, 0) node {\includegraphics[width=7.5cm]{compute-geometry.png}};
+          \path (-1, 0) node {\includegraphics[width=7.5cm]{imgs/compute-geometry.png}};
         }
       \end{tikzpicture}
     \end{center}
@@ -372,12 +376,12 @@
     \begin{center}
       \begin{tikzpicture}
         \visible<1>{
-          \path (0, -2) node {\includegraphics[width=6cm]{cs-histogram.png}};
+          \path (0, -2) node {\includegraphics[width=6cm]{imgs/cs-histogram.png}};
           \path (0, 2) node
           {\includegraphics[width=3cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
         }
         \visible<2>{
-          \path (0, 0) node {\includegraphics[width=6cm]{cs-raman-combined.pdf}};
+          \path (0, 0) node {\includegraphics[width=6cm]{imgs/cs-raman-combined.pdf}};
         }
       \end{tikzpicture}
     \end{center}
@@ -385,28 +389,67 @@
 \end{frame}
 
 %%
-% Na cooling
-% [READ-link: excited state mixing due to strong lightshift (tensor lightshift)]
-% * Challenges
-% * Simulation
-% * Result
+% Na cooling challenges
+% [link: excited state mixing due to strong lightshift (tensor lightshift)]
+% * High initial temperature
+% * High Lamb-Dicke parameter (Raman and OP)
+% * Large light shift (scalar and tensor)
 \begin{frame}{Raman sideband cooling}
   \begin{columns}
-    \column{6.5cm}
-    \includegraphics[width=6cm]{Na_RSC_schematic.pdf}
-    \column{5cm}
-    \visible<2->{
-      \begin{block}{Difficulties}
-        \begin{itemize}
-        \item High initial temperature ($40\mu K$)
-        \item<3-> High recoil heating\\
-          {\footnotesize (High Lamb Dicke parameter)}
-        \end{itemize}
-      \end{block}
-    }
+    \column{5.5cm}
+    \begin{tikzpicture}
+      \visible<1-2>{
+        \path (0, 0) node {\includegraphics[width=5.5cm]{imgs/Na_RSC_schematic.pdf}};
+      }
+      \visible<3-4>{
+        \path (0, 2) node {\includegraphics[width=5cm]{imgs/op_branching.pdf}};
+      }
+      \visible<4>{
+        \path (0, -2) node {\includegraphics[width=5cm]{imgs/mele_raman.pdf}};
+      }
+      \visible<5>{
+        % TODO? Better figure
+        \path (0, 0) node {\includegraphics[width=5cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_pdf.png}};
+      }
+      \visible<6->{
+        \draw[line width=2] (-2.5, 3) -- (-1.5, 3);
+        \path (-2, 3) node[above,align=center] {$m_F\!\!=\!\!-2$};
+
+        \draw[line width=2] (-0.5, -2) -- (0.5, -2);
+        \path (0.3, -2) node[below,align=center] {$m_F\!\!=\!\!-1$};
+        \draw[line width=2] (-2.5, -2) -- (-1.5, -2);
+        \path (-2, -2) node[below,align=center] {$m_F\!\!=\!\!-2$};
+        \draw[line width=2] (-0.5, -3.5) -- (0.5, -3.5);
+        \path (0, -3.5) node[below,align=center] {$m_F\!\!=\!\!-1$};
+
+        \draw[->,red,line width=3] (0, -3.5) -- (-2, 3);
+        \draw[snakearrow,orange,line width=1.5] (-2.2, 3) -- (-0.2, -3.5);
+        \draw[snakearrow,orange,line width=1.5] (-2.2, 3) -- (-2.2, -2);
+        \draw[snakearrow,orange,line width=1.5] (-1.8, 3) -- (0, -2);
+
+        \path (0.7, 3) node[above right] {$(F=2)$};
+        \path (0.7, -2) node[above right] {$(F=2)$};
+        \path (0.7, -3.5) node[above right] {$(F=1)$};
+        \visible<7->{
+          \draw[snakearrow,orange!70,line width=1] (-1.8, 3) -- (1, -0.5);
+        }
+      }
+    \end{tikzpicture}
+    \column{6.3cm}
+    \begin{itemize}
+    \item<2-> High initial temperature ($70\mu K$)
+    \item<3-> High Lamb Dicke parameter
+    \item<6-> Large light shift (scalar and tensor)
+    \item<8-> Trap anharmonicity
+    \end{itemize}
   \end{columns}
 \end{frame}
 
+\begin{frame}{Sequence}
+\end{frame}
+
+% * Simulation
+% * Result
 \begin{frame}{Raman sidebands}
   \begin{center}
     \begin{tikzpicture}
