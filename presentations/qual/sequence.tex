@@ -44,7 +44,7 @@
       \fill[blue!30]
       plot[draw,samples=200,domain={2.8*\i}:{2.8*\i+1.6},variable=\x] ({\x}, {sin((\x-2.8*\i) * 112.5)^4})
       -- cycle;
-      \draw[line width=1,blue] plot[domain={2.8*\i}:{2.8*\i+1.6},variable=\x]
+      \draw[line width=1,blue] plot[smooth,domain={2.8*\i}:{2.8*\i+1.6},variable=\x]
       ({\x}, {sin((\x-2.8*\i) * 112.5)^4}) -- (2.8*\i + 2.8, 0);
     }
     \path[blue] (2.8*2+0.8, 1) node[above,align=center] {\textit{Axial $z$}};
@@ -58,7 +58,7 @@
       \fill[red!30]
       plot[draw,samples=200,domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4})
       -- cycle;
-      \draw[line width=1,red] (5.6*\i, 0) -- plot[domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x]
+      \draw[line width=1,red] (5.6*\i, 0) -- plot[smooth,domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x]
       ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4}) -- (5.6*\i+5.6, 0);
     }
     \path[red] (5.6*1+2.2, 1.5) node[above,align=center] {\textit{Radial $x$}};
@@ -70,7 +70,7 @@
       \fill[black!30]
       plot[draw,samples=200,domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4})
       -- cycle;
-      \draw[line width=1,black] (5.6*\i, 0) -- plot[domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x]
+      \draw[line width=1,black] (5.6*\i, 0) -- plot[smooth,domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x]
       ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4}) -- (5.6*\i+5.6, 0);
     }
     \path[black] (5.6*1+5.0, 1.5) node[above,align=center] {\textit{Radial $y$}};
