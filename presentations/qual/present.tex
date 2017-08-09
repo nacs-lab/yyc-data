@@ -100,10 +100,17 @@
   decorations.markings,
   fadings,
   positioning,
-  shapes
+  shapes,
+  arrows.meta
 }
 \usepgfmodule{oo}
 
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
 \pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
   color(0mm)=(white);
   color(5mm)=(white);
@@ -113,6 +120,10 @@
 
 \begin{tikzfadingfrompicture}[name=glow fading]
   \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
 \end{tikzfadingfrompicture}
 
 % not mandatory, but I though it was better to set it blank
@@ -193,13 +204,13 @@
     \end{pgfonlayer}
   }
   \method drawAtom(#1,#2,#3,#4) {
-    \fill [#4,path fading=glow fading] (#1,#2) circle (#3);
+    \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
   }
   \method drawNaAtom(#1,#2,#3) {
-    \fill [blue,path fading=glow fading] (#1,#2) circle (#3);
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
   }
   \method drawCsAtom(#1,#2,#3) {
-    \fill [red,path fading=glow fading] (#1,#2) circle (#3);
+    \pgfoothis.drawAtom(#1,#2,#3,red);
   }
   \method drawNaTweezer(#1,#2) {
     \pgfoothis.drawTweezer(#1,#2,blue!35!black!30);
@@ -290,21 +301,21 @@
 % {* Test for fundamental physics}
 \begin{frame}{Applications}
   \begin{block}{\only<1>{\hyperlink{backup-many-body-echo}{Simulation of many-body system}\sfcite{Yan2013}}
-      \only<2>{Quantum computation\sfcite{Yelin2006}}}
+      \only<2>{\hyperlink{backup-quantum-gate}{Quantum computation\sfcite{Yelin2006}}}}
     \hypertarget<1>{applications-many-body}{}
     \begin{center}
       \begin{tikzpicture}
         \visible<1>{
-          \path (2.5, 2) node {$\displaystyle H\propto\sum \!\!V_{ij}\!\left(S_i^+S_j^-\!\!+\!S_i^-S_j^+\right)\!$};
-          \path (2.5, -1) node {\includegraphics[width=4cm]{imgs/many-body-oscillation.png}};
+          \path (2.5, 1) node {$\displaystyle H\propto\sum \!\!V_{ij}\!\left(S_i^+S_j^-\!\!+\!S_i^-S_j^+\right)\!$};
           \path (-3.5, 0) node {\includegraphics[width=7cm]{imgs/many-body-coupling.jpg}};
         }
         \visible<2>{
-          \path (-1, 0) node {\includegraphics[width=7.5cm]{imgs/compute-geometry.png}};
+          \path (-1, 0) node {\hyperlink{backup-exchange-term}{\includegraphics[width=7.5cm]{imgs/compute-geometry.png}}};
         }
       \end{tikzpicture}
     \end{center}
   \end{block}
+  \hypertarget<2>{applications-quantum-gate}{}
 \end{frame}
 
 %%
@@ -422,16 +433,18 @@
 % Na cooling challenges
 % [link: excited state mixing due to strong lightshift (tensor lightshift)]
 % * High initial temperature
-% * High Lamb-Dicke parameter (Raman and OP)
+% * High Lamb-Dicke parameter (Raman and OP) TODO: define
 % * Large light shift
 \begin{frame}{Raman sideband cooling}
   \begin{columns}
     \column{5.5cm}
     \begin{tikzpicture}
       \visible<1-2,6->{
+        % TODO: Remake and animate this
         \path (0, 0) node {\includegraphics[width=5.5cm]{imgs/Na_RSC_schematic.pdf}};
       }
       \visible<3-4>{
+        % TODO: animate and use arrows
         \path (0, 2) node {\includegraphics[width=5cm]{imgs/op_branching.pdf}};
       }
       \visible<4>{
@@ -465,6 +478,7 @@
         \path (0, 0) node {\includegraphics[width=12cm]{sequence.pdf}};
       }
       \visible<3> {
+        % Replot, replot
         \path (0, 0) node {\includegraphics[width=10cm]{imgs/simcool_real.pdf}};
       }
     \end{tikzpicture}
@@ -635,9 +649,102 @@
 \end{frame}
 
 \begin{frame}{}
-  \hypertarget{backup-many-body-echo}{}
+  \hypertarget<1>{backup-many-body-echo}{}
   \begin{center}
-    \hyperlink{applications-many-body}{\includegraphics[width=11.5cm]{imgs/many-body-echo.png}}
+    \hyperlink{applications-many-body}{\includegraphics[width=4cm]{imgs/many-body-oscillation.png}}\\
+    \visible<3->{
+      \includegraphics[width=10cm]{imgs/many-body-echo.png}
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\newcommand\drawLevels[1]{
+  \draw[line width=1] (#1-0.6, 4.5) -- (#1+0.6, 4.5);
+  \draw[line width=1] (#1-0.6, 0) -- (#1+0.6, 0);
+  \draw[line width=1] (#1-0.6, -1) -- (#1+0.6, -1);
+}
+
+\begin{frame}{\hyperlink{applications-quantum-gate}{Quantum computation}}
+  \hypertarget<1>{backup-quantum-gate}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \def\oneColor{yellow!80!black}
+      \def\zeroColor{magenta!65!black}
+      \drawLevels{0};
+      \drawLevels{2.2};
+      \fill [\oneColor,path fading=glow2 fading] (0, 0) circle (0.2);
+      \fill [\zeroColor,path fading=glow2 fading] (0, -1) circle (0.2);
+      \fill [\oneColor,path fading=glow2 fading] (2.2, 0) circle (0.2);
+      \fill [\zeroColor,path fading=glow2 fading] (2.2, -1) circle (0.2);
+
+      \node at (3.5 + 1.1, 4.5) {\hyperlink{backup-exchange-term}{Strong dipole}};
+      \node at (3.5 + 1.1, -0.5) {Weak dipole};
+
+      \visible<2->{
+        \drawLevels{7};
+        \drawLevels{9.2};
+        \fill [\oneColor,path fading=glow2 fading] (7, 4.5) circle (0.2);
+        \fill [\zeroColor,path fading=glow2 fading] (7, -1) circle (0.2);
+        \fill [\oneColor,path fading=glow2 fading] (9.2, 4.5) circle (0.2);
+        \fill [\zeroColor,path fading=glow2 fading] (9.2, -1) circle (0.2);
+
+        \draw[-{Stealth[length=10mm, width=5mm]},line width=4,color=red!20!gray]
+        plot[domain={-3.5}:{3.5}, variable=\x] ({\x + 3.5 + 1.1}, {5.5 - (\x)^2 / 20});
+      }
+
+      \visible<3->{
+        \draw[{Stealth[length=10mm, width=5mm]}-,line width=4,color=blue!20!gray]
+        plot[domain={-3.5}:{3.5}, variable=\x] ({\x + 3.5 + 1.1}, {-2 + (\x)^2 / 20});
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{\hyperlink{applications-quantum-gate}{Quantum computation}}
+  \hypertarget<1>{backup-exchange-term}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw (0, 0.2) -- (0.5, 0.2);
+      \draw (0.7, 0.2) -- (1.2, 0.2);
+      \draw (0, 1.41) -- (0.5, 1.41);
+      \draw (0.7, 1.41) -- (1.2, 1.41);
+
+      \fill [green!80!black,path fading=glow2 fading] (0.25, 0.2) circle (0.1);
+      \fill [red!80!black,path fading=glow2 fading] (0.95, 1.41) circle (0.1);
+
+      \draw (0 + 2.0, 0.2) -- (0.5 + 2.0, 0.2);
+      \draw (0.7 + 2.0, 0.2) -- (1.2 + 2.0, 0.2);
+      \draw (0 + 2.0, 1.41) -- (0.5 + 2.0, 1.41);
+      \draw (0.7 + 2.0, 1.41) -- (1.2 + 2.0, 1.41);
+
+      \fill [red!80!black,path fading=glow2 fading] (0.25 + 2.0, 1.41) circle (0.1);
+      \fill [green!80!black,path fading=glow2 fading] (0.95 + 2.0, 0.2) circle (0.1);
+
+      \node at (0.6, -1) {\hyperlink{backup-quantum-gate}{\LARGE $E$}};
+      \node at (0.6 + 2.0, -1) {\LARGE $\displaystyle\frac{V}{r^3}$};
+      \node at (0.6, -1 - 2.0) {\LARGE $\displaystyle\frac{V}{r^3}$};
+      \node at (0.6 + 2.0, -1 - 2.0) {\LARGE $E$};
+
+      \node[left] at (0, -1 - 2.0 / 2) {$\left(\vphantom{\rule{1pt}{2.0cm}}\right.$};
+      \node[right] at (1.2 + 2.0, -1 - 2.0 / 2) {$\left.\vphantom{\rule{1pt}{2.0cm}}\right)$};
+
+      \visible<2->{
+        \draw[-{Stealth[length=10mm, width=8mm]},line width=10,color=blue!20!gray]
+        (4, -1 - 2.0 / 2) -- (6.0, -1 - 2.0 / 2);
+
+        \node at (0.6 + 6.6, -1) {\LARGE $\displaystyle E - \frac{V}{r^3}$};
+        \node at (0.6 + 2.0 + 6.6, -1 - 2.0) {\LARGE $\displaystyle E + \frac{V}{r^3}$};
+
+        \node[left] at (0 + 6.6, -1 - 2.0 / 2) {$\left(\vphantom{\rule{1pt}{2.0cm}}\right.$};
+        \node[right] at (1.2 + 2.0 + 6.6, -1 - 2.0 / 2) {$\left.\vphantom{\rule{1pt}{2.0cm}}\right)$};
+      }
+    \end{tikzpicture}
   \end{center}
 \end{frame}
 
