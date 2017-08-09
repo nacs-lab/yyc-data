@@ -32,15 +32,15 @@
 \addbibresource{../library.bib}
 
 \DeclareCiteCommand{\footfullcitetext}
-  [\let\thefootnote\relax\mkbibfootnotetext]
-  {\usebibmacro{prenote}}
-  {\mkbibbrackets{\thefield{labelnumber}}%
-   \addnbspace%
-   \usedriver
-     {\DeclareNameAlias{sortname}{default}}
-     {\thefield{entrytype}}}
-  {\multicitedelim}
-  {\usebibmacro{postnote}}
+[\let\thefootnote\relax\mkbibfootnotetext]
+{\usebibmacro{prenote}}
+{\mkbibbrackets{\thefield{labelnumber}}%
+  \addnbspace%
+  \usedriver
+  {\DeclareNameAlias{sortname}{default}}
+  {\thefield{entrytype}}}
+{\multicitedelim}
+{\usebibmacro{postnote}}
 
 \makeatletter
 \let\cbx@citehook=\empty
@@ -50,21 +50,21 @@
   \noindent\normalfont\@thefnmark#1}
 
 \DeclareCiteCommand{\sfcite}[\cbx@superscript]%
-  {\usebibmacro{cite:init}%
-   \let\multicitedelim=\supercitedelim
-   \iffieldundef{prenote}{}{\BibliographyWarning{Ignoring prenote argument}}%
-   \iffieldundef{postnote}{}{\BibliographyWarning{Ignoring postnote argument}}}
-  {\usebibmacro{citeindex}%
-   \ifciteseen
-     {\ifnumequal{\value{page}}{\csuse{cbx@page@\thefield{entrykey}}}
-       {}
-       {\ifnumequal{\value{framenumber}}{\csuse{cbx@frame@\thefield{entrykey}}}
-          {\usebibmacro{sfcite}}
-          {}}}
-     {\usebibmacro{sfcite}}%
-   \usebibmacro{cite:comp}}
-  {}
-  {\usebibmacro{cite:dump}}
+{\usebibmacro{cite:init}%
+  \let\multicitedelim=\supercitedelim
+  \iffieldundef{prenote}{}{\BibliographyWarning{Ignoring prenote argument}}%
+  \iffieldundef{postnote}{}{\BibliographyWarning{Ignoring postnote argument}}}
+{\usebibmacro{citeindex}%
+  \ifciteseen
+  {\ifnumequal{\value{page}}{\csuse{cbx@page@\thefield{entrykey}}}
+    {}
+    {\ifnumequal{\value{framenumber}}{\csuse{cbx@frame@\thefield{entrykey}}}
+      {\usebibmacro{sfcite}}
+      {}}}
+  {\usebibmacro{sfcite}}%
+  \usebibmacro{cite:comp}}
+{}
+{\usebibmacro{cite:dump}}
 
 \newbibmacro*{sfcite}{%
   \csnumgdef{cbx@page@\thefield{entrykey}}{\value{page}}%
@@ -75,9 +75,9 @@
 \newrobustcmd*{\cbx@superscript}[1]{%
   \mkbibsuperscript{\mkbibbrackets{#1}}%
   \iftoggle{cbx@blockcite}
-    {}
-    {\cbx@citehook%
-     \global\let\cbx@citehook=\empty}}
+  {}
+  {\cbx@citehook%
+    \global\let\cbx@citehook=\empty}}
 
 \BeforeBeginEnvironment{block}{\global\toggletrue{cbx@blockcite}}
 
@@ -85,10 +85,10 @@
   \vbox to0pt{#1\vss}\prevdepth=\theprevdepth}
 
 \AfterEndEnvironment{block}
-  {\metabox{%
-     \global\togglefalse{cbx@blockcite}%
-     \cbx@citehook%
-     \global\let\cbx@citehook=\empty}}
+{\metabox{%
+    \global\togglefalse{cbx@blockcite}%
+    \cbx@citehook%
+    \global\let\cbx@citehook=\empty}}
 
 \makeatother
 
@@ -174,7 +174,6 @@
 
 \begin{document}
 
-%%
 % Talk about cold molecule assembly experiment
 % What we want to do, why we want to do it, how we do it, where we are now.
 {
@@ -238,7 +237,6 @@
   }
 }
 \pgfoonew \mytweezer=new tweezer()
-%%
 % The goal of our experiment:
 % Create ultracold NaCs molecules that are trapped in an array of optical tweezers.
 % Should have the following features
@@ -286,16 +284,15 @@
   \end{columns}
 \end{frame}
 
-%%
 % Like other ultracold atom and molecule toolboxs
 % many applications that take advantage of the features
-%
+
 % Applications that are the most relevant
 % * Quantum simulation
-%
+
 % ** Natural for spin model (Rich internal state that are coupled through the dipole interaction)
 % ** Long range
-%
+
 % * Quantum computation (digital simulation) [link: quantum computation]
 % {* Quantum chemistry}
 % {* Test for fundamental physics}
@@ -318,23 +315,24 @@
   \hypertarget<2>{applications-quantum-gate}{}
 \end{frame}
 
-%%
 % * Use established atomic cooling techniques
-%
+
 % Experiment
 % * MOT
 % * Single atom
 % * Cooling
 % * Merging
-% * Make molecule
+% * Make molecule [TODO: backup slides]
 \begin{frame}{Making molecules from atoms}
+  \hypertarget<4>{making-molecule-rsc}{}
+  \hypertarget<5>{making-molecule-merge-trap}{}
   \begin{columns}
     \column{4.5cm}
     \begin{itemize}
     \item<+-> MOT (Na + Cs)
     \item<+-> Loading single atoms \only<+->{}
-    \item<+-> Raman sideband cooling
-    \item<+-> Merge traps
+    \item<+-> \hyperlink{raman-sideband}{Raman sideband cooling}
+    \item<+-> \hyperlink{merge-trap-plan}{Merge traps}
     \item<+-> Make molecules!
     \end{itemize}
     \column{8cm}
@@ -374,7 +372,6 @@
   \end{columns}
 \end{frame}
 
-%%
 % Current state
 % * Cs more or less works as planned
 \begin{frame}{Atom loading and cooling}
@@ -400,7 +397,8 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Raman sideband cooling}
+\begin{frame}{\hyperlink{making-molecule-rsc}{Raman sideband cooling}}
+  \hypertarget<1>{raman-sideband}{}
   \begin{center}
     \begin{tikzpicture}
       \visible<2->{
@@ -429,9 +427,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
-%%
 % Na cooling challenges
-% [link: excited state mixing due to strong lightshift (tensor lightshift)]
 % * High initial temperature
 % * High Lamb-Dicke parameter (Raman and OP) TODO: define
 % * Large light shift
@@ -573,73 +569,10 @@
   \end{center}
 \end{frame}
 
-%%
 % Next step
 % * Merge
 % * Transfer
 \begin{frame}{In progress}
-  \begin{block}{Merge}
-    \begin{center}
-      \begin{tikzpicture}[scale=4]
-        \def\yoffset{-0.06}
-        \foreach \i in {0,0.5,0.9,1.05,1.25,1.4,1.8,2.3} {
-          \draw[gray!40,dashed,line width=0.5] (\i, \yoffset) -- (\i, 1.3);
-        }
-        \draw[line width=1.5,->] (-0.1, \yoffset) -- (2.5, \yoffset) node[below] {$t$(ms)};
-        \foreach \i in {0,5,...,20} {
-          \draw[line width=1] (\i/10,\yoffset) -- (\i/10,\yoffset-0.015);
-          \path (\i/10, \yoffset) node[below] {$\i$};
-        }
-        \foreach \i in {0,...,23} {
-          \draw[line width=0.4] (\i/10,\yoffset) -- (\i/10,\yoffset-0.014);
-        }
-
-        \draw[line width=1,blue] (0, 0.5) -- (2.3, 0.5);
-        \fill[blue, opacity=0.02] (0, 0) -- (0, 0.5) -- (2.3, 0.5) -- (2.3, 0) -- cycle;
-        \draw[line width=1,orange]
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.5}, {(cos(\x)+1) / 5 + 0.1})
-        -- (0.9, 0.1)
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 0.9}, {(cos(\x)+1) / 2 * 0.1})
-        -- (1.25, 0)
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 1.25}, {(1-cos(\x)) / 2 * 0.1})
-        -- (1.8, 0.1)
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.5 + 1.8}, {(1-cos(\x)) / 5 + 0.1});
-        \fill[orange, opacity=0.07] (0, 0)
-        -- plot[domain={0}:{180},variable=\x] ({\x/180*0.5}, {(cos(\x)+1) / 5 + 0.1})
-        -- (0.9, 0.1)
-        -- plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 0.9}, {(cos(\x)+1) / 2 * 0.1})
-        -- (1.25, 0)
-        -- plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 1.25}, {(1-cos(\x)) / 2 * 0.1})
-        -- (1.8, 0.1)
-        -- plot[domain={0}:{180},variable=\x] ({\x/180*0.5 + 1.8}, {(1-cos(\x)) / 5 + 0.1})
-        -- (2.3, 0) -- cycle;
-
-        \draw[line width=0.5] (-0.1, 0.65) -- (2.5, 0.65);
-        \draw[line width=1,orange] (0, 1.2) -- (2.3, 1.2);
-        \draw[line width=1,blue] (0, 0.7) -- (0.5, 0.7)
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.4 + 0.5}, {(1-cos(\x)) / 2 * 0.5 + 0.7})
-        -- (1.4, 1.2)
-        plot[domain={0}:{180},variable=\x] ({\x/180*0.4 + 1.4}, {(1+cos(\x)) / 2 * 0.5 + 0.7})
-        -- (2.3, 0.7);
-        \draw[line width=1,orange] (1.9, 1.1) -- (2.05, 1.1) node[right] {$700$nm};
-        \draw[line width=1,blue] (1.9, 0.8) -- (2.05, 0.8) node[right] {$976$nm};
-
-        \path (0, 0.0) node[left] {$0.0$};
-        \path (0, 0.5) node[left] {$2.0$};
-        \path (0, 0.7) node[left] {$0.0$};
-        \path (0, 1.2) node[left] {$2.5$};
-        \path (-0.15, 0.25) node[above,rotate=90] {\textbf{Trap depth (mK)}};
-        \path (-0.15, 0.95) node[above,rotate=90] {\textbf{Position ($\mu$m)}};
-        \path (0.25, 1.2) node[above] {Lower $700$};
-        \path (0.7, 1.23) node[above] {Merge};
-        \path (0.975, 1.2) node[left,rotate=90] {$700$ off};
-        \path (1.15, 1.2) node[above] {Hold};
-        \path (1.325, 1.2) node[left,rotate=90] {$700$ on};
-        \path (1.6, 1.23) node[above] {Separate};
-        \path (2.05, 1.2) node[above] {Raise $700$};
-      \end{tikzpicture}
-    \end{center}
-  \end{block}
 \end{frame}
 
 \begin{frame}{}
@@ -744,6 +677,73 @@
         \node[left] at (0 + 6.6, -1 - 2.0 / 2) {$\left(\vphantom{\rule{1pt}{2.0cm}}\right.$};
         \node[right] at (1.2 + 2.0 + 6.6, -1 - 2.0 / 2) {$\left.\vphantom{\rule{1pt}{2.0cm}}\right)$};
       }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{\hyperlink{making-molecule-merge-trap}{Merge trap}}
+  \hypertarget{merge-trap-plan}{}
+  \begin{center}
+    \begin{tikzpicture}[scale=4]
+      \def\yoffset{-0.06}
+      \foreach \i in {0,0.5,0.9,1.05,1.25,1.4,1.8,2.3} {
+        \draw[gray!40,dashed,line width=0.5] (\i, \yoffset) -- (\i, 1.3);
+      }
+      \draw[line width=1.5,->] (-0.1, \yoffset) -- (2.5, \yoffset) node[below] {$t$(ms)};
+      \foreach \i in {0,5,...,20} {
+        \draw[line width=1] (\i/10,\yoffset) -- (\i/10,\yoffset-0.015);
+        \path (\i/10, \yoffset) node[below] {$\i$};
+      }
+      \foreach \i in {0,...,23} {
+        \draw[line width=0.4] (\i/10,\yoffset) -- (\i/10,\yoffset-0.014);
+      }
+
+      \draw[line width=1,blue] (0, 0.5) -- (2.3, 0.5);
+      \fill[blue, opacity=0.02] (0, 0) -- (0, 0.5) -- (2.3, 0.5) -- (2.3, 0) -- cycle;
+      \draw[line width=1,orange]
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.5}, {(cos(\x)+1) / 5 + 0.1})
+      -- (0.9, 0.1)
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 0.9}, {(cos(\x)+1) / 2 * 0.1})
+      -- (1.25, 0)
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 1.25}, {(1-cos(\x)) / 2 * 0.1})
+      -- (1.8, 0.1)
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.5 + 1.8}, {(1-cos(\x)) / 5 + 0.1});
+      \fill[orange, opacity=0.07] (0, 0)
+      -- plot[domain={0}:{180},variable=\x] ({\x/180*0.5}, {(cos(\x)+1) / 5 + 0.1})
+      -- (0.9, 0.1)
+      -- plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 0.9}, {(cos(\x)+1) / 2 * 0.1})
+      -- (1.25, 0)
+      -- plot[domain={0}:{180},variable=\x] ({\x/180*0.15 + 1.25}, {(1-cos(\x)) / 2 * 0.1})
+      -- (1.8, 0.1)
+      -- plot[domain={0}:{180},variable=\x] ({\x/180*0.5 + 1.8}, {(1-cos(\x)) / 5 + 0.1})
+      -- (2.3, 0) -- cycle;
+
+      \draw[line width=0.5] (-0.1, 0.65) -- (2.5, 0.65);
+      \draw[line width=1,orange] (0, 1.2) -- (2.3, 1.2);
+      \draw[line width=1,blue] (0, 0.7) -- (0.5, 0.7)
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.4 + 0.5}, {(1-cos(\x)) / 2 * 0.5 + 0.7})
+      -- (1.4, 1.2)
+      plot[domain={0}:{180},variable=\x] ({\x/180*0.4 + 1.4}, {(1+cos(\x)) / 2 * 0.5 + 0.7})
+      -- (2.3, 0.7);
+      \draw[line width=1,orange] (1.9, 1.1) -- (2.05, 1.1) node[right] {$700$nm};
+      \draw[line width=1,blue] (1.9, 0.8) -- (2.05, 0.8) node[right] {$976$nm};
+
+      \path (0, 0.0) node[left] {$0.0$};
+      \path (0, 0.5) node[left] {$2.0$};
+      \path (0, 0.7) node[left] {$0.0$};
+      \path (0, 1.2) node[left] {$2.5$};
+      \path (-0.15, 0.25) node[above,rotate=90] {\textbf{Trap depth (mK)}};
+      \path (-0.15, 0.95) node[above,rotate=90] {\textbf{Position ($\mu$m)}};
+      \path (0.25, 1.2) node[above] {Lower $700$};
+      \path (0.7, 1.23) node[above] {Merge};
+      \path (0.975, 1.2) node[left,rotate=90] {$700$ off};
+      \path (1.15, 1.2) node[above] {Hold};
+      \path (1.325, 1.2) node[left,rotate=90] {$700$ on};
+      \path (1.6, 1.23) node[above] {Separate};
+      \path (2.05, 1.2) node[above] {Raise $700$};
     \end{tikzpicture}
   \end{center}
 \end{frame}
