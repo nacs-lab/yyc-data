@@ -81,7 +81,7 @@ end
 
 plot_hf(params, res) = plot_hf(params, collect(res))
 
-function plot_hf{T<:Tuple}(params, res::Vector{T})
+function plot_hf(params, res::Vector{T}) where {T<:Tuple}
     figure()
     for i in 1:nfields(T)
         hf = [r[i].a for r in res]
@@ -114,6 +114,57 @@ const xname = Ref("")
 function plot_hook()
     xlabel(xname[])
 end
+
+
+
+function get_ground_state(res)
+    [r.a for r in res], [r.s for r in res]
+end
+
+function get_total(res)
+    [1 - t.a for t in res], [t.s for t in res]
+end
+
+function get_nbars(res)
+    nbarx_res = (nr[1] for nr in res)
+    nbary_res = (nr[2] for nr in res)
+    nbarz_res = (nr[3] for nr in res)
+
+    nbarx = [n.a for n in nbarx_res]
+    nbarx_unc = [n.s for n in nbarx_res]
+    nbary = [n.a for n in nbary_res]
+    nbary_unc = [n.s for n in nbary_res]
+    nbarz = [n.a for n in nbarz_res]
+    nbarz_unc = [n.s for n in nbarz_res]
+
+    return nbarx, nbarx_unc, nbary, nbary_unc, nbarz, nbarz_unc
+end
+
+get_hf(res) = get_hf(collect(res))
+
+Base.@pure Nx2(N::Int) = N * 2
+
+function get_hf(res::Vector{T}) where {N,T<:NTuple{N,Any}}
+    return ntuple(i->i % 2 == 1 ? [r[(i + 1) ÷ 2].a for r in res] : [r[i ÷ 2].s for r in res],
+                  Val(Nx2(N)))
+end
+
+function save_result(params, res, fname)
+    data = (get_ground_state((r[2] for r in res))...,
+            get_total((r[1][2] for r in res))...,
+            get_nbars((r[1][1] for r in res))...,
+            get_hf((r[3][1] for r in res))...)
+    open("$fname.csv", "w") do fh
+        for i in 1:length(params)
+            print(fh, params[i])
+            for a in data
+                print(fh, ",", a[i])
+            end
+            println(fh)
+        end
+    end
+end
+
 
 function threadmap(f, arg)
     # A really simple work queue
@@ -295,7 +346,7 @@ gen_f2op_spec(p, pol) =
 #     F1 Down 1.000 + F2 counterop 1.000: Ω = 2π / 11.45us
 # The Rabi frequencies (2π times) here are for full matrix element
 
-const include_scatter = false
+const include_scatter = true
 
 const sz = 300, 30, 30
 const trapscatter = System.Scatter{Float32}(eye(Float32, 8) .* 0.033e-3 * include_scatter,
@@ -491,14 +542,15 @@ function create_sequence(n)
 end
 
 # const params = linspace(0, 3000000, 101)
-const params = 0:3:96
+const params = 0:1:96
 res = @time threadmap(p->Setup.run(create_sequence(p), statec(), nothing, 100000), params)
 xname[] = "Pulse group"
 
 if interactive()
     plot_result(params, res, "")
 else
-    mkpath(ARGS[1], 0o750)
-    plot_result(params, res, ARGS[1])
+    # mkpath(ARGS[1], 0o750)
+    # plot_result(params, res, ARGS[1])
+    save_result(params, res, ARGS[1])
 end
 maybe_show()
