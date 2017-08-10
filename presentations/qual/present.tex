@@ -753,19 +753,25 @@
 
 \begin{frame}{Rabi flopping (radial)}
   \begin{center}
-    \visible<+->{
-      \includegraphics[width=10cm]{../../experiments/rabi_flop/imgs/fit_20170409_r2_0_ba.png}\\
-    }
-    \visible<+->{
-      Good agreement in ground state probability between spectrum and Rabi flopping data.
-    }
+    \begin{tikzpicture}
+      \node[above] at (0, 0) {\includegraphics[width=6cm]{imgs/rabi_flop_r2_0.pdf}};
+      \node[above] at (6, 0) {\includegraphics[width=6cm]{imgs/rabi_flop_r2_p1.pdf}};
+      \visible<2->{
+        \node[below,text width=9cm,align=center] at (3, -1)
+        {Good agreement in ground state probability between spectrum and Rabi flopping data.};
+      }
+    \end{tikzpicture}
   \end{center}
 \end{frame}
 
 \begin{frame}{Rabi flopping (axial)}
   \begin{center}
-    \includegraphics[height=4.8cm]{../../experiments/rabi_flop/imgs/fit_20170409_a1_0_nol.png}
-    \includegraphics[height=4.8cm]{../../experiments/rabi_flop/imgs/fit_20170409_a1_p1_nol.png}
+    \begin{tikzpicture}
+      \node[above] at (0, 0) {\includegraphics[width=6cm]{imgs/rabi_flop_a1_0.pdf}};
+      \node[above] at (6, 0) {\includegraphics[width=6cm]{imgs/rabi_flop_a1_p1.pdf}};
+      \node[below,text width=9cm,align=center] at (3, -1)
+      {Decoherence caused by technical noise.\\E.g. $1.5$ mG of magnetic field noise.};
+    \end{tikzpicture}
   \end{center}
 \end{frame}
 
