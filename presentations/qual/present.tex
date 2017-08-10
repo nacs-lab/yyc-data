@@ -492,7 +492,7 @@
         }
         \path (2.05, 1.5 - 2.6) node[right,rotate=90] {\LARGE $\cdots$};
         \path (2.05 + 0.5, 0.9 - 2.6) node[right] {$|1,-1;n\rangle$};
-        \path (2.05 + 0.4, 0.3 - 2.6) node[right] {$|1,-1;n\!\!-\!\!1\rangle$};
+        \path (2.05 + 0.33, 0.3 - 2.6) node[right] {$|1,-1;n\!\!-\!\!1\rangle$};
       }
 
       \visible<2,4->{
@@ -664,12 +664,15 @@
   \begin{center}
     \begin{tikzpicture}
       \visible<1> {
-        \path (0, 0) node {\includegraphics[width=10cm]{imgs/mele_raman.pdf}};
+        \path (0, 0) node {\includegraphics[width=10cm]{imgs/mele_raman_1.pdf}};
       }
       \visible<2> {
-        \path (0, 0) node {\includegraphics[width=12cm]{sequence.pdf}};
+        \path (0, 0) node {\includegraphics[width=10cm]{imgs/mele_raman.pdf}};
       }
       \visible<3> {
+        \path (0, 0) node {\includegraphics[width=12cm]{sequence.pdf}};
+      }
+      \visible<4> {
         % Replot, replot
         \path (0, 0) node {\includegraphics[width=10cm]{imgs/simcool_real.pdf}};
       }
