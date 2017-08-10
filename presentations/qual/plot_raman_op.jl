@@ -7,7 +7,7 @@ import NaCsCalc: Trap
 using Cubature
 using PyPlot
 
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20))
+PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 25))
 PyPlot.matplotlib[:rc]("xtick", labelsize=15)
 PyPlot.matplotlib[:rc]("ytick", labelsize=15)
 
@@ -112,10 +112,10 @@ const coupling_ra1 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra1), fal
 const coupling_ra2 = (op_heating_all(op_heating_ra, 30, 30, Float32(η_ra2), false) *
                       op_heating_all(op_heating_ra, 30, 30, Float32(η_ra2), true))
 
-function plot_op_sidebands(n1s, n2s, coupling)
+function plot_op_sidebands(n1s, n2s, coupling; kws...)
     for i in 1:length(n2s)
         n2 = n2s[i]
-        plot(n1s, coupling[n2 + 1, n1s + 1], ".-")
+        plot(n1s, coupling[n2 + 1, n1s + 1], ".-"; kws...)
     end
 end
 
@@ -146,13 +146,13 @@ end
 figure(figsize=[1.5, 0.9] * 4.8)
 plot_op_sidebands(0:nmax, [0, 1, 2, 5, 10, 20, 35, 55], coupling_ax)
 text(0.5, 0.8, "\$n_{init}\\!\\!=\\!\\!0\$", color="C0")
-text(1, 0.53, "\$n_{init}\\!\\!=\\!\\!1\$", color="C1")
-text(2, 0.40, "\$n_{init}\\!\\!=\\!\\!2\$", color="C2")
-text(3, 0.28, "\$n_{init}\\!\\!=\\!\\!5\$", color="C3")
-text(7, 0.20, "\$n_{init}\\!\\!=\\!\\!10\$", color="C4")
-text(19.5, 0.14, "\$n_{init}\\!\\!=\\!\\!20\$", color="C5")
-text(33, 0.12, "\$n_{init}\\!\\!=\\!\\!35\$", color="C6")
-text(49, 0.10, "\$n_{init}\\!\\!=\\!\\!55\$", color="C7")
+text(1, 0.57, "\$n_{init}\\!\\!=\\!\\!1\$", color="C1")
+text(2, 0.43, "\$n_{init}\\!\\!=\\!\\!2\$", color="C2")
+text(3, 0.32, "\$n_{init}\\!\\!=\\!\\!5\$", color="C3")
+text(7, 0.23, "\$n_{init}\\!\\!=\\!\\!10\$", color="C4")
+text(15, 0.16, "\$n_{init}\\!\\!=\\!\\!20\$", color="C5")
+text(32, 0.13, "\$n_{init}\\!\\!=\\!\\!35\$", color="C6")
+text(49, 0.115, "\$n_{init}\\!\\!=\\!\\!55\$", color="C7")
 grid()
 xlim([0, nmax])
 ylim([0, 0.9])
@@ -167,13 +167,35 @@ xlim([0, nmax])
 ylim([0, 0.75])
 grid()
 text(0, 0.60, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!1\$", color="C0")
-text(9, 0.50, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!2\$", color="C1")
-text(21, 0.445, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!3\$", color="C2")
+text(9, 0.53, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!2\$", color="C1")
+text(19, 0.45, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!3\$", color="C2")
 text(36, 0.41, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!4\$", color="C3")
 text(53, 0.39, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!5\$", color="C4")
 xlabel("Motional state \$n\$")
 ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
 title("Raman matrix elements")
 maybe_save(joinpath(@__DIR__, "imgs/mele_raman"))
+
+figure(figsize=[1.5, 0.9] * 4.8)
+plot_op_sidebands(0:nmax, [35], coupling_ax, color="C6")
+text(32, 0.13, "\$n_{init}\\!\\!=\\!\\!35\$", color="C6")
+grid()
+xlim([0, nmax])
+ylim([0, 0.9])
+title("Motional state branching ratios")
+ylabel("Probability")
+xlabel("Motional state \$n\$")
+maybe_save(joinpath(@__DIR__, "imgs/op_branching_1"))
+
+figure(figsize=[1.5, 0.9] * 4.8)
+plot_sidebands(0:nmax, -1:-1:-1, η_ax)
+xlim([0, nmax])
+ylim([0, 0.75])
+grid()
+text(0, 0.60, "\$\\Delta n\\!\\!=\\!\\!\\!-\\!1\$", color="C0")
+xlabel("Motional state \$n\$")
+ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
+title("Raman matrix elements")
+maybe_save(joinpath(@__DIR__, "imgs/mele_raman_1"))
 
 maybe_show()
