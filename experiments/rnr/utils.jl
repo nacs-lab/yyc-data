@@ -39,7 +39,7 @@ end
 end
 
 @inline pdf_rnr{N}(kT::Number, t, ωs::NTuple{N}, Es::NTuple{N}) =
-    pdf_rnr(ntuple(i->kT, Val{N}), t, ωs, Es)
+    pdf_rnr(ntuple(i->kT, Val(N)), t, ωs, Es)
 
 function pdf_rnr_polar(kT, t, ωs, Er, θ, ϕ)
     sinθ = @fastmath sin(θ)

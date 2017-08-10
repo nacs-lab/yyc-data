@@ -41,7 +41,7 @@ function op_pulse(t, γ1, γ2, γ2′=0.01f0 * γ2, ηs=η_op, ηdri=η_op_dri)
     System.OP{Float32}(t, branching, ηs, ηdri, isσ)
 end
 function raman_pulse(ax, order, t, Γ)
-    ns = ntuple(i->i == ax ? -order : 0, Val{3})
+    ns = ntuple(i->i == ax ? -order : 0, Val(3))
     System.Raman{Float32,1,3}(t, 1, η_ramans[ax], ns, sz, Γ)
 end
 

@@ -521,7 +521,7 @@ function (::HyperFineMeasure{N})(res::Vector{Int}, state::StateC, extern_state, 
 end
 function Setup.finalize_measure(::HyperFineMeasure{N}, m, n) where {N}
     total = m[N + 1]
-    return (ntuple(i->binomial_unc(m[i], total), Val{N}),
+    return (ntuple(i->binomial_unc(m[i], total), Val(N)),
             binomial_unc(total, n))
 end
 function Setup.abort_measure(::HyperFineMeasure, res::Vector{Int}, n)
