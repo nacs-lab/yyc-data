@@ -637,9 +637,8 @@
         \node[above right] at (-2.3, -3.5) {\includegraphics[width=6cm]{imgs/mele_raman_1.pdf}};
       }
       \visible<8>{
-        % TODO? Better figure
-        % TODO backup slide
-        \node[below left] at (9.9, 5.2) {\includegraphics[width=6cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_pdf.png}};
+        \hypertarget<8>{raman-difficulty-pdf}{}
+        \node[below left] at (9.9, 5.5) {\hyperlink{backup-diff-adiabatic}{\includegraphics[width=6cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_pdf.png}}};
       }
 
       \visible<4->{
@@ -807,6 +806,8 @@
     \begin{tikzpicture}
       \def\oneColor{yellow!80!black}
       \def\zeroColor{magenta!65!black}
+      \node[left] at (-0.6, -1) {\large $|0\rangle$};
+      \node[left] at (-0.6, 0) {\large $|1\rangle$};
       \drawLevels{0};
       \drawLevels{2.2};
       \fill [\oneColor,path fading=glow2 fading] (0, 0) circle (0.2);
@@ -878,6 +879,23 @@
         \node[left] at (0 + 6.6, -1 - 2.0 / 2) {$\left(\vphantom{\rule{1pt}{2.0cm}}\right.$};
         \node[right] at (1.2 + 2.0 + 6.6, -1 - 2.0 / 2) {$\left.\vphantom{\rule{1pt}{2.0cm}}\right)$};
       }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+  \hypertarget{backup-diff-adiabatic}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above] at (-5.5, 0) {\hyperlink{raman-difficulty-pdf}{Before cooling}};
+      \node[below] at (-5.5, 0) {\includegraphics[width=5.2cm]{../../experiments/adiabatic_lowering/imgs/AC_none_cdf.png}};
+      \node[below] at (-5.5, -4) {\includegraphics[width=5.2cm]{../../experiments/adiabatic_lowering/imgs/AC_none_pdf.png}};
+      \node[above] at (0, 0) {After cooling};
+      \node[below] at (0, 0) {\includegraphics[width=5.2cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_cdf.png}};
+      \node[below] at (0, -4) {\includegraphics[width=5.2cm]{../../experiments/adiabatic_lowering/imgs/AC_old-pulsed_pdf.png}};
     \end{tikzpicture}
   \end{center}
 \end{frame}
