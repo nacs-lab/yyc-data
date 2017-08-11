@@ -165,6 +165,34 @@
 \addtobeamertemplate{background}{\box\@backgroundblock}{}
 \makeatother
 
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\ue}{\mathrm{e}}
+\newcommand{\ui}{\mathrm{i}}
+\newcommand{\res}{\mathrm{Res}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\texp}[2]{\ensuremath{{#1}\times10^{#2}}}
+\newcommand{\dexp}[2]{\ensuremath{{#1}\cdot10^{#2}}}
+\newcommand{\eval}[2]{{\left.{#1}\right|_{#2}}}
+\newcommand{\paren}[1]{{\left({#1}\right)}}
+\newcommand{\lparen}[1]{{\left({#1}\right.}}
+\newcommand{\rparen}[1]{{\left.{#1}\right)}}
+\newcommand{\abs}[1]{{\left|{#1}\right|}}
+\newcommand{\sqr}[1]{{\left[{#1}\right]}}
+\newcommand{\crly}[1]{{\left\{{#1}\right\}}}
+\newcommand{\angl}[1]{{\left\langle{#1}\right\rangle}}
+\newcommand{\tpdiff}[4][{}]{{\paren{\frac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}_{#4}}}
+\newcommand{\tpsdiff}[4][{}]{{\paren{\frac{\partial^{#1}}{\partial {#3}{}^{#1}}{#2}}_{#4}}}
+\newcommand{\pdiff}[3][{}]{{\frac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}}
+\newcommand{\diff}[3][{}]{{\frac{\ud^{#1} {#2}}{\ud {#3}{}^{#1}}}}
+\newcommand{\psdiff}[3][{}]{{\frac{\partial^{#1}}{\partial {#3}{}^{#1}} {#2}}}
+\newcommand{\sdiff}[3][{}]{{\frac{\ud^{#1}}{\ud {#3}{}^{#1}} {#2}}}
+\newcommand{\tpddiff}[4][{}]{{\left(\dfrac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}\right)_{#4}}}
+\newcommand{\tpsddiff}[4][{}]{{\paren{\dfrac{\partial^{#1}}{\partial {#3}{}^{#1}}{#2}}_{#4}}}
+\newcommand{\pddiff}[3][{}]{{\dfrac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}}
+\newcommand{\ddiff}[3][{}]{{\dfrac{\ud^{#1} {#2}}{\ud {#3}{}^{#1}}}}
+\newcommand{\psddiff}[3][{}]{{\frac{\partial^{#1}}{\partial{}^{#1} {#3}} {#2}}}
+\newcommand{\sddiff}[3][{}]{{\frac{\ud^{#1}}{\ud {#3}{}^{#1}} {#2}}}
+
 % \def\timeleft{15:00->14:55}
 
 \title{Ultracold molecule assembly}
@@ -661,7 +689,8 @@
 \end{frame}
 
 % * Simulation
-\begin{frame}{Sequence and simulation}
+\begin{frame}{\hyperlink{backup-master-eq}{Sequence and simulation}}
+  \hypertarget<3>{seq-and-sim-sequence}{}
   \begin{center}
     \begin{tikzpicture}
       \visible<1> {
@@ -996,6 +1025,19 @@
   \hypertarget{backup-associate}{}
   \begin{center}
     \hyperlink{conclusion}{\includegraphics[height=7cm]{imgs/molecule-formation.pdf}}
+  \end{center}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{\hyperlink{seq-and-sim-sequence}{Master equation}}
+  \hypertarget{backup-master-eq}{}
+  \begin{center}
+    \begin{align*}
+      \diff{\rho}{t}=&\frac{1}{\ui\hbar}\sqr{H, \rho}+\mathcal{L}_{\mathrm{relax}}(\rho)\\
+      \mathcal{L}_{\mathrm{relax}}(\rho)=&\sum_m C_m\rho C_m^\dagger-\frac12\sum_m\paren{C_mC_m^\dagger\rho+\rho C_mC_m^\dagger}
+    \end{align*}
   \end{center}
 \end{frame}
 
