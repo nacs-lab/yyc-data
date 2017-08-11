@@ -445,8 +445,6 @@
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
-      \node[right, color={frametitle.fg}] at (-2.2, 5)
-      {\textbf{Raman sideband cooling}};
       \visible<1->{
         % F2 trap
         \draw[line width=1]
@@ -623,6 +621,11 @@
         arc (180:{360+180}:\radiush cm and \radiusv cm);
       \end{scope}
 
+      \visible<4,9->{
+        \fill[white, opacity=0.35] (-2.22, 5.25) rectangle (9.9, -2.7);
+      }
+      \node[right, color={frametitle.fg}] at (-2.2, 5)
+      {\textbf{Raman sideband cooling}};
       \visible<5-8>{
         \fill[white, opacity=0.97] (-2.22, 5.25) rectangle (9.9, -2.7);
       }
@@ -782,7 +785,7 @@
   \begin{block}{Conclusion}
     \begin{itemize}
     \item Trapping of Na and Cs atoms
-    \item Ground state cooling of Na and Cs
+    \item Ground state cooling of Na\sfcite{Yu2017} and Cs
     \end{itemize}
   \end{block}
   \begin{block}{In progress}
