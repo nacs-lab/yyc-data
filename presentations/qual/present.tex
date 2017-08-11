@@ -424,7 +424,7 @@
       \draw[<->,line width=0.9] (-2.4, 4.2) -- (-2.4, 3);
       \path (-2.4, 3.6) node[left] {$\hbar\omega$};
       \draw[line width=1]
-      plot[domain={-2.5}:{2.5},variable=\x] ({\x}, {(\x)^2});
+      plot[smooth,domain={-2.5}:{2.5},variable=\x] ({\x}, {(\x)^2});
     \end{tikzpicture}
   \end{center}
 \end{frame}
