@@ -249,8 +249,21 @@ function load_matscan(fnames)
             elseif glob_numimages[] != numimages
                 error("Image number mismatch. ($(glob_numimages[]) != $numimages)")
             end
-            local single_atom = read(fd, "SingleAtom")::Matrix{Float64}
-            local param_list = read(fd, "ParamList")::Matrix{Float64}
+            local single_atom
+            local param_list
+            param_list = read(fd, "ParamList")::Matrix{Float64}
+            if exists(fd, "SingleAtom")
+                # Old format
+                single_atom = vec(read(fd, "SingleAtom")::Matrix{Float64})
+            else
+                # New multi atom format, only support one site for now
+                analysis = read(fd, "Analysis")::Dict{String,Any}
+                sal = analysis["SingleAtomLogical"]::Array{Float64,3}
+                if size(sal, 2) != 1
+                    error("Multi-cite sequence not supported yet.")
+                end
+                single_atom = vec(sal)
+            end
             for i in 1:length(param_list)
                 @inbounds param = param_list[i]
                 frame = if param in keys(data_sorter)
