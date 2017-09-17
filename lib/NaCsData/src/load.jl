@@ -59,7 +59,7 @@ struct CountValues <: AbstractValues
 end
 CountData{K} = SortedData{K,CountValues}
 function load_count_csv(fname)
-    data = readcsv(fname, Float64, skipstart=1)
+    data = readdlm(fname, ',', Float64, skipstart=1)
     params = data[:, 1]
     counts = Int.(@view data[:, 2:end])
     return CountData{Float64}(params, CountValues(counts))
@@ -287,7 +287,7 @@ function calc_survival(fnames)
     data_dict = Dict{Float64,Vector{Float64}}()
     local num_cnts::Int
     for fname in fnames
-        data = readcsv(fname, Float64, skipstart=1)
+        data = readdlm(fname, ',', Float64, skipstart=1)
         num_cnts = size(data, 2) - 1
         for i in 1:size(data, 1)
             param = data[i, 1]
