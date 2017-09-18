@@ -48,9 +48,9 @@ struct Unc{T<:AbstractFloat}
     a::T
     s::T
     exp_type::ExpType
-    (::Type{Unc{T}}){T}(a, s, exp_type=Exp) = new{T}(a, s, exp_type)
+    Unc{T}(a, s, exp_type=Exp) where T = new(a, s, exp_type)
 end
-Unc{T<:AbstractFloat}(a::T, s::T, exp_type=Exp) = Unc{T}(a, s, exp_type)
+Unc(a::T, s::T, exp_type=Exp) where {T<:AbstractFloat} = Unc{T}(a, s, exp_type)
 Unc(a, b, exp_type=Exp) = Unc(promote(float(a), float(b))..., exp_type)
 Base.:*(u::Unc, v) = Unc(u.a * v, u.s * v, u.exp_type)
 Base.:*(v, u::Unc) = Unc(v * u.a, v * u.s, u.exp_type)

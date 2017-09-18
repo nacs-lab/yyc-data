@@ -4,14 +4,14 @@ module Trap
 
 import ..Utils
 
-function η{T1,T2,T3}(m::T1, freq::T2, k::T3)
+function η(m::T1, freq::T2, k::T3) where {T1,T2,T3}
     T = float(promote_type(T1, T2, T3))
     ħ = T(1.0545718e-34)
     z_0 = √(ħ / 2 / m / (T(2π) * freq))
     z_0 * k
 end
 
-function sideband{T<:AbstractFloat}(n1::Integer, n2::Integer, η::T)::T
+function (sideband(n1::Integer, n2::Integer, η::T)::T) where {T<:AbstractFloat}
     if n1 < 0 || n2 < 0
         return 0
     elseif η == 0
@@ -54,8 +54,8 @@ sideband(n1::Integer, n2::Integer, η) = sideband(n1, n2, float(η))
     end
 end
 
-@generated function thermal_sideband{N}(nbar::NTuple{N}, t, η::NTuple{N},
-                                        Δn::NTuple{N})
+@generated function thermal_sideband(nbar::NTuple{N}, t, η::NTuple{N},
+                                     Δn::NTuple{N}) where N
     factor = ceil(Int, log(N * 1e3))
     init = quote
         nmax = ($((:(ceil(Int, nbar[$i] * $factor)) for i in 1:N)...),)

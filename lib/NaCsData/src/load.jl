@@ -18,7 +18,7 @@ struct SortedData{K,Vs<:AbstractValues}
     params::Vector{K}
     values::Vs
 end
-@inline function Base.getindex{K,Vs}(data::SortedData{K,Vs}, _arg0, _arg1=Colon())
+@inline function Base.getindex(data::SortedData{K,Vs}, _arg0, _arg1=Colon()) where {K,Vs}
     arg0 = to_arrayidx(_arg0)
     arg1 = to_arrayidx(_arg1)
     return SortedData{K,Vs}(data.params[arg0], data.values[arg0, arg1])
@@ -33,7 +33,7 @@ else
     return 1
 end
 @inline Base.ndims(::SortedData) = 2
-function Base.vcat{K,Vs}(datas::SortedData{K,Vs}...)
+function Base.vcat(datas::SortedData{K,Vs}...) where {K,Vs}
     CT = combiner_type(Vs)
     combiners = Dict{K,CT}()
     params = Vector{K}()
@@ -174,13 +174,13 @@ SurvivalData(data::CountData{K}) where K =
 get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
 get_values(data::CountData) = get_values(SurvivalData(data))
 
-function map_params{F}(f::F, data::SortedData)
+function map_params(f::F, data::SortedData) where {F}
     params = data.params
     nparams = length(params)
     SortedData([f(i, params[i]) for i in 1:nparams], data.values)
 end
-map_params{F}(f::F, data::Tuple) = map(d->map_params(f, d), data)
-map_params{F}(f::F, data::OrderedDict) = OrderedDict(k=>map_params(f, v) for (k, v) in data)
+map_params(f::F, data::Tuple) where {F} = map(d->map_params(f, d), data)
+map_params(f::F, data::OrderedDict) where {F} = OrderedDict(k=>map_params(f, v) for (k, v) in data)
 
 function _split_data(data, offset, dict, spec::OrderedDict)
     return OrderedDict(k=>_split_data(data, offset, dict, v) for (k, v) in spec)
@@ -190,7 +190,7 @@ function _split_data(data, offset, dict, spec::Tuple)
     return map(s->_split_data(data, offset, dict, s), spec)
 end
 
-function _split_data{T}(data, _offset, dict, spec::AbstractArray{T})
+function _split_data(data, _offset, dict, spec::AbstractArray{T}) where {T}
     nspec = length(spec)
     params = Vector{T}()
     idxs = Vector{Int}()
