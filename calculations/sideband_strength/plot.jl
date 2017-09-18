@@ -4,12 +4,8 @@ push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc: Trap
 import NaCsCalc.Utils: interactive
+using NaCsPlot
 using PyPlot
-
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                            "font.weight" => "bold"))
-PyPlot.matplotlib[:rc]("xtick", labelsize=25)
-PyPlot.matplotlib[:rc]("ytick", labelsize=25)
 
 const m_Na = 23e-3 / 6.02e23
 const η_ax = Trap.η(m_Na, 87.5e3, 2π / 589e-9) * 0.67
@@ -79,35 +75,19 @@ function plot_sidebands(ns, Δns, η)
     ylabel("\$|\\langle n |e^{ikr}| n + \\Delta n \\rangle|\$")
 end
 
-const save_fig = get(ENV, "NACS_SAVE_FIG", "true") == "true"
-
-function maybe_save(name)
-    if !interactive()
-        savefig("$name.png"; bbox_inches="tight", transparent=true)
-        savefig("$name.svg", bbox_inches="tight", transparent=true)
-        close()
-    end
-end
-
-function maybe_show()
-    if interactive()
-        show()
-    end
-end
-
 figure()
 plot_sidebands(0:70, -6:0, η_ax)
 title("Axial Z coupling strength")
-maybe_save(joinpath(@__DIR__, "imgs/coupling_z_0.36_0-6"))
+NaCsPlot.maybe_save(joinpath(@__DIR__, "imgs/coupling_z_0.36_0-6"))
 
 figure()
 plot_sidebands(0:25, -2:0, η_rad1)
 title("Radial X coupling strength")
-maybe_save(joinpath(@__DIR__, "imgs/coupling_x_0.32_0-2"))
+NaCsPlot.maybe_save(joinpath(@__DIR__, "imgs/coupling_x_0.32_0-2"))
 
 figure()
 plot_sidebands(0:25, -2:0, η_rad2)
 title("Radial Y coupling strength")
-maybe_save(joinpath(@__DIR__, "imgs/coupling_y_0.32_0-2"))
+NaCsPlot.maybe_save(joinpath(@__DIR__, "imgs/coupling_y_0.32_0-2"))
 
-maybe_show()
+NaCsPlot.maybe_show()
