@@ -2,6 +2,7 @@
 
 using MAT
 import NaCsCalc.Utils: binomial_estimate
+import NaCsCalc.Format: Unc
 using DataStructures
 
 abstract type AbstractValues end
@@ -52,6 +53,10 @@ function Base.vcat(datas::SortedData{K,Vs}...) where {K,Vs}
         end
     end
     SortedData{K,Vs}(params, create_values(params, combiners))
+end
+function Base.show(io::IO, data::SortedData)
+    params, ratios, uncs = get_values(data)
+    print(io, "SortedData", "(params=", params, ", data=", Unc.(ratios, uncs), ")")
 end
 
 struct CountValues <: AbstractValues
