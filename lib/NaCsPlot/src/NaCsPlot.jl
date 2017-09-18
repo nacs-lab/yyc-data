@@ -24,16 +24,21 @@ function plot_survival_data(data, scale=1; kws...)
     errorbar(params, ratios, uncs; kws...)
 end
 
+function save(name; close=true)
+    dir = dirname(name)
+    if !isempty(dir)
+        mkpath(dir, 0o755)
+    end
+    savefig("$name.pdf"; bbox_inches="tight", transparent=true)
+    savefig("$name.png"; bbox_inches="tight", transparent=true)
+    savefig("$name.svg", bbox_inches="tight", transparent=true)
+    close && PyPlot.close()
+    return
+end
+
 function maybe_save(name)
     if !interactive()
-        dir = dirname(name)
-        if !isempty(dir)
-            mkpath(dir, 0o755)
-        end
-        savefig("$name.pdf"; bbox_inches="tight", transparent=true)
-        savefig("$name.png"; bbox_inches="tight", transparent=true)
-        savefig("$name.svg", bbox_inches="tight", transparent=true)
-        close()
+        save(name)
     end
 end
 
