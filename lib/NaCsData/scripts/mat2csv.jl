@@ -7,6 +7,11 @@ using NaCsData
 iname = ARGS[1:end - 1]
 oname = ARGS[end]
 
+if length(iname) == 0
+    println(STDERR, "No input file given")
+    exit(1)
+end
+
 if isdir(oname)
     oname = joinpath(oname, "$(splitext(basename(iname[1]))[1]).csv")
 end
