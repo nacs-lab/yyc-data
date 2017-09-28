@@ -28,10 +28,9 @@ open(oname, "w") do fd
     end
     println(fd)
     for i in 1:length(pl)
-        print(fd, pl[i])
+        print(fd, pl[i], ",1")
         for j in 1:size(sa, 1)
-            write(fd, ",")
-            print(fd, sa[j, 1, i])
+            print(fd, ',', sa[j, 1, i])
         end
         println(fd)
     end
