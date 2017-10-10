@@ -1,32 +1,33 @@
 # Research accomplished in the past year
 
-1. Raman sideband cooling for Sodium.
+1. Implement and optmize Raman sideband cooling for Sodium
 
-    * Observing and characterizing all Raman sideband
-    * Understanding of the cooling process
-    * Optimizing and characterizing cooling sequence
+    * Observe and characterize Raman sideband in all three axis
+    * Obtain a better understanding of the cooling process by calculating or measuring most
+      of the imperfections during the cooling
+    * Optimize the cooling sequence and characterize the cooling results.
 
-2. NaCs photo-association spectrum
+2. Observe NaCs photo-association spectrum
 
-    * Merging Na and Cs trap
-    * Reducing spin exchange loss between Na and Cs atoms
+    * Merge Na and Cs trap
+    * Reduce spin exchange loss between Na and Cs atoms by preparing the initial hyperfine states
     * Measure NaCs electronic excited state energy levels
 
-# Timeline
+# Experiment timeline
 
 * 2017 - early 2018
 
-    Loosely bound NaCs molecule
+    Create loosely bound NaCs molecule
 
 * 2018
 
-    Ground state NaCs molecule
+    Create singlet ground state NaCs molecule
 
-Goals:
+Goals of the experiment:
 
-* Create multiple NaCs singlet ground state molecules.
+* Create multiple NaCs singlet ground state molecules
 
-* Demonstrate interaction and quantum gates.
+* Demonstrate interaction and quantum gates
 
 # List of in progress or completed publications
 
