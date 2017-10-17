@@ -199,8 +199,12 @@
   }
 \end{frame}
 
-% Story
-% * openlibm performance issue
+% openlibm performance issue
+% Not only does this trigger the chain of events that led me to implement this PR
+% but it's also another example of interaction between code compiled for different archs.
+
+% Processors shouldn't remember the history and decide how fast to run
+% Except that it does....
 
 \begin{frame}{How did it all begin}
   \begin{tikzpicture}
@@ -224,6 +228,9 @@
     }
   \end{tikzpicture}
 \end{frame}
+
+% Larger address space / more data simultaneously
+% Issue caused by mixing YMM aware Glibc code and legacy code using XMM in openlibm.
 
 \begin{frame}{Register size}
   \begin{center}
@@ -253,6 +260,73 @@
       }
     \end{tikzpicture}
   \end{center}
+\end{frame}
+
+\begin{frame}{Compile openlibm for AVX (ymm registers)}
+  \begin{itemize}
+  \item<+-> GCC function attribute \textit{target\_clone}\\
+    \ldots specify that a function be cloned into multiple versions
+    compiled with different target options \ldots It also creates a resolver function (\ldots)
+    that dynamically selects a clone suitable for current architecture \ldots\\\vspace{0.5cm}
+  \item<+-> Has bug on current GCC versions so not usable in openlibm.\\
+    But it's a good start.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Why function multiversioning}
+  \begin{itemize}
+  \item<+-> For code in the system image\\\vspace{0.1cm}
+  \item<+-> For JIT code\\\vspace{0.1cm}
+    \visible<+->{JIT features > system image features}\\\vspace{0.1cm}
+    \visible<+->{JIT register size == system register size}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Cloning}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[fill=red!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (-5, 2) (f0) {test\_f};
+      \node[fill=red!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (0, 2) (g0) {test\_g};
+      \node[fill=red!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (5, 2) (h0) {test\_h};
+      \draw[->, line width=1.4] (g0) edge (f0);
+      \visible<1> {
+        \draw[->, line width=1.4] (h0) edge (g0);
+      }
+
+      \visible<2-> {
+        \node[fill=green!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (-5, -2) (f1) {test\_f.clone};
+        \node[fill=green!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (0, -2) (g1) {test\_g.clone};
+        \draw[->, line width=1.4] (g1) edge (f1);
+      }
+      \visible<2> {
+        \draw[->, red, line width=1.4] (h0) edge (g0);
+      }
+
+      \visible<3> {
+        \node[fill=orange!20!white,thick,rounded corners=.3cm,inner sep=8pt] at (1, 0) (gg) {test\_g.slot};
+        \draw[->, blue, line width=1.4] (h0) edge (gg);
+        \draw[->, dashed, line width=1.4] (gg) edge (g0);
+        \draw[->, dashed, line width=1.4] (gg) edge (g1);
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Next step}
+  \begin{block}{}
+    \begin{itemize}
+    \item<+-> Expose user API\\\vspace{0.2cm}
+      \begin{itemize}
+      \item<+-> Platform agnostic, e.g. ``fma''\\\vspace{0.2cm}
+      \item<+-> Platform specific, e.g. ``x86::avx2''\\\vspace{0.2cm}
+      \end{itemize}\\\vspace{0.2cm}
+    \item<+-> Make use of this in other part of runtime\\\vspace{0.2cm}
+      \visible<+->{crc32c, PLT, \ldots}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{}
 \end{frame}
 
 \end{document}
