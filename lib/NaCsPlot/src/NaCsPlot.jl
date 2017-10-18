@@ -31,7 +31,7 @@ function save(name; close=true)
     end
     savefig("$name.pdf"; bbox_inches="tight", transparent=true)
     savefig("$name.png"; bbox_inches="tight", transparent=true)
-    savefig("$name.svg", bbox_inches="tight", transparent=true)
+    savefig("$name.svg"; bbox_inches="tight", transparent=true)
     close && PyPlot.close()
     return
 end
