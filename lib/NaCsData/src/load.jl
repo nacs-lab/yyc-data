@@ -69,6 +69,9 @@ function dump_raw(io::IO, data::SortedData)
     end
 end
 dump_raw(data::SortedData) = dump_raw(STDOUT, data)
+dump_raw(fname::AbstractString, data::SortedData) = open(fname, "w") do io
+    dump_raw(io, data)
+end
 
 struct CountValues <: AbstractValues
     counts::Matrix{Int}
