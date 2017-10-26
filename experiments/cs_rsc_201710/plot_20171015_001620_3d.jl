@@ -21,6 +21,7 @@ const spec_a = OrderedDict(
 const split_a = NaCsData.split_data(data_a, spec_a)
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20171015_001620_3d")
+const sorted_prefix = joinpath(@__DIR__, "sorted", "data_20171015_001620_3d")
 
 to_sideband(f) = (i, v)->(v - f)
 
@@ -36,6 +37,7 @@ title("Axis X (radial)")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_rx")
+NaCsData.dump_raw("$(sorted_prefix)_rx.csv", split_a[:radial_x])
 
 figure()
 NaCsPlot.plot_survival_data(data_ry, fmt="C0o-")
@@ -45,6 +47,7 @@ title("Axis Y (radial)")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_ry")
+NaCsData.dump_raw("$(sorted_prefix)_ry.csv", split_a[:radial_y])
 
 figure()
 NaCsPlot.plot_survival_data(data_az, fmt="C0o-")
@@ -54,5 +57,6 @@ title("Axis Z (axial)")
 xlabel("Detuning from carrier (kHz)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_az")
+NaCsData.dump_raw("$(sorted_prefix)_az.csv", split_a[:axial_z])
 
 NaCsPlot.maybe_show()
