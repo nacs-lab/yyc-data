@@ -21,12 +21,17 @@ const spec_a = OrderedDict(
 const split_a = NaCsData.split_data(data_a, spec_a)
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20171016_003707_3d")
+const sorted_prefix = joinpath(@__DIR__, "sorted", "data_20171016_003707_3d")
 
 to_sideband(f) = (i, v)->(v - f)
 
 data_rx = NaCsData.map_params(to_sideband(46), split_a[:radial_x])
 data_ry = NaCsData.map_params(to_sideband(46), split_a[:radial_y])
 data_az = NaCsData.map_params(to_sideband(47), split_a[:axial_z])
+
+NaCsData.dump_raw("$(sorted_prefix)_rx.csv", split_a[:radial_x])
+NaCsData.dump_raw("$(sorted_prefix)_ry.csv", split_a[:radial_y])
+NaCsData.dump_raw("$(sorted_prefix)_az.csv", split_a[:axial_z])
 
 figure()
 NaCsPlot.plot_survival_data(data_rx, fmt="C0o-")
