@@ -33,6 +33,8 @@ data_rym1 = split_a[:radial_y][2]
 data_azp1 = split_a[:axial_z][1]
 data_azm1 = split_a[:axial_z][2]
 
+NaCsData.dump_raw(split_a[:survival])
+
 NaCsData.dump_raw("$(sorted_prefix)_rx.csv", [data_rxp1; data_rxm1])
 NaCsData.dump_raw("$(sorted_prefix)_ry.csv", [data_ryp1; data_rym1])
 NaCsData.dump_raw("$(sorted_prefix)_az.csv", [data_azp1; data_azm1])
