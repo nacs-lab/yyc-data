@@ -4,6 +4,7 @@ using MAT
 import NaCsCalc.Utils: binomial_estimate
 import NaCsCalc.Format: Unc
 using DataStructures
+using DelimitedFiles
 
 abstract type AbstractValues end
 
@@ -58,6 +59,16 @@ function Base.show(io::IO, data::SortedData)
     params, ratios, uncs = get_values(data)
     print(io, "SortedData", "(params=", params, ", data=", Unc.(ratios, uncs), ")")
 end
+function dump_raw(io::IO, data::SortedData)
+    for i in 1:size(data, 1)
+        print(io, data.params[i])
+        for j in 1:size(data, 2)
+            print(io, ',', data.values[i, j])
+        end
+        println(io)
+    end
+end
+dump_raw(data::SortedData) = dump_raw(STDOUT, data)
 
 struct CountValues <: AbstractValues
     counts::Matrix{Int}
@@ -70,6 +81,7 @@ function load_count_csv(fname)
     return CountData{Float64}(params, CountValues(counts))
 end
 @inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
+@inline Base.getindex(vals::CountValues, arg0, arg1::Number) = vals.counts[arg0, arg1]
 @inline depth(vals::CountValues) = size(vals.counts, 2)
 
 struct CountCombiner
@@ -118,6 +130,9 @@ function SurvivalValues(vals::CountValues)
 end
 @inline function Base.getindex(vals::SurvivalValues, args...)
     return SurvivalValues(vals.ratios[args...], vals.uncs[args...])
+end
+@inline function Base.getindex(vals::SurvivalValues, arg0, arg1::Number)
+    return Unc(vals.ratios[arg0, arg1], vals.uncs[arg0, arg1])
 end
 @inline depth(vals::SurvivalValues) = size(vals.ratios, 2)
 
