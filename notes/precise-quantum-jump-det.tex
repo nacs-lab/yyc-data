@@ -241,237 +241,142 @@ Formally the time evolution is
       -\Omega&\Gamma-\gamma-\ui\delta
     \end{pmatrix}}
 }
-% Define $\Omega'=\sqrt{\Omega^2-\gamma^2}$
-% \eqar{
-%   &\exp\paren{-\ui H't}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\ui\Omega'}\begin{pmatrix}
-%     \gamma\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}+\ui\Omega'\paren{\ue^{-\frac{\ui\Omega't}{2}}+\ue^{\frac{\ui\Omega't}{2}}}&\Omega\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}\\
-%     -\Omega\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}&-\gamma\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}+\ui\Omega'\paren{\ue^{-\frac{\ui\Omega't}{2}}+\ue^{\frac{\ui\Omega't}{2}}}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\ui\Omega'}\begin{pmatrix}
-%     -2\ui\gamma\sin\dfrac{\Omega't}{2}+2\ui\Omega'\cos\dfrac{\Omega't}{2}&-2\ui\Omega\sin\dfrac{\Omega't}{2}\\
-%     2\ui\Omega\sin\dfrac{\Omega't}{2}&2\ui\gamma\sin\dfrac{\Omega't}{2}+2\ui\Omega'\cos\dfrac{\Omega't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}&-\Omega\sin\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}&\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}
-%   \end{pmatrix}
-% }
-% Starting from the atom in state 1, the wave functions are
-% \eqar{
-%   \psi=&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}&-\Omega\sin\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}&\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}
-%   \end{pmatrix}\begin{pmatrix}
-%     1\\
-%     0
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}
-%   \end{pmatrix}
-% }
-% \subsection{Verify the solution}
-% Time derivative
-% \eqar{
-%   \diff{\psi}{t}=&\diff{}{t}\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{-\Gamma\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}
-%   \end{pmatrix}+\frac{\ue^{-\Gamma t/2}}{2}\begin{pmatrix}
-%     -\gamma\cos\dfrac{\Omega't}{2}-\Omega'\sin\dfrac{\Omega't}{2}\\
-%     \Omega\cos\dfrac{\Omega't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
-%     \Gamma\gamma\sin\dfrac{\Omega't}{2}-\Gamma\Omega'\cos\dfrac{\Omega't}{2}-\Omega'\gamma\cos\dfrac{\Omega't}{2}-\Omega'^2\sin\dfrac{\Omega't}{2}\\
-%     -\Gamma\Omega\sin\dfrac{\Omega't}{2}+\Omega'\Omega\cos\dfrac{\Omega't}{2}
-%   \end{pmatrix}
-% }
-% Hamiltonian term,
-% \eqar{
-%   \ui H'\psi=&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
-%     \Gamma+\gamma&\Omega\\
-%     -\Omega&\Gamma-\gamma
-%   \end{pmatrix}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
-%     \Omega\sin\dfrac{\Omega't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
-%     \paren{\Gamma+\gamma}\paren{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}+\Omega^2\sin\dfrac{\Omega't}{2}\\
-%     -\Omega\paren{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}+\paren{\Gamma-\gamma}\Omega\sin\dfrac{\Omega't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\Omega'}\begin{pmatrix}
-%     \paren{-\gamma\paren{\Gamma+\gamma}\sin\dfrac{\Omega't}{2}+\Omega'\paren{\Gamma+\gamma}\cos\dfrac{\Omega't}{2}}+\Omega^2\sin\dfrac{\Omega't}{2}\\
-%     \Omega\paren{\Gamma\sin\dfrac{\Omega't}{2}-\Omega'\cos\dfrac{\Omega't}{2}}
-%   \end{pmatrix}
-% }
-% \[\paren{\diff{}{t}+\ui H'}\psi=0\]
+Define $\Omega'=\sqrt{\Omega^2-\paren{\gamma+\ui\delta}^2}$ (complex)
+\eqar{
+  &\exp\paren{-\ui H't}\\
+  =&\frac{\ue^{-\Gamma t/2}}{2\ui\Omega'}\begin{pmatrix}
+    \gamma\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}+\ui\Omega'\paren{\ue^{-\frac{\ui\Omega't}{2}}+\ue^{\frac{\ui\Omega't}{2}}}&\Omega\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}\\
+    -\Omega\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}&-\gamma\paren{\ue^{-\frac{\ui\Omega't}{2}}-\ue^{\frac{\ui\Omega't}{2}}}+\ui\Omega'\paren{\ue^{-\frac{\ui\Omega't}{2}}+\ue^{\frac{\ui\Omega't}{2}}}
+  \end{pmatrix}\\
+  =&\frac{\ue^{-\Gamma t/2}}{2\ui\Omega'}\begin{pmatrix}
+    -2\ui\gamma\sin\dfrac{\Omega't}{2}+2\ui\Omega'\cos\dfrac{\Omega't}{2}&-2\ui\Omega\sin\dfrac{\Omega't}{2}\\
+    2\ui\Omega\sin\dfrac{\Omega't}{2}&2\ui\gamma\sin\dfrac{\Omega't}{2}+2\ui\Omega'\cos\dfrac{\Omega't}{2}
+  \end{pmatrix}\\
+  =&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
+    -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}&-\Omega\sin\dfrac{\Omega't}{2}\\
+    \Omega\sin\dfrac{\Omega't}{2}&\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}
+  \end{pmatrix}
+}
+Starting from the atom in state 1, the wave functions are
+\eqar{
+  \psi=&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
+    -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}&-\Omega\sin\dfrac{\Omega't}{2}\\
+    \Omega\sin\dfrac{\Omega't}{2}&\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}
+  \end{pmatrix}\begin{pmatrix}
+    1\\
+    0
+  \end{pmatrix}\\
+  =&\frac{\ue^{-\Gamma t/2}}{\Omega'}\begin{pmatrix}
+    -\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
+    \Omega\sin\dfrac{\Omega't}{2}
+  \end{pmatrix}
+}
 
+The quantities we care about are:
+\begin{itemize}
+\item Total decay probability ($1-\langle\psi|\psi\rangle$)
+\item Instantaneous decay probability for each channel ($\langle\psi|C_m^\dagger C_m|\psi\rangle$ for $m=1,\ 2$)
+\end{itemize}
+These results will be different from the on-resonance case since we are taking absolute value
+(probabilities).\\
 
-% \section{Decay probabilities}
-% Now calculalte the decay probability from each states,
-% this is the main quantity we care about in the simulation.
-% The decay rates from each states are the expectation value of the jump operators
-% that jumps from the state.
-% The probability that decay has happened at a certain time is the integral of the rate.
+Some equations useful for computing these values,
+\eqar{
+  \Omega'_r=&\Re\paren{\Omega'}\\
+  \Omega'_i=&\Im\paren{\Omega'}\\
+  \Omega'=&\Omega'_r+\ui\Omega'_i\\
+  &\sin\paren{a+\ui b}\\
+  =&\sin a\cos\ui b+\cos a\sin\ui b\\
+  =&\sin a\cosh b+\ui\cos a\sinh b\\
+  &\cos\paren{a+\ui b}\\
+  =&\cos a\cos\ui b+\sin a\sin\ui b\\
+  =&\cos a\cosh b+\ui\sin a\sinh b\\
+  &\sin^2\dfrac{a}{2}\sinh^2\dfrac{b}{2}+\cos^2\dfrac{a}{2}\cosh^2\dfrac{b}{2}\\
+  =&\frac{(1 - \cos a)(\cosh b - 1)+(1 + \cos a)(\cosh b + 1)}{4}\\
+  =&\frac{\cosh b + \cos a}{2}\\
+  &\sin^2\dfrac{a}{2}\cosh^2\dfrac{b}{2}+\cos^2\dfrac{a}{2}\sinh^2\dfrac{b}{2}\\
+  =&\frac{(1 - \cos a)(\cosh b + 1)+(1 + \cos a)(\cosh b - 1)}{4}\\
+  =&\frac{\cosh b - \cos a}{2}
+}
+\eqar{
+  &-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}\\
+  =&-\gamma\paren{\sin\dfrac{\Omega'_rt}{2}\cosh\dfrac{\Omega'_it}{2}-\ui\sinh\dfrac{\Omega'_it}{2}\cos\dfrac{\Omega'_rt}{2}}\\
+  &+\paren{\Omega'_r+\ui\Omega'_i}\paren{\cos\dfrac{\Omega'_rt}{2}\cosh\dfrac{\Omega'_it}{2}+\ui\sin\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}}\\
+  =&\paren{\Omega'_r\cos\dfrac{\Omega'_rt}{2}-\gamma\sin\dfrac{\Omega'_rt}{2}}\cosh\dfrac{\Omega'_it}{2}-\Omega'_i\sin\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}\\
+  &+\ui\paren{\paren{\gamma\cos\dfrac{\Omega'_rt}{2}+\Omega'_r\sin\dfrac{\Omega'_rt}{2}}\sinh\dfrac{\Omega'_it}{2}+\Omega'_i\cos\dfrac{\Omega'_rt}{2}\cosh\dfrac{\Omega'_it}{2}}
+  \intertext{}
+  &\abs{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}^2\\
+  =
+  &{\Omega'_r}^2\cos^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}+\gamma^2\sin^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}+{\Omega'_i}^2\sin^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}\\
+  &-2\gamma\Omega'_r\sin\dfrac{\Omega'_rt}{2}\cos\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}-2\Omega'_i\Omega'_r\sin\dfrac{\Omega'_rt}{2}\cos\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}\cosh\dfrac{\Omega'_it}{2}\\
+  &+2\gamma\Omega'_i\sin^2\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}\cosh\dfrac{\Omega'_it}{2}\\
+  &+\gamma^2\cos^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}+{\Omega'_r}^2\sin^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}+{\Omega'_i}^2\cos^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}\\
+  &+2\gamma\Omega'_r\sin\dfrac{\Omega'_rt}{2}\cos\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}+2\gamma\Omega'_i\cos^2\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}\cosh\dfrac{\Omega'_it}{2}\\
+  &+2\Omega'_i\Omega'_r\sin\dfrac{\Omega'_rt}{2}\cos\dfrac{\Omega'_rt}{2}\sinh\dfrac{\Omega'_it}{2}\cosh\dfrac{\Omega'_it}{2}\\
+  =&\abs{\Omega'}^2\paren{\sin^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}+\cos^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}}\\
+  &+2\gamma\Omega'_i\paren{\sinh\dfrac{\Omega'_it}{2}\cosh\dfrac{\Omega'_it}{2}-\sin\dfrac{\Omega'_rt}{2}\cos\dfrac{\Omega'_rt}{2}}\\
+  &+\gamma^2\paren{\sin^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}+\cos^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}}\\
+  =&
+  \frac{\abs{\Omega'}^2-\gamma^2}2\cos\Omega'_rt
+  +\frac{\abs{\Omega'}^2+\gamma^2}2\cosh\Omega'_it
+  +\gamma\Omega'_i\paren{\sinh\Omega'_it-\sin\Omega'_rt}
+  \intertext{}
+  &\abs{\Omega\sin\dfrac{\Omega't}{2}}^2\\
+  =&\Omega^2\abs{\sin\dfrac{\Omega'_rt}{2}\cosh\dfrac{\Omega'_it}{2}-\ui\sinh\dfrac{\Omega'_it}{2}\cos\dfrac{\Omega'_rt}{2}}^2\\
+  =&\Omega^2\paren{
+    \sin^2\dfrac{\Omega'_rt}{2}\cosh^2\dfrac{\Omega'_it}{2}
+    +\cos^2\dfrac{\Omega'_rt}{2}\sinh^2\dfrac{\Omega'_it}{2}
+  }\\
+  =&\frac{\Omega^2}2\paren{\cosh\Omega'_it-\cos\Omega'_rt}
+}
 
-% The decay rate for state 1 is
-% \eqar{
-%   &\langle\psi|C_1^\dagger C_1|\psi\rangle\\
-%   =&\frac{\paren{\Gamma+\gamma}\ue^{-\Gamma t}}{\Omega'^2}\paren{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}^2\\
-%   =&\frac{\paren{\Gamma+\gamma}\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \gamma^2\sin^2\dfrac{\Omega't}{2}+\paren{\Omega^2-\gamma^2}\cos^2\dfrac{\Omega't}{2}
-%     -\gamma\Omega'\sin\Omega't
-%   }\\
-%   =&\frac{\paren{\Gamma+\gamma}\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \frac{\Omega^2}2+\paren{\frac{\Omega^2}2-\gamma^2}\cos\Omega't-\gamma\Omega'\sin\Omega't
-%   }
-% }
-% Total decay probability for state 1 is
-% \eqar{
-%   p_1(T)=&\int_0^T\ud t\frac{\paren{\Gamma+\gamma}\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \frac{\Omega^2}2+\paren{\frac{\Omega^2}2-\gamma^2}\cos\Omega't-\gamma\Omega'\sin\Omega't
-%   }\\
-%   =&\frac{\paren{\gamma+\Gamma}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\\
-%   &\paren{\Omega^4+\Gamma^2\Omega^2-\gamma^2\Omega^2+2\gamma^3\Gamma-2\gamma^2\Gamma^2-2\gamma\Gamma\Omega^2+\Gamma^2\Omega^2}-\frac{\paren{\gamma+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\\
-%   &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\gamma^2}+\Gamma\Omega'\paren{2\gamma^2-2\gamma\Gamma-\Omega^2}\sin\Omega't+\Gamma\paren{2\gamma^3-2\gamma^2\Gamma-2\gamma\Omega^2+\Gamma\Omega^2}\cos\Omega't}\\
-%   =&\frac{\paren{\gamma+\Gamma}\paren{\Omega^2+2\Gamma^2-2\gamma\Gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\gamma^2}}-\frac{\paren{\gamma+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\\
-%   &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\gamma^2}+\Gamma\Omega'\paren{2\gamma^2-2\gamma\Gamma-\Omega^2}\sin\Omega't+\Gamma\paren{2\gamma^3-2\gamma^2\Gamma-2\gamma\Omega^2+\Gamma\Omega^2}\cos\Omega't}
-% }
-% The decay rate for state 2 is
-% \eqar{
-%   &\langle\psi|C_2^\dagger C_2|\psi\rangle\\
-%   =&\frac{\paren{\Gamma-\gamma}\Omega^2\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\sin^2\dfrac{\Omega't}{2}\\
-%   =&\frac{\paren{\Gamma-\gamma}\Omega^2}{2\paren{\Omega^2-\gamma^2}}\ue^{-\Gamma t}\paren{1-\cos\Omega't}
-% }
-% Total decay proobability for state 2 is
-% \eqar{
-%   p_2(T)=&\int_0^T\ud t\frac{\paren{\Gamma-\gamma}\Omega^2}{2\paren{\Omega^2-\gamma^2}}\ue^{-\Gamma t}\paren{1-\cos\Omega't}\\
-%   =&\frac{\Omega^2\paren{\Gamma-\gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\gamma^2}}-\frac{\Omega^2\paren{\Gamma-\gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\paren{\Omega^2+\Gamma^2-\gamma^2-\Gamma^2\cos\Omega't+\Gamma\Omega'\sin\Omega't}
-% }
-% We also need the total decay probability in the simulation to decide the time
-% at which the decay happens. Total decay proobability for both states is
-% \eqar{
-%   &p_1(T)+p_2(T)\\
-%   =&\frac{\paren{\gamma+\Gamma}\paren{\Omega^2+2\Gamma^2-2\gamma\Gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\gamma^2}}+\frac{\Omega^2\paren{\Gamma-\gamma}}{2\Gamma\paren{\Omega^2+\Gamma^2-\gamma^2}}\\
-%   &-\frac{\paren{\gamma+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\\
-%   &\paren{\Omega^2\paren{\Omega^2+\Gamma^2-\gamma^2}+\Gamma\Omega'\paren{2\gamma^2-2\gamma\Gamma-\Omega^2}\sin\Omega't+\Gamma\paren{2\gamma^3-2\gamma^2\Gamma-2\gamma\Omega^2+\Gamma\Omega^2}\cos\Omega't}\\
-%   &-\frac{\Omega^2\paren{\Gamma-\gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\paren{\Omega^2+\Gamma^2-\gamma^2-\Gamma^2\cos\Omega't+\Gamma\Omega'\sin\Omega't}
-%   \intertext{}
-%   =&1-\frac{\Omega^2\paren{\gamma+\Gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}}\\
-%   &-\frac{\paren{\gamma+\Gamma}\paren{2\gamma^2-2\gamma\Gamma-\Omega^2}}{2\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\ue^{-\Gamma t}\Omega'\sin\Omega't\\
-%   &-\frac{\paren{\gamma+\Gamma}\paren{2\gamma^3-2\gamma^2\Gamma-2\gamma\Omega^2+\Gamma\Omega^2}}{2\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\ue^{-\Gamma t}\cos\Omega't\\
-%   &-\frac{\Omega^2\paren{\Gamma-\gamma}\ue^{-\Gamma t}}{2\Gamma\paren{\Omega^2-\gamma^2}}\\
-%   &-\frac{\Omega^2\paren{\Gamma-\gamma}}{2\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\ue^{-\Gamma t}\Omega'\sin\Omega't\\
-%   &+\frac{\Omega^2\Gamma\paren{\Gamma-\gamma}}{2\paren{\Omega^2-\gamma^2}\paren{\Omega^2+\Gamma^2-\gamma^2}}\ue^{-\Gamma t}\cos\Omega't\\
-%   =&1-\frac{\Omega^2\ue^{-\Gamma t}}{\Omega^2-\gamma^2}+\frac{\gamma\ue^{-\Gamma t}\Omega'\sin\Omega't}{\Omega^2-\gamma^2}+\frac{\gamma^2\ue^{-\Gamma t}\cos\Omega't}{\Omega^2-\gamma^2}\\
-%   =&1-\frac{\ue^{-\Gamma t}\paren{\Omega^2-\gamma\Omega'\sin\Omega't-\gamma^2\cos\Omega't}}{\Omega^2-\gamma^2}
-% }
-% \subsection{Verification}
-% Compare this to the normalization of the wave function
-% \eqar{
-%   \langle\psi|\psi\rangle=&\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \paren{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}^2+
-%     \paren{\Omega\sin\dfrac{\Omega't}{2}}^2
-%   }\\
-%   =&\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \gamma^2\sin^2\dfrac{\Omega't}{2}+\Omega'^2\cos^2\dfrac{\Omega't}{2}
-%     -2\gamma\Omega'\sin\dfrac{\Omega't}{2}\cos\dfrac{\Omega't}{2}+
-%     \Omega^2\sin^2\dfrac{\Omega't}{2}
-%   }\\
-%   =&\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \gamma^2\sin^2\dfrac{\Omega't}{2}+\paren{\Omega^2-\gamma^2}\cos^2\dfrac{\Omega't}{2}
-%     -\gamma\Omega'\sin\Omega't+
-%     \Omega^2\sin^2\dfrac{\Omega't}{2}
-%   }\\
-%   =&\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \Omega^2-\gamma^2\cos\Omega't-\gamma\Omega'\sin\Omega't
-%   }
-% }
-% We have
-% \[p_1 + p_2+\langle\psi|\psi\rangle=1\]
-% \subsection{Derivative}
-% Calculate the derivative of $\langle\psi|\psi\rangle$ to help root finding with Newton's method.
-% \eqar{
-%   \diff{}{t}\langle\psi|\psi\rangle=&\diff{}{t}\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \Omega^2-\gamma^2\cos\Omega't-\gamma\Omega'\sin\Omega't
-%   }\\
-%   =&-\frac{\Gamma\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \Omega^2-\gamma^2\cos\Omega't-\gamma\Omega'\sin\Omega't
-%   }+\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \gamma^2\Omega'\sin\Omega't-\gamma\Omega'^2\cos\Omega't
-%   }\\
-%   =&-\frac{\ue^{-\Gamma t}}{\Omega^2-\gamma^2}\paren{
-%     \Gamma\Omega^2
-%     -\gamma\Omega'\paren{\gamma+\Gamma}\sin\Omega't
-%     +\gamma\paren{\Omega'^2-\Gamma\gamma}\cos\Omega't
-%   }
-% }
-% Another way to calculate this
-% \eqar{
-%   \diff{}{t}\langle\psi|\psi\rangle=&-\langle\psi|C_1^\dagger C_1|\psi\rangle-\langle\psi|C_2^\dagger C_2|\psi\rangle\\
-%   =&-\frac{\paren{\Gamma+\gamma}\ue^{-\Gamma t}}{2\paren{\Omega^2-\gamma^2}}\paren{
-%     \Omega^2+\paren{\Omega^2-2\gamma^2}\cos\Omega't-2\gamma\Omega'\sin\Omega't
-%   }-\frac{\paren{\Gamma-\gamma}\Omega^2}{2\paren{\Omega^2-\gamma^2}}\ue^{-\Gamma t}\paren{1-\cos\Omega't}\\
-%   =&-\frac{\ue^{-\Gamma t}}{\paren{\Omega^2-\gamma^2}}\paren{
-%     \Gamma\Omega^2-\gamma\Omega'\paren{\Gamma+\gamma}\sin\Omega't+\gamma\paren{\Omega^2-\gamma^2-\Gamma\gamma}\cos\Omega't
-%   }
-% }
+\section{Decay rates}
+The decay rate for state 1 is
+\eqar{
+  &\langle\psi|C_1^\dagger C_1|\psi\rangle\\
+  =&\frac{\Gamma_1\ue^{-\Gamma t}}{\abs{\Omega'}^2}\abs{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}^2\\
+  =&\frac{\Gamma_1\ue^{-\Gamma t}}{2\abs{\Omega'}^2}\paren{
+    \paren{\abs{\Omega'}^2-\gamma^2}\cos\Omega'_rt
+    +\paren{\abs{\Omega'}^2+\gamma^2}\cosh\Omega'_it
+    +2\gamma\Omega'_i\paren{\sinh\Omega'_it-\sin\Omega'_rt}
+  }
+}
+The decay rate for state 2 is
+\eqar{
+  &\langle\psi|C_2^\dagger C_2|\psi\rangle\\
+  =&\frac{\Gamma_2\ue^{-\Gamma t}}{\abs{\Omega'}^2}\abs{\Omega\sin\dfrac{\Omega't}{2}}^2\\
+  =&\frac{\Gamma_2\Omega^2\ue^{-\Gamma t}}{2\abs{\Omega'}^2}\paren{\cosh\Omega'_it-\cos\Omega'_rt}\\
+}
 
-% \section{Overdamp regime}
-% The results above should work for overdamping regime too.
-% However, the calculation will have imaginary numbers and is not very convenient.
-% We can reformulate the expressions using $\sinh$ and $\cosh$ functions so that it only involve
-% real numbers. There's also the critical case but that is unlikely to show up in real calculation
-% so it's ignored for now....
+\subsection{Total decay probability}
+The total probability of not decaying,
+\eqar{
+  \langle\psi|\psi\rangle=&\frac{\ue^{-\Gamma t}}{\abs{\Omega'}^2}\paren{
+    \abs{-\gamma\sin\dfrac{\Omega't}{2}+\Omega'\cos\dfrac{\Omega't}{2}}^2
+    +\abs{\Omega\sin\dfrac{\Omega't}{2}}^2
+  }\\
+  =&\frac{\ue^{-\Gamma t}}{\abs{\Omega'}^2}\paren{
+    \frac{\abs{\Omega'}^2-\gamma^2-\Omega^2}2\cos\Omega'_rt
+    +\frac{\abs{\Omega'}^2+\gamma^2+\Omega^2}2\cosh\Omega'_it
+    +\gamma\Omega'_i\paren{\sinh\Omega'_it-\sin\Omega'_rt}
+  }
+}
 
-% Define $\gamma'\equiv-\ui\Omega'=\sqrt{\gamma^2-\Omega^2}$
-
-% Wavefunctions
-% \eqar{
-%   \psi=&\frac{\ue^{-\Gamma t/2}}{\ui\gamma'}\begin{pmatrix}
-%     -\gamma\sin\dfrac{\ui\gamma't}{2}+\ui\gamma'\cos\dfrac{\ui\gamma't}{2}\\
-%     \Omega\sin\dfrac{\ui\gamma't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{\gamma'}\begin{pmatrix}
-%     -\gamma\sinh\dfrac{\gamma't}{2}+\gamma'\cosh\dfrac{\gamma't}{2}\\
-%     \Omega\sinh\dfrac{\gamma't}{2}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\gamma'}\begin{pmatrix}
-%     -\gamma\paren{\exp\paren{\dfrac{\gamma't}{2}}-\exp\paren{-\dfrac{\gamma't}{2}}}+\gamma'\paren{\exp\paren{\dfrac{\gamma't}{2}}+\exp\paren{-\dfrac{\gamma't}{2}}}\\
-%     \Omega\paren{\exp\paren{\dfrac{\gamma't}{2}}-\exp\paren{-\dfrac{\gamma't}{2}}}
-%   \end{pmatrix}\\
-%   =&\frac{\ue^{-\Gamma t/2}}{2\gamma'}\begin{pmatrix}
-%     \paren{\gamma'-\gamma}\exp\paren{\dfrac{\gamma't}{2}}+\paren{\gamma+\gamma'}\exp\paren{-\dfrac{\gamma't}{2}}\\
-%     \Omega\paren{\exp\paren{\dfrac{\gamma't}{2}}-\exp\paren{-\dfrac{\gamma't}{2}}}
-%   \end{pmatrix}
-% }
-% Decay probabilities
-% \eqar{
-%   \langle\psi|\psi\rangle=&\frac{\ue^{-\Gamma t}\paren{\gamma^2\cosh\gamma't-\gamma\gamma'\sinh\gamma't-\Omega^2}}{\gamma^2-\Omega^2}\\
-%   =&\frac{\ue^{-\Gamma t}\paren{\gamma\paren{\paren{\gamma-\gamma'}\ue^{\gamma't}+\paren{\gamma+\gamma'}\ue^{-\gamma't}}-2\Omega^2}}{2\paren{\gamma^2-\Omega^2}}
-% }
-% \eqar{
-%   \diff{}{t}\langle\psi|\psi\rangle=&\frac{\ue^{-\Gamma t}}{\gamma^2-\Omega^2}\paren{
-%     \Gamma\Omega^2+\gamma\gamma'\paren{\Gamma+\gamma}\sinh\gamma't+\gamma\paren{\Omega^2-\gamma^2-\Gamma\gamma}\cosh\gamma't
-%   }\\
-%   =&\frac{\ue^{-\Gamma t}}{2\paren{\gamma^2-\Omega^2}}\paren{
-%     2\Gamma\Omega^2+\gamma\gamma'\paren{\Gamma+\gamma}\paren{\ue^{\gamma't}-\ue^{-\gamma't}}+\gamma\paren{\Omega^2-\gamma^2-\Gamma\gamma}\paren{\ue^{\gamma't}+\ue^{-\gamma't}}
-%   }\\
-%   =&\frac{\ue^{-\Gamma t}}{2\paren{\gamma^2-\Omega^2}}\paren{
-%     2\Gamma\Omega^2
-%     -\gamma\paren{\Gamma-\gamma'}\paren{\gamma-\gamma'}\ue^{\gamma't}
-%     -\gamma\paren{\Gamma+\gamma'}\paren{\gamma+\gamma'}\ue^{-\gamma't}
-%   }
-% }
-% Decay probability from state 2
-% \eqar{
-%   &\langle\psi|C_2^\dagger C_2|\psi\rangle\\
-%   =&\frac{\paren{\Gamma-\gamma}\Omega^2}{2\paren{\Omega^2-\gamma^2}}\ue^{-\Gamma t}\paren{1-\cosh\gamma't}\\
-%   =&\frac{\ue^{-\Gamma t}}{2\paren{\gamma^2-\Omega^2}}\frac{\paren{\Gamma-\gamma}\Omega^2}{2}\paren{\ue^{\gamma't}+\ue^{-p\gamma't}-2}
-% }
+\subsection{Total rate}
+Calculate the derivative of $\langle\psi|\psi\rangle$ to help root finding with Newton's method.
+\eqar{
+  &\diff{}{t}\langle\psi|\psi\rangle\\
+  =&-\langle\psi|C_1^\dagger C_1|\psi\rangle-\langle\psi|C_2^\dagger C_2|\psi\rangle\\
+  =&-\frac{\ue^{-\Gamma t}}{2\abs{\Omega'}^2}\paren{
+    \Gamma_1\paren{\abs{\Omega'}^2-\gamma^2}\cos\Omega'_rt
+    +\Gamma_1\paren{\abs{\Omega'}^2+\gamma^2}\cosh\Omega'_it
+    +2\Gamma_1\gamma\Omega'_i\paren{\sinh\Omega'_it-\sin\Omega'_rt}
+  }\\
+  &-\frac{\ue^{-\Gamma t}}{2\abs{\Omega'}^2}\paren{\Gamma_2\Omega^2\cosh\Omega'_it-\Gamma_2\Omega^2\cos\Omega'_rt}\\
+  =&-\frac{\ue^{-\Gamma t}}{2\abs{\Omega'}^2}\Bigg(
+  \paren{\Gamma_1\abs{\Omega'}^2-\Gamma_1\gamma^2-\Gamma_2\Omega^2}\cos\Omega'_rt
+  +\paren{\Gamma_1\abs{\Omega'}^2+\Gamma_1\gamma^2+\Gamma_2\Omega^2}\cosh\Omega'_it\\
+  &+2\Gamma_1\gamma\Omega'_i\paren{\sinh\Omega'_it-\sin\Omega'_rt}\Bigg)
+}
 
 \end{document}
