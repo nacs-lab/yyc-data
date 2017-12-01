@@ -353,6 +353,44 @@ function calc_survival(datas)
     end
     params, ratios, uncs
 end
-calc_survival(fnames::AbstractVector{T}) where T <: AbstractString =
+calc_survival(fnames::AbstractVector{T} where T<:AbstractString) =
     calc_survival(readdlm(fname, ',', Float64, skipstart=1) for fname in fnames)
 calc_survival(fnames::AbstractString) = calc_survival([fnames])
+
+function load_striped_mat(fname)
+    matopen(fname) do fd
+        params = read(fd, "ParamList")
+        @assert size(params, 1) == 1
+        return params[1, :], read(fd, "SingleAtomLogical") .!= 0
+    end
+end
+
+function select_count(_params::AbstractVector{T}, logicals::AbstractArray{TL,3} where TL,
+                      selector, maxseq=length(_params)) where T
+    num_cnt::Int = 0
+    data_dict = Dict{T,Vector{Int}}()
+    for seq in 1:maxseq
+        param = _params[seq]
+        counts = selector(@view logicals[:, :, seq])
+        if num_cnt == 0
+            num_cnt = length(counts)
+            if num_cnt == 0
+                throw(ArgumentError("No counts returned by the selector"))
+            end
+        elseif num_cnt != length(counts)
+            throw(ArgumentError("Selector does not return the same number of elements"))
+        end
+        if haskey(data_dict, param)
+            data_dict[param] .+= counts
+        else
+            data_dict[param] = counts
+        end
+    end
+    params = sort(collect(keys(data_dict)))
+    len = length(params)
+    counts = zeros(Int, len, num_cnt)
+    for i in 1:len
+        counts[i, :] = data_dict[params[i]]
+    end
+    return CountData(params, counts)
+end
