@@ -77,11 +77,13 @@ struct CountValues <: AbstractValues
     counts::Matrix{Int}
 end
 CountData{K} = SortedData{K,CountValues}
+CountData(params::AbstractVector{T}, counts::AbstractMatrix) where T =
+    CountData{T}(params, CountValues(counts))
 function load_count_csv(fname)
     data = readdlm(fname, ',', Float64, skipstart=1)
     params = data[:, 1]
     counts = Int.(@view data[:, 2:end])
-    return CountData{Float64}(params, CountValues(counts))
+    return CountData(params, counts)
 end
 @inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
 @inline Base.getindex(vals::CountValues, arg0, arg1::Number) = vals.counts[arg0, arg1]
