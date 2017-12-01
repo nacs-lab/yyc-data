@@ -5,7 +5,7 @@ using MAT
 iname = ARGS[1]
 oname = ARGS[2]
 if isdir(oname)
-    oname = joinpath(oname, "$(splitext(basename(iname))[1]).csv")
+    oname = joinpath(oname, "$(splitext(basename(iname))[1]).mat")
 end
 
 const mf = matopen(iname)
