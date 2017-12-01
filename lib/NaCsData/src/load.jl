@@ -319,11 +319,10 @@ function load_matscan(fnames)
 end
 load_matscan(fname::AbstractString) = load_matscan([fname])
 
-function calc_survival(fnames::AbstractVector{T}) where T <: AbstractString
+function calc_survival(datas)
     data_dict = Dict{Float64,Vector{Float64}}()
     local num_cnts::Int
-    for fname in fnames
-        data = readdlm(fname, ',', Float64, skipstart=1)
+    for data::AbstractMatrix in datas
         num_cnts = size(data, 2) - 1
         for i in 1:size(data, 1)
             param = data[i, 1]
@@ -352,4 +351,6 @@ function calc_survival(fnames::AbstractVector{T}) where T <: AbstractString
     end
     params, ratios, uncs
 end
+calc_survival(fnames::AbstractVector{T}) where T <: AbstractString =
+    calc_survival(readdlm(fname, ',', Float64, skipstart=1) for fname in fnames)
 calc_survival(fnames::AbstractString) = calc_survival([fnames])
