@@ -319,7 +319,7 @@ function load_matscan(fnames)
 end
 load_matscan(fname::AbstractString) = load_matscan([fname])
 
-function calc_survival(fnames)
+function calc_survival(fnames::AbstractVector{T}) where T <: AbstractString
     data_dict = Dict{Float64,Vector{Float64}}()
     local num_cnts::Int
     for fname in fnames
