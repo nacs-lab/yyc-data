@@ -53,7 +53,7 @@ plotx = linspace(-100, 150, 10000)
 function fit(t, data, p0, plotx)
     params, ratios, uncs = NaCsData.get_values(data)
     model = gen_model(t)
-    fit = curve_fit(model, params, ratios[:, 2], p0)
+    fit = curve_fit(model, params, ratios[:, 2], 1 ./ uncs[:, 2], p0)
     return fit.param, estimate_errors(fit), model.(plotx, (fit.param,))
 end
 
