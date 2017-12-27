@@ -15,11 +15,11 @@ function __init__()
     matplotlib[:rc]("ytick", labelsize=15)
 end
 
-function plot_survival_data(data, scale=1; kws...)
+function plot_survival_data(data, scale=1; yoffset=0, kws...)
     params, ratios, uncs = NaCsData.get_values(data)
     perm = sortperm(params)
     params = params[perm]
-    ratios = ratios[perm, 2] .* scale
+    ratios = ratios[perm, 2] .* scale .+ yoffset
     uncs = uncs[perm, 2] .* scale
     errorbar(params, ratios, uncs; kws...)
 end
