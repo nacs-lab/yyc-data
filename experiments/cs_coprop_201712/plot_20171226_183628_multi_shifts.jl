@@ -70,10 +70,13 @@ end
 
 const plotx = linspace(-90, 110, 10000)
 
-function fit(model, data, p0, plotx)
+function fit(model, data, p0, plotx; use_unc=false)
     params, ratios, uncs = NaCsData.get_values(data)
-    # fit = curve_fit(model, params, ratios[:, 2], 1 ./ uncs[:, 2], p0)
-    fit = curve_fit(model, params, ratios[:, 2], p0)
+    if use_unc
+        fit = curve_fit(model, params, ratios[:, 2], 1 ./ uncs[:, 2], p0)
+    else
+        fit = curve_fit(model, params, ratios[:, 2], p0)
+    end
     return fit.param, estimate_errors(fit), model.(plotx, (fit.param,))
 end
 
@@ -98,8 +101,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1) - 0.15
     fit_res = fit(gen_model3(15e-3), split_50_mf3_lo[i], [0.8, 0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_50_mf3_lo[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_50_mf3_lo[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_50_mf3_lo, fit_res[1][end - 1])
     push!(res_50_mf3_lo_unc, fit_res[2][end - 1])
 end
@@ -114,8 +117,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1) - 0.15
     fit_res = fit(gen_model3(15e-3), split_50_mf3_hi[i], [0.8, 0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_50_mf3_hi[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_50_mf3_hi[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_50_mf3_hi, fit_res[1][end - 1])
     push!(res_50_mf3_hi_unc, fit_res[2][end - 1])
 end
@@ -130,8 +133,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1)
     fit_res = fit(gen_model4(15e-3), split_50_mf4_lo[i], [0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_50_mf4_lo[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_50_mf4_lo[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_50_mf4_lo, fit_res[1][end - 1])
     push!(res_50_mf4_lo_unc, fit_res[2][end - 1])
 end
@@ -146,8 +149,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1)
     fit_res = fit(gen_model4(15e-3), split_50_mf4_hi[i], [0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_50_mf4_hi[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_50_mf4_hi[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_50_mf4_hi, fit_res[1][end - 1])
     push!(res_50_mf4_hi_unc, fit_res[2][end - 1])
 end
@@ -162,8 +165,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1) - 0.15
     fit_res = fit(gen_model3(15e-3), split_62_mf3_lo[i], [0.8, 0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_62_mf3_lo[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_62_mf3_lo[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_62_mf3_lo, fit_res[1][end - 1])
     push!(res_62_mf3_lo_unc, fit_res[2][end - 1])
 end
@@ -178,8 +181,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1) - 0.15
     fit_res = fit(gen_model3(15e-3), split_62_mf3_hi[i], [0.8, 0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_62_mf3_hi[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_62_mf3_hi[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_62_mf3_hi, fit_res[1][end - 1])
     push!(res_62_mf3_hi_unc, fit_res[2][end - 1])
 end
@@ -194,8 +197,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1)
     fit_res = fit(gen_model4(15e-3), split_62_mf4_lo[i], [0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_62_mf4_lo[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_62_mf4_lo[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_62_mf4_lo, fit_res[1][end - 1])
     push!(res_62_mf4_lo_unc, fit_res[2][end - 1])
 end
@@ -210,8 +213,8 @@ figure()
 for i in 1:7
     yoffset = 0.2 * (i - 1)
     fit_res = fit(gen_model4(15e-3), split_62_mf4_hi[i], [0.8, 30, 20], plotx)
-    NaCsPlot.plot_survival_data(split_62_mf4_hi[i], yoffset=yoffset, fmt="C$(i)o")
-    plot(plotx, fit_res[3] .+ yoffset, "C$(i)-")
+    NaCsPlot.plot_survival_data(split_62_mf4_hi[i], yoffset=yoffset, fmt="C$(i - 1)o")
+    plot(plotx, fit_res[3] .+ yoffset, "C$(i - 1)-")
     push!(res_62_mf4_hi, fit_res[1][end - 1])
     push!(res_62_mf4_hi_unc, fit_res[2][end - 1])
 end
@@ -241,7 +244,7 @@ errorbar(BShifts, shift_62_mf4, shift_62_mf4_unc, label="\$62MHz\\ m_F=4\$")
 title("Shift from trap light")
 xlabel("\$B_y (G)\$")
 ylabel("Shift (kHz)")
-legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 NaCsPlot.maybe_save("$(prefix)_trap_shifts")
 
@@ -266,8 +269,56 @@ errorbar(BShifts, zeeman_62_mf4, zeeman_62_mf4_unc, label="\$62MHz\\ m_F=4\$")
 title("Shift from B field")
 xlabel("\$B_y (G)\$")
 ylabel("Shift (kHz)")
-legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 NaCsPlot.maybe_save("$(prefix)_zeeman_shifts")
+
+const zeeman_mf3 =
+    (zeeman_50_mf3 ./ zeeman_50_mf3_unc.^2 .+ zeeman_62_mf3 ./ zeeman_62_mf3_unc.^2) ./
+    (1 ./ zeeman_50_mf3_unc.^2 .+ 1 ./ zeeman_62_mf3_unc.^2)
+const zeeman_mf3_unc = 1 ./ sqrt.(1 ./ zeeman_50_mf3_unc.^2 .+ 1 ./ zeeman_62_mf3_unc.^2)
+const zeeman_mf4 =
+    (zeeman_50_mf4 ./ zeeman_50_mf4_unc.^2 .+ zeeman_62_mf4 ./ zeeman_62_mf4_unc.^2) ./
+    (1 ./ zeeman_50_mf4_unc.^2 .+ 1 ./ zeeman_62_mf4_unc.^2)
+const zeeman_mf4_unc = 1 ./ sqrt.(1 ./ zeeman_50_mf4_unc.^2 .+ 1 ./ zeeman_62_mf4_unc.^2)
+
+bshifts_plot = linspace(-0.35, 0.35, 10000)
+
+function _zeemans_model(b, ismf3, p)
+    if ismf3
+        δgF = 350 * 6
+        offset = p[3]
+    else
+        δgF = 350 * 7
+        offset = p[4]
+    end
+    B0 = 8.8392
+    return sqrt((p[1] * (b - p[2]))^2 + B0^2) * δgF - B0 * δgF + offset
+end
+function zeemans_model(x::Integer, p)
+    if x <= length(BShifts)
+        return _zeemans_model(BShifts[x], true, p)
+    else
+        return _zeemans_model(BShifts[x - 7], false, p)
+    end
+end
+zeemans_model(x, p) = zeemans_model.(x, (p,))
+
+zeemans_fit = curve_fit(zeemans_model, 1:(length(BShifts) * 2),
+                        [zeeman_mf3; zeeman_mf4], [1 ./ zeeman_mf3_unc; 1 ./ zeeman_mf4_unc],
+                        [1.0, 0.0, 0.0, 0.0])
+# @show Unc.(zeemans_fit.param, estimate_errors(zeemans_fit))
+
+figure()
+errorbar(BShifts, zeeman_mf3, zeeman_mf3_unc, fmt="C0o", label="m_F=3\$")
+plot(bshifts_plot, _zeemans_model.(bshifts_plot, true, (zeemans_fit.param,)), "C0-")
+errorbar(BShifts, zeeman_mf4, zeeman_mf4_unc, fmt="C1o", label="m_F=4\$")
+plot(bshifts_plot, _zeemans_model.(bshifts_plot, false, (zeemans_fit.param,)), "C1-")
+title("Shift from B field")
+xlabel("\$B_y (G)\$")
+ylabel("Shift (kHz)")
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+grid()
+NaCsPlot.maybe_save("$(prefix)_zeeman_shifts_avg")
 
 NaCsPlot.maybe_show()
