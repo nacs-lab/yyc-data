@@ -7,10 +7,12 @@ module NaCsPlot
 import NaCsData
 using NaCsCalc.Utils: interactive
 using PyPlot
+using PyCall
 
 function __init__()
     matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                         "font.weight" => "bold"))
+                                         "font.weight" => "bold",
+                                         "svg.hashsalt" => 19680801))
     matplotlib[:rc]("xtick", labelsize=15)
     matplotlib[:rc]("ytick", labelsize=15)
 end
@@ -29,9 +31,10 @@ function save(name; close=true)
     if !isempty(dir)
         mkpath(dir, 0o755)
     end
-    savefig("$name.pdf"; bbox_inches="tight", transparent=true)
-    savefig("$name.png"; bbox_inches="tight", transparent=true)
-    savefig("$name.svg"; bbox_inches="tight", transparent=true)
+    metadata = Dict("Creator"=>nothing, "Producer"=>nothing, "CreationDate"=>nothing)
+    savefig("$name.pdf"; bbox_inches="tight", transparent=true, metadata=metadata)
+    savefig("$name.png"; bbox_inches="tight", transparent=true, metadata=metadata)
+    savefig("$name.svg"; bbox_inches="tight", transparent=true, metadata=metadata)
     close && PyPlot.close()
     return
 end
