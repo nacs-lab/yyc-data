@@ -310,9 +310,9 @@ zeemans_fit = curve_fit(zeemans_model, 1:(length(BShifts) * 2),
 # @show Unc.(zeemans_fit.param, estimate_errors(zeemans_fit))
 
 figure()
-errorbar(BShifts, zeeman_mf3, zeeman_mf3_unc, fmt="C0o", label="m_F=3\$")
+errorbar(BShifts, zeeman_mf3, zeeman_mf3_unc, fmt="C0o", label="\$m_F=3\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, true, (zeemans_fit.param,)), "C0-")
-errorbar(BShifts, zeeman_mf4, zeeman_mf4_unc, fmt="C1o", label="m_F=4\$")
+errorbar(BShifts, zeeman_mf4, zeeman_mf4_unc, fmt="C1o", label="\$m_F=4\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, false, (zeemans_fit.param,)), "C1-")
 title("Shift from B field")
 xlabel("\$B_y (G)\$")
