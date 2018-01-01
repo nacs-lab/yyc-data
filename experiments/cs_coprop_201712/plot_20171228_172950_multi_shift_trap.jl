@@ -149,47 +149,38 @@ const TrapDepths = (3.5:1:15.5)[1:n_trap_depths]
 
 trapdepths_plot = linspace(TrapDepths[1] - 0.5, TrapDepths[end] + 0.5, 10000)
 
-trap_model(x::Number, p) = @evalpoly x p[1] p[2]
+_trap_model(trap, ism50, p) = p[1] - (ism50 ? p[2] : p[3]) * trap
+function trap_model(x::Integer, p)
+    if x <= length(TrapDepths)
+        return _trap_model(TrapDepths[x], true, p)
+    else
+        return _trap_model(TrapDepths[x - length(TrapDepths)], false, p)
+    end
+end
 trap_model(x, p) = trap_model.(x, (p,))
 
-trap_50_mf3_fit = curve_fit(trap_model, TrapDepths, res_50_mf3, 1 ./ res_50_mf3_unc,
-                            [29.0, -1.7])
-trap_50_mf4_fit = curve_fit(trap_model, TrapDepths, res_50_mf4, 1 ./ res_50_mf4_unc,
-                            [29.0, -1.7])
-trap_62_mf3_fit = curve_fit(trap_model, TrapDepths, res_62_mf3, 1 ./ res_62_mf3_unc,
-                            [29.0, -1.7])
-trap_62_mf4_fit = curve_fit(trap_model, TrapDepths, res_62_mf4, 1 ./ res_62_mf4_unc,
-                            [29.0, -1.7])
+trap_mf3_fit = curve_fit(trap_model, 1:(length(TrapDepths) * 2),
+                         [res_50_mf3; res_62_mf3], [1 ./ res_50_mf3_unc; 1 ./ res_62_mf3_unc],
+                         [29.0, -1.7, -1.7])
+trap_mf4_fit = curve_fit(trap_model, 1:(length(TrapDepths) * 2),
+                         [res_50_mf4; res_62_mf4], [1 ./ res_50_mf4_unc; 1 ./ res_62_mf4_unc],
+                         [29.0, -1.7, -1.7])
 
-# trap_model(x::Number, p) = @evalpoly x p[1] p[2] p[3]
-# trap_model(x, p) = trap_model.(x, (p,))
-
-# trap_50_mf3_fit = curve_fit(trap_model, TrapDepths, res_50_mf3, 1 ./ res_50_mf3_unc,
-#                             [29.0, -1.7, -0.1])
-# trap_50_mf4_fit = curve_fit(trap_model, TrapDepths, res_50_mf4, 1 ./ res_50_mf4_unc,
-#                             [29.0, -1.7, -0.1])
-# trap_62_mf3_fit = curve_fit(trap_model, TrapDepths, res_62_mf3, 1 ./ res_62_mf3_unc,
-#                             [29.0, -1.7, -0.1])
-# trap_62_mf4_fit = curve_fit(trap_model, TrapDepths, res_62_mf4, 1 ./ res_62_mf4_unc,
-#                             [29.0, -1.7, -0.1])
-
-@show Unc.(trap_50_mf3_fit.param, estimate_errors(trap_50_mf3_fit))
-@show Unc.(trap_50_mf4_fit.param, estimate_errors(trap_50_mf4_fit))
-@show Unc.(trap_62_mf3_fit.param, estimate_errors(trap_62_mf3_fit))
-@show Unc.(trap_62_mf4_fit.param, estimate_errors(trap_62_mf4_fit))
+@show Unc.(trap_mf3_fit.param, estimate_errors(trap_mf3_fit))
+@show Unc.(trap_mf4_fit.param, estimate_errors(trap_mf4_fit))
 
 figure()
 p = errorbar(TrapDepths, res_50_mf3, res_50_mf3_unc, label="\$50MHz\\ m_F=3\$", fmt="o")
-plot(trapdepths_plot, trap_model.(trapdepths_plot, (trap_50_mf3_fit.param,)),
-     color=p[1][:get_color]())
-p = errorbar(TrapDepths, res_50_mf4, res_50_mf4_unc, label="\$50MHz\\ m_F=4\$", fmt="o")
-plot(trapdepths_plot, trap_model.(trapdepths_plot, (trap_50_mf4_fit.param,)),
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf3_fit.param,)),
      color=p[1][:get_color]())
 p = errorbar(TrapDepths, res_62_mf3, res_62_mf3_unc, label="\$62MHz\\ m_F=3\$", fmt="o")
-plot(trapdepths_plot, trap_model.(trapdepths_plot, (trap_62_mf3_fit.param,)),
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf3_fit.param,)),
+     color=p[1][:get_color]())
+p = errorbar(TrapDepths, res_50_mf4, res_50_mf4_unc, label="\$50MHz\\ m_F=4\$", fmt="o")
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf4_fit.param,)),
      color=p[1][:get_color]())
 p = errorbar(TrapDepths, res_62_mf4, res_62_mf4_unc, label="\$62MHz\\ m_F=4\$", fmt="o")
-plot(trapdepths_plot, trap_model.(trapdepths_plot, (trap_62_mf4_fit.param,)),
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf4_fit.param,)),
      color=p[1][:get_color]())
 title("Resonance")
 xlabel("Trap depth (mW)")
