@@ -316,12 +316,12 @@ errorbar(BShifts, zeeman_mf3, zeeman_mf3_unc, fmt="C0o", label="\$m_F=3\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, true, (zeemans_fit.param,)), "C0-")
 errorbar(BShifts, zeeman_mf4, zeeman_mf4_unc, fmt="C1o", label="\$m_F=4\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, false, (zeemans_fit.param,)), "C1-")
-gcf()[:text](0.89, 0.5,
-             "\$\\dfrac{B_{real}}{B_z}=$(Unc(zeemans_param[1], zeemans_unc[1]))\$",
+gcf()[:text](0.78, 0.35,
+             "\$B_0=\\!\\!$(Unc(zeemans_param[2] * 1000, zeemans_unc[2] * 1000, Sci))\\ mG\$",
              color="k", fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
-gcf()[:text](0.89, 0.3,
-             "\$B_0=$(Unc(zeemans_param[2], zeemans_unc[2])) Gs\$",
+gcf()[:text](0.73, 0.2,
+             "\$\\dfrac{B_{real}}{B_z}=$(Unc(zeemans_param[1], zeemans_unc[1], Sci))\$",
              color="k", fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
 title("Shift from B field")
