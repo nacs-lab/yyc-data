@@ -293,7 +293,7 @@ function _zeemans_model(b, ismf3, p)
         offset = p[4]
     end
     B0 = 8.8392
-    return sqrt((p[1] * (b - p[2]))^2 + B0^2) * δgF - B0 * δgF + offset
+    return sqrt(((p[1] * b - p[2]))^2 + B0^2) * δgF - B0 * δgF + offset
 end
 function zeemans_model(x::Integer, p)
     if x <= length(BShifts)
@@ -307,13 +307,23 @@ zeemans_model(x, p) = zeemans_model.(x, (p,))
 zeemans_fit = curve_fit(zeemans_model, 1:(length(BShifts) * 2),
                         [zeeman_mf3; zeeman_mf4], [1 ./ zeeman_mf3_unc; 1 ./ zeeman_mf4_unc],
                         [1.0, 0.0, 0.0, 0.0])
-# @show Unc.(zeemans_fit.param, estimate_errors(zeemans_fit))
+zeemans_param = zeemans_fit.param
+zeemans_unc = estimate_errors(zeemans_fit)
+@show Unc.(zeemans_param, zeemans_unc)
 
 figure()
 errorbar(BShifts, zeeman_mf3, zeeman_mf3_unc, fmt="C0o", label="\$m_F=3\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, true, (zeemans_fit.param,)), "C0-")
 errorbar(BShifts, zeeman_mf4, zeeman_mf4_unc, fmt="C1o", label="\$m_F=4\$")
 plot(bshifts_plot, _zeemans_model.(bshifts_plot, false, (zeemans_fit.param,)), "C1-")
+gcf()[:text](0.89, 0.5,
+             "\$\\dfrac{B_{real}}{B_z}=$(Unc(zeemans_param[1], zeemans_unc[1]))\$",
+             color="k", fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+gcf()[:text](0.89, 0.3,
+             "\$B_0=$(Unc(zeemans_param[2], zeemans_unc[2])) Gs\$",
+             color="k", fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 title("Shift from B field")
 xlabel("\$B_z (G)\$")
 ylabel("Shift (kHz)")
