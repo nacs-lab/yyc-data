@@ -226,6 +226,7 @@ ylim([0, 2.2])
 NaCsPlot.maybe_save("$(prefix)_62_mf4_hi")
 
 const BShifts = linspace(-0.3, 0.3, 7)
+bshifts_plot = linspace(-0.35, 0.35, 10000)
 
 const shift_50_mf3 = (res_50_mf3_hi .- res_50_mf3_lo) ./ (15.5 - 5) .* 15.5
 const shift_50_mf3_unc = sqrt.(res_50_mf3_hi_unc.^2 .+ res_50_mf3_lo_unc.^2) ./ (15.5 - 5) .* 15.5
@@ -236,11 +237,51 @@ const shift_62_mf3_unc = sqrt.(res_62_mf3_hi_unc.^2 .+ res_62_mf3_lo_unc.^2) ./ 
 const shift_62_mf4 = (res_62_mf4_hi .- res_62_mf4_lo) ./ (15.5 - 5) .* 15.5
 const shift_62_mf4_unc = sqrt.(res_62_mf4_hi_unc.^2 .+ res_62_mf4_lo_unc.^2) ./ (15.5 - 5) .* 15.5
 
+shift_model(b, p) = (b .- p[1]) .* p[2]
+
+shift_50_mf3_fit = curve_fit(shift_model, BShifts, shift_50_mf3, shift_50_mf3_unc, [0.5, 40.0])
+shift_50_mf4_fit = curve_fit(shift_model, BShifts, shift_50_mf4, shift_50_mf4_unc, [0.5, 40.0])
+shift_62_mf3_fit = curve_fit(shift_model, BShifts, shift_62_mf3, shift_62_mf3_unc, [0.5, 40.0])
+shift_62_mf4_fit = curve_fit(shift_model, BShifts, shift_62_mf4, shift_62_mf4_unc, [0.5, 40.0])
+
+shift_50_mf3_param = shift_50_mf3_fit.param
+shift_50_mf3_param_unc = Unc.(shift_50_mf3_param, estimate_errors(shift_50_mf3_fit))
+shift_50_mf4_param = shift_50_mf4_fit.param
+shift_50_mf4_param_unc = Unc.(shift_50_mf4_param, estimate_errors(shift_50_mf4_fit))
+shift_62_mf3_param = shift_62_mf3_fit.param
+shift_62_mf3_param_unc = Unc.(shift_62_mf3_param, estimate_errors(shift_62_mf3_fit))
+shift_62_mf4_param = shift_62_mf4_fit.param
+shift_62_mf4_param_unc = Unc.(shift_62_mf4_param, estimate_errors(shift_62_mf4_fit))
+
 figure()
-errorbar(BShifts, shift_50_mf3, shift_50_mf3_unc, label="\$50MHz\\ m_F=3\$")
-errorbar(BShifts, shift_50_mf4, shift_50_mf4_unc, label="\$50MHz\\ m_F=4\$")
-errorbar(BShifts, shift_62_mf3, shift_62_mf3_unc, label="\$62MHz\\ m_F=3\$")
-errorbar(BShifts, shift_62_mf4, shift_62_mf4_unc, label="\$62MHz\\ m_F=4\$")
+p = errorbar(BShifts, shift_50_mf3, shift_50_mf3_unc, fmt="o", label="\$50MHz\\ m_F=3\$")
+c = p[1][:get_color]()
+plot(bshifts_plot, shift_model.(bshifts_plot, (shift_50_mf3_param,)), "-", color=c)
+gcf()[:text](0.75, 0.45,
+             "\$(B_y - $(shift_50_mf3_param_unc[1])) * $(shift_50_mf3_param_unc[2])\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+p = errorbar(BShifts, shift_50_mf4, shift_50_mf4_unc, fmt="o", label="\$50MHz\\ m_F=4\$")
+c = p[1][:get_color]()
+plot(bshifts_plot, shift_model.(bshifts_plot, (shift_50_mf4_param,)), "-", color=c)
+gcf()[:text](0.75, 0.35,
+             "\$(B_y - $(shift_50_mf4_param_unc[1])) * $(shift_50_mf4_param_unc[2])\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+p = errorbar(BShifts, shift_62_mf3, shift_62_mf3_unc, fmt="o", label="\$62MHz\\ m_F=3\$")
+c = p[1][:get_color]()
+plot(bshifts_plot, shift_model.(bshifts_plot, (shift_62_mf3_param,)), "-", color=c)
+gcf()[:text](0.75, 0.25,
+             "\$(B_y - $(shift_62_mf3_param_unc[1])) * $(shift_62_mf3_param_unc[2])\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+p = errorbar(BShifts, shift_62_mf4, shift_62_mf4_unc, fmt="o", label="\$62MHz\\ m_F=4\$")
+c = p[1][:get_color]()
+plot(bshifts_plot, shift_model.(bshifts_plot, (shift_62_mf4_param,)), "-", color=c)
+gcf()[:text](0.75, 0.15,
+             "\$(B_y - $(shift_62_mf4_param_unc[1])) * $(shift_62_mf4_param_unc[2])\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 title("Shift from trap light")
 xlabel("\$B_y (G)\$")
 ylabel("Shift (kHz)")
@@ -281,8 +322,6 @@ const zeeman_mf4 =
     (zeeman_50_mf4 ./ zeeman_50_mf4_unc.^2 .+ zeeman_62_mf4 ./ zeeman_62_mf4_unc.^2) ./
     (1 ./ zeeman_50_mf4_unc.^2 .+ 1 ./ zeeman_62_mf4_unc.^2)
 const zeeman_mf4_unc = 1 ./ sqrt.(1 ./ zeeman_50_mf4_unc.^2 .+ 1 ./ zeeman_62_mf4_unc.^2)
-
-bshifts_plot = linspace(-0.35, 0.35, 10000)
 
 function _zeemans_model(b, ismf3, p)
     if ismf3
