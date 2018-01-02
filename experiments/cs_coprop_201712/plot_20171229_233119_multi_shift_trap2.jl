@@ -166,22 +166,42 @@ trap_mf4_fit = curve_fit(trap_model, 1:(length(TrapDepths) * 2),
                          [res_50_mf4; res_62_mf4], [1 ./ res_50_mf4_unc; 1 ./ res_62_mf4_unc],
                          [29.0, -1.7, -1.7])
 
-@show Unc.(trap_mf3_fit.param, estimate_errors(trap_mf3_fit))
-@show Unc.(trap_mf4_fit.param, estimate_errors(trap_mf4_fit))
+trap_mf3_param = trap_mf3_fit.param
+trap_mf3_unc = estimate_errors(trap_mf3_fit)
+@show Unc.(trap_mf3_param, trap_mf3_unc)
+trap_mf4_param = trap_mf4_fit.param
+trap_mf4_unc = estimate_errors(trap_mf4_fit)
+@show Unc.(trap_mf4_param, trap_mf4_unc)
 
 figure()
 p = errorbar(TrapDepths, res_50_mf3, res_50_mf3_unc, label="\$50MHz\\ m_F=3\$", fmt="o")
-plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf3_fit.param,)),
-     color=p[1][:get_color]())
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf3_fit.param,)), color=c)
+gcf()[:text](0.89, 0.45,
+             "\$\\delta^{m_F3}_{50}=$(Unc(trap_mf3_param[2] * 15.5, trap_mf3_unc[2] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 p = errorbar(TrapDepths, res_62_mf3, res_62_mf3_unc, label="\$62MHz\\ m_F=3\$", fmt="o")
-plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf3_fit.param,)),
-     color=p[1][:get_color]())
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf3_fit.param,)), color=c)
+gcf()[:text](0.89, 0.35,
+             "\$\\delta^{m_F3}_{62}=$(Unc(trap_mf3_param[3] * 15.5, trap_mf3_unc[3] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 p = errorbar(TrapDepths, res_50_mf4, res_50_mf4_unc, label="\$50MHz\\ m_F=4\$", fmt="o")
-plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf4_fit.param,)),
-     color=p[1][:get_color]())
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf4_fit.param,)), color=c)
+gcf()[:text](0.89, 0.25,
+             "\$\\delta^{m_F4}_{50}=$(Unc(trap_mf4_param[2] * 15.5, trap_mf4_unc[2] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 p = errorbar(TrapDepths, res_62_mf4, res_62_mf4_unc, label="\$62MHz\\ m_F=4\$", fmt="o")
-plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf4_fit.param,)),
-     color=p[1][:get_color]())
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf4_fit.param,)), color=c)
+gcf()[:text](0.89, 0.15,
+             "\$\\delta^{m_F4}_{62}=$(Unc(trap_mf4_param[3] * 15.5, trap_mf4_unc[3] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
 title("Resonance")
 xlabel("Trap depth (mW)")
 ylabel("Frequency (kHz)")
