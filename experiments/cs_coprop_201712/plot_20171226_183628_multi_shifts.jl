@@ -237,49 +237,69 @@ const shift_62_mf3_unc = sqrt.(res_62_mf3_hi_unc.^2 .+ res_62_mf3_lo_unc.^2) ./ 
 const shift_62_mf4 = (res_62_mf4_hi .- res_62_mf4_lo) ./ (15.5 - 5) .* 15.5
 const shift_62_mf4_unc = sqrt.(res_62_mf4_hi_unc.^2 .+ res_62_mf4_lo_unc.^2) ./ (15.5 - 5) .* 15.5
 
-shift_model(b, p) = (b .- p[1]) .* p[2]
+function _shift_model(b, idx, p)
+    slope = p[5]
+    offset = p[idx]
+    if idx == 1 || idx == 3
+        slope = slope * 6 / 7
+    end
+    return (b - offset) * slope
+end
+function shift_model(x::Integer, p)
+    nbs = length(BShifts)
+    if x > 10
+        x += 1
+    elseif x >= 23
+        x += 2
+    end
+    return _shift_model(BShifts[(x - 1) % nbs + 1], (x - 1) ÷ nbs + 1, p)
+end
+shift_model(x, p) = shift_model.(x, (p,))
 
-shift_50_mf3_fit = curve_fit(shift_model, BShifts, shift_50_mf3, shift_50_mf3_unc, [0.5, 40.0])
-shift_50_mf4_fit = curve_fit(shift_model, BShifts, shift_50_mf4, shift_50_mf4_unc, [0.5, 40.0])
-shift_62_mf3_fit = curve_fit(shift_model, BShifts, shift_62_mf3, shift_62_mf3_unc, [0.5, 40.0])
-shift_62_mf4_fit = curve_fit(shift_model, BShifts, shift_62_mf4, shift_62_mf4_unc, [0.5, 40.0])
+shift_fit = curve_fit(shift_model, 1:(length(BShifts) * 4 - 2),
+                      [shift_50_mf3; shift_50_mf4[[1:3; 5:7]];
+                       shift_62_mf3; shift_62_mf4[[1:3; 5:7]]],
+                      [0.6, 0.6, 0.6, 0.6, 35])
 
-shift_50_mf3_param = shift_50_mf3_fit.param
-shift_50_mf3_param_unc = Unc.(shift_50_mf3_param, estimate_errors(shift_50_mf3_fit))
-shift_50_mf4_param = shift_50_mf4_fit.param
-shift_50_mf4_param_unc = Unc.(shift_50_mf4_param, estimate_errors(shift_50_mf4_fit))
-shift_62_mf3_param = shift_62_mf3_fit.param
-shift_62_mf3_param_unc = Unc.(shift_62_mf3_param, estimate_errors(shift_62_mf3_fit))
-shift_62_mf4_param = shift_62_mf4_fit.param
-shift_62_mf4_param_unc = Unc.(shift_62_mf4_param, estimate_errors(shift_62_mf4_fit))
+shift_param = shift_fit.param
+shift_param_unc = Unc.(shift_param, estimate_errors(shift_fit))
+
+# shift_50_mf3_param = shift_50_mf3_fit.param
+# shift_50_mf3_param_unc = Unc.(shift_50_mf3_param, estimate_errors(shift_50_mf3_fit))
+# shift_50_mf4_param = shift_50_mf4_fit.param
+# shift_50_mf4_param_unc = Unc.(shift_50_mf4_param, estimate_errors(shift_50_mf4_fit))
+# shift_62_mf3_param = shift_62_mf3_fit.param
+# shift_62_mf3_param_unc = Unc.(shift_62_mf3_param, estimate_errors(shift_62_mf3_fit))
+# shift_62_mf4_param = shift_62_mf4_fit.param
+# shift_62_mf4_param_unc = Unc.(shift_62_mf4_param, estimate_errors(shift_62_mf4_fit))
 
 figure()
 p = errorbar(BShifts, shift_50_mf3, shift_50_mf3_unc, fmt="o", label="\$50MHz\\ m_F=3\$")
 c = p[1][:get_color]()
-plot(bshifts_plot, shift_model.(bshifts_plot, (shift_50_mf3_param,)), "-", color=c)
+plot(bshifts_plot, _shift_model.(bshifts_plot, 1, (shift_param,)), "-", color=c)
 gcf()[:text](0.75, 0.45,
-             "\$(B_y - $(shift_50_mf3_param_unc[1])) * $(shift_50_mf3_param_unc[2])\$",
+             "\$(B_y - $(shift_param_unc[1])) * $(shift_param_unc[5] * (6 / 7))\$",
              color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
 p = errorbar(BShifts, shift_50_mf4, shift_50_mf4_unc, fmt="o", label="\$50MHz\\ m_F=4\$")
 c = p[1][:get_color]()
-plot(bshifts_plot, shift_model.(bshifts_plot, (shift_50_mf4_param,)), "-", color=c)
+plot(bshifts_plot, _shift_model.(bshifts_plot, 2, (shift_param,)), "-", color=c)
 gcf()[:text](0.75, 0.35,
-             "\$(B_y - $(shift_50_mf4_param_unc[1])) * $(shift_50_mf4_param_unc[2])\$",
+             "\$(B_y - $(shift_param_unc[2])) * $(shift_param_unc[5])\$",
              color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
 p = errorbar(BShifts, shift_62_mf3, shift_62_mf3_unc, fmt="o", label="\$62MHz\\ m_F=3\$")
 c = p[1][:get_color]()
-plot(bshifts_plot, shift_model.(bshifts_plot, (shift_62_mf3_param,)), "-", color=c)
+plot(bshifts_plot, _shift_model.(bshifts_plot, 3, (shift_param,)), "-", color=c)
 gcf()[:text](0.75, 0.25,
-             "\$(B_y - $(shift_62_mf3_param_unc[1])) * $(shift_62_mf3_param_unc[2])\$",
+             "\$(B_y - $(shift_param_unc[3])) * $(shift_param_unc[5] * (6 / 7))\$",
              color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
 p = errorbar(BShifts, shift_62_mf4, shift_62_mf4_unc, fmt="o", label="\$62MHz\\ m_F=4\$")
 c = p[1][:get_color]()
-plot(bshifts_plot, shift_model.(bshifts_plot, (shift_62_mf4_param,)), "-", color=c)
+plot(bshifts_plot, _shift_model.(bshifts_plot, 4, (shift_param,)), "-", color=c)
 gcf()[:text](0.75, 0.15,
-             "\$(B_y - $(shift_62_mf4_param_unc[1])) * $(shift_62_mf4_param_unc[2])\$",
+             "\$(B_y - $(shift_param_unc[4])) * $(shift_param_unc[5])\$",
              color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
              clip_on=false)
 title("Shift from trap light")
@@ -288,6 +308,21 @@ ylabel("Shift (kHz)")
 legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 NaCsPlot.maybe_save("$(prefix)_trap_shifts")
+
+const shift_50_diff = shift_50_mf4 .- shift_50_mf3 .* (7 / 6)
+const shift_50_diff_unc = sqrt.(shift_50_mf4_unc.^2 .+ shift_50_mf3_unc.^2 .* (7 / 6)^2)
+const shift_62_diff = shift_62_mf4 .- shift_62_mf3 .* (7 / 6)
+const shift_62_diff_unc = sqrt.(shift_62_mf4_unc.^2 .+ shift_62_mf3_unc.^2 .* (7 / 6)^2)
+
+figure()
+p = errorbar(BShifts, shift_50_diff, shift_50_diff_unc, fmt="o-", label="\$50MHz\$")
+p = errorbar(BShifts, shift_62_diff, shift_62_diff_unc, fmt="o-", label="\$62MHz\$")
+title("Extra shift in \$m_F=4\$")
+xlabel("\$B_y (G)\$")
+ylabel("Shift (kHz)")
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+grid()
+NaCsPlot.maybe_save("$(prefix)_trap_shifts_extra")
 
 const zeeman_50_mf3 = res_50_mf3_lo .* (15.5 / (15.5 - 5)) .+ res_50_mf3_hi .* (-5 / (15.5 - 5))
 const zeeman_50_mf3_unc = sqrt.((res_50_mf3_lo_unc .* (15.5 / (15.5 - 5))).^2 .+
