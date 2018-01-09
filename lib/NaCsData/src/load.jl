@@ -6,7 +6,7 @@ import NaCsCalc.Format: Unc
 using DataStructures
 using DelimitedFiles
 
-abstract type AbstractValues end
+abstract type AbstractValues{N} end
 
 @inline to_arrayidx(idx::Integer) = idx:idx
 @inline to_arrayidx(idx) = idx
@@ -16,26 +16,56 @@ function combiner_type end
 function combine end
 function create_values end
 
-struct SortedData{K,Vs<:AbstractValues}
-    params::Vector{K}
+struct SortedData{N,N2,K,Vs<:AbstractValues{N2}}
+    params::Array{K,N}
     values::Vs
+    function SortedData{N,N2,K,Vs}(params, values) where {N,N2,K,Vs}
+        @assert N + 1 == N2
+        return new(params, values)
+    end
 end
-@inline function Base.getindex(data::SortedData{K,Vs}, _arg0, _arg1=Colon()) where {K,Vs}
-    arg0 = to_arrayidx(_arg0)
-    arg1 = to_arrayidx(_arg1)
-    return SortedData{K,Vs}(data.params[arg0], data.values[arg0, arg1])
+SortedData(params::AbstractArray{K,N}, values::Vs) where {N,N2,K,Vs<:AbstractValues{N2}} =
+    SortedData{N,N2,K,Vs}(params, values)
+
+SortedData1{K,Vs} = SortedData{1,2,K,Vs}
+
+@generated function Base.getindex(data::SortedData{N,N2,K,Vs}, _args...) where {N,N2,K,Vs}
+    nargs = length(_args)
+    if N + 1 != N2
+        return :(throw(ArgumentError($"Inconsistent type $(data)")))
+    end
+    if nargs > N2
+        return :(throw(BoundsError(data, _args)))
+    end
+    if nargs == 0
+        return :data
+    end
+    args = [Symbol("arg$i") for i in 1:N2]
+    quote
+        $(Expr(:meta, :inline))
+        $((:($(args[i]) = to_arrayidx(_args[$i])) for i in 1:nargs)...)
+        $((:($(args[i]) = :) for i in (nargs + 1):N2)...)
+        return SortedData{N,N2,K,Vs}(data.params[$((args[i] for i in 1:N)...)],
+                                     data.values[$((args[i] for i in 1:N2)...)])
+    end
 end
-@inline Base.size(data::SortedData) = endof(data), depth(data.values)
-@inline Base.endof(data::SortedData) = length(data.params)
-@inline Base.size(data::SortedData, dim) = if dim == 1
+
+# @inline function Base.getindex(data::SortedData1{K,Vs}, _arg0, _arg1=Colon()) where {K,Vs}
+#     arg0 = to_arrayidx(_arg0)
+#     arg1 = to_arrayidx(_arg1)
+#     return SortedData1{K,Vs}(data.params[arg0], data.values[arg0, arg1])
+# end
+@inline Base.size(data::SortedData1) = endof(data), depth(data.values)
+@inline Base.endof(data::SortedData1) = length(data.params)
+@inline Base.size(data::SortedData1, dim) = if dim == 1
     return endof(data)
 elseif dim == 2
     return depth(data.values)
 else
     return 1
 end
-@inline Base.ndims(::SortedData) = 2
-function Base.vcat(datas::SortedData{K,Vs}...) where {K,Vs}
+@inline Base.ndims(::SortedData1) = 2
+function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
     CT = combiner_type(Vs)
     combiners = Dict{K,CT}()
     params = Vector{K}()
@@ -53,13 +83,13 @@ function Base.vcat(datas::SortedData{K,Vs}...) where {K,Vs}
             end
         end
     end
-    SortedData{K,Vs}(params, create_values(params, combiners))
+    SortedData1{K,Vs}(params, create_values(params, combiners))
 end
-function Base.show(io::IO, data::SortedData)
+function Base.show(io::IO, data::SortedData1)
     params, ratios, uncs = get_values(data)
     print(io, "SortedData", "(params=", params, ", data=", Unc.(ratios, uncs), ")")
 end
-function dump_raw(io::IO, data::SortedData)
+function dump_raw(io::IO, data::SortedData1)
     for i in 1:size(data, 1)
         print(io, data.params[i])
         for j in 1:size(data, 2)
@@ -68,15 +98,15 @@ function dump_raw(io::IO, data::SortedData)
         println(io)
     end
 end
-dump_raw(data::SortedData) = dump_raw(STDOUT, data)
-dump_raw(fname::AbstractString, data::SortedData) = open(fname, "w") do io
+dump_raw(data::SortedData1) = dump_raw(STDOUT, data)
+dump_raw(fname::AbstractString, data::SortedData1) = open(fname, "w") do io
     dump_raw(io, data)
 end
 
-struct CountValues <: AbstractValues
-    counts::Matrix{Int}
+struct CountValues <: AbstractValues{2}
+    counts::Array{Int,2}
 end
-CountData{K} = SortedData{K,CountValues}
+CountData{K} = SortedData1{K,CountValues}
 CountData(params::AbstractVector{T}, counts::AbstractMatrix) where T =
     CountData{T}(params, CountValues(counts))
 function load_count_csv(fname)
@@ -114,9 +144,9 @@ function create_values(params, dict::Dict{<:Any,CountCombiner})
     return CountValues(counts)
 end
 
-struct SurvivalValues <: AbstractValues
-    ratios::Matrix{Float64}
-    uncs::Matrix{Float64}
+struct SurvivalValues <: AbstractValues{2}
+    ratios::Array{Float64,2}
+    uncs::Array{Float64,2}
 end
 function SurvivalValues(vals::CountValues)
     counts = vals.counts
@@ -192,14 +222,14 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
     return SurvivalValues(ratios, uncs)
 end
 
-SurvivalData{K} = SortedData{K,SurvivalValues}
+SurvivalData{K} = SortedData1{K,SurvivalValues}
 SurvivalData(data::CountData{K}) where K =
     SurvivalData{K}(data.params, SurvivalValues(data.values))
 
 get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
 get_values(data::CountData) = get_values(SurvivalData(data))
 
-function map_params(f::F, data::SortedData) where {F}
+function map_params(f::F, data::SortedData1) where {F}
     params = data.params
     nparams = length(params)
     SortedData([f(i, params[i]) for i in 1:nparams], data.values)
@@ -231,7 +261,7 @@ function _split_data(data, _offset, dict, spec::AbstractArray{T}) where {T}
     return SortedData(params, data.values[idxs, :])
 end
 
-function split_data(_data::SortedData, spec)
+function split_data(_data::SortedData1, spec)
     # Remove duplicates (not sure if it's an better API to do this implicitly or explicitly)
     data = [_data;]
     params = data.params
