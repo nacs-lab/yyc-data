@@ -106,8 +106,9 @@ CountData{N,N2,K} = SortedData{N,N2,K,CountValues{N2}}
 CountData(params::AbstractArray{T,N}, counts::AbstractArray{T2,N2}) where {N,N2,T,T2} =
     CountData{N,N2,T}(params, CountValues{N2}(counts))
 @inline depth(vals::CountValues{N2}) where {N2} = size(vals.counts, N2)
-@inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
-# @inline Base.getindex(vals::CountValues1, args...) = CountValues1(vals.counts[args...])
+@inline _maybe_countvalues(v::Number) = v
+@inline _maybe_countvalues(v::AbstractArray{T,N}) where {T,N} = CountValues{N}(v)
+@inline Base.getindex(vals::CountValues, args...) = _maybe_countvalues(vals.counts[args...])
 
 function load_count_csv(fname)
     data = readdlm(fname, ',', Float64, skipstart=1)
@@ -144,39 +145,45 @@ function create_values(params, dict::Dict{<:Any,CountCombiner})
     return CountValues1(counts)
 end
 
-struct SurvivalValues <: AbstractValues{2}
-    ratios::Array{Float64,2}
-    uncs::Array{Float64,2}
+struct SurvivalValues{N2} <: AbstractValues{N2}
+    ratios::Array{Float64,N2}
+    uncs::Array{Float64,N2}
 end
-function SurvivalValues(vals::CountValues1)
+function SurvivalValues(vals::CountValues{N2}) where {N2}
     counts = vals.counts
-    len, num_cnts = size(counts)
-    ratios = Matrix{Float64}(len, num_cnts - 1)
-    uncs = Matrix{Float64}(len, num_cnts - 1)
-    for i in 1:len
-        base = counts[i, 1]
+    csize = size(counts)
+    psize = ntuple(i->csize[i], N2 - 1)
+    num_cnts = csize[N2]
+    ratios = Array{Float64,N2}(psize..., num_cnts - 1)
+    uncs = Array{Float64,N2}(psize..., num_cnts - 1)
+    for I in CartesianRange(psize)
+        base = counts[I.I..., 1]
         for j in 1:(num_cnts - 1)
-            cur = counts[i, j + 1]
-            ratios[i, j], uncs[i, j] = binomial_estimate(cur, base)
+            cur = counts[I.I..., j + 1]
+            ratios[I.I..., j], uncs[I.I..., j] = binomial_estimate(cur, base)
             base = cur
         end
     end
-    return SurvivalValues(ratios, uncs)
+    return SurvivalValues{N2}(ratios, uncs)
+end
+@inline _maybe_survivalvalues(v1::Number, v2::Number) = Unc(v1, v2)
+@inline function _maybe_survivalvalues(v1::AbstractArray{T1,N},
+                                       v2::AbstractArray{T2,N}) where {T1,T2,N}
+    return SurvivalValues{N}(v1, v2)
 end
 @inline function Base.getindex(vals::SurvivalValues, args...)
-    return SurvivalValues(vals.ratios[args...], vals.uncs[args...])
+    return _maybe_survivalvalues(vals.ratios[args...], vals.uncs[args...])
 end
-@inline function Base.getindex(vals::SurvivalValues, arg0, arg1::Number)
-    return Unc(vals.ratios[arg0, arg1], vals.uncs[arg0, arg1])
-end
-@inline depth(vals::SurvivalValues) = size(vals.ratios, 2)
+@inline depth(vals::SurvivalValues{N2}) where {N2} = size(vals.ratios, N2)
 
+# TODO
+const SurvivalValues1 = SurvivalValues{2}
 struct SurvivalCombiner
     sums::Vector{Float64}
     ws::Vector{Float64}
 end
-combiner_type(::Type{SurvivalValues}) = SurvivalCombiner
-function SurvivalCombiner(vals::SurvivalValues, i)
+combiner_type(::Type{SurvivalValues1}) = SurvivalCombiner
+function SurvivalCombiner(vals::SurvivalValues1, i)
     ratios = vals.ratios
     uncs = vals.uncs
     ncnts = size(ratios, 2)
@@ -189,7 +196,7 @@ function SurvivalCombiner(vals::SurvivalValues, i)
     end
     SurvivalCombiner(sums, ws)
 end
-function combine(comb::SurvivalCombiner, vals::SurvivalValues, i)
+function combine(comb::SurvivalCombiner, vals::SurvivalValues1, i)
     ratios = vals.ratios
     uncs = vals.uncs
     ncnts = size(ratios, 2)
@@ -219,10 +226,10 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
             uncs[i, j] = 1 / √(w)
         end
     end
-    return SurvivalValues(ratios, uncs)
+    return SurvivalValues1(ratios, uncs)
 end
 
-SurvivalData{K} = SortedData1{K,SurvivalValues}
+SurvivalData{K} = SortedData1{K,SurvivalValues1}
 SurvivalData(data::CountData1{K}) where K =
     SurvivalData{K}(data.params, SurvivalValues(data.values))
 
