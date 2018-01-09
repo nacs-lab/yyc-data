@@ -61,6 +61,7 @@ else
 end
 @inline Base.ndims(::SortedData{N,N2}) where {N,N2} = N2
 function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
+    # TODO
     CT = combiner_type(Vs)
     combiners = Dict{K,CT}()
     params = Vector{K}()
@@ -98,28 +99,32 @@ dump_raw(fname::AbstractString, data::SortedData) = open(fname, "w") do io
     dump_raw(io, data)
 end
 
-struct CountValues <: AbstractValues{2}
-    counts::Array{Int,2}
+struct CountValues{N2} <: AbstractValues{N2}
+    counts::Array{Int,N2}
 end
-CountData{K} = SortedData1{K,CountValues}
-CountData(params::AbstractVector{T}, counts::AbstractMatrix) where T =
-    CountData{T}(params, CountValues(counts))
+CountData{N,N2,K} = SortedData{N,N2,K,CountValues{N2}}
+CountData(params::AbstractArray{T,N}, counts::AbstractArray{T2,N2}) where {N,N2,T,T2} =
+    CountData{N,N2,T}(params, CountValues{N2}(counts))
+@inline depth(vals::CountValues{N2}) where {N2} = size(vals.counts, N2)
+@inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
+# @inline Base.getindex(vals::CountValues1, args...) = CountValues1(vals.counts[args...])
+
 function load_count_csv(fname)
     data = readdlm(fname, ',', Float64, skipstart=1)
     params = data[:, 1]
     counts = Int.(@view data[:, 2:end])
     return CountData(params, counts)
 end
-@inline Base.getindex(vals::CountValues, args...) = CountValues(vals.counts[args...])
-@inline Base.getindex(vals::CountValues, arg0, arg1::Number) = vals.counts[arg0, arg1]
-@inline depth(vals::CountValues) = size(vals.counts, 2)
 
+# TODO
+const CountValues1 = CountValues{2}
+CountData1{K} = CountData{1,2,K}
 struct CountCombiner
     counts::Vector{Int}
 end
-combiner_type(::Type{CountValues}) = CountCombiner
-CountCombiner(vals::CountValues, i) = CountCombiner(vals.counts[i, :])
-function combine(comb::CountCombiner, vals::CountValues, i)
+combiner_type(::Type{CountValues1}) = CountCombiner
+CountCombiner(vals::CountValues1, i) = CountCombiner(vals.counts[i, :])
+function combine(comb::CountCombiner, vals::CountValues1, i)
     for j in 1:length(comb.counts)
         comb.counts[j] += vals.counts[i, j]
     end
@@ -136,14 +141,14 @@ function create_values(params, dict::Dict{<:Any,CountCombiner})
             counts[i, j] = c[j]
         end
     end
-    return CountValues(counts)
+    return CountValues1(counts)
 end
 
 struct SurvivalValues <: AbstractValues{2}
     ratios::Array{Float64,2}
     uncs::Array{Float64,2}
 end
-function SurvivalValues(vals::CountValues)
+function SurvivalValues(vals::CountValues1)
     counts = vals.counts
     len, num_cnts = size(counts)
     ratios = Matrix{Float64}(len, num_cnts - 1)
@@ -218,11 +223,11 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
 end
 
 SurvivalData{K} = SortedData1{K,SurvivalValues}
-SurvivalData(data::CountData{K}) where K =
+SurvivalData(data::CountData1{K}) where K =
     SurvivalData{K}(data.params, SurvivalValues(data.values))
 
 get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
-get_values(data::CountData) = get_values(SurvivalData(data))
+get_values(data::CountData1) = get_values(SurvivalData(data))
 
 function map_params(f::F, data::SortedData1) where {F}
     params = data.params
