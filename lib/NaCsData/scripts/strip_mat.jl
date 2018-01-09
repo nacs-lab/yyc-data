@@ -71,7 +71,7 @@ function compute_counts(scan)
                         v += imgs[xi, yi, imgidx]
                     end
                 end
-                counts[i, si, se] = v;
+                counts[i, si, se] = v
             end
         end
     end
