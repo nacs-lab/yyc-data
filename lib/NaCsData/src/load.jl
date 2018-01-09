@@ -50,21 +50,16 @@ SortedData1{K,Vs} = SortedData{1,2,K,Vs}
     end
 end
 
-# @inline function Base.getindex(data::SortedData1{K,Vs}, _arg0, _arg1=Colon()) where {K,Vs}
-#     arg0 = to_arrayidx(_arg0)
-#     arg1 = to_arrayidx(_arg1)
-#     return SortedData1{K,Vs}(data.params[arg0], data.values[arg0, arg1])
-# end
-@inline Base.size(data::SortedData1) = endof(data), depth(data.values)
-@inline Base.endof(data::SortedData1) = length(data.params)
-@inline Base.size(data::SortedData1, dim) = if dim == 1
-    return endof(data)
-elseif dim == 2
+@inline Base.size(data::SortedData) = size(data.params)..., depth(data.values)
+@inline Base.endof(data::SortedData) = endof(data.params)
+@inline Base.size(data::SortedData{N}, dim) where {N} = if dim <= N
+    return size(data.params)
+elseif dim <= N + 1
     return depth(data.values)
 else
     return 1
 end
-@inline Base.ndims(::SortedData1) = 2
+@inline Base.ndims(::SortedData{N,N2}) where {N,N2} = N2
 function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
     CT = combiner_type(Vs)
     combiners = Dict{K,CT}()
@@ -85,11 +80,11 @@ function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
     end
     SortedData1{K,Vs}(params, create_values(params, combiners))
 end
-function Base.show(io::IO, data::SortedData1)
+function Base.show(io::IO, data::SortedData)
     params, ratios, uncs = get_values(data)
     print(io, "SortedData", "(params=", params, ", data=", Unc.(ratios, uncs), ")")
 end
-function dump_raw(io::IO, data::SortedData1)
+function dump_raw(io::IO, data::SortedData{1})
     for i in 1:size(data, 1)
         print(io, data.params[i])
         for j in 1:size(data, 2)
@@ -98,8 +93,8 @@ function dump_raw(io::IO, data::SortedData1)
         println(io)
     end
 end
-dump_raw(data::SortedData1) = dump_raw(STDOUT, data)
-dump_raw(fname::AbstractString, data::SortedData1) = open(fname, "w") do io
+dump_raw(data::SortedData) = dump_raw(STDOUT, data)
+dump_raw(fname::AbstractString, data::SortedData) = open(fname, "w") do io
     dump_raw(io, data)
 end
 
