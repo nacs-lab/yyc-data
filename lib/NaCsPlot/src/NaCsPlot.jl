@@ -15,16 +15,25 @@ function __init__()
                                          "svg.hashsalt" => 19680801))
     matplotlib[:rc]("xtick", labelsize=15)
     matplotlib[:rc]("ytick", labelsize=15)
+    copy!(hist, PyPlot.matplotlib[:pyplot][:hist])
 end
 
-function plot_survival_data(data, scale=1; yoffset=0, kws...)
+const hist = PyCall.PyNULL()
+
+function plot_data(data, columns, scale=1; yoffset=0, kws...)
     params, ratios, uncs = NaCsData.get_values(data)
     perm = sortperm(params)
     params = params[perm]
-    ratios = ratios[perm, 2] .* scale .+ yoffset
-    uncs = uncs[perm, 2] .* scale
-    errorbar(params, ratios, uncs; kws...)
+    for col in columns
+        errorbar(params, ratios[perm, col] .* scale .+ yoffset,
+                 uncs[perm, col] .* scale; kws...)
+    end
 end
+
+plot_loading_data(data, scale=1; yoffset=0, kws...) =
+    plot_data(data, 1, scale; yoffset=yoffset, kws...)
+plot_survival_data(data, scale=1; yoffset=0, kws...) =
+    plot_data(data, 2, scale; yoffset=yoffset, kws...)
 
 function save(name; close=true)
     dir = dirname(name)
