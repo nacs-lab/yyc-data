@@ -229,17 +229,16 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
     return SurvivalValues1(ratios, uncs)
 end
 
-SurvivalData{K} = SortedData1{K,SurvivalValues1}
-SurvivalData(data::CountData1{K}) where K =
-    SurvivalData{K}(data.params, SurvivalValues(data.values))
-
+SurvivalData{N,N2,K} = SortedData{N,N2,K,SurvivalValues{N2}}
+SurvivalData(data::CountData{N,N2,K}) where {N,N2,K} =
+    SurvivalData{N,N2,K}(data.params, SurvivalValues(data.values))
 get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
-get_values(data::CountData1) = get_values(SurvivalData(data))
+get_values(data::CountData) = get_values(SurvivalData(data))
 
-function map_params(f::F, data::SortedData1) where {F}
+function map_params(f::F, data::SortedData) where {F}
     params = data.params
-    nparams = length(params)
-    SortedData([f(i, params[i]) for i in 1:nparams], data.values)
+    rng = CartesianRange(size(params))
+    SortedData([f(idx.I..., params[idx.I...]) for idx in rng], data.values)
 end
 map_params(f::F, data::Tuple) where {F} = map(d->map_params(f, d), data)
 map_params(f::F, data::OrderedDict) where {F} = OrderedDict(k=>map_params(f, v) for (k, v) in data)
