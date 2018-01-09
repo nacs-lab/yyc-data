@@ -53,7 +53,7 @@ end
 @inline Base.size(data::SortedData) = size(data.params)..., depth(data.values)
 @inline Base.endof(data::SortedData) = endof(data.params)
 @inline Base.size(data::SortedData{N}, dim) where {N} = if dim <= N
-    return size(data.params)
+    return size(data.params, dim)
 elseif dim <= N + 1
     return depth(data.values)
 else
