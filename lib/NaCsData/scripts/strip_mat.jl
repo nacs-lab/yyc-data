@@ -5,6 +5,7 @@ using MAT
 function process_args()
     local iname, oname
     images = false
+    counts = false
     i = 0
     while i < length(ARGS)
         i += 1
@@ -21,6 +22,8 @@ function process_args()
         end
         if arg == "--images"
             images = true
+        elseif arg == "--counts"
+            counts = true
         else
             throw(ArgumentError("Unknown option: \"$arg\""))
         end
@@ -36,7 +39,43 @@ function process_args()
     if isdir(oname)
         oname = joinpath(oname, "$(splitext(basename(iname))[1]).mat")
     end
-    return (iname=iname, oname=oname, images=images)
+    return (iname=iname, oname=oname, images=images, counts=counts)
+end
+
+function compute_counts(scan)
+    imgs = scan["Images"]::Array{Float64,3}
+
+    total_imgs = size(imgs, 3)
+    nimgs::Int = scan["NumImages"]
+    nsites::Int = scan["NumSites"]
+    nseqs = total_imgs ÷ nimgs
+
+    center_y = cld(size(imgs, 1), 2)
+    center_x = cld(size(imgs, 2), 2)
+    box_r::Int = cld(scan["BoxSize"] - 1, 2)
+
+    counts = zeros(nimgs, nsites, nseqs)
+
+    all_sites = scan["SingleAtomSites"]
+
+    for se = 1:nseqs
+        for i = 1:nimgs
+            imgidx = (se - 1) * nimgs + i
+            sites = all_sites[i]::Matrix{Float64}
+            for si = 1:nsites
+                site_x::Int = center_x + sites[si, 2]
+                site_y::Int = center_y + sites[si, 1]
+                v = 0.0
+                for xi = site_x - box_r:site_x + box_r
+                    for yi = site_y - box_r:site_y + box_r
+                        v += imgs[xi, yi, imgidx]
+                    end
+                end
+                counts[i, si, se] = v;
+            end
+        end
+    end
+    return counts
 end
 
 const opts = process_args()
@@ -53,6 +92,9 @@ matopen(opts.iname) do mf
         write(out, "ParamName", param_name)
         if opts.images
             write(out, "Images", scan["Images"])
+        end
+        if opts.counts
+            write(out, "Counts", compute_counts(scan))
         end
     end
 end
