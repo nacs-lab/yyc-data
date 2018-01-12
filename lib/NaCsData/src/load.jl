@@ -401,11 +401,14 @@ function load_striped_mat(fname)
     end
 end
 
+_seqid_iter(params, maxseq::Integer) = 1:min(length(params), maxseq)
+_seqid_iter(params, filter) = (i for i in 1:length(params) if filter(i))
+
 function select_count(_params::AbstractVector{T}, logicals::AbstractArray{TL,3} where TL,
-                      selector, maxseq=length(_params)) where T
+                      selector, filter=length(_params)) where T
     num_cnt::Int = 0
     data_dict = Dict{T,Vector{Int}}()
-    for seq in 1:maxseq
+    for seq in _seqid_iter(_params, filter)
         param = _params[seq]
         counts = selector(@view logicals[:, :, seq])
         if num_cnt == 0
