@@ -33,11 +33,11 @@ function process_args()
     elseif !@isdefined(oname)
         throw(ArgumentError("Missing output file name"))
     end
-    if stat(oname).size == 0
+    if stat(oname).size == 0 && !endswith(basename(oname), ".mat")
         mkpath(oname, 0o755)
     end
     if isdir(oname)
-        oname = joinpath(oname, "$(splitext(basename(iname))[1]).mat")
+        oname = joinpath(oname, basename(iname))
     end
     return (iname=iname, oname=oname, images=images, counts=counts)
 end
