@@ -149,7 +149,7 @@ struct SurvivalValues{N2} <: AbstractValues{N2}
     ratios::Array{Float64,N2}
     uncs::Array{Float64,N2}
 end
-function SurvivalValues(vals::CountValues{N2}) where {N2}
+function SurvivalValues(vals::CountValues{N2}, z=1.0) where {N2}
     counts = vals.counts
     csize = size(counts)
     psize = ntuple(i->csize[i], N2 - 1)
@@ -160,7 +160,7 @@ function SurvivalValues(vals::CountValues{N2}) where {N2}
         base = counts[I.I..., 1]
         for j in 1:(num_cnts - 1)
             cur = counts[I.I..., j + 1]
-            ratios[I.I..., j], uncs[I.I..., j] = binomial_estimate(cur, base)
+            ratios[I.I..., j], uncs[I.I..., j] = binomial_estimate(cur, base, z)
             base = cur
         end
     end
@@ -230,10 +230,10 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
 end
 
 SurvivalData{N,N2,K} = SortedData{N,N2,K,SurvivalValues{N2}}
-SurvivalData(data::CountData{N,N2,K}) where {N,N2,K} =
-    SurvivalData{N,N2,K}(data.params, SurvivalValues(data.values))
-get_values(data::SurvivalData) = data.params, data.values.ratios, data.values.uncs
-get_values(data::CountData) = get_values(SurvivalData(data))
+SurvivalData(data::CountData{N,N2,K}, z=1.0) where {N,N2,K} =
+    SurvivalData{N,N2,K}(data.params, SurvivalValues(data.values, z))
+get_values(data::SurvivalData, z=1.0) = data.params, data.values.ratios, data.values.uncs
+get_values(data::CountData, z=1.0) = get_values(SurvivalData(data, z))
 
 function map_params(f::F, data::SortedData) where {F}
     params = data.params
@@ -357,7 +357,7 @@ function load_matscan(fnames)
 end
 load_matscan(fname::AbstractString) = load_matscan([fname])
 
-function calc_survival(datas)
+function calc_survival(datas, z=1.0)
     data_dict = Dict{Float64,Vector{Float64}}()
     local num_cnts::Int
     for data::AbstractMatrix in datas
@@ -383,15 +383,15 @@ function calc_survival(datas)
         base = frame[1]
         for j in 1:(num_cnts - 1)
             cur = frame[j + 1]
-            ratios[i, j], uncs[i, j] = binomial_estimate(cur, base)
+            ratios[i, j], uncs[i, j] = binomial_estimate(cur, base, z)
             base = cur
         end
     end
     params, ratios, uncs
 end
-calc_survival(fnames::AbstractVector{T} where T<:AbstractString) =
-    calc_survival(readdlm(fname, ',', Float64, skipstart=1) for fname in fnames)
-calc_survival(fnames::AbstractString) = calc_survival([fnames])
+calc_survival(fnames::AbstractVector{T} where T<:AbstractString, z=1.0) =
+    calc_survival((readdlm(fname, ',', Float64, skipstart=1) for fname in fnames), z)
+calc_survival(fnames::AbstractString, z=1.0) = calc_survival([fnames], z)
 
 function load_striped_mat(fname)
     matopen(fname) do fd
