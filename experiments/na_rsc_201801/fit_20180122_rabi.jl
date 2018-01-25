@@ -103,7 +103,7 @@ const rates_coprop = rates_f1_coprop + rates_f2_coprop
 # Matrix elements
 const m_Na = 23e-3 / 6.02e23
 const η_rx = Trap.η(m_Na, 479e3, 2π / 589e-9) * √(2) * 0.96
-const η_ry = Trap.η(m_Na, 492e3, 2π / 589e-9) * √(2) * 0.96
+const η_ry = Trap.η(m_Na, 492e3, 2π / 589e-9) * √(2) * 0.933
 const η_az = Trap.η(m_Na, 85.7e3, 2π / 589e-9) * 0.67
 
 const ns_az = 0:150
@@ -164,7 +164,7 @@ const f_rx = f1_prop_getter(rates_rx)
 const f_ry = f1_prop_getter(rates_ry)
 const f_az = f1_prop_getter(rates_az)
 
-const img_survive = 0.97
+const img_survive = 0.95
 
 function plot_f1(f, ts, Ωs, pΩ, δΩ=0, scale=img_survive; kws...)
     res = zeros(length(ts))
@@ -212,22 +212,22 @@ const τ_rx = 18.451e-6
 const p_rx = [0.975, 0.10, 0.0]
 const δΩ_rx = 0
 
-@show size(data_cold_x0)
-@show size(data_cold_xp1)
+# @show size(data_cold_x0)
+# @show size(data_cold_xp1)
 
-function div_rx_0(p0)
-    p = copy(p_rx)
-    p[1] = p0
-    s, n = diviation(f_rx, data_cold_x0, 2π / τ_rx * meles_rx_0[1:3], p, δΩ_rx)
-    return s / (n - 4)
-end
+# function div_rx_0(p0)
+#     p = copy(p_rx)
+#     p[1] = p0
+#     s, n = diviation(f_rx, data_cold_x0, 2π / τ_rx * meles_rx_0[1:3], p, δΩ_rx)
+#     return s / (n - 4)
+# end
 
-function div_rx_p1(p0)
-    p = copy(p_rx)
-    p[1] = p0
-    s, n = diviation(f_rx, data_cold_xp1, 2π / τ_rx * meles_rx_p1[1:3], p, δΩ_rx)
-    return s / (n - 4)
-end
+# function div_rx_p1(p0)
+#     p = copy(p_rx)
+#     p[1] = p0
+#     s, n = diviation(f_rx, data_cold_xp1, 2π / τ_rx * meles_rx_p1[1:3], p, δΩ_rx)
+#     return s / (n - 4)
+# end
 
 # @show div_rx_0(0.98)
 # @show div_rx_p1(0.98)
@@ -244,7 +244,7 @@ end
 #     @show x r
 #     return r
 # end
-# init_params = [18.451, 0.975, 0.03] # [61.19, 14.49, 0.987, 0.01]
+# init_params = [18.451, 0.975, 0.03]
 # @show objective_rx(init_params)
 # using Optim
 # @show optimize(objective_rx, init_params)
@@ -255,55 +255,109 @@ end
 # legend()
 # show()
 
+## Y cold
+# 94.0(30)
+
+const τ_ry = 12.3e-6
+const p_ry = [0.95, 0.10, 0.0]
+const δΩ_ry = 0
+
+# @show size(data_cold_y0)
+# @show size(data_cold_yp1)
+
+function div_ry_0(p0)
+    p = copy(p_ry)
+    p[1] = p0
+    s, n = diviation(f_ry, data_cold_y0, 2π / τ_ry * meles_ry_0[1:3], p, δΩ_ry)
+    return s / (n - 4)
+end
+
+function div_ry_p1(p0)
+    p = copy(p_ry)
+    p[1] = p0
+    s, n = diviation(f_ry, data_cold_yp1, 2π / τ_ry * meles_ry_p1[1:3], p, δΩ_ry)
+    return s / (n - 4)
+end
+
+@show div_ry_0(0.94)
+@show div_ry_p1(0.94)
+
+function diviation_ry(τ, p)
+    np = length(p)
+    d1, n1 = diviation(f_ry, data_cold_y0, 2π / τ * meles_ry_0[1:3], p, δΩ_ry)
+    d2, n2 = diviation(f_ry, data_cold_yp1, 2π / τ * meles_ry_p1[1:3], p, δΩ_ry)
+    return (d1 + d2) / (n1 + n2)
+    # return d1 / n1
+end
+function objective_ry(x)
+    r = diviation_ry(x[1] * 1e-6, [x[2:end]; 1.0])
+    @show x r
+    return r
+end
+# init_params = [12.2, 0.975, 0.03] # [61.19, 14.49, 0.987, 0.01]
+# @show objective_ry(init_params)
+# using Optim
+# @show optimize(objective_ry, init_params)
+
+# ps = linspace(0.9, 1.0, 41)
+# plot(ps, div_ry_0.(ps), label="Carrier")
+# plot(ps, div_ry_p1.(ps), label="Heating")
+# legend()
+# show()
+
 #### Plotting
 
-figure()
-ts_rx_p1 = linspace(0, 280e-6, 1001)
-plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
-NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o-", label="Hot")
-grid()
-ylim([0, 1])
-title("X heating")
-legend()
-xlabel("Time (\$\\mu s\$)")
-ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
-
-figure()
-ts_rx_0 = linspace(0, 150e-6, 1001)
-plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
-NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o-", label="Hot")
-grid()
-ylim([0, 1])
-title("X carrier")
-legend()
-xlabel("Time (\$\\mu s\$)")
-ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_rabi_x0")
-
 # figure()
-# NaCsPlot.plot_survival_data(data_cold_yp1, fmt="C0o-", label="Cold")
-# NaCsPlot.plot_survival_data(data_hot_yp1, fmt="C1o-", label="Hot")
+# ts_rx_p1 = linspace(0, 280e-6, 1001)
+# plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
+# NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
+# NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o-", label="Hot")
 # grid()
 # ylim([0, 1])
-# title("Y heating")
+# title("X heating")
 # legend()
 # xlabel("Time (\$\\mu s\$)")
 # ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_rabi_yp1")
+# NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
 
 # figure()
-# NaCsPlot.plot_survival_data(data_cold_y0, fmt="C0o-", label="Cold")
-# NaCsPlot.plot_survival_data(data_hot_y0, fmt="C1o-", label="Hot")
+# ts_rx_0 = linspace(0, 150e-6, 1001)
+# plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
+# NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
+# NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o-", label="Hot")
 # grid()
 # ylim([0, 1])
-# title("Y carrier")
+# title("X carrier")
 # legend()
 # xlabel("Time (\$\\mu s\$)")
 # ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_rabi_y0")
+# NaCsPlot.maybe_save("$(prefix)_rabi_x0")
+
+figure()
+ts_ry_p1 = linspace(0, 180e-6, 1001)
+plot_f1(f_ry, ts_ry_p1, 2π / τ_ry * meles_ry_p1[1:3], p_ry, color="darkslateblue")
+NaCsPlot.plot_survival_data(data_cold_yp1, fmt="C0o", label="Cold")
+NaCsPlot.plot_survival_data(data_hot_yp1, fmt="C1o-", label="Hot")
+grid()
+ylim([0, 1])
+title("Y heating")
+legend()
+xlabel("Time (\$\\mu s\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_rabi_yp1")
+
+figure()
+ts_ry_0 = linspace(0, 105e-6, 1001)
+plot_f1(f_ry, ts_ry_0, 2π / τ_ry * meles_ry_0[1:3], p_ry, color="darkslateblue")
+NaCsPlot.plot_survival_data(data_cold_y0, fmt="C0o", label="Cold")
+NaCsPlot.plot_survival_data(data_hot_y0, fmt="C1o-", label="Hot")
+grid()
+ylim([0, 1])
+title("Y carrier")
+legend()
+xlabel("Time (\$\\mu s\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_rabi_y0")
 
 # figure()
 # NaCsPlot.plot_survival_data(data_cold_zp1, fmt="C0o-", label="Cold")
