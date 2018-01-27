@@ -281,37 +281,37 @@ const δΩ_rx = 15.54e3
 const nbar_hot_rx = 3.459
 const τ_hot_rx = 19.926e-6
 
-figure()
-ts_rx_p1 = linspace(0, 280e-6, 1001)
-ts_rx_p1_hot = linspace(0, 150e-6, 501)
-plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
-NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
-plot_f1_thermal(f_rx, ts_rx_p1_hot, 2π / τ_hot_rx * meles_rx_p1, nbar_hot_rx,
-                δΩ_rx, 0.956528, color="C3")
-NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o", label="Hot")
-grid()
-ylim([0, 1])
-title("X heating")
-legend()
-xlabel("Time (\$\\mu s\$)")
-ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
+# figure()
+# ts_rx_p1 = linspace(0, 280e-6, 1001)
+# ts_rx_p1_hot = linspace(0, 150e-6, 501)
+# plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
+# NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
+# plot_f1_thermal(f_rx, ts_rx_p1_hot, 2π / τ_hot_rx * meles_rx_p1, nbar_hot_rx,
+#                 δΩ_rx, 0.956528, color="C3")
+# NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o", label="Hot")
+# grid()
+# ylim([0, 1])
+# title("X heating")
+# legend()
+# xlabel("Time (\$\\mu s\$)")
+# ylabel("Survival")
+# NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
 
-figure()
-ts_rx_0 = linspace(0, 144e-6, 1001)
-ts_rx_0_hot = linspace(0, 60e-6, 501)
-plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
-NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
-plot_f1_thermal(f_rx, ts_rx_0_hot, 2π / τ_hot_rx * meles_rx_0, nbar_hot_rx,
-                δΩ_rx, 0.956528, color="C3")
-NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o", label="Hot")
-grid()
-ylim([0, 1])
-title("X carrier")
-legend()
-xlabel("Time (\$\\mu s\$)")
-ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_rabi_x0")
+# figure()
+# ts_rx_0 = linspace(0, 144e-6, 1001)
+# ts_rx_0_hot = linspace(0, 60e-6, 501)
+# plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
+# NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
+# plot_f1_thermal(f_rx, ts_rx_0_hot, 2π / τ_hot_rx * meles_rx_0, nbar_hot_rx,
+#                 δΩ_rx, 0.956528, color="C3")
+# NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o", label="Hot")
+# grid()
+# ylim([0, 1])
+# title("X carrier")
+# legend()
+# xlabel("Time (\$\\mu s\$)")
+# ylabel("Survival")
+# NaCsPlot.maybe_save("$(prefix)_rabi_x0")
 
 ## Y cold
 # 94.0(30)
@@ -354,17 +354,45 @@ const δΩ_ry = 15.54e3
 # using Optim
 # @show optimize(objective_ry, init_params)
 
+# function diviation_hot_ry(τ, p, scale)
+#     np = length(p)
+#     d1, n1 = diviation(f_ry, data_hot_y0, 2π / τ * meles_ry_0, p, δΩ_ry, scale)
+#     d2, n2 = diviation(f_ry, data_hot_yp1, 2π / τ * meles_ry_p1, p, δΩ_ry, scale)
+#     return (d1 + d2) / (n1 + n2)
+#     # return d1 / n1
+# end
+# function objective_hot_ry(x)
+#     nstates = length(meles_ry_0)
+#     ns = 0:(nstates - 1)
+#     nbar = x[1]
+#     scale = x[2]
+#     pΩ = (nbar / (nbar + 1)).^ns ./ (nbar + 1)
+#     r = diviation_hot_ry(x[3] * 1e-6, [pΩ; 1.0], scale)
+#     @show x r
+#     return r
+# end
+# init_params = [3.454, 1.043, 15]
+# @show objective_hot_ry(init_params)
+# using Optim
+# @show optimize(objective_hot_ry, init_params)
+
 # ps = linspace(0.9, 1.0, 41)
 # plot(ps, div_ry_0.(ps), label="Carrier")
 # plot(ps, div_ry_p1.(ps), label="Heating")
 # legend()
 # show()
 
+const nbar_hot_ry = 3.224
+const τ_hot_ry = 12.347e-6
+
 figure()
 ts_ry_p1 = linspace(0, 180e-6, 1001)
+ts_ry_p1_hot = linspace(0, 95e-6, 501)
 plot_f1(f_ry, ts_ry_p1, 2π / τ_ry * meles_ry_p1[1:3], p_ry, color="darkslateblue")
 NaCsPlot.plot_survival_data(data_cold_yp1, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_yp1, fmt="C1o-", label="Hot")
+plot_f1_thermal(f_ry, ts_ry_p1_hot, 2π / τ_hot_ry * meles_ry_p1, nbar_hot_ry,
+                δΩ_ry, 0.97323, color="C3")
+NaCsPlot.plot_survival_data(data_hot_yp1, fmt="C1o", label="Hot")
 grid()
 ylim([0, 1])
 title("Y heating")
@@ -375,9 +403,12 @@ NaCsPlot.maybe_save("$(prefix)_rabi_yp1")
 
 figure()
 ts_ry_0 = linspace(0, 105e-6, 1001)
+ts_ry_0_hot = linspace(0, 40e-6, 501)
 plot_f1(f_ry, ts_ry_0, 2π / τ_ry * meles_ry_0[1:3], p_ry, color="darkslateblue")
 NaCsPlot.plot_survival_data(data_cold_y0, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_y0, fmt="C1o-", label="Hot")
+plot_f1_thermal(f_ry, ts_ry_0_hot, 2π / τ_hot_ry * meles_ry_0, nbar_hot_ry,
+                δΩ_ry, 0.97323, color="C3")
+NaCsPlot.plot_survival_data(data_hot_y0, fmt="C1o", label="Hot")
 grid()
 ylim([0, 1])
 title("Y carrier")
