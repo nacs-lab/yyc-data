@@ -120,7 +120,7 @@ const meles_ry_p1 = Trap.sideband.(ns_ry, ns_ry .+ 1, η_ry)
 
 function f1_prob(Ωs, pΩ::AbstractArray, Γ::AbstractMatrix{T},
                  rates::AbstractVector{T}, tmax::T, atol=0.005, δΩ=T(0),
-                 n::Integer=100000, rd=thread_rng()) where T<:AbstractFloat
+                 n::Integer=100000, rd=thread_rng(); offsetΩ=0) where T<:AbstractFloat
     nΩ = length(Ωs)
     nstates = length(rates)
     count = 0
@@ -135,7 +135,7 @@ function f1_prob(Ωs, pΩ::AbstractArray, Γ::AbstractMatrix{T},
             end
         end
         Ω0 = Ωs[j]
-        δ = δΩ * randn(rd)
+        δ = δΩ * randn(rd) + offsetΩ
         Ω = T(sqrt(Ω0^2 + δ^2))
         i_final = propagate_multistates(Ω, 1, 6, Γ, rates, 1, tmax, rd)
         if i_final > 5
@@ -157,7 +157,7 @@ end
 function f1_prop_getter(Γ)
     Γ32 = Float32.(Γ)
     rates32 = Γ_to_rates(Γ32)
-    (Ωs, pΩ, t, atol=0.005, δΩ=0)->f1_prob(Ωs, pΩ, Γ32, rates32, t, atol, δΩ)
+    (Ωs, pΩ, t, atol=0.005, δΩ=0; offsetΩ=0)->f1_prob(Ωs, pΩ, Γ32, rates32, t, atol, δΩ; offsetΩ=offsetΩ)
 end
 
 const f_rx = f1_prop_getter(rates_rx)
@@ -166,34 +166,36 @@ const f_az = f1_prop_getter(rates_az)
 
 const img_survive = 0.95
 
-function plot_f1(f::F, ts, _Ωs, _pΩ, δΩ=0, scale=img_survive; kws...) where F
+function plot_f1(f::F, ts, _Ωs, _pΩ, δΩ=0, scale=img_survive; offset=0, offsetΩ=0, kws...) where F
     res = zeros(length(ts))
     Ωs = Float32.(_Ωs)
     pΩ = Float32.(_pΩ)
     @time Threads.@threads for i in 1:length(ts)
-        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002, Float32(δΩ)) * scale
+        res[i] = f(Ωs, pΩ, Float32(ts[i]), 0.002, Float32(δΩ); offsetΩ=offsetΩ) * scale + offset
     end
     plot(ts * 1e6, res; kws...)
 end
 
-function plot_f1_thermal(f, ts, Ωs, nbar, δΩ=0, scale=img_survive; kws...)
+function plot_f1_thermal(f, ts, Ωs, nbar, δΩ=0, scale=img_survive;
+                         offset=0, offsetΩ=0, kws...)
     nstates = length(Ωs)
     ns = 0:(nstates - 1)
     pΩ = (nbar / (nbar + 1)).^ns ./ (nbar + 1)
-    plot_f1(f, ts, Ωs, pΩ, δΩ, scale; kws...)
+    plot_f1(f, ts, Ωs, pΩ, δΩ, scale; offset=offset, offsetΩ=offsetΩ, kws...)
 end
 
-function plot_f1_thermal2(f, ts, Ωs, nbar, Ωs2, nbar2, δΩ=0, scale=img_survive; kws...)
+function plot_f1_thermal2(f, ts, Ωs, nbar, Ωs2, nbar2, δΩ=0, scale=img_survive;
+                          offset=0, offsetΩ=0, kws...)
     nstates = length(Ωs)
     ns = 0:(nstates - 1)
     pΩ = (nbar / (nbar + 1)).^ns ./ (nbar + 1)
     nstates2 = length(Ωs2)
     ns2 = 0:(nstates2 - 1)
     pΩ2 = (nbar2 / (nbar2 + 1)).^ns2 ./ (nbar2 + 1)
-    plot_f1(f, ts, Ωs * Ωs2', pΩ * pΩ2', δΩ, scale; kws...)
+    plot_f1(f, ts, Ωs * Ωs2', pΩ * pΩ2', δΩ, scale; offset=offset, offsetΩ=offsetΩ, kws...)
 end
 
-function diviation(f, data, Ωs, pΩ, δΩ=0, scale=1 / img_survive)
+function diviation(f, data, Ωs, pΩ, δΩ=0, scale=1 / img_survive; offset=0, offsetΩ=0)
     params, ratios, uncs = NaCsData.get_values(data)
     perm = sortperm(params)
     params = params[perm] * 1e-6
@@ -202,7 +204,8 @@ function diviation(f, data, Ωs, pΩ, δΩ=0, scale=1 / img_survive)
     n = length(params)
     s = 0.0
     for i in 1:n
-        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001, δΩ) - ratios[i]) / uncs[i])^2
+        s += ((f(Ωs, pΩ, Float32(params[i]), 0.001, δΩ;
+                 offsetΩ=offsetΩ) - ratios[i] + offset) / uncs[i])^2
     end
     return s, n
 end
@@ -281,40 +284,40 @@ const δΩ_rx = 15.54e3
 const nbar_hot_rx = 3.459
 const τ_hot_rx = 19.926e-6
 
-# figure()
-# ts_rx_p1 = linspace(0, 280e-6, 1001)
-# ts_rx_p1_hot = linspace(0, 150e-6, 501)
-# plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
-# NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
-# plot_f1_thermal(f_rx, ts_rx_p1_hot, 2π / τ_hot_rx * meles_rx_p1, nbar_hot_rx,
-#                 δΩ_rx, 0.956528, color="C3")
-# NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o", label="Hot")
-# grid()
-# ylim([0, 1])
-# title("X heating")
-# legend()
-# xlabel("Time (\$\\mu s\$)")
-# ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
+figure()
+ts_rx_p1 = linspace(0, 280e-6, 1001)
+ts_rx_p1_hot = linspace(0, 150e-6, 501)
+plot_f1(f_rx, ts_rx_p1, 2π / τ_rx * meles_rx_p1[1:3], p_rx, color="darkslateblue")
+NaCsPlot.plot_survival_data(data_cold_xp1, fmt="C0o", label="Cold")
+plot_f1_thermal(f_rx, ts_rx_p1_hot, 2π / τ_hot_rx * meles_rx_p1, nbar_hot_rx,
+                δΩ_rx, 0.956528, color="C3")
+NaCsPlot.plot_survival_data(data_hot_xp1, fmt="C1o", label="Hot")
+grid()
+ylim([0, 1])
+title("X heating")
+legend()
+xlabel("Time (\$\\mu s\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_rabi_xp1")
 
-# figure()
-# ts_rx_0 = linspace(0, 144e-6, 1001)
-# ts_rx_0_hot = linspace(0, 60e-6, 501)
-# plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
-# NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
-# plot_f1_thermal(f_rx, ts_rx_0_hot, 2π / τ_hot_rx * meles_rx_0, nbar_hot_rx,
-#                 δΩ_rx, 0.956528, color="C3")
-# NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o", label="Hot")
-# grid()
-# ylim([0, 1])
-# title("X carrier")
-# legend()
-# xlabel("Time (\$\\mu s\$)")
-# ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_rabi_x0")
+figure()
+ts_rx_0 = linspace(0, 144e-6, 1001)
+ts_rx_0_hot = linspace(0, 60e-6, 501)
+plot_f1(f_rx, ts_rx_0, 2π / τ_rx * meles_rx_0[1:3], p_rx, color="darkslateblue")
+NaCsPlot.plot_survival_data(data_cold_x0, fmt="C0o", label="Cold")
+plot_f1_thermal(f_rx, ts_rx_0_hot, 2π / τ_hot_rx * meles_rx_0, nbar_hot_rx,
+                δΩ_rx, 0.956528, color="C3")
+NaCsPlot.plot_survival_data(data_hot_x0, fmt="C1o", label="Hot")
+grid()
+ylim([0, 1])
+title("X carrier")
+legend()
+xlabel("Time (\$\\mu s\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_rabi_x0")
 
 ## Y cold
-# 94.0(30)
+# 95.0(30)
 
 const τ_ry = 12.3e-6
 const p_ry = [0.95, 0.10, 0.0]
@@ -418,11 +421,12 @@ ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_rabi_y0")
 
 ## Z cold
-# 92.0(40)
+# 95.0(40)
 
-const τ_az = 38.874e-6
-const p_az = [0.92, 0.06, 0.02]
-const δΩ_az = 15.54e3
+const τ_az = 38.868e-6
+const p_az = [0.95, 0.03, 0.02]
+const δΩ_az = 16e3
+const offsetΩ_az = 2e3
 
 # function div_az_0(p0)
 #     p = copy(p_az)
@@ -443,24 +447,54 @@ const δΩ_az = 15.54e3
 # @show div_az_0(0.987)
 # @show div_az_p1(0.987)
 
-# function diviation_az(τ, p, δΩ)
+# function diviation_az(τ, p, δΩ, offsetΩ)
 #     np = length(p)
 #     d1, n1 = diviation(f_az, data_cold_z0, 2π / τ * meles_az_0[1:np] * meles_ry_0[1:3]',
-#                        p * p_ry', δΩ)
+#                        p * p_ry', δΩ, offsetΩ=offsetΩ)
 #     d2, n2 = diviation(f_az, data_cold_zp1, 2π / τ * meles_az_p1[1:np] * meles_ry_0[1:3]',
-#                        p * p_ry', δΩ)
+#                        p * p_ry', δΩ, offsetΩ=offsetΩ)
 #     return (d1 + d2) / (n1 + n2)
 #     # return d1 / n1
 # end
 # function objective(x)
-#     r = diviation_az(x[1] * 1e-6, [x[3:end]; 1.0], x[2] * 1e3)
+#     r = diviation_az(x[1] * 1e-6, [x[4:end]; 1.0], x[2] * 1e3, x[3] * 1e3)
 #     @show x r
 #     return r
 # end
-# init_params = [38.9, 14.4923, 0.986943, 0.0519492]
-# @show objective(init_params)
+# init_params = [38.8, 15.4, 1.0, 0.97, 0.01]
 # using Optim
 # @show optimize(objective, init_params)
+
+# function diviation_hot_az(τ, p, scale, δΩ, δΩ2)
+#     np = length(p)
+#     nstates_y = length(meles_ry_0)
+#     ns_y = 0:(nstates_y - 1)
+#     nbar_y = nbar_hot_ry
+#     p_y = (nbar_y / (nbar_y + 1)).^ns_y ./ (nbar_y + 1)
+#     d1, n1 = diviation(f_az, data_hot_y0, 2π / τ * meles_az_0 * meles_ry_0',
+#                        p * p_y', δΩ, scale, offset=0.027)
+#     d2, n2 = diviation(f_az, data_hot_yp1, 2π / τ * meles_az_p1 * meles_ry_0',
+#                        p * p_y', δΩ2, scale, offset=0.027, offsetΩ=30e3)
+#     return (d1 + d2) / (n1 + n2)
+#     # return d1 / n1
+# end
+# function objective_hot_az(x)
+#     nstates = length(meles_az_0)
+#     ns = 0:(nstates - 1)
+#     nbar = x[1]
+#     scale = 1.043
+#     δΩ = x[2]
+#     τ = τ_az
+#     δΩ2 = x[3]
+#     pΩ = (nbar / (nbar + 1)).^ns ./ (nbar + 1)
+#     r = diviation_hot_az(τ, [pΩ; 1.0], scale, δΩ, δΩ2)
+#     @show x r
+#     return r
+# end
+# init_params = [12.27, 30.77e3, 30.77e3 * 2.5]
+# @show objective_hot_az(init_params)
+# using Optim
+# @show optimize(objective_hot_az, init_params)
 
 # ps = linspace(0.9, 1.0, 41)
 # plot(ps, div_az_0.(ps), label="Carrier")
@@ -468,12 +502,20 @@ const δΩ_az = 15.54e3
 # legend()
 # show()
 
+const nbar_hot_az = 20.0
+const τ_hot_az = τ_az
+const δΩ_hot_az = 30.77e3 * 0.7
+const δΩ_hot_az2 = 30.77e3 * 3
+
 figure()
 ts_az_p1 = linspace(0, 520e-6, 1001)
+ts_az_p1_hot = linspace(0, 280e-6, 501)
 plot_f1(f_az, ts_az_p1, 2π / τ_az * (meles_az_p1[1:3] * meles_ry_0[1:3]'),
-        p_az * p_ry', δΩ_az, color="darkslateblue")
+        p_az * p_ry', δΩ_az, offsetΩ=offsetΩ_az, color="darkslateblue")
 NaCsPlot.plot_survival_data(data_cold_zp1, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_zp1, fmt="C1o-", label="Hot")
+plot_f1_thermal2(f_az, ts_az_p1_hot, 2π / τ_hot_az * meles_az_p1, nbar_hot_az,
+                 meles_ry_0, nbar_hot_ry, δΩ_hot_az, offset=0.027, color="C3")
+NaCsPlot.plot_survival_data(data_hot_zp1, fmt="C1o", label="Hot")
 grid()
 ylim([0, 1])
 title("Z heating")
@@ -483,11 +525,14 @@ ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_rabi_zp1")
 
 figure()
-ts_az_0 = linspace(0, 300e-6, 1001)
+ts_az_0 = linspace(0, 285e-6, 1001)
+ts_az_0_hot = linspace(0, 120e-6, 501)
 plot_f1(f_az, ts_az_0, 2π / τ_az * (meles_az_0[1:3] * meles_ry_0[1:3]'),
-        p_az * p_ry', δΩ_az, color="darkslateblue")
+        p_az * p_ry', δΩ_az, offsetΩ=offsetΩ_az, color="darkslateblue")
 NaCsPlot.plot_survival_data(data_cold_z0, fmt="C0o", label="Cold")
-NaCsPlot.plot_survival_data(data_hot_z0, fmt="C1o-", label="Hot")
+plot_f1_thermal2(f_az, ts_az_0_hot, 2π / τ_hot_az * meles_az_0, nbar_hot_az,
+                 meles_ry_0, nbar_hot_ry, δΩ_hot_az2, offset=0.027, offsetΩ=30e3, color="C3")
+NaCsPlot.plot_survival_data(data_hot_z0, fmt="C1o", label="Hot")
 grid()
 ylim([0, 1])
 title("Z carrier")
