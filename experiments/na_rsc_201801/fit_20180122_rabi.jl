@@ -7,10 +7,10 @@ import NaCsCalc.Format: Unc, Sci
 import NaCsCalc: Trap
 using NaCsCalc.Utils: binomial_estimate, thread_rng, interactive
 using NaCsData
-using NaCsPlot
 using NaCsSim.DecayRabi: propagate_multistates, average_multistates, Γ_to_rates
 
 using PyPlot
+using NaCsPlot
 using DataStructures
 using LsqFit
 
