@@ -148,4 +148,76 @@ function all_scatter_D(D2::Bool, Ix2, pol, fscale)
     return rates
 end
 
+struct Alkali
+    Ix2::Int
+    D1::Float64
+    D2::Float64
+    HF_S::NTuple{2,Float64}
+    HF_P1_2::NTuple{2,Float64}
+    HF_P3_2::NTuple{4,Float64}
+end
+
+function _get_freq_s(atom, Jx2, Fx2)
+    Fx2 == atom.Ix2 + 1 && return atom.HF_S[1]
+    return atom.HF_S[2]
+end
+
+function _get_freq_d1(atom, Fx2)
+    Fx2 == atom.Ix2 + 1 && return atom.D1 + atom.HF_P1_2[1]
+    return atom.D1 + atom.HF_P1_2[2]
+end
+
+function _get_freq_d2(atom, Fx2)
+    Fx2 == atom.Ix2 + 3 && return atom.D2 + atom.HF_P3_2[1]
+    Fx2 == atom.Ix2 + 1 && return atom.D2 + atom.HF_P3_2[2]
+    Fx2 == atom.Ix2 - 1 && return atom.D2 + atom.HF_P3_2[3]
+    return atom.D2 + atom.HF_P3_2[4]
+end
+
+function _get_freq_p(atom, Jx2, Fx2)
+    Jx2 == 1 && return _get_freq_d1(atom, Fx2)
+    Jx2 == 3 && return _get_freq_d2(atom, Fx2)
+end
+
+function _get_freq(atom::Alkali, Lx2, Jx2, Fx2)
+    Lx2 == 0 && return _get_freq_s(atom, Jx2, Fx2)
+    return _get_freq_p(atom, Jx2, Fx2)
+end
+
+function _check_j1_2(atom::Alkali, name, Fx2)
+    if Fx2 != atom.Ix2 + 1 && Fx2 != atom.Ix2 - 1
+        throw(ArgumentError(
+            "Invalid F for $(name)1/2 state with I=$(atom.Ix2 / 2): $(Fx2 / 2)"))
+    end
+end
+
+function _check_j3_2(atom::Alkali, Fx2)
+    if Fx2 != atom.Ix2 + 1 && Fx2 != atom.Ix2 - 1 && Fx2 != atom.Ix2 + 3 && Fx2 != atom.Ix2 - 3
+        throw(ArgumentError(
+            "Invalid F for P3/2 state with I=$(atom.Ix2 / 2): $(Fx2 / 2)"))
+    end
+end
+
+@inline function get_freq(atom::Alkali, Lx2, Jx2, Fx2)
+    @boundscheck begin
+        if Lx2 < 0 || Jx2 < 0 || Fx2 < 0
+            throw(ArgumentError("Negative angular momentum"))
+        elseif Lx2 == 0
+            Jx2 == 1 || throw(ArgumentError("Invalid J for S state: $(Jx2 / 2)"))
+            _check_j1_2(atom, :S, Fx2)
+        elseif Lx2 == 2
+            if Jx2 == 1
+                _check_j1_2(atom, :P, Fx2)
+            elseif Jx2 == 3
+                _check_j3_2(atom, Fx2)
+            else
+                throw(ArgumentError("Invalid J for P state: $(Jx2 / 2)"))
+            end
+        else
+            throw(ArgumentError("Invalid L $(Lx2 / 2)"))
+        end
+    end
+    _get_freq(atom, Lx2, Jx2, Fx2)
+end
+
 end
