@@ -244,6 +244,10 @@ function _get_amp_p(atom, F1x2, mF1x2, F2x2, mF2x2, freq0, p)::Float64
         _get_amp_j(atom, F1x2, mF1x2, F2x2, mF2x2, 3, freq0, p, sqrt(atom.Γ2))
 end
 
+# This function include the effect of coherence between all excited states in P1/2 and P3/2.
+# This only work in low power limit where the excited state population can be ignored
+# (the transition is not saturated or the scattering rate is much lower than the natural decay
+# rate of the transition)
 function get_scatter(atom::Alkali, Ω, freq, F1x2, mF1x2, F2x2, mF2x2, pol)
     _check_state(atom, 0, 1, F1x2, mF1x2)
     _check_state(atom, 0, 1, F2x2, mF2x2)
