@@ -178,7 +178,7 @@ function _check_j3_2(atom::Alkali, Fx2)
 end
 
 function _check_state(atom::Alkali, Lx2, Jx2, Fx2, mFx2=Fx2)
-    if Lx2 < 0 || Jx2 < 0 || Fx2 < 0 || mFx2 < 0
+    if Lx2 < 0 || Jx2 < 0 || Fx2 < 0
         throw(ArgumentError("Negative angular momentum"))
     elseif Lx2 == 0
         Jx2 == 1 || throw(ArgumentError("Invalid J for S state: $(Jx2 / 2)"))
