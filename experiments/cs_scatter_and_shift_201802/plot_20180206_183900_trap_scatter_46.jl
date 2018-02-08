@@ -127,6 +127,10 @@ function gen_model2(rates, init, idxs)
     (x, p) -> propagate_f.(x .* p[1])
 end
 
+function loss_model(x, p)
+    return p[1] .* exp.(-x ./ p[2])
+end
+
 const init_mf = [0, 0, 0, 0, 0, 0, 0, 0, 1.0,
                  0, 0, 0, 0, 0, 0, 0]
 const model_f3 = gen_model2(rates_trap, init_mf, (10, 11, 12, 13, 14, 15, 16))
@@ -154,16 +158,41 @@ function fit_survival_ratios(model, base, sub, p0; plotx=nothing, use_unc=false,
             plotx=plotx, ploty=model.(plotx, (fit.param,)))
 end
 
+function fit_survival(model, data, p0; plotx=nothing, use_unc=false, plot_scale=1.1)
+    if use_unc
+        params, ratios, uncs = NaCsData.get_values(data)
+    else
+        params, ratios, uncs = NaCsData.get_values(data, 0.0)
+    end
+    if plotx === nothing
+        lo = minimum(params)
+        hi = maximum(params)
+        span = hi - lo
+        mid = (hi + lo) / 2
+        plotx = linspace(mid - span * plot_scale / 2, mid + span * plot_scale / 2, 10000)
+    end
+    if use_unc
+        fit = curve_fit(model, params, ratios[:, 2], 1 ./ uncs[:, 2].^2, p0)
+    else
+        fit = curve_fit(model, params, ratios[:, 2], p0)
+    end
+    return (param=fit.param, unc=estimate_errors(fit),
+            plotx=plotx, ploty=model.(plotx, (fit.param,)))
+end
+
 const fit_f3 = fit_survival_ratios(model_f3, data_all, data_f3, [6.0])
 # fit_f44 = fit_survival_ratios(model_f44, data_all, data_f44, [0.8, 0.6])
+const fit_loss = fit_survival(loss_model, data_all, [0.9, 2500])
 
 @show Unc.(fit_f3.param, fit_f3.unc)
 # @show fit_f44.param
+@show Unc.(fit_loss.param, fit_loss.unc)
 
 figure()
-NaCsPlot.plot_survival_data(data_f3, fmt="o-", label="F=3")
-NaCsPlot.plot_survival_data(data_f44, fmt="o-", label="4, 4")
-NaCsPlot.plot_survival_data(data_all, fmt="o-", label="Total")
+NaCsPlot.plot_survival_data(data_f3, fmt="C0o-", label="F=3")
+NaCsPlot.plot_survival_data(data_f44, fmt="C1o-", label="4, 4")
+NaCsPlot.plot_survival_data(data_all, fmt="C2o", label="Total")
+plot(fit_loss.plotx, fit_loss.ploty, "C2")
 grid()
 xlim([0, 2000])
 ylim([0, 1])
@@ -217,5 +246,32 @@ xlabel("Time (\$ms\$)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_sim")
 
+figure()
+title("Simulated with loss")
+plot_ts = linspace(0, 2500, 1000)
+function compute_mfs_loss(ts, loss)
+    A_trap = rates_to_A(rates_trap) * fit_f3.param[1] - diagm(0=>loss) - I / fit_loss.param[2]
+    res = Matrix{Float64}(16, length(ts))
+    for i in 1:length(ts)
+        t = ts[i]
+        res[:, i] = exp(A_trap * t) * init_mf # expm
+    end
+    return res
+end
+mfs_loss = compute_mfs_loss(plot_ts, [1, 1, 1, 1, 1, 1, 1, 1, 0.0,
+                                      1, 1, 1, 1, 1, 1, 0.0] * 1000)
+plot(plot_ts, mfs_loss[9, :], "C0", label="4, 4")
+# plot(plot_ts, mfs_loss[8, :], "C2", label="4, 3")
+plot(plot_ts, mfs_loss[16, :], "C1", label="3, 3")
+# plot(plot_ts, mfs_loss[15, :], "C3", label="3, 2")
+plot(plot_ts, sum(mfs_loss, 1)[1, :], "C4", label="Total")
+plot(plot_ts, exp.(-plot_ts ./ fit_loss.param[2]), "C5", label="Single body")
+grid()
+xlim([0, 2500])
+ylim([0, 1])
+legend()
+xlabel("Time (\$ms\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_sim_loss")
 
 NaCsPlot.maybe_show()
