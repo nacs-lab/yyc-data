@@ -115,8 +115,8 @@ end
 
 const rates_trap = all_scatters(cs_atom, 1e10, 299792458 / 976e-9, (0, 1, 0))
 const rates_trap_rb = all_scatters(cs_atom, 1e10, 299792458 / 976e-9, (0.25, 0.5, 0.25))
-const rates_pa = all_scatters(cs_atom, 1e9, 351553e9, (0.3, 0.3, 0.4))
-const rates_pa_rb = all_scatters(cs_atom, 1e9, 351553e9, (0.1, 0, 0.9))
+const rates_pa = all_scatters(cs_atom, 1e9, 351553e9, (0.4, 0.3, 0.3))
+const rates_pa_rb = all_scatters(cs_atom, 1e9, 351553e9, (0.8, 0, 0.2))
 
 function rates_to_A(rates)
     nx, ny = size(rates)
@@ -151,7 +151,7 @@ end
 function gen_model2(rates1, rates2, init, idxs)
     A1 = rates_to_A(rates1)
     A2 = rates_to_A(rates2)
-    (x, p) -> propagate.((A1 .* p[1] .+ A2 .* p[2],), (init,), x, (idxs,))
+    (x, p) -> propagate.((A1 .+ A2 .* p[1],), (init,), x, (idxs,))
 end
 
 function loss_model(x, p)
@@ -162,9 +162,6 @@ const init_mf = [0, 0, 0, 0, 0, 0, 0, 0, 1.0,
                  0, 0, 0, 0, 0, 0, 0]
 const model_f3 = gen_model(rates_trap, init_mf, (10, 11, 12, 13, 14, 15, 16))
 const model_f3_rb = gen_model(rates_trap_rb, init_mf, (10, 11, 12, 13, 14, 15, 16))
-const model_f3_pa = gen_model2(rates_trap, rates_pa, init_mf, (10, 11, 12, 13, 14, 15, 16))
-const model_f3_rb_pa = gen_model2(rates_trap_rb, rates_pa_rb,
-                                  init_mf, (10, 11, 12, 13, 14, 15, 16))
 
 function fit_survival_ratios(model, base, sub, p0; plotx=nothing, use_unc=false, plot_scale=1.1)
     if use_unc
@@ -217,10 +214,16 @@ const fit_single_total_rb_pa = fit_survival(loss_model, data_single_total_rb_pa,
 
 const fit_f3 = fit_survival_ratios(model_f3, data_single_total, data_single_f3, [6.0])
 const fit_f3_rb = fit_survival_ratios(model_f3_rb, data_single_total_rb, data_single_f3_rb, [6.0])
+
+const model_f3_pa = gen_model2(rates_trap * fit_f3.param[1], rates_pa, init_mf,
+                               (10, 11, 12, 13, 14, 15, 16))
+const model_f3_rb_pa = gen_model2(rates_trap_rb * fit_f3.param[1], rates_pa_rb,
+                                  init_mf, (10, 11, 12, 13, 14, 15, 16))
+
 const fit_f3_pa = fit_survival_ratios(model_f3_pa, data_single_total_pa, data_single_f3_pa,
-                                      [6.0, 1.0])
+                                      [1.0])
 const fit_f3_rb_pa = fit_survival_ratios(model_f3_rb_pa, data_single_total_rb_pa,
-                                         data_single_f3_rb_pa, [6.0, 1.0])
+                                         data_single_f3_rb_pa, [1.0])
 
 @show Unc.(fit_single_total.param, fit_single_total.unc)
 @show Unc.(fit_single_total_rb.param, fit_single_total_rb.unc)
