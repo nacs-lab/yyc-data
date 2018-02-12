@@ -137,7 +137,7 @@ function interactive_opt(xs, ys, reverse=false)
         println("Optimization ends.")
     end
     sort!(state)
-    println("Final result:")
+    println("\n\nFinal result:")
     print_states(STDOUT, state)
 end
 
@@ -158,6 +158,8 @@ function usage()
     The `input_file` should be a csv file that contains an optional one line header
     Each row of the csv file should contain the list of input variables followed by the
     result.
+    The number of rows should be 1 larger than the number of input variables
+    (i.e. the csv file should contain the same number of columns and rows).
 
     At each iteration, the script will ask for one or more evaluations of the target function
     at specific points and the results should be typed in as a floating point number.
@@ -182,6 +184,11 @@ catch
     readdlm(fname, ',', Float64, skipstart=1)
 end
 
+if size(data, 1) != size(data, 2)
+    println("ERROR: Incorrect input data dimension")
+    usage()
+    exit(1)
+end
 const xs = [ntuple(x->data[j, x], size(data, 2) - 1) for j in 1:size(data, 1)]
 const ys = data[:, end]
 interactive_opt(xs, ys, false)
