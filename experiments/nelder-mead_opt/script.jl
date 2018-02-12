@@ -82,3 +82,77 @@ end
 # res = test_cb((x, y) -> (x - 3)^2 + 3 * (x - 3) * (y + 2) + 4 * (y + 2)^2,
 #               100, [(1.0, 3.0), (2.4, 9.0), (-2.0, 2.0)])
 # @show res
+
+function read_float64(prompt)
+    while true
+        print(prompt)
+        str = readline()
+        if isempty(str)
+            throw(InterruptException())
+        end
+        try
+            return parse(Float64, str)
+        catch ex
+            if isa(ex, InterruptException)
+                rethrow()
+            end
+            println(ex)
+            println("Please try again")
+        end
+    end
+end
+
+function print_states(io::IO, state::State{N}) where N
+    for i in 1:N
+        print(io, "x$i,")
+    end
+    println(io, "y")
+    for i in 1:length(state.xs)
+        x = state.xs[i]
+        y = state.ys[i]
+        for j in 1:N
+            print(io, x[j], ",")
+        end
+        println(io, x)
+    end
+end
+
+function interactive_opt(xs, ys, reverse=false)
+    ccall(:jl_exit_on_sigint, Void, (Cint,), 0)
+    state = State(1.0, 2.0, 0.5, 0.5, xs, ys)
+    cb = function (x)
+        rv = read_float64("Value for $x: ")
+        return reverse ? -rv : rv
+    end
+    try
+        while true
+            iterate(state, cb)
+            println("Iteration result:")
+            print_states(STDOUT, state)
+        end
+    catch ex
+        if !isa(ex, InterruptException)
+            rethrow()
+        end
+        println("Optimization ends.")
+    end
+    sort!(state)
+    println("Final result:")
+    print_states(STDOUT, state)
+end
+
+if length(ARGS) < 1
+    println("ERROR: no input csv file specified")
+    exit(1)
+end
+const fname = ARGS[1]
+
+const data = try
+    readdlm(fname, ',', Float64)
+catch
+    readdlm(fname, ',', Float64, skipstart=1)
+end
+
+const xs = [ntuple(x->data[j, x], size(data, 2) - 1) for j in 1:size(data, 1)]
+const ys = data[:, end]
+interactive_opt(xs, ys, false)
