@@ -113,7 +113,7 @@ function print_states(io::IO, state::State{N}) where N
         for j in 1:N
             print(io, x[j], ",")
         end
-        println(io, x)
+        println(io, y)
     end
 end
 
@@ -141,8 +141,37 @@ function interactive_opt(xs, ys, reverse=false)
     print_states(STDOUT, state)
 end
 
+try
+    @eval using Markdown
+catch
+    @eval using Base.Markdown
+end
+
+function usage()
+    display(md"""
+    Usage:
+
+        script.jl <input_file>
+
+    Interactively minimize a blackbox target function.
+
+    The `input_file` should be a csv file that contains an optional one line header
+    Each row of the csv file should contain the list of input variables followed by the
+    result.
+
+    At each iteration, the script will ask for one or more evaluations of the target function
+    at specific points and the results should be typed in as a floating point number.
+    The result of the optimization will be printed out after each iteration which can be used
+    to continue an optimization by placing it into the input csv file.
+
+    Stop the optimization process with either `Ctrl-C` or `Ctrl-D`.
+    The final result will be printed before the process exit.
+    """)
+end
+
 if length(ARGS) < 1
     println("ERROR: no input csv file specified")
+    usage()
     exit(1)
 end
 const fname = ARGS[1]
