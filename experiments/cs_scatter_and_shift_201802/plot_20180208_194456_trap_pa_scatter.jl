@@ -300,6 +300,8 @@ plot_survival_ratios(data_single_total, data_single_f3, fmt="C0o", label="Normal
 plot(fit_f3.plotx, fit_f3.ploty, "C0")
 plot_survival_ratios(data_single_total_rb, data_single_f3_rb, fmt="C1o", label="Rotated B")
 plot(fit_f3_rb.plotx, fit_f3_rb.ploty, "C1")
+plot_survival_ratios(data_both_total, data_both_f3, fmt="C2", label="Both")
+plot_survival_ratios(data_both_total_rb, data_both_f3_rb, fmt="C3", label="Both Rotate B")
 grid()
 xlim([0, 2000])
 ylim([0, 1])
