@@ -11,11 +11,17 @@ using PyCall
 
 function __init__()
     matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                         "font.weight" => "bold",
                                          "svg.hashsalt" => 19680801))
     matplotlib[:rc]("xtick", labelsize=15)
     matplotlib[:rc]("ytick", labelsize=15)
     copy!(hist, PyPlot.matplotlib[:pyplot][:hist])
+end
+
+function nobold()
+    matplotlib["rcParams"][:update](Dict("font.weight" => "normal"))
+end
+function bold()
+    matplotlib["rcParams"][:update](Dict("font.weight" => "bold"))
 end
 
 const hist = PyCall.PyNULL()
