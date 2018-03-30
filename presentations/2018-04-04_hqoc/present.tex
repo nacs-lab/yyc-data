@@ -185,13 +185,6 @@
 \addtobeamertemplate{background}{\box\@backgroundblock}{}
 \makeatother
 
-% Steps
-%% Cooling molecule is hard.
-%% In order to reach the ultra cold temperature needed for, assemble from atoms instead.
-%% Start from two atoms grab from MOT (pic)
-%% Do Raman sideband cooling (spectrum, performance)
-%% Merge and make molecules (merge graph?)
-
 % Making molecules with optical transitions
 %% Wavefunction size difference
 %% Use an intermediate state to bridge the difference
@@ -241,8 +234,8 @@
     \begin{pgfonlayer}{tweezer}
       \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
       fill opacity=0.9,inner color=#3]
-      plot[draw,samples=200,domain=-2.5:2.5] function {sqrt(0.01 + x**2 / 10)}
-      -- plot[draw,samples=200,domain=2.5:-2.5] function {-sqrt(0.01 + x**2 / 10)};
+      plot[draw,samples=200,domain=-1.5:1.5] function {sqrt(0.01 + x**2 / 5)}
+      -- plot[draw,samples=200,domain=1.5:-1.5] function {-sqrt(0.01 + x**2 / 5)};
     \end{pgfonlayer}
   }
   \method drawAtom(#1,#2,#3,#4) {
@@ -328,7 +321,75 @@
   \end{center}
 \end{frame}
 
+% Steps
+%% Cooling molecule is hard.
+%% In order to reach the ultra cold temperature needed for, assemble from atoms instead.
+%% Start from two atoms grab from MOT (pic)
+%% Do Raman sideband cooling (spectrum, performance)
+%% Merge and make molecules (merge graph?)
+
+\tikzset{onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+    % \pgfkeysalso doesn't change the path
+}}
+\tikzset{alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+    % \pgfkeysalso doesn't change the path
+}}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
+    % \pgfkeysalso doesn't change the path
+}}
+
 \begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.75]
+      \mytweezer.drawCsTweezer(0, 0)
+      \mytweezer.drawNaTweezer(-1, 0)
+      \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
+      \mytweezer.drawNaAtom(-1.06, -0.09, 0.27)
+
+      \mytweezer.drawCsTweezer(0, -3.1)
+      \mytweezer.drawNaTweezer(-1, -3.1)
+      \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
+      \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
+
+      \mytweezer.drawCsTweezer(-1, -7.0)
+      \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
+      \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
+
+      \mytweezer.up(1.5, -8.0)
+
+      \fill[white,temporal=<1>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5) rectangle (0.5, -1.5);
+      \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
+      \fill[white,temporal=<3>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
+      \fill[white,temporal=<4>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (1.0, 1.5 - 8.0) rectangle (2.0, -1.5 - 8.0);
+
+      \visible<2->{
+        \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
+          \draw[blue,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+          \draw[red,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
+        \end{scope}
+      }
+
+      \visible<3->{
+        \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
+          \draw[->,blue,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,red,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
+        \end{scope}
+      }
+      \visible<4->{
+        \begin{scope}[opacity=0.7]
+          \draw[blue!50!red,dotted,line width=1.2] (-0.875, -7.05) -- (1.375, -7.95);
+        \end{scope}
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 % \begin{frame}{Wave function size mismatch}
@@ -361,17 +422,17 @@
 % \begin{frame}{Raman sideband cooling of Sodium}
 %   \begin{columns}
 %     \column{6.5cm}
-%     % \includegraphics[width=6cm]{Na_RSC_schematic.pdf}
+%     %     \includegraphics[width=6cm]{Na_RSC_schematic.pdf}
 %     \column{5cm}
 %     \visible<2->{
-%       \begin{block}{Difficulties}
-%         \begin{itemize}
-%         \item High initial temperature ($40\mu K$)
-%         \item<3-> High recoil heating\\
-%           {\footnotesize (High Lamb Dicke parameter)}
-%         \end{itemize}
-%       \end{block}
-%     }
+%     \begin{block}{Difficulties}
+%       \begin{itemize}
+%       \item High initial temperature ($40\mu K$)
+%       \item<3-> High recoil heating\\
+%         {\footnotesize (High Lamb Dicke parameter)}
+%       \end{itemize}
+%     \end{block}
+%   }
 %   \end{columns}
 % \end{frame}
 
@@ -379,21 +440,21 @@
 %   \begin{center}
 %     \begin{tikzpicture}
 %       \visible<1> {
-%         \path (0, 0) node {
-%           \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r2_before.png}
-%         };
-%         \draw[<-, line width=1.5] (-0.7, 0) -- (0, 1.6) node[right] {\Large Carrier};
-%       }
+%       \path (0, 0) node {
+%       \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r2_before.png}
+%     };
+%       \draw[<-, line width=1.5] (-0.7, 0) -- (0, 1.6) node[right] {\Large Carrier};
+%     }
 %       \visible<2> {
-%         \path (0, 0) node {
-%           \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r2.png}
-%         };
-%       }
+%       \path (0, 0) node {
+%       \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r2.png}
+%     };
+%     }
 %       \visible<3> {
-%         \path (0, 0) node {
-%           \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r3.png}
-%         };
-%       }
+%       \path (0, 0) node {
+%       \includegraphics[width=10cm]{../../experiments/misc/imgs/data_spectrum_20170409_r3.png}
+%     };
+%     }
 %     \end{tikzpicture}
 %   \end{center}
 % \end{frame}
@@ -402,44 +463,44 @@
 %   \begin{center}
 %     \begin{tikzpicture}[scale=1.41176]
 %       \visible<1> {
-%         \path (0, 0) node {
-%           \includegraphics[width=12cm]{../../experiments/misc/imgs/data_spectrum_20170409_a1_before.png}
-%         };
-%         \draw[red, <-, line width=1.5] (-3.15, 0.5) -- (-2.95, 1.2)
-%         node[above right] {\Large 1st order heating};
-%         \draw[<-, line width=1.5] (-2.45, 0.2) -- (-2.25, 0.8) node[above right] {\Large Carrier};
-%         \draw[black!40!green, <-, line width=1.5] (-1.7, 0.2) -- (-1.55, 0.6)
-%         node[right] {\Large 1st order cooling};
-%         \draw[blue, <-, line width=1.5] (-0.95, -0.1) -- (-0.55, 0.1)
-%         node[right] {\Large 2nd order cooling};
-%         \path[magenta] (0.25, -0.5) node[right] {\Large And higher orders{$\cdots$}};
-%       }
+%       \path (0, 0) node {
+%       \includegraphics[width=12cm]{../../experiments/misc/imgs/data_spectrum_20170409_a1_before.png}
+%     };
+%       \draw[red, <-, line width=1.5] (-3.15, 0.5) -- (-2.95, 1.2)
+%       node[above right] {\Large 1st order heating};
+%       \draw[<-, line width=1.5] (-2.45, 0.2) -- (-2.25, 0.8) node[above right] {\Large Carrier};
+%       \draw[black!40!green, <-, line width=1.5] (-1.7, 0.2) -- (-1.55, 0.6)
+%       node[right] {\Large 1st order cooling};
+%       \draw[blue, <-, line width=1.5] (-0.95, -0.1) -- (-0.55, 0.1)
+%       node[right] {\Large 2nd order cooling};
+%       \path[magenta] (0.25, -0.5) node[right] {\Large And higher orders{$\cdots$}};
+%     }
 %       \visible<2-> {
-%         \path (0, 0) node {
-%           \includegraphics[width=12cm]{../../experiments/misc/imgs/data_spectrum_20170409_a1.png}
-%         };
-%       }
+%       \path (0, 0) node {
+%       \includegraphics[width=12cm]{../../experiments/misc/imgs/data_spectrum_20170409_a1.png}
+%     };
+%     }
 %       \visible<3-> {
-%         \fill[white,opacity=0.95] (-4.2, -2.5) rectangle (5, 2.5);
-%         \path (0, 1) node[align=center]
-%         {
-%           \begin{tabular}{|c|c|}
-%             \hline
-%             \textbf{Axis}&\textbf{Ground state probability}\\\hline
-%             1 (Axial)&93.1(2.5)\%\\\hline
-%             2 (Radial)&91.9(2.3)\%\\\hline
-%             3 (Radial)&92.9(2.5)\%\\\hline
-%           \end{tabular}
-%         };
-%         \visible<4-> {
-%           \path (0, -1) node[align=center]
-%           {
-%             \textbf{3D ground state:} $79.5(3.6)\%$\\
-%             \textbf{Loss after cooling:} $15\%$\\\\
-%             \textbf{Total 3D ground state preparation fidelity:} $67.6(3.1)\%$
-%           };
-%         }
-%       }
+%       \fill[white,opacity=0.95] (-4.2, -2.5) rectangle (5, 2.5);
+%       \path (0, 1) node[align=center]
+%       {
+%       \begin{tabular}{|c|c|}
+%         \hline
+%         \textbf{Axis}&\textbf{Ground state probability}\\\hline
+%         1 (Axial)&93.1(2.5)\%\\\hline
+%         2 (Radial)&91.9(2.3)\%\\\hline
+%         3 (Radial)&92.9(2.5)\%\\\hline
+%       \end{tabular}
+%     };
+%       \visible<4-> {
+%       \path (0, -1) node[align=center]
+%       {
+%       \textbf{3D ground state:} $79.5(3.6)\%$\\
+%       \textbf{Loss after cooling:} $15\%$\\\\
+%       \textbf{Total 3D ground state preparation fidelity:} $67.6(3.1)\%$
+%     };
+%     }
+%     }
 %     \end{tikzpicture}
 %   \end{center}
 % \end{frame}
@@ -447,11 +508,11 @@
 % \begin{frame}{Rabi flopping (radial)}
 %   \begin{center}
 %     \visible<+->{
-%       \includegraphics[width=10cm]{../../experiments/rabi_flop/imgs/fit_20170409_r2_0_ba.png}\\
-%     }
+%     \includegraphics[width=10cm]{../../experiments/rabi_flop/imgs/fit_20170409_r2_0_ba.png}\\
+%   }
 %     \visible<+->{
-%       Good agreement in ground state probability between spectrum and Rabi flopping data.
-%     }
+%     Good agreement in ground state probability between spectrum and Rabi flopping data.
+%   }
 %   \end{center}
 % \end{frame}
 
