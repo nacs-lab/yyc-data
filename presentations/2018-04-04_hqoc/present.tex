@@ -313,9 +313,9 @@
           \Large Dipole moment: $4.6\ \mathrm{Debye}$};
       }
       \visible<2->{
-        \node at (3, -6) {\includegraphics[width=5.5cm]{quantum_simulation.png}};
-        \node at (10.5, -0.5) {\includegraphics[height=5cm]{quantum_chemistry.pdf}};
-        \node at (10.5, -6.5) {\includegraphics[width=6.5cm]{quantum_computing.pdf}};
+        \node at (3, -6) {\includegraphics[width=5cm]{quantum_simulation.png}};
+        \node at (10.5, -0.5) {\includegraphics[height=4.5cm]{quantum_chemistry.pdf}};
+        \node at (10.5, -6.5) {\includegraphics[width=6cm]{quantum_computing.pdf}};
       }
     \end{tikzpicture}
   \end{center}
@@ -391,14 +391,18 @@
       \visible<1>{
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
-        \node[below,align=center] at (6.5, -1)
+        \node[below,align=center] at (6.5, -0.7)
         {\includegraphics[width=5cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
+        \node[below,align=center] at (7, -7.8)
+        {Loading probability: 60\%};
       }
       \visible<2>{
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
         \node[below] at (6.5, -1)
         {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
+        \node[below,align=center] at (7, -7)
+        {Cs: 96\% ground state\\Na: 94\% ground state};
       }
       \visible<3>{
         \node[above,align=center] at (7, 0)
