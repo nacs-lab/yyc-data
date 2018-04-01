@@ -464,29 +464,30 @@
             \draw[->,line width=1.2] (0, 0) -- (8, 0);
             \node[below] at (4, -0.5) {Internuclear distance};
 
-            \draw (1.0269 + 1, 2.5) -- (8, 2.5);
-            \draw (1.0793 + 1, -0.4631 + 2.5) -- (4.5 + 1, -0.4631 + 2.5);
-            \node[left,rotate=90] at (1.55 + 1, -0.46 + 2.5) {$\cdots$};
+            \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+            \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+            \node[left,rotate=90,cyan!85!blue] at (1.55 + 0.25, -0.46 + 2.5) {$\cdots$};
 
             \draw[line width=1.1,cyan!85!blue]
             plot[samples=200,domain=1:7,variable=\x]
-            ({\x + 1}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
-            \node[cyan!85!blue] at (4.5, 1.0) {$a^3\Sigma^+$};
+            ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+            \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
 
             \draw[line width=1.1,red]
-            plot[samples=200,domain=1:8,variable=\x] ({\x}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
-            \node[above right,red] at (1.3, 7.2) {$c^3\Sigma^+$};
+            plot[samples=200,domain=1:7.5,variable=\x]
+            ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+            \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
 
-            \mytweezer.drawNaAtom(7.3, 2.6, 0.12)
-            \mytweezer.drawCsAtom(7.8, 2.6, 0.10)
+            \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+            \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
 
-            \mytweezer.drawNaAtom(4.83, 2.15, 0.12)
-            \mytweezer.drawCsAtom(5, 2.15, 0.10)
+            \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+            \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
 
-            \draw[black!40,dashed,line width=1] (1, 5) -- (8, 5);
+            \draw[black!40,dashed,line width=1] (0.25, 5) -- (7.25, 5);
 
-            \draw[->,green!80!black,line width=0.8] (7.55, 2.7) -- (6.25, 5);
-            \draw[->,green!80!black,line width=0.8] (6.2, 5) -- (4.915, 2.25);
+            \draw[->,green!80!black,line width=0.8] (6.8, 2.7) -- (5.5, 5);
+            \draw[->,green!80!black,line width=0.8] (5.45, 5) -- (4.165, 2.25);
           \end{scope}
         }
       }
@@ -495,12 +496,58 @@
 \end{frame}
 
 \begin{frame}{\alt<-1>{Photoassociation (PA)}{Electromagnetically Induced Transparency (EIT)} spectroscopy}
-  \begin{tikzpicture}
-    \node at (0, 0) {\includegraphics[width=8cm]{pa.png}};
-    \visible<2->{
-      \node at (4, -4) {\includegraphics[width=5cm]{eit.png}};
-    }
-  \end{tikzpicture}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=8cm]{pa.png}};
+      \node[below] at (0, -1.1) {\small PA detuning (GHz)};
+      \visible<2->{
+        \fill[white,opacity=0.8] (-4.1, -2) rectangle (3.58, 1.05);
+        \fill[white,opacity=0.8] (3.72, -2) rectangle (4, 1.05);
+        \draw[opacity=0.5,line width=1] (3.72, -0.9) rectangle (3.58, 1.05);
+        \draw[dotted,opacity=0.5,line width=1] (3.72, -0.9) -- (6.45, -2.5);
+        \draw[dotted,opacity=0.5,line width=1] (3.58, -0.9) -- (1.81, -2.5);
+        \node at (4, -4) {\includegraphics[width=5cm]{eit.png}};
+        \node[below] at (4, -5.7) {\small Two photon detuning (MHz)};
+      }
+      \begin{scope}[shift={(-4, -7)},scale=0.65]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.5) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+        \only<2->{
+          \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+        }
+
+        \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \only<2->{
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+        }
+
+        \draw[snakearrow,red!50!blue,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+        \only<2->{
+          \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
+        }
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \end{document}
