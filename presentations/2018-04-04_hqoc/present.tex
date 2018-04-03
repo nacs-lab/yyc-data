@@ -175,6 +175,20 @@
     minimum height=2.5em,
     text centered},
 }
+
+\tikzset{onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
+    % \pgfkeysalso doesn't change the path
+  }}
+
 \makeatletter
 \newbox\@backgroundblock
 \newenvironment{backgroundblock}[2]{%
@@ -185,17 +199,9 @@
 \addtobeamertemplate{background}{\box\@backgroundblock}{}
 \makeatother
 
-% Making molecules with optical transitions
-%% Wavefunction size difference
-%% Use an intermediate state to bridge the difference
-
-% Finding the excited state
-
-% EIT scan
-
 % \def\timeleft{15:00->14:55}
 
-\title[NaCs in optical tweezer]{Observation of NaCs molecular state in optical tweezer}
+\title[Single NaCs in optical tweezers]{Manipulating single NaCs in optical tweezers}
 \date{April 04, 2018}
 \author[Yichao Yu]{Yichao Yu\\
   \vspace{0.5cm}
@@ -203,27 +209,6 @@
 \institute{Ni Group/Harvard}
 
 \begin{document}
-
-
-% Title
-%% Talk about how we'll make NaCs molecules in optical tweezers
-
-{
-  \usebackgroundtemplate{
-    \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{front_bg.png}}
-  }
-  \setbeamercolor{title}{fg=cyan!50}
-  \setbeamercolor{author}{fg=white}
-  \setbeamercolor{institute}{fg=white}
-  \setbeamercolor{date}{fg=white}
-  \begin{frame}{}
-    \titlepage
-  \end{frame}
-}
-
-% \begin{frame}{}
-%   \tableofcontents
-% \end{frame}
 
 \pgfdeclarelayer{tweezer}
 \pgfsetlayers{tweezer,main}
@@ -242,16 +227,16 @@
     \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
   }
   \method drawNaAtom(#1,#2,#3) {
-    \pgfoothis.drawAtom(#1,#2,#3,blue);
+    \pgfoothis.drawAtom(#1,#2,#3,orange);
   }
   \method drawCsAtom(#1,#2,#3) {
-    \pgfoothis.drawAtom(#1,#2,#3,red);
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
   }
   \method drawNaTweezer(#1,#2) {
-    \pgfoothis.drawTweezer(#1,#2,blue!35!black!30);
+    \pgfoothis.drawTweezer(#1,#2,orange!35!black!30);
   }
   \method drawCsTweezer(#1,#2) {
-    \pgfoothis.drawTweezer(#1,#2,red!30!black!30);
+    \pgfoothis.drawTweezer(#1,#2,blue!30!black!30);
   }
   \method up(#1,#2) {
     \pgfoothis.drawCsTweezer(#1,#2);
@@ -274,16 +259,36 @@
 }
 \pgfoonew \mytweezer=new tweezer()
 
-% Goal
-%% Single dipolar molecules in an array of optical tweezers.
-%% Combining the ...(internal state, tunable long range interaction)... of dipolar molecules
-%% And precise manipulation and detection capability of optical tweezers
-%% Promissing system to do quantum simulation/computation/chemistry
+% Title
+%% Talk about our experiment on creating and manipulating single NaCs molecules in
+%% optical tweezers.
+
+{
+  \usebackgroundtemplate{
+    \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{front_bg.png}}
+  }
+  \setbeamercolor{title}{fg=cyan!50}
+  \setbeamercolor{author}{fg=white}
+  \setbeamercolor{institute}{fg=white}
+  \setbeamercolor{date}{fg=white}
+  \begin{frame}{}
+    \titlepage
+  \end{frame}
+}
+
+% \begin{frame}{}
+%   \tableofcontents
+% \end{frame}
+
+% In our experiment,
+%% we want to build a system that has complete control of molecules at single particle level.
+%% Useful tool to study and take advantage of the reaction and interaction between molecules.
+%% Do this with optical tweezers, (for it's properties)
 %% Molecule of choise is NaCs, strong dipole moment and easy to cool.
 
 \begin{frame}{}
   \begin{center}
-    \begin{tikzpicture}[scale=0.75]
+    \begin{tikzpicture}
       \mytweezer.up(0, 0)
       \mytweezer.down(2, 0.8/2.5)
       \mytweezer.up(4, 1.2/2.5)
@@ -304,35 +309,28 @@
       \mytweezer.up(3, -2.1/2.5)
       \mytweezer.down(5, -1.9/2.5)
       \mytweezer.down(6.2, -0.9/2.5)
-      \visible<2>{
-        \fill[white,opacity=0.4] (-0.8, -4) rectangle (9, 3);
-      }
-      \visible<3>{
-        \fill[white,opacity=0.8] (-0.8, -4) rectangle (9, 3);
-        \node[align=center] at (3, 0) {{\textbf{\huge NaCs}}\\\\
-          \Large Dipole moment: $4.6\ \mathrm{Debye}$};
-      }
-      \visible<2->{
-        \node at (3, -6) {\includegraphics[width=5cm]{quantum_simulation.png}};
-        \node at (10.5, -0.5) {\includegraphics[height=4.5cm]{quantum_chemistry.pdf}};
-        \node at (10.5, -6.5) {\includegraphics[width=6cm]{quantum_computing.pdf}};
-      }
     \end{tikzpicture}
+    \begin{columns}
+      \column{5.5cm}
+      \begin{block}{Optical tweezer}
+        \begin{itemize}
+        \item Single site detection
+        \item Single site control
+        \item Flexible geometry
+        \end{itemize}
+      \end{block}
+      \column{5.5cm}
+      \pause
+      \begin{block}{NaCs molecule}
+        \begin{itemize}
+        \item Strong dipole interaction\\
+          Dipole moment: 4.6 Debye
+        \item Made of easy to cool atoms
+        \end{itemize}
+      \end{block}
+    \end{columns}
   \end{center}
 \end{frame}
-
-\tikzset{onslide/.code args={<#1>#2}{%
-    \only<#1>{\pgfkeysalso{#2}}
-    % \pgfkeysalso doesn't change the path
-}}
-\tikzset{alt/.code args={<#1>#2#3}{%
-    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
-    % \pgfkeysalso doesn't change the path
-}}
-\tikzset{temporal/.code args={<#1>#2#3#4}{%
-    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
-    % \pgfkeysalso doesn't change the path
-}}
 
 % Steps
 %% Cooling molecule is hard.
@@ -358,43 +356,35 @@
       \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
       \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
 
-      \mytweezer.up(1.5, -8.0)
-
       \fill[white,temporal=<1>{opacity=0.82}{opacity=0}{opacity=0.5}]
       (-1.5, 1.5) rectangle (0.5, -1.5);
       \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
       (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
       \fill[white,temporal=<3>{opacity=0.82}{opacity=0}{opacity=0.5}]
       (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
-      \fill[white,temporal=<4->{opacity=0.82}{opacity=0}{opacity=0.5}]
-      (1.0, 1.5 - 8.0) rectangle (2.0, -1.5 - 8.0);
 
       \visible<2->{
         \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
-          \draw[blue,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
-          \draw[red,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
+          \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+          \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
         \end{scope}
       }
 
       \visible<3->{
         \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
-          \draw[->,blue,line width=1.2] (-1, -3.3) -- (-1, -6.7);
-          \draw[->,red,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
-        \end{scope}
-      }
-      \visible<4->{
-        \begin{scope}[opacity=0.7]
-          \draw[blue!50!red,dotted,line width=1.2] (-0.875, -7.05) -- (1.375, -7.95);
         \end{scope}
       }
       \visible<1>{
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
-        \node[below,align=center] at (6.5, -0.7)
+        \node[below,align=center] at (6.5, -0.5)
         {\includegraphics[width=5cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
-        \node[below,align=center] at (7, -7.8)
-        {Loading probability: 60\%};
+        \node[below,align=center] at (7, -7.5)
+        {Loading probability per site: 60\%\\
+          Post select on initial and final state.};
       }
       \visible<2>{
         \node[above,align=center] at (7, 0)
@@ -407,30 +397,30 @@
       \visible<3>{
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
         function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
-        \draw[red,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
         function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
         \mytweezer.drawNaAtom(6, -1.22, 0.15)
         \mytweezer.drawCsAtom(9, -2.06, 0.11)
 
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
         function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
-        \draw[red,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
         function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
         \mytweezer.drawNaAtom(6, -3.72, 0.15)
         \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
 
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
-        \draw[red,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
         \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
         \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
 
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
-        \draw[red,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
         \mytweezer.drawNaAtom(6, -8.55, 0.14)
         \mytweezer.drawCsAtom(6, -9.56, 0.11)
@@ -438,27 +428,87 @@
         \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
         \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
       }
-      \visible<4->{
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Creating molecule}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
 
-        \visible<4>{
-          \shade[ball color=blue!90] (3, -3) circle (0.3);
-          \shade[ball color=red!90] (3.3, -2.9) circle (0.2);
-          \draw[<->,line width=0.7] (2.95, -3.5) -- (3.6, -3.25);
-          \path (3.295, -3.375) node[rotate=21.04,below=2pt] {$4a_0$};
+\begin{frame}{Photoassociation (PA)}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=8cm]{pa.png}};
+      \node[below] at (0, -1.1) {\small PA detuning (GHz)};
+      \visible<2->{
+        \node[text width=5cm] at (4, -4) {\begin{block}{Advantages of optical tweezer}
+            \begin{itemize}
+            \item High density
+            \item Clear distinction from single body loss
+            \end{itemize}
+          \end{block}};
+      }
+      \begin{scope}[shift={(-4, -6.5)},scale=0.65]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.5) {Internuclear distance};
 
-          \draw[line width=0.7] plot[samples=200,domain=-2:2,variable=\x]
-          ({\x + 9}, {(\x)^2 * 0.8 - 6});
-          \draw[line width=1.5,red!50!blue]
-          plot[samples=200,domain=-2:2,variable=\x] ({\x + 9}, {exp(-(\x)^2 * 1.3) - 0.988 - 4.5});
-          \draw[line width=0.8] (9 - 0.8, -0.988 - 4.5) -- (9 + 0.8, -0.988 - 4.5);
-          \draw[<->,line width=1] (9 - 1, 0.3 - 4.5) -- (9 + 1, 0.3 - 4.5);
-          \path (9, 0.3 - 4.5) node[above] {$1000a_0$};
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+
+        \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Getting to ground state}
+  \begin{center}
+    \begin{columns}
+      \column{4cm}
+      \begin{block}{}
+        \begin{itemize}
+        \item Full control of internal state
+        \item Stronger interaction
+        \end{itemize}
+      \end{block}
+      \column{7cm}
+      \begin{tikzpicture}
+        \visible<2>{
+          \begin{scope}[shift={(2.8, 0.5)}]
+            \shade[ball color=orange!90] (0, 0) circle (0.3);
+            \shade[ball color=blue!90] (0.3, 0.1) circle (0.2);
+            \draw[<->,line width=0.7] (-0.05, -0.5) -- (0.6, -0.25);
+            \node[rotate=21.04,below=2pt] at (0.295, -0.375) {$4a_0$};
+          \end{scope}
+
+          \begin{scope}[shift={(2.8, 2)}]
+            \draw[line width=0.7] plot[samples=200,domain=-2:2,variable=\x]
+            ({\x}, {(\x)^2 * 0.8});
+            \draw[line width=1.5,blue!50!orange]
+            plot[samples=200,domain=-2:2,variable=\x]
+            ({\x}, {exp(-(\x)^2 * 1.3) - 0.988 + 1.5});
+            \draw[line width=0.8] (-0.8, -0.988 + 1.5) -- (0.8, -0.988 + 1.5);
+            \draw[<->,line width=1] (-1, 0.3 + 1.5) -- (1, 0.3 + 1.5);
+            \node[above] at (0, 0.3 + 1.5) {$1000a_0$};
+          \end{scope}
         }
 
-        \visible<5>{
-          \begin{scope}[shift={(4, -8.5)}]
+        \visible<3>{
+          \begin{scope}[scale=0.7]
             \draw[->,line width=1.2] (0, 0) -- (0, 8);
             \node[above,rotate=90] at (0, 4) {Energy};
             \draw[->,line width=1.2] (0, 0) -- (8, 0);
@@ -466,7 +516,6 @@
 
             \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
             \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
-            \node[left,rotate=90,cyan!85!blue] at (1.55 + 0.25, -0.46 + 2.5) {$\cdots$};
 
             \draw[line width=1.1,cyan!85!blue]
             plot[samples=200,domain=1:7,variable=\x]
@@ -490,12 +539,12 @@
             \draw[->,green!80!black,line width=0.8] (5.45, 5) -- (4.165, 2.25);
           \end{scope}
         }
-      }
-    \end{tikzpicture}
+      \end{tikzpicture}
+    \end{columns}
   \end{center}
 \end{frame}
 
-\begin{frame}{\alt<-1>{Photoassociation (PA)}{Electromagnetically Induced Transparency (EIT)} spectroscopy}
+\begin{frame}{\alt<-1>{Photoassociation (PA)}{Electromagnetically Induced Transparency (EIT) spectroscopy}}
   \begin{center}
     \begin{tikzpicture}
       \node at (0, 0) {\includegraphics[width=8cm]{pa.png}};
@@ -504,12 +553,10 @@
         \fill[white,opacity=0.8] (-4.1, -2) rectangle (3.58, 1.05);
         \fill[white,opacity=0.8] (3.72, -2) rectangle (4, 1.05);
         \draw[opacity=0.5,line width=1] (3.72, -0.9) rectangle (3.58, 1.05);
-        \draw[dotted,opacity=0.5,line width=1] (3.72, -0.9) -- (6.45, -2.5);
-        \draw[dotted,opacity=0.5,line width=1] (3.58, -0.9) -- (1.81, -2.5);
         \node at (4, -4) {\includegraphics[width=5cm]{eit.png}};
         \node[below] at (4, -5.7) {\small Two photon detuning (MHz)};
       }
-      \begin{scope}[shift={(-4, -7)},scale=0.65]
+      \begin{scope}[shift={(-4, -6.5)},scale=0.65]
         \draw[->,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
         \draw[->,line width=1.2] (0, 0) -- (8, 0);
@@ -541,7 +588,7 @@
           \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
         }
 
-        \draw[snakearrow,red!50!blue,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
         \only<2->{
           \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
         }
@@ -552,7 +599,7 @@
 
 \begin{frame}{Next step}
   \begin{center}
-    {\Large Make molecules!!}\\
+    {\Large Make ground state molecules!!}\\
     \vspace{0.5cm}
     \visible<2->{
       Thank you for your attention.
