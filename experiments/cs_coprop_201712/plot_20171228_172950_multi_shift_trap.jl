@@ -10,6 +10,8 @@ using DataStructures
 using LsqFit
 import NaCsCalc.Format: Unc, Sci
 
+NaCsPlot.bold()
+
 const iname_a = joinpath(@__DIR__, "data", "data_20171228_172950.mat")
 const params_a, logicals_a = NaCsData.load_striped_mat(iname_a)
 
@@ -209,5 +211,27 @@ ylabel("Frequency (kHz)")
 legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 grid()
 NaCsPlot.maybe_save("$(prefix)_resonance")
+
+figure()
+p = errorbar(TrapDepths, res_50_mf4, res_50_mf4_unc, label="\$50MHz\\ m_F=4\$", fmt="o")
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, true, (trap_mf4_fit.param,)), color=c)
+gcf()[:text](0.89, 0.30,
+             "\$\\delta^{m_F4}_{50}=$(Unc(trap_mf4_param[2] * 15.5, trap_mf4_unc[2] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+p = errorbar(TrapDepths, res_62_mf4, res_62_mf4_unc, label="\$62MHz\\ m_F=4\$", fmt="o")
+c = p[1][:get_color]()
+plot(trapdepths_plot, _trap_model.(trapdepths_plot, false, (trap_mf4_fit.param,)), color=c)
+gcf()[:text](0.89, 0.15,
+             "\$\\delta^{m_F4}_{62}=$(Unc(trap_mf4_param[3] * 15.5, trap_mf4_unc[3] * 15.5))\\ kHz\$",
+             color=c, fontsize=20, horizontalalignment="left", verticalalignment="center",
+             clip_on=false)
+title("Resonance")
+xlabel("Trap depth (mW)")
+ylabel("Frequency (kHz)")
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+grid()
+NaCsPlot.maybe_save("$(prefix)_resonance_mf4")
 
 NaCsPlot.maybe_show()
