@@ -413,12 +413,6 @@
 \begin{frame}{Alignment between tweezer polarization and B field}
   \begin{center}
     \begin{tikzpicture}
-      \visible<2>{
-        \node at (0, 2) {Circular polarization};
-      }
-      \visible<3>{
-        \node at (0, 2) {Tweezer rotation};
-      }
       \begin{scope}[shift={(-0.75, 0)},onslide=<3->{rotate=-6}]
         \mytweezer.drawCsTweezer(0, 0);
         \visible<2->{
@@ -432,9 +426,49 @@
         }
       \end{scope}
       \draw[red,->,line width=1.5] (-1.2, -2) -- (1.2, -2) node[right] {$B_{bias}$};
+      \visible<-4>{
+        \node[text width=6cm,align=center] at (5.5, 0) {
+          \begin{block}{}
+            \begin{itemize}
+            \item<2-> Tweezer circular polarization
+            \item<3-> Tweezer rotation
+            \end{itemize}
+          \end{block}
+          {
+            \visible<4>{
+              \begin{block}{Sensitive to ...}
+                \begin{itemize}
+                \item Tweezer polarization
+                \item Tweezer alignment
+                \item B field direction
+                \item Hyperfine state
+                \end{itemize}
+              \end{block}
+            }
+          }
+        };
+      }
+      \visible<5->{
+        \node[red] at (7.5, 3.55) {$\Delta B_y=0.0G$};
+        \node at (5.5, 1.9) {\includegraphics[width=6.5cm]{../../experiments/cs_coprop_201712/imgs/data_20171228_resonance_mf4.pdf}};
+        \node[red] at (7.5, -0.25) {$\Delta B_y=0.5G$};
+        \node at (5.5, -1.9) {\includegraphics[width=6.5cm]{../../experiments/cs_coprop_201712/imgs/data_20180103_resonance_mf4.pdf}};
+      }
+      \visible<6->{
+        \fill[white,opacity=0.9] (-2, -3.55) rectangle (8.75, 3.8);
+        \node[text width=8cm,align=center,right] at (0, 0) {
+          \begin{itemize}
+          \item Trap polarization\\
+            $C=0.0545(94)$\\
+            or $0.30(10) \%$ power in wrong polarization
+          \item Angle between tweezers\\
+            $1.10(58)^\circ$\\
+            or $0.30(16)$mm shift on Fourier plane.
+          \end{itemize}
+        };
+      }
     \end{tikzpicture}
   \end{center}
-  % Sensitive to B, polarization, Zeeman state
 \end{frame}
 
 \end{document}
