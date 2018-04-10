@@ -10,10 +10,9 @@ using PyPlot
 using PyCall
 
 function __init__()
-    matplotlib["rcParams"][:update](Dict("font.size" => 20,
-                                         "svg.hashsalt" => 19680801))
-    matplotlib[:rc]("xtick", labelsize=15)
-    matplotlib[:rc]("ytick", labelsize=15)
+    matplotlib["rcParams"][:update](Dict("svg.hashsalt" => 19680801))
+    fontsize(20)
+    ticksize(15)
     copy!(hist, PyPlot.matplotlib[:pyplot][:hist])
 end
 
@@ -22,6 +21,13 @@ function nobold()
 end
 function bold()
     matplotlib["rcParams"][:update](Dict("font.weight" => "bold"))
+end
+function fontsize(s)
+    matplotlib["rcParams"][:update](Dict("font.size" => s))
+end
+function ticksize(s)
+    matplotlib[:rc]("xtick", labelsize=s)
+    matplotlib[:rc]("ytick", labelsize=s)
 end
 
 const hist = PyCall.PyNULL()
