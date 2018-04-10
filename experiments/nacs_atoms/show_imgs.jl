@@ -1,20 +1,31 @@
 #!/usr/bin/julia
 
+push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
+
+using NaCsCalc.Utils: interactive
+using NaCsData
+using NaCsPlot
 using MAT
 using PyPlot
 
-PyPlot.matplotlib["rcParams"][:update](Dict("font.size" => 30,
-                                            "font.weight" => "bold"))
-PyPlot.matplotlib[:rc]("xtick", labelsize=25)
-PyPlot.matplotlib[:rc]("ytick", labelsize=25)
+NaCsPlot.fontsize(30)
+NaCsPlot.ticksize(25)
+NaCsPlot.bold()
 
-imgs, single_atom = matopen(ARGS[1]) do fd
+const iname = joinpath(@__DIR__, "data", "data_20161019_171310.mat")
+
+imgs, single_atom = matopen(iname) do fd
     read(fd, "Images"), read(fd, "SingleAtom") .!= 0
 end
 
-const whitelist = [27, 55, 78, 93, 144, 154, 171, 245, 311, 329, 542, 622, 629, 631, 632, 678, 897, 917, 918, 933, 961, 962, 1067, 1101, 1160, 1237, 1393, 1430, 1465, 1468, 1486, 1490, 1645, 1695, 1729, 1719]
+const whitelist = [27, 55, 78, 93, 144, 154, 171, 245, 311, 329, 542, 622, 629, 631, 632, 678,
+                   897, 917, 918, 933, 961, 962, 1067, 1101, 1160, 1237, 1393, 1430, 1465,
+                   1468, 1486, 1490, 1645, 1695, 1729, 1719]
 
-implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
+const prefix = joinpath(@__DIR__, "imgs")
+
+figure()
+implot = imshow(imgs[11:31, 11:31, 1695], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("gray")
 xlabel("x(\$\\mu m\$)")
@@ -27,11 +38,10 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "single_gray.svg"),
-        bbox_inches="tight", transparent=true)
-close()
+NaCsPlot.maybe_save("$(prefix)/single_gray")
 
-implot = imshow(imgs[11:31, 11:31, 1695], interpolation="none",
+figure()
+implot = imshow(imgs[11:31, 11:31, 1695], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("viridis")
 xlabel("x(\$\\mu m\$)")
@@ -44,11 +54,10 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "single_viridis.svg"),
-        bbox_inches="tight", transparent=true)
-close()
+NaCsPlot.maybe_save("$(prefix)/single_viridis")
 
-implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
+figure()
+implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("gray")
 xlabel("x(\$\\mu m\$)")
@@ -61,11 +70,10 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "avg_gray.svg"),
-        bbox_inches="tight", transparent=true)
-close()
+NaCsPlot.maybe_save("$(prefix)/avg_gray")
 
-implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="none",
+figure()
+implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("viridis")
 xlabel("x(\$\\mu m\$)")
@@ -78,10 +86,7 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
          color="white", size=40, weight="bold")
-savefig(joinpath(ARGS[2], "avg_viridis.svg"),
-        bbox_inches="tight", transparent=true)
-close()
-# show()
+NaCsPlot.maybe_save("$(prefix)/avg_viridis")
 
 function show_imgs(imgs, single_atom)
     i = 1
@@ -103,7 +108,10 @@ function show_imgs(imgs, single_atom)
             i += 1
         end
     end
-    show()
 end
 
-# show_imgs(imgs, single_atom)
+if interactive() && false
+    show_imgs(imgs, single_atom)
+end
+
+NaCsPlot.maybe_show()
