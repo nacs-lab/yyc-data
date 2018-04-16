@@ -202,7 +202,7 @@
 % \def\timeleft{15:00->14:55}
 
 \title[Single NaCs in optical tweezers]{Manipulating single NaCs in optical tweezers}
-\date{April 04, 2018}
+\date{April 18, 2018}
 \author[Yichao Yu]{Yichao Yu\\
   \vspace{0.5cm}
   {\footnotesize Lee Liu, Dr. Jon Hood}}
@@ -315,7 +315,9 @@
       \begin{block}{Optical tweezer}
         \begin{itemize}
         \item Single site detection
+          \pause
         \item Single site control
+          \pause
         \item Flexible geometry
         \end{itemize}
       \end{block}
@@ -325,6 +327,7 @@
         \begin{itemize}
         \item Strong dipole interaction\\
           Dipole moment: 4.6 Debye
+          \pause
         \item Made from alkali atoms
         \end{itemize}
       \end{block}
@@ -391,6 +394,8 @@
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
         \node[below] at (6.5, -1)
         {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
+        % Don't mention axis.
+        % Explain the sideband spectrum more.
         \node[below,align=center] at (7, -7)
         {Cs: 96\% ground state\\Na: 94\% ground state};
       }
@@ -569,6 +574,8 @@
         \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
         \only<2->{
           \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+          \draw[cyan!85!blue,<->] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
+          {\tiny $\delta$};
         }
 
         \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
