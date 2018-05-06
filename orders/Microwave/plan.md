@@ -45,6 +45,26 @@ We certainly need some frequency mixing/multiplying and here are some options.
         From minicircuits (https://www.minicircuits.com/pdfs/ZSN-7800A+.pdf, $500)
         This can go up to 7800MHz so we only need one mixing.
 
+3. Direct multiplying with doublers/multipliers
+
+    This is similar to multiplying with PLL but can allow (very non-linear) amplitude modulation
+    at the same time. It removes the need for a RF switch for using a PLL + VCO which
+    is surprisingly hard to find.
+
+    Possible plan:
+
+    DDS: 1.1 - 1.165 GHz (9dBm)
+    Filter: ZX75BP-1100+ (8.5dBm) $59.95
+    Double: ZX90-2-19+ (-2.5dBm) $35.95
+    Filter: VBF-2275+ (-4.5dBm) $34.95
+    Amp: ZX60-P103LN+ (9dBm) $69.95
+    Double: ZX90-2-36-S+ (-1dBm) $36.95
+    Filter: VBF-4440+ (-2dBm) $34.95
+    Amp: ZX60-V63+ (18dBm) (May need attenuator or more filters) $49.95
+    Double: ZX90-2-50+ (-2dBm) $41.95
+    Filter: VHF-7150+ (-3dBm) $24.95
+    Amp: ZX60-183A+ (25dBm) $169.95
+
 # Pre-amp
 
 The necessity of this depends on the source and amplifier.
