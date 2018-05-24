@@ -10,16 +10,50 @@
 \setbeamercolor{block alerted body}{fg=black,bg=dblue!10} % Colors of the body of highlighted blocks
 % Many more colors are available for use in beamerthemeconfposter.sty
 
+\usepackage[skins]{tcolorbox}
+% a "sub-block" (plain block-within-block (second-level header))
+\newenvironment{subblock}[1]{
+  \setbeamertemplate{block begin}
+  {
+    \setbeamercolor{block title}{fg=nblue!90} % @TODO defer to beamercolortheme
+    \par\vskip\medskipamount
+    \begin{beamercolorbox}[colsep*=0ex,dp={2ex}]{block title}
+      \vskip-0.5cm
+      \begin{tikzpicture}[remember picture]
+        \node (titlenode) at (0, 0) {\usebeamerfont{block title}\normalsize\insertblocktitle};
+        \tcbsetmacrotowidthofnode{\titlewidth}{titlenode}
+        \tcbsetmacrotoheightofnode{\titleheight}{titlenode}
+        \shade [inner color=nblue!25!black!25,outer color=white]
+        (-\titlewidth/2,-\titleheight/2-0.1cm) rectangle ++({1.1*\titlewidth},-0.2cm);
+      \end{tikzpicture}
+    \end{beamercolorbox}
+    {\parskip0pt\par}
+    \ifbeamercolorempty[bg]{block title}
+    {}
+    {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}
+    \usebeamerfont{block body}
+    \vskip-0.5cm
+    \begin{beamercolorbox}[colsep*=0ex,vmode]{block body}
+      \justifying
+    }
+    \setbeamertemplate{block end}
+    {
+    \end{beamercolorbox}
+    \vskip\smallskipamount
+  }
+  \begin{block}{{\normalsize #1}}
+  }{\end{block}}
+
 \newlength{\sepwid}
 \newlength{\colonewid}
 \newlength{\coltwowid}
-\newlength{\onecolwid}
+\newlength{\colthreewid}
 \setlength{\paperwidth}{48in} % A0 width: 46.8in
 \setlength{\paperheight}{36in} % A0 height: 33.1in
 \setlength{\sepwid}{0.024\paperwidth} % Separation width (white space) between columns
-\setlength{\onecolwid}{0.301\paperwidth} % Width of one column
 \setlength{\colonewid}{0.27\paperwidth} % Width of column one
 \setlength{\coltwowid}{0.28\paperwidth} % Width of column two
+\setlength{\colthreewid}{0.354\paperwidth} % Width of one column
 \setlength{\topmargin}{-0.5in} % Reduce the top margin size
 % -----------------------------------------------------------
 
@@ -332,8 +366,32 @@
 
     \begin{column}{\sepwid}\end{column} % Empty spacer column
 
-    \begin{column}{\onecolwid} % The third column
+    \begin{column}{\colthreewid} % The third column
       \begin{block}{Photoassociation}
+        \begin{subblock}{Near threshold photoassociation}
+          \begin{center}
+            Simultaneous {\color{nblue}\textbf{Na}} and {\color{orange}\textbf{Cs}}
+            loss due to photoassociation\\
+            \includegraphics[width=0.85\colthreewid]{pa-shallow}\\
+            PA Detuning from Cs D2 (GHz)
+          \end{center}
+        \end{subblock}
+        \begin{columns}[T]
+          \begin{column}{0.48\colthreewid}
+            \begin{itemize}
+            \item First photoassociation of a single molecule in an optical tweezer.
+            \item Observation of new NaCs excited state vibrational lines near threshold.
+            \item Vertical lines are fits to the LeRoy long range dispersion model,
+              \[\Delta E\propto\frac{1}{\sqrt{C_6}}(v_D-v)^3\]
+            \end{itemize}
+          \end{column}
+          \begin{column}{0.48\colthreewid}
+            \vspace{2ex}
+            \begin{subblock}{$v=0$ photoassociation}
+              \includegraphics[width=0.4\colthreewid]{pa-v0}
+            \end{subblock}
+          \end{column}
+        \end{columns}
       \end{block}
 
       \begin{block}{Coherent molecule formation \textit{\small (Preliminary)}}
