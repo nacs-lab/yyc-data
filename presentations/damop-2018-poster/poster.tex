@@ -11,17 +11,103 @@
 % Many more colors are available for use in beamerthemeconfposter.sty
 
 \newlength{\sepwid}
+\newlength{\colonewid}
+\newlength{\coltwowid}
 \newlength{\onecolwid}
 \setlength{\paperwidth}{48in} % A0 width: 46.8in
 \setlength{\paperheight}{36in} % A0 height: 33.1in
 \setlength{\sepwid}{0.024\paperwidth} % Separation width (white space) between columns
 \setlength{\onecolwid}{0.301\paperwidth} % Width of one column
+\setlength{\colonewid}{0.27\paperwidth} % Width of column one
+\setlength{\coltwowid}{0.28\paperwidth} % Width of column two
 \setlength{\topmargin}{-0.5in} % Reduce the top margin size
 % -----------------------------------------------------------
 
 \usepackage{graphicx}  % Required for including images
-
 \usepackage{booktabs} % Top and bottom rules for tables
+\usepackage{tikz}
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes,
+  arrows.meta
+}
+\usepgfmodule{oo}
+
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\pgfdeclarelayer{tweezer}
+\pgfsetlayers{tweezer,main}
+\pgfooclass{tweezer}{
+  \method tweezer() {
+  }
+  \method drawTweezer(#1,#2,#3) {
+    \begin{pgfonlayer}{tweezer}
+      \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
+      fill opacity=0.9,inner color=#3]
+      plot[draw,samples=200,domain=-1.5:1.5] function {sqrt(0.01 + x**2 / 5)}
+      -- plot[draw,samples=200,domain=1.5:-1.5] function {-sqrt(0.01 + x**2 / 5)};
+    \end{pgfonlayer}
+  }
+  \method drawAtom(#1,#2,#3,#4) {
+    \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
+  }
+  \method drawNaAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,orange);
+  }
+  \method drawCsAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
+  }
+  \method drawNaTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,orange!35!black!30);
+  }
+  \method drawCsTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,blue!30!black!30);
+  }
+  \method up(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2+0.06,0.12);
+    \pgfoothis.drawCsAtom(#1,#2-0.06,0.16);
+  }
+  \method down(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2+0.06,0.16);
+    \pgfoothis.drawNaAtom(#1,#2-0.06,0.12);
+  }
+  \method naTrap(#1,#2) {
+    \pgfoothis.drawNaTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2,0.12);
+  }
+  \method csTrap(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2,0.16);
+  }
+}
+\pgfoonew \mytweezer=new tweezer()
 
 % ----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -61,115 +147,102 @@
 \setlength\belowdisplayshortskip{2ex} % White space under equations
 
 \begin{frame}[t] % The whole poster is enclosed in one beamer frame
-
-  \begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
-
+  \begin{columns}[t]
     \begin{column}{\sepwid}\end{column} % Empty spacer column
-
-    \begin{column}{\onecolwid} % The first column
-
-      % ----------------------------------------------------------------------------------------
-      %	QUICK REVISION
-      % ----------------------------------------------------------------------------------------
-
-      \begin{block}{Quick Revision}
-
-        \textbf{Forms of Quadratic Function}
-        \begin{itemize}
-        \item $f(x) = ax^2+bx+c$ is called the \textbf{standard form}.
-        \item $f(x) = a(x-x_1)(x-x_2)$ is called the \textbf{factored form}, where $x_1$ and $x_2$ are the roots of the quadratic function.
-        \item $f(x) = a(x-h)^2+k$ is called the \textbf{vertex form}.
-        \end{itemize}
-
-        \textbf{Delta $\Delta$}\\*
-        $\Delta$ determines tells us how many solutions quadratic equation have:
-        $$\text{number of solutions}=
-        \begin{cases}
-          2 &\text{when } \Delta > 0\\
-          1 &\text{when } \Delta = 0\\
-          0 &\text{when } \Delta < 0
-        \end{cases}
-        $$
-
-
-        \textbf{The Quadratic Formula}
-        $$x = \frac{-b\pm \sqrt{\Delta}}{2a}$$
-
-        \textbf{Graph of Quadratic Function}
-
+    \begin{column}{\colonewid} % The first column
+      \begin{block}{Ultracold Molecules}
+        \begin{columns}[T]
+          \begin{column}{0.57\colonewid}
+            \vspace{3ex}
+            \begin{itemize}
+            \item NaCs has a large permanent electric dipole moment ($\mathbf{4.6}$ \textbf{Debye})
+            \item Strong anisotropic dipole-dipole interactions
+            \item Coupled internal degrees of freedom
+              can be used to tune interactions and store information
+            \end{itemize}
+          \end{column}
+          \begin{column}{0.42\colonewid}
+            \includegraphics[width=0.4\colonewid]{reaction-align}
+          \end{column}
+        \end{columns}
+        \begin{center}
+          \includegraphics[width=0.8\colonewid]{temp-scale}
+        \end{center}
       \end{block}
 
-      % ------------------------------------------------
+      \begin{block}{Our approach}
+        \begin{columns}[T]
+          \begin{column}{0.5\colonewid}
+            \vspace{5ex}
+            \begin{itemize}
+            \item Assemble and trap individual molecules in optical tweezers
+              from laser-cooled atoms
+            \item Raman transition from atoms to weakly-bound molecules
+            \item STIRAP to ground state molecules
+            \end{itemize}
+            \vspace{10ex}
+            \textbf{\color{dblue}{Advantages}}
+            \begin{itemize}
+            \item Fast cycle time (<1s), small vacuum chamber
+            \item Dynamically configurable trapping geometry
+            \item All optical cooling and state-manipulation
+            \end{itemize}
+          \end{column}
+          \begin{column}{0.44\colonewid}
+            \begin{tikzpicture}[scale=2.5]
+              \foreach \xoff in {0,2.2} {
+                \mytweezer.drawCsTweezer(0+\xoff, -0.5)
+                \mytweezer.drawNaTweezer(-1+\xoff, -0.5)
+                \mytweezer.drawCsAtom(-0.07+\xoff, -0.42, 0.22)
+                \mytweezer.drawNaAtom(-1.06+\xoff, -0.59, 0.27)
 
-      \begin{figure}
-        % \includegraphics[width=0.8\linewidth]{1.jpg}
-        \caption{Graph of $f(x)=ax^2|_{\{0.1, 0.3, 1.0, 3.0\}}$}
-      \end{figure}
+                \mytweezer.drawCsTweezer(0+\xoff, -3.1)
+                \mytweezer.drawNaTweezer(-1+\xoff, -3.1)
+                \mytweezer.drawCsAtom(0.0+\xoff, -3.1, 0.12)
+                \mytweezer.drawNaAtom(-1.0+\xoff, -3.1, 0.16)
 
-      % ----------------------------------------------------------------------------------------
+                \mytweezer.drawCsTweezer(-1+\xoff, -7.0)
+                \mytweezer.drawNaAtom(-1.05+\xoff, -6.87, 0.16)
+                \mytweezer.drawCsAtom(-0.95+\xoff, -7.13, 0.12)
 
+                \mytweezer.drawCsTweezer(-1+\xoff, -9.5)
+                \mytweezer.drawNaAtom(-1.02+\xoff, -9.44, 0.16)
+                \mytweezer.drawCsAtom(-0.98+\xoff, -9.56, 0.12)
+
+                \begin{scope}[opacity=0.4]
+                  \draw[orange,loosely dotted,line width=5] (-1+\xoff, -0.9) -- (-1+\xoff, -2.9);
+                  \draw[blue,loosely dotted,line width=5] (0+\xoff, -0.65) -- (0+\xoff, -2.9);
+                  \draw[->,orange,line width=5] (-1+\xoff, -3.3) -- (-1+\xoff, -6.7);
+                  \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=5]
+                  plot ({atan((\y+4.7) * 5) / 170 - 0.5+\xoff},{\y});
+                \end{scope}
+                \draw[orange!50!blue,loosely dotted,line width=5,opacity=0.7]
+                (-1+\xoff, -7.3) -- (-1+\xoff, -9.3);
+              }
+              \node[below,rotate=-90] at (3.3, -1.8) {Trapping and cooling};
+              \node[below,rotate=-90] at (2.3, -7) {Merging};
+              \node[below,rotate=-90,align=center] at (2.6, -9.5) {Forming\\molecules};
+            \end{tikzpicture}
+          \end{column}
+        \end{columns}
+      \end{block}
+
+      \begin{block}{Acknowledgements}
+        \begin{center}
+          \includegraphics[height=0.18\colonewid]{beckman}
+          \hspace{15ex}\includegraphics[height=0.18\colonewid]{nsf}\\
+          \includegraphics[height=0.18\colonewid]{afosr}
+          \hspace{5ex}\includegraphics[height=0.18\colonewid]{sloan}
+        \end{center}
+      \end{block}
     \end{column} % End of the first column
 
     \begin{column}{\sepwid}\end{column} % Empty spacer column
 
-    \begin{column}{\onecolwid} % Begin a column which is two columns wide (column 2)
-
-      \begin{columns}[t,totalwidth=\onecolwid] % Split up the two columns wide column
-
-        \begin{column}{0.5\onecolwid}\vspace{-.6in} % The first column within column 2 (column 2.1)
-
-          % ----------------------------------------------------------------------------------------
-          %	MATERIALS
-          % ----------------------------------------------------------------------------------------
-
-          \begin{block}{Factorising a Quadratic}
-
-            Factorising a quadratic means putting it into two brackets, and is useful if you're trying to draw a graph of a quadratic solve a quadratic equation. It's pretty easy if $a=1$ (in $ax^2+bx+c$ form), but can be a real pain otherwise.
-            \newline
-            \newline
-            In order to factorise a quadratic you should follow steps outlined below:
-
-            \begin{enumerate}
-            \item Rearrange the equation into the standard $ax^2+bx+c$ form.
-            \item Write down two brackets: $(x\ \ \ )(x\ \ \ )$
-            \item Find two numbers that multiply to give 'c' and add or subtract to give 'b' (ignoring signs).
-            \item Put the numbers in brackets and choose their signs.
-            \end{enumerate}
-
-          \end{block}
-
-          % ----------------------------------------------------------------------------------------
-
-        \end{column} % End of column 2.1
-
-        \begin{column}{0.5\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
-
-          % ----------------------------------------------------------------------------------------
-          %	P
-          % ----------------------------------------------------------------------------------------
-
-          \begin{block}{Factorising- Tasks}
-            1. Factorise $x^2-x-12$.
-            2. Solve $x^2-8=2x$ by factorising.
-
-          \end{block}
-
-          % ----------------------------------------------------------------------------------------
-
-        \end{column} % End of column 2.2
-
-      \end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
-
-      % ----------------------------------------------------------------------------------------
-      %	IMPORTANT To REMEMBER
-      % ----------------------------------------------------------------------------------------
-
-      \begin{alertblock}{Myth of Delta $\Delta$}
-
-        It's commonly believed that in order to work out roots of a quadratic function you must count $\Delta$ and use other previously established formulas. However this is untrue since factorising in many cases is as good or even better than simply counting $\Delta$.
-
-      \end{alertblock}
-
+    \begin{column}{\coltwowid}
+      \begin{block}{Trapping and cooling of atoms}
+        \includegraphics[width=0.5\coltwowid]{exp-photo}
+      \end{block}
     \end{column} % End of the second column
 
     \begin{column}{\sepwid}\end{column} % Empty spacer column
