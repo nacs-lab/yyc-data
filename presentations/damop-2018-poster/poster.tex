@@ -19,12 +19,12 @@
     \par\vskip\medskipamount
     \begin{beamercolorbox}[colsep*=0ex,dp={2ex}]{block title}
       \vskip-0.5cm
-      \begin{tikzpicture}[remember picture]
-        \node (titlenode) at (0, 0) {\usebeamerfont{block title}\normalsize\insertblocktitle};
+      \begin{tikzpicture}[every node/.style={inner sep=0}]
+        \node (titlenode) at (0.1cm, 0) {\usebeamerfont{block title}\normalsize\insertblocktitle};
         \tcbsetmacrotowidthofnode{\titlewidth}{titlenode}
         \tcbsetmacrotoheightofnode{\titleheight}{titlenode}
-        \shade [inner color=nblue!25!black!25,outer color=white]
-        (-\titlewidth/2,-\titleheight/2-0.1cm) rectangle ++({1.1*\titlewidth},-0.2cm);
+        \shade [inner color=nblue!16!black!24,outer color=white]
+        (-\titlewidth/2,-\titleheight/2) rectangle ++({1.1*\titlewidth+0.1cm},-0.2cm);
       \end{tikzpicture}
     \end{beamercolorbox}
     {\parskip0pt\par}
