@@ -206,24 +206,31 @@
 
       \begin{block}{Our Approach}
         \begin{columns}[T]
-          \begin{column}{0.5\colonewid}
-            \vspace{5ex}
+          \begin{column}{0.6\colonewid}
+            \vspace{1ex}
             \begin{itemize}
             \item Assemble and trap individual molecules in optical tweezers
               from laser-cooled atoms
             \item Raman transition from atoms to weakly-bound molecules
             \item STIRAP to ground state molecules
             \end{itemize}
-            \vspace{10ex}
-            \textbf{\color{dblue}{Advantages}}
-            \begin{itemize}
-            \item Fast cycle time (<1s), small vacuum chamber
-            \item Dynamically configurable trapping geometry
-            \item All optical cooling and state-manipulation
-            \end{itemize}
+            \vspace{2ex}
+            \begin{subblock}{Advantages}
+              \begin{itemize}
+              \item Fast cycle time (<1s), small vacuum chamber
+              \item Dynamically configurable trapping geometry
+              \item All optical cooling and state-manipulation
+              \end{itemize}
+            \end{subblock}
+            \vspace{2ex}
+            \begin{subblock}{Quantum gate scheme}
+              \begin{center}
+                \includegraphics[width=0.6\colonewid]{quantum_gate}
+              \end{center}
+            \end{subblock}
           \end{column}
-          \begin{column}{0.44\colonewid}
-            \begin{tikzpicture}[scale=2.5]
+          \begin{column}{0.4\colonewid}
+            \begin{tikzpicture}[scale=2.2]
               \foreach \xoff in {0,2.2} {
                 \mytweezer.drawCsTweezer(0+\xoff, -0.5)
                 \mytweezer.drawNaTweezer(-1+\xoff, -0.5)
@@ -255,7 +262,7 @@
               }
               \node[below,rotate=-90] at (3.3, -1.8) {Trapping and cooling};
               \node[below,rotate=-90] at (2.3, -7) {Merging};
-              \node[below,rotate=-90,align=center] at (2.6, -9.5) {Forming\\molecules};
+              \node[below,rotate=-90,align=center] at (2.9, -9.5) {Forming\\molecules};
             \end{tikzpicture}
           \end{column}
         \end{columns}
@@ -389,7 +396,7 @@
           \end{column}
           \begin{column}{0.48\colthreewid}
             \vspace{2ex}
-            \begin{subblock}{$v=0$ photoassociation}
+            \begin{subblock}{Photoassociation for $v=0$ state}
               \includegraphics[width=0.4\colthreewid]{pa-v0}
             \end{subblock}
           \end{column}
