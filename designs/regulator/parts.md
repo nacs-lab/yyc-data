@@ -4,7 +4,7 @@
 
 # Capacitors
 
-Aluminum: 338-2150-1-ND x 2
+Aluminum: 399-6123-ND x 2
 Ceramic 10u 0603: Already in the lab
 Ceramic 1.5u 0805: 445-5966-1-ND x 6
 Ceramic 0.1u 0805: 399-3486-1-ND x 6
