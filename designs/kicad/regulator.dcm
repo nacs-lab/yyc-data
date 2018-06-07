@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LT3089-TSSOP
+D 50mA 3-80V Micropower Low Dropout Regulator, fixed output 5V, MSOP-8
+K REGULATOR POSITIVE POWER LDO fixed
+F http://cds.linear.com/docs/en/datasheet/30105fe.pdf
+$ENDCMP
+#
+$CMP LT3090-MSOP
+D 50mA 3-80V Micropower Low Dropout Regulator, fixed output 5V, MSOP-8
+K REGULATOR POSITIVE POWER LDO fixed
+F http://cds.linear.com/docs/en/datasheet/30105fe.pdf
+$ENDCMP
+#
+#End Doc Library
