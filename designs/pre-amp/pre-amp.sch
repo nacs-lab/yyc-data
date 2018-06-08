@@ -57,7 +57,7 @@ F 1 "Conn_Coaxial" V 865 1300 50  0000 C CNN
 F 2 "Connectors2:BNC_Socket_Right-Angle_LargePads" H 750 1300 50  0001 C CNN
 F 3 "" H 750 1300 50  0001 C CNN
 	1    750  1300
-	0    -1   -1   0   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L GND #PWR01
@@ -236,11 +236,7 @@ F 3 "" H 1200 1700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	750  1450 750  1700
-Wire Wire Line
 	750  1700 1050 1700
-Wire Wire Line
-	950  1300 1050 1300
 Wire Wire Line
 	1350 1300 2000 1300
 Wire Wire Line
@@ -761,4 +757,8 @@ Wire Wire Line
 	1750 800  1950 800 
 Wire Wire Line
 	1950 800  1950 900 
+Wire Wire Line
+	900  1300 1050 1300
+Wire Wire Line
+	750  1500 750  1700
 $EndSCHEMATC
