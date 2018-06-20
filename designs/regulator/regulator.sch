@@ -35,7 +35,7 @@ LIBS:regulator
 LIBS:regulator-cache
 EELAYER 25 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title ""
