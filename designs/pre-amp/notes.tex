@@ -1,0 +1,35 @@
+\documentclass[10pt,fleqn]{article}
+
+\usepackage{hyperref}
+
+\begin{document}
+
+\section{Value selection for active low pass filter}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+  \hline
+  Gain&$f_{cutoff}\ (\mathrm{kHz})$&$R_5\ (\mathrm{k\Omega})$&$R_6\ (\mathrm{k\Omega})$&$R_7\ (\mathrm{k\Omega})$&$C_{12}\ (\mathrm{pF})$&$C_{13}\ (\mathrm{pF})$\\\hline
+  1&10&1.54&1.54&11.1&10000&910\\\hline
+  1&20&4.99&5.0&4.64&2200&750\\\hline
+  1&30&1.01&1.01&1.1&6800&2200\\\hline
+  0.5&10&5.0&2.5&17.4&4700&750\\\hline
+  0.5&20&2.0&1.01&10.7&5600&620\\\hline
+  0.5&30&3.88&1.96&6.34&2200&620\\\hline
+  0.25&10&2.21&0.562&18.7&15000&820\\\hline
+  0.25&20&2.7&0.681&10.7&6800&750\\\hline
+  0.25&30&1.82&0.464&6.57&6800&820\\\hline
+\end{tabular}
+The active filter uses a low-pass multiple-feedback (MFB) architecture
+and the table gives the values to create a second order Bessel filter.
+All the resistors and capacitors are currently in stock at Digikey.
+See \href{http://www.ti.com/lit/an/sloa049b/sloa049b.pdf}
+{Active Low-Pass Filter Design}\footnote{http://www.ti.com/lit/an/sloa049b/sloa049b.pdf}
+for the formula used and comparison between different filter type and circuit topology.
+
+\section{Other tweaks}
+\begin{enumerate}
+\item $R_8$ and $C_{14}$ can be used for additional filter.
+\item If a higher cutoff frequency is needed, reduce or remove $C_2$ to increase the
+  input cutoff frequency.
+\end{enumerate}
+
+\end{document}
