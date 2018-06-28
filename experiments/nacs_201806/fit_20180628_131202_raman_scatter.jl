@@ -89,10 +89,13 @@ function fit_and_plot_op(rates, data)
             τ_f2=Unc(τ_f2_real, τ_f2_real_s))
 end
 
+function fit_text(x, y, fit)
+    text(x, y, "\$\\tau_{F1}=$(fit.τ_f1)\$ms\n\$\\tau_{F2}=$(fit.τ_f2)\$ms\nTotal=$(fit.nrm)")
+end
+
 figure()
 fit_f1_diagonal = fit_and_plot_op(rates_f1_diagonal, data_f1_diagonal)
-text(100, 0.07,
-     "\$\\tau_{F1}=$(fit_f1_diagonal.τ_f1)\$ms\n\$\\tau_{F2}=$(fit_f1_diagonal.τ_f2)\$ms")
+fit_text(100, 0.07, fit_f1_diagonal)
 title("F1 diagonal")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
@@ -100,8 +103,7 @@ NaCsPlot.maybe_save("$(prefix)_f1_diagonal")
 
 figure()
 fit_f2_diagonal = fit_and_plot_op(rates_f2_diagonal, data_f2_diagonal)
-text(100, 0.07,
-     "\$\\tau_{F1}=$(fit_f2_diagonal.τ_f1)\$ms\n\$\\tau_{F2}=$(fit_f2_diagonal.τ_f2)\$ms")
+fit_text(100, 0.07, fit_f2_diagonal)
 title("F2 diagonal")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
@@ -109,8 +111,7 @@ NaCsPlot.maybe_save("$(prefix)_f2_diagonal")
 
 figure()
 fit_f1_up = fit_and_plot_op(rates_f1_up, data_f1_up)
-text(100, 0.09,
-     "\$\\tau_{F1}=$(fit_f1_up.τ_f1)\$ms\n\$\\tau_{F2}=$(fit_f1_up.τ_f2)\$ms")
+fit_text(100, 0.09, fit_f1_up)
 title("F1 up")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
@@ -118,8 +119,7 @@ NaCsPlot.maybe_save("$(prefix)_f1_up")
 
 figure()
 fit_f2_counterop = fit_and_plot_op(rates_f2_counterop, data_f2_counterop)
-text(30, 0.04,
-     "\$\\tau_{F1}=$(fit_f2_counterop.τ_f1)\$ms\n\$\\tau_{F2}=$(fit_f2_counterop.τ_f2)\$ms")
+fit_text(30, 0.04, fit_f2_counterop)
 title("F2 counter-OP")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
@@ -127,8 +127,7 @@ NaCsPlot.maybe_save("$(prefix)_f2_counterop")
 
 figure()
 fit_f1_down = fit_and_plot_op(rates_f1_down, data_f1_down)
-text(100, 0.05,
-     "\$\\tau_{F1}=$(fit_f1_down.τ_f1)\$ms\n\$\\tau_{F2}=$(fit_f1_down.τ_f2)\$ms")
+fit_text(100, 0.02, fit_f1_down)
 title("F1 down")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
