@@ -90,7 +90,7 @@ function fit_and_plot_op(rates, data)
 end
 
 function fit_text(x, y, fit)
-    text(x, y, "\$\\tau_{F1}=$(fit.τ_f1)\$ms\n\$\\tau_{F2}=$(fit.τ_f2)\$ms\nTotal=$(fit.nrm)")
+    text(x, y, "\$\\tau_{F1}=$(fit.τ_f1)\$ms\n\$\\tau_{F2}=$(fit.τ_f2)\$ms\n\$Total=$(fit.nrm)\$")
 end
 
 figure()
