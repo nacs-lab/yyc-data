@@ -5,5 +5,6 @@ __precompile__(true)
 module NaCsData
 
 include("load.jl")
+include("selector.jl")
 
 end
