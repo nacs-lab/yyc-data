@@ -47,3 +47,16 @@ function poly_multiply(c1::AbstractVector{T1}, c2::AbstractVector{T2}) where {T1
     end
     return c
 end
+
+# calculate c[end - i] * x^i * a
+function poly_apply(c::AbstractVector{T1}, x::T2, a::T3=1) where {T1,T2,T3}
+    n = length(c)
+    T = promote_type(T1, T2, T3)
+    res = Vector{T}(n)
+    v::T = one(T)
+    for i in 0:(n - 1)
+        res[n - i] = c[n - i] * v * a
+        v = v * x
+    end
+    return res
+end
