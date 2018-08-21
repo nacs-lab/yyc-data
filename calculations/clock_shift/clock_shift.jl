@@ -2,6 +2,10 @@
 
 include("utils.jl")
 
+if VERSION >= v"0.7.0"
+    @eval using LinearAlgebra
+end
+
 # Cs traping frequencies 20, 130, 140
 # Na traping frequencies 84% that of Cs
 
@@ -91,7 +95,7 @@ function populate_matrix(fs1, fs2, maxf, z1, z2, δ0)
     δ0 = δ0 / cache(0, 0, 0, 0)^3
     for i in 1:n
         state1 = states[i]
-        for j in 1:n
+        for j in i:n
             if (i == j)
                 v = sum(fs .* state1)
             else
@@ -104,5 +108,5 @@ function populate_matrix(fs1, fs2, maxf, z1, z2, δ0)
             res[i, j] = v
         end
     end
-    return res
+    return Symmetric(res)
 end
