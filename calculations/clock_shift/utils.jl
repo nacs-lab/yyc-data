@@ -1,5 +1,9 @@
 #
 
+if VERSION >= v"0.7.0"
+    @eval using SpecialFunctions
+end
+
 const _hermit_coeff_cache = Vector{Float64}[[1.0], [1.0]]
 
 # Return coefficient array for the non-zero ones devided by 2^n
@@ -25,7 +29,7 @@ function hermite_coeff(n)
     for i in 1:length(c_2)
         c[i + 1] = c[i + 1] - (n - 1) * c_2[i] / 2
     end
-    assert(length(_hermit_coeff_cache) == n)
+    @assert length(_hermit_coeff_cache) == n
     push!(_hermit_coeff_cache, c)
     return c
 end
@@ -52,7 +56,7 @@ end
 function poly_apply(c::AbstractVector{T1}, x::T2) where {T1,T2}
     n = length(c)
     T = promote_type(T1, T2)
-    res = Vector{T}(n)
+    res = @static VERSION >= v"0.7.0" ? Vector{T}(undef, n) : Vector{T}(n)
     v::T = one(T)
     for i in 0:(n - 1)
         res[n - i] = c[n - i] * v
