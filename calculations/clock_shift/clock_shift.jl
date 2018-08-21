@@ -31,8 +31,8 @@ function hermite_coeff(n)
 end
 
 # Integral of x^2n exp(-x^2 / a)
-function gaussian_int(n, a)
-    return √a * a^n * gamma(n + 0.5)
+function gaussian_int(n, a::T) where T
+    return √a * a^n * gamma(T(n) + 0.5)
 end
 
 function poly_multiply(c1::AbstractVector{T1}, c2::AbstractVector{T2}) where {T1, T2}
@@ -48,15 +48,53 @@ function poly_multiply(c1::AbstractVector{T1}, c2::AbstractVector{T2}) where {T1
     return c
 end
 
-# calculate c[end - i] * x^i * a
-function poly_apply(c::AbstractVector{T1}, x::T2, a::T3=1) where {T1,T2,T3}
+# calculate c[end - i] * x^i
+function poly_apply(c::AbstractVector{T1}, x::T2) where {T1,T2}
     n = length(c)
-    T = promote_type(T1, T2, T3)
+    T = promote_type(T1, T2)
     res = Vector{T}(n)
     v::T = one(T)
     for i in 0:(n - 1)
-        res[n - i] = c[n - i] * v * a
+        res[n - i] = c[n - i] * v
         v = v * x
     end
     return res
+end
+
+function wavefunction_overlap(n1::Integer, n2::Integer, m1::Integer, m2::Integer,
+                              z1::T1, z2::T2) where {T1,T2}
+    T = float(promote_type(T1, T2))
+    if (n1 + n2 + m1 + m2) % 2 != 0
+        return T(0)
+    end
+    c0 = 1 / π / z1 / z2
+    # log of √(2^(n1 + n2 + m1 + m2) / (n1!n2!m1!m2!))
+    lc1 = log(T(2)) / 2 * (n1 + n2 + m1 + m2)
+    lc2 = (lgamma(T(n1 + 1)) + lgamma(T(n2 + 1)) + lgamma(T(m1 + 1)) + lgamma(T(m2 + 1))) / 2
+    # This is the prefactor in front of the integral.
+    c1 = c0 * exp(lc1 - lc2)
+    z1² = z1^2
+    z2² = z2^2
+    # The a in the exponent of the Gaussian integral
+    # 1 / a = 1 / z1^2 + 1 / z2^2 = (z1^2 + z2^2) / (z1^2 * z2^2)
+    # a = (z1^2 * z2^2) / (z1^2 + z2^2)
+    ga = (z1² * z2²) / (z1² + z2²)
+    # The coefficients for the products of two hermite polynomial
+    hc1 = poly_multiply(hermite_coeff(n1), hermite_coeff(n2)) # hc1[1] is n1+n2 power
+    hc2 = poly_multiply(hermite_coeff(m1), hermite_coeff(m2)) # hc2[1] is m1+m2 power
+    # The power of the last term
+    p0_1 = (n1 + n2) - 2 * (length(hc1) - 1)
+    p0_2 = (m1 + m2) - 2 * (length(hc2) - 1)
+    c1 = c1 / z1^p0_1 / z2^p0_2
+
+    # hc3[1] is n1 + n2 + m1 + m2 power
+    hc3 = poly_multiply(poly_apply(hc1, 1 / z1²), poly_apply(hc2, 1 / z2²))
+
+    n0 = (n1 + n2 + m1 + m2) ÷ 2
+
+    intv = T(0.0)
+    for i in 1:length(hc3)
+        intv += gaussian_int(n0 + 1 - i, ga) * hc3[i]
+    end
+    return c1 * intv
 end
