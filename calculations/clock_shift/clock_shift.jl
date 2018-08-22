@@ -63,8 +63,9 @@ end
 struct WFOverlapCache
     z1::Float64
     z2::Float64
+    cutoff::Float64
     cache::Dict{NTuple{4,Int},Float64}
-    WFOverlapCache(z1, z2) = new(z1, z2, Dict{NTuple{4,Int},Float64}())
+    WFOverlapCache(z1, z2, cutoff) = new(z1, z2, abs(cutoff), Dict{NTuple{4,Int},Float64}())
 end
 
 function (cache::WFOverlapCache)(n1::Integer, n2::Integer, m1::Integer, m2::Integer)
@@ -82,6 +83,11 @@ function (cache::WFOverlapCache)(n1::Integer, n2::Integer, m1::Integer, m2::Inte
         return cache.cache[(n2, n1, m2, m1)]
     end
     v = wavefunction_overlap(n1, n2, m1, m2, cache.z1, cache.z2)
+    if v > cache.cutoff
+        v = cache.cutoff
+    elseif v < -cache.cutoff
+        v = -cache.cutoff
+    end
     cache.cache[(n1, n2, m1, m2)] = v
     return v
 end
@@ -107,13 +113,13 @@ struct H2Atoms
     inter::Matrix{Float64}
 end
 
-function H2Atoms(fs1, fs2, maxf, z1, z2, p0)
+function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf)
     states = coupled_2atoms(fs1, fs2, maxf, p0)
     n = length(states)
     fs = (fs1..., fs2...)
     inter = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
     es = @static VERSION >= v"0.7.0" ? Vector{Float64}(undef, n) : Vector{Float64}(n)
-    cache = WFOverlapCache(z1, z2)
+    cache = WFOverlapCache(z1, z2, cutoff)
     for i in 1:n
         state1 = states[i]
         es[i] = sum(fs .* state1)
