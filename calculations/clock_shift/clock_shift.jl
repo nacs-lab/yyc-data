@@ -102,7 +102,12 @@ function coupled_2atoms(fs1, fs2, maxf, p0)
     return states
 end
 
-function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
+struct H2Atoms
+    es::Vector{Float64}
+    inter::Matrix{Float64}
+end
+
+function H2Atoms(fs1, fs2, maxf, z1, z2, p0)
     states = coupled_2atoms(fs1, fs2, maxf, p0)
     n = length(states)
     fs = (fs1..., fs2...)
@@ -120,5 +125,18 @@ function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
             inter[i, j] = v
         end
     end
-    return Diagonal(es), Symmetric(inter)
+    return H2Atoms(es, inter)
+end
+
+function getH(h0::H2Atoms, δ0)
+    δ0 = δ0 / h0.inter[1, 1]
+    n = length(h0.es)
+    H = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
+    @inbounds for i in 1:n
+        @simd for j in i:n
+            H[i, j] = h0.inter[i, j] * δ0
+        end
+        H[i, i] += h0.es[i]
+    end
+    return Symmetric(H)
 end
