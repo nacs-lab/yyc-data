@@ -90,7 +90,7 @@ end
 # The interaction does not mix parity on each axis so we can compute those separately
 # This reduce the number of states by 8. Since the memory scales with n^2 and time with n^3
 # this is a big win.
-function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
+function coupled_2atoms(fs1, fs2, maxf, p0)
     states = NTuple{6,Int}[]
     iterate_2atoms(fs1, fs2, maxf) do i, _2
         if ((i[1] + i[4] - p0[1]) % 2 != 0 || (i[2] + i[5] - p0[2]) % 2 != 0 ||
@@ -99,6 +99,11 @@ function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
         end
         push!(states, i)
     end
+    return states
+end
+
+function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
+    states = coupled_2atoms(fs1, fs2, maxf, p0)
     n = length(states)
     fs = (fs1..., fs2...)
     inter = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
