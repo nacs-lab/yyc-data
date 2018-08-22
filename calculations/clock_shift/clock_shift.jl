@@ -118,6 +118,7 @@ function coupled_2atoms(fs1, fs2, maxf, p0; maxtotaln=-1, maxns=())
 end
 
 struct H2Atoms
+    states::Vector{NTuple{6,Int}}
     es::Vector{Float64}
     inter::Matrix{Float64}
 end
@@ -140,7 +141,7 @@ function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
             inter[i, j] = v
         end
     end
-    return H2Atoms(es, inter)
+    return H2Atoms(states, es, inter)
 end
 
 function getH(h0::H2Atoms, δ0)
