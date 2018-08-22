@@ -109,7 +109,7 @@ function coupled_2atoms(fs1, fs2, maxf, p0; maxtotaln=-1, maxns=())
             (i[3] + i[6] - p0[3]) % 2 != 0)
             return
         end
-        if sum(i) > maxtotaln || any(_maxns .> i)
+        if sum(i) > maxtotaln || any(i .> _maxns)
             return
         end
         push!(states, i)
