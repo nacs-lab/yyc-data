@@ -96,11 +96,20 @@ end
 # The interaction does not mix parity on each axis so we can compute those separately
 # This reduce the number of states by 8. Since the memory scales with n^2 and time with n^3
 # this is a big win.
-function coupled_2atoms(fs1, fs2, maxf, p0)
+function coupled_2atoms(fs1, fs2, maxf, p0; maxtotaln=-1, maxns=())
     states = NTuple{6,Int}[]
+    if maxtotaln < 0
+        maxtotaln = typemax(Int)
+    else
+        maxtotaln = Int(maxtotaln)
+    end
+    _maxns = ntuple(i->i > length(maxns) ? typemax(Int) : Int(maxns[i]))
     iterate_2atoms(fs1, fs2, maxf) do i, _2
         if ((i[1] + i[4] - p0[1]) % 2 != 0 || (i[2] + i[5] - p0[2]) % 2 != 0 ||
             (i[3] + i[6] - p0[3]) % 2 != 0)
+            return
+        end
+        if sum(i) > maxtotaln || any(_maxns .> i)
             return
         end
         push!(states, i)
@@ -113,8 +122,8 @@ struct H2Atoms
     inter::Matrix{Float64}
 end
 
-function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf)
-    states = coupled_2atoms(fs1, fs2, maxf, p0)
+function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
+    states = coupled_2atoms(fs1, fs2, maxf, p0, maxtotaln=maxtotaln, maxns=maxns)
     n = length(states)
     fs = (fs1..., fs2...)
     inter = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
