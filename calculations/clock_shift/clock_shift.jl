@@ -103,7 +103,7 @@ function coupled_2atoms(fs1, fs2, maxf, p0; maxtotaln=-1, maxns=())
     else
         maxtotaln = Int(maxtotaln)
     end
-    _maxns = ntuple(i->i > length(maxns) ? typemax(Int) : Int(maxns[i]))
+    _maxns = ntuple(i->i > length(maxns) ? typemax(Int) : Int(maxns[i]), 6)
     iterate_2atoms(fs1, fs2, maxf) do i, _2
         if ((i[1] + i[4] - p0[1]) % 2 != 0 || (i[2] + i[5] - p0[2]) % 2 != 0 ||
             (i[3] + i[6] - p0[3]) % 2 != 0)
