@@ -86,27 +86,34 @@ function (cache::WFOverlapCache)(n1::Integer, n2::Integer, m1::Integer, m2::Inte
     return v
 end
 
-function populate_matrix(fs1, fs2, maxf, z1, z2, δ0)
-    states = collect_states(iterate_2atoms, fs1, fs2, maxf)
+# p0 is the parity of each axis
+# The interaction does not mix parity on each axis so we can compute those separately
+# This reduce the number of states by 8. Since the memory scales with n^2 and time with n^3
+# this is a big win.
+function populate_matrix(fs1, fs2, maxf, z1, z2, p0)
+    states = NTuple{6,Int}[]
+    iterate_2atoms(fs1, fs2, maxf) do i, _2
+        if ((i[1] + i[4] - p0[1]) % 2 != 0 || (i[2] + i[5] - p0[2]) % 2 != 0 ||
+            (i[3] + i[6] - p0[3]) % 2 != 0)
+            return
+        end
+        push!(states, i)
+    end
     n = length(states)
     fs = (fs1..., fs2...)
-    res = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
+    inter = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
+    es = @static VERSION >= v"0.7.0" ? Vector{Float64}(undef, n) : Vector{Float64}(n)
     cache = WFOverlapCache(z1, z2)
-    δ0 = δ0 / cache(0, 0, 0, 0)^3
     for i in 1:n
         state1 = states[i]
+        es[i] = sum(fs .* state1)
         for j in i:n
-            if (i == j)
-                v = sum(fs .* state1)
-            else
-                v = 0.0
-            end
             state2 = states[j]
-            v += (cache(state1[1], state2[1], state1[4], state2[4]) *
-                  cache(state1[2], state2[2], state1[5], state2[5]) *
-                  cache(state1[3], state2[3], state1[6], state2[6])) * δ0
-            res[i, j] = v
+            v = (cache(state1[1], state2[1], state1[4], state2[4]) *
+                 cache(state1[2], state2[2], state1[5], state2[5]) *
+                 cache(state1[3], state2[3], state1[6], state2[6]))
+            inter[i, j] = v
         end
     end
-    return Symmetric(res)
+    return Diagonal(es), Symmetric(inter)
 end
