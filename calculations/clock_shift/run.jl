@@ -8,10 +8,11 @@ const outdir = ARGS[1]
 const prange = parse.(Int, split(ARGS[2], ','))
 @assert all(0 .<= prange .< 8)
 
-function dump_sys(io, h::H2Atoms)
+function dump_sys(io, h::H2Atoms, p::NTuple{3,Int})
     @assert length(h.states) == length(h.es) == size(h.inter, 1) == size(h.inter, 2)
     @assert Int === Int64
     write(io, length(h.states))
+    write(io, p)
     write(io, h.states)
     write(io, h.es)
     write(io, h.inter)
@@ -29,13 +30,14 @@ function dump_res(io, δ0::Float64, vals::Vector{Float64}, vecs::Matrix{Float64}
 end
 
 function run(p)
-    h = H2Atoms(f_na, f_cs, 1000e3, 1, 0.4,
-                ((p & 4) >> 2, (p & 2) >> 1), (p & 1) >> 0,
+    p0 = ((p & 4) >> 2, (p & 2) >> 1, (p & 1) >> 0)
+    @show p0
+    h = H2Atoms(f_na, f_cs, 1000e3, 1, 0.4, p0,
                 cutoff=1, maxtotaln=40, maxns=(29, 14, 14, 29, 14, 14))
     dir = joinpath(outdir, "$p")
     mkpath(dir)
     open(joinpath(dir, "sys.bin")) do io
-        dump_sys(io, h)
+        dump_sys(io, h, p0)
     end
     n = length(h.states)
     H = Symmetric(@static VERSION >= v"0.7.0" ?
