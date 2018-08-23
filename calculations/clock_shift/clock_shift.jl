@@ -144,15 +144,23 @@ function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
     return H2Atoms(states, es, inter)
 end
 
-function getH(h0::H2Atoms, δ0)
+function getH(h0::H2Atoms, δ0, out)
     δ0 = δ0 / h0.inter[1, 1]
     n = length(h0.es)
-    H = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
+    H = parent(out)
     @inbounds for i in 1:n
         @simd for j in i:n
             H[i, j] = h0.inter[i, j] * δ0
         end
         H[i, i] += h0.es[i]
     end
-    return Symmetric(H)
+    return out
+end
+
+function getH(h0::H2Atoms, δ0)
+    n = length(h0.es)
+    out = Symmetric(@static VERSION >= v"0.7.0" ?
+                    Matrix{Float64}(undef, n, n) :
+                    Matrix{Float64}(n, n))
+    return getH(h0, δ0, out)
 end
