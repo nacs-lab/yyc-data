@@ -36,7 +36,7 @@ function run(p)
                 cutoff=1, maxtotaln=40, maxns=(29, 14, 14, 29, 14, 14))
     dir = joinpath(outdir, "$p")
     mkpath(dir)
-    open(joinpath(dir, "sys.bin")) do io
+    open(joinpath(dir, "sys.bin"), "w") do io
         dump_sys(io, h, p0)
     end
     n = length(h.states)
@@ -47,7 +47,7 @@ function run(p)
         δ0 = δ0s[i]
         println("$i/$(length(δ0s)): δ0 = $δ0")
         @time res = eigen(getH(h, δ0, H), 1:50)
-        open(joinpath(dir, "res_$δ0.bin")) do io
+        open(joinpath(dir, "res_$δ0.bin"), "w") do io
             dump_res(io, δ0, res.values, res.vectors)
         end
     end
