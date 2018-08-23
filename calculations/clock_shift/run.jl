@@ -2,7 +2,7 @@
 
 include("clock_shift.jl")
 
-const δ0s = linspace(-50e3, 50e3, 801)
+const δ0s = -50e3:100:50e3
 
 const outdir = ARGS[1]
 const prange = parse.(Int, split(ARGS[2], ','))
