@@ -8,7 +8,7 @@ const outdir = ARGS[1]
 const prange = parse.(Int, split(ARGS[2], ','))
 @assert all(0 .<= prange .< 8)
 
-function dump_sys(io, h::H2Atom)
+function dump_sys(io, h::H2Atoms)
     @assert length(h.states) == length(h.es) == size(h.inter, 1) == size(h.inter, 2)
     @assert Int === Int64
     write(io, length(h.states))
