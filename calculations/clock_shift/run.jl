@@ -1,12 +1,12 @@
 #!/usr/bin/julia
 
-include("clock_shift.jl")
-
 const δ0s = -50e3:100:50e3
-
 const outdir = ARGS[1]
 const prange = parse.(Int, split(ARGS[2], ','))
 @assert all(0 .<= prange .< 8)
+
+@everywhere begin
+include("clock_shift.jl")
 
 function dump_sys(io, h::H2Atoms, p::NTuple{3,Int})
     @assert length(h.states) == length(h.es) == size(h.inter, 1) == size(h.inter, 2)
@@ -29,7 +29,7 @@ function dump_res(io, δ0::Float64, vals::Vector{Float64}, vecs::Matrix{Float64}
     return
 end
 
-function run(p)
+function run(p, outdir, δ0s)
     p0 = ((p & 4) >> 2, (p & 2) >> 1, (p & 1) >> 0)
     @show p0
     h = H2Atoms(f_na, f_cs, 1000e3, 1, 0.4, p0,
@@ -52,7 +52,9 @@ function run(p)
         end
     end
 end
+end
 
-for p in prange
-    run(p)
+@sync @distributed for p in prange
+    BLAS.set_num_threads(2)
+    run(p, outdir, δ0s)
 end
