@@ -12,7 +12,7 @@ function dump_sys(io, h::H2Atoms, p::NTuple{3,Int})
     @assert length(h.states) == length(h.es) == size(h.inter, 1) == size(h.inter, 2)
     @assert Int === Int64
     write(io, length(h.states))
-    write(io, p)
+    write(io, Ref(p))
     write(io, h.states)
     write(io, h.es)
     write(io, h.inter)
