@@ -121,6 +121,7 @@ struct H2Atoms
     states::Vector{NTuple{6,Int}}
     es::Vector{Float64}
     inter::Matrix{Float64}
+    δscale::Float64
 end
 
 function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
@@ -141,11 +142,11 @@ function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
             inter[i, j] = v
         end
     end
-    return H2Atoms(states, es, inter)
+    return H2Atoms(states, es, inter, wavefunction_overlap(0, 0, 0, 0, z1, z2))
 end
 
 function getH(h0::H2Atoms, δ0, out)
-    δ0 = δ0 / h0.inter[1, 1]
+    δ0 = δ0 / h0.δscale
     n = length(h0.es)
     H = parent(out)
     @inbounds for i in 1:n
