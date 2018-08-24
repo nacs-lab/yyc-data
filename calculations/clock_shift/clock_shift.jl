@@ -187,10 +187,10 @@ function dump_res(io, δ0::Float64, vals::Vector{Float64}, vecs::Matrix{Float64}
     return
 end
 
-function run(p, outdir, δ0s)
+function run(p, outdir, δ0s; f1=f_na, f2=f_cs, z1=1.0, z2=0.4)
     p0 = ((p & 4) >> 2, (p & 2) >> 1, (p & 1) >> 0)
     @show p0
-    h = H2Atoms(f_na, f_cs, 1000e3, 1, 0.4, p0,
+    h = H2Atoms(f1, f2, 1000e3, z1, z2, p0,
                 cutoff=1, maxtotaln=40, maxns=(29, 14, 14, 29, 14, 14))
     dir = joinpath(outdir, "$p")
     mkpath(dir)
