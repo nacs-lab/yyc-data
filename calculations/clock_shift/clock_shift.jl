@@ -264,5 +264,29 @@ function load_dir(datadir)
     return ResGroup(p, h, res, r0)
 end
 
-get_δ(rg::ResGroup) = [r.δ0 for r in rg.res]
-get_energy(rg::ResGroup, i; base=0) = [r.vals[i] - base for r in rg.res]
+get_δ_it(rg::ResGroup) = (r.δ0 for r in rg.res)
+get_energy_it(rg::ResGroup, i; base=0) = (r.vals[i] - base for r in rg.res)
+get_overlap_it(rg::ResGroup, i, vec) = (abs(dot(r.vecs[:, i], vec)) for r in rg.res)
+
+get_δ(rg::ResGroup) = collect(get_δ_it(rg))
+get_energy(rg::ResGroup, i; base=0) = collect(get_energy_it(rg, i; base=base))
+get_overlap(rg::ResGroup, i, vec) = collect(get_overlap_it(rg, i, vec))
+
+function get_state(rg::ResGroup, ns::NTuple{6,Int})
+    states = rg.h.states
+    n = length(states)
+    v = zeros(Float64, n)
+    for i in 1:n
+        if states[i] == ns
+            v[i] = 1
+            return v
+        end
+    end
+    throw(ArgumentError("State $ns not found."))
+end
+
+# Max overlap between
+max_overlap(rg::ResGroup, i, vec) = maximum(get_overlap_it(rg, i, vec))
+
+filter_overlap(rg::ResGroup, vec, minovrlap) =
+    (i for i in 1:length(rg.r0.vals) if max_overlap(rg, i, vec) >= minovrlap)
