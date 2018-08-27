@@ -128,8 +128,8 @@ function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
     states = coupled_2atoms(fs1, fs2, maxf, p0, maxtotaln=maxtotaln, maxns=maxns)
     n = length(states)
     fs = (fs1..., fs2...)
-    inter = @static VERSION >= v"0.7.0" ? Matrix{Float64}(undef, n, n) : Matrix{Float64}(n, n)
-    es = @static VERSION >= v"0.7.0" ? Vector{Float64}(undef, n) : Vector{Float64}(n)
+    inter = uninit_ary(Matrix{Float64}, n, n)
+    es = uninit_ary(Vector{Float64}, n)
     cache = WFOverlapCache(z1, z2, cutoff)
     for i in 1:n
         state1 = states[i]
@@ -160,9 +160,7 @@ end
 
 function getH(h0::H2Atoms, δ0)
     n = length(h0.es)
-    out = Symmetric(@static VERSION >= v"0.7.0" ?
-                    Matrix{Float64}(undef, n, n) :
-                    Matrix{Float64}(n, n))
+    out = Symmetric(uninit_ary(Matrix{Float64}, n, n))
     return getH(h0, δ0, out)
 end
 
@@ -198,9 +196,7 @@ function run(p, outdir, δ0s; f1=f_na, f2=f_cs, z1=1.0, z2=0.4)
         dump_sys(io, h, p0)
     end
     n = length(h.states)
-    H = Symmetric(@static VERSION >= v"0.7.0" ?
-                  Matrix{Float64}(undef, n, n) :
-                  Matrix{Float64}(n, n))
+    H = Symmetric(uninit_ary(Matrix{Float64}, n, n))
     for i in 1:length(δ0s)
         δ0 = δ0s[i]
         println("$i/$(length(δ0s)): δ0 = $δ0")
@@ -209,4 +205,28 @@ function run(p, outdir, δ0s; f1=f_na, f2=f_cs, z1=1.0, z2=0.4)
             dump_res(io, δ0, res.values, res.vectors)
         end
     end
+end
+
+function load_sys(io)
+    @assert Int === Int64
+    n = read!(io, Ref{Int}())[]
+    p = read!(io, Ref{NTuple{3,Int}}())[]
+    states = uninit_ary(Vector{NTuple{6,Int}}, n)
+    es = uninit_ary(Vector{Float64}, n)
+    inter = uninit_ary(Matrix{Float64}, n, n)
+    read!(io, states)
+    read!(io, es)
+    read!(io, inter)
+    return p, H2Atoms(states, es, inter, 1) # Forgot to save δscale...
+end
+
+function load_res(io)
+    nres = read!(io, Ref{Int}())[]
+    ndim = read!(io, Ref{Int}())[]
+    δ0 = read!(io, Ref{Float64}())[]
+    vals = uninit_ary(Vector{Float64}, ndim)
+    vecs = uninit_ary(Matrix{Float64}, nres, ndim)
+    read!(io, vals)
+    read!(io, vecs)
+    return δ0, vals, vecs
 end

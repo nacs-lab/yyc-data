@@ -4,6 +4,9 @@ if VERSION >= v"0.7.0"
     @eval using SpecialFunctions
 end
 
+@inline uninit_ary(::Type{T}, args...) where T =
+    @static VERSION >= v"0.7.0" ? T(undef, args...) : T(args...)
+
 const _hermit_coeff_cache = Vector{Float64}[[1.0], [1.0]]
 
 # Return coefficient array for the non-zero ones devided by 2^n
@@ -56,7 +59,7 @@ end
 function poly_apply(c::AbstractVector{T1}, x::T2) where {T1,T2}
     n = length(c)
     T = promote_type(T1, T2)
-    res = @static VERSION >= v"0.7.0" ? Vector{T}(undef, n) : Vector{T}(n)
+    res = uninit_ary(Vector{T}, n)
     v::T = one(T)
     for i in 0:(n - 1)
         res[n - i] = c[n - i] * v
