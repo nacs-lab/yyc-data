@@ -172,6 +172,7 @@ function dump_sys(io, h::H2Atoms, p::NTuple{3,Int})
     write(io, h.states)
     write(io, h.es)
     write(io, h.inter)
+    write(io, h.δscale)
     return
 end
 
