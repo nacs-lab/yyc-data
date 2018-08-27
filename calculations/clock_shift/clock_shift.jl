@@ -142,7 +142,7 @@ function H2Atoms(fs1, fs2, maxf, z1, z2, p0; cutoff=Inf, maxtotaln=-1, maxns=())
             inter[i, j] = v
         end
     end
-    return H2Atoms(states, es, inter, wavefunction_overlap(0, 0, 0, 0, z1, z2))
+    return H2Atoms(states, es, inter, wavefunction_overlap(0, 0, 0, 0, z1, z2)^3)
 end
 
 function getH(h0::H2Atoms, δ0, out)
