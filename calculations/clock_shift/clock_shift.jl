@@ -220,13 +220,49 @@ function load_sys(io)
     return p, H2Atoms(states, es, inter, 1) # Forgot to save δscale...
 end
 
+load_sys(fname::AbstractString) = open(load_sys, fname)
+
+struct Res
+    δ0::Float64
+    vals::Vector{Float64}
+    vecs::Matrix{Float64}
+end
+
 function load_res(io)
-    nres = read!(io, Ref{Int}())[]
     ndim = read!(io, Ref{Int}())[]
+    nres = read!(io, Ref{Int}())[]
     δ0 = read!(io, Ref{Float64}())[]
-    vals = uninit_ary(Vector{Float64}, ndim)
-    vecs = uninit_ary(Matrix{Float64}, nres, ndim)
+    vals = uninit_ary(Vector{Float64}, nres)
+    vecs = uninit_ary(Matrix{Float64}, ndim, nres)
     read!(io, vals)
     read!(io, vecs)
-    return δ0, vals, vecs
+    return Res(δ0, vals, vecs)
 end
+load_res(fname::AbstractString) = open(load_res, fname)
+
+struct ResGroup
+    p::NTuple{3,Int}
+    h::H2Atoms
+    res::Vector{Res}
+    r0::Res
+end
+
+function load_dir(datadir)
+    p, h = load_sys(joinpath(datadir, "sys.bin"))
+    res = Res[]
+    local r0
+    for d in readdir(datadir)
+        d == "sys.bin" && continue
+        r = load_res(joinpath(datadir, d))
+        push!(res, r)
+        if r.δ0 == 0
+            r0 = r
+        end
+    end
+    sort!(res, by=r->r.δ0)
+    @assert @isdefined(r0)
+    return ResGroup(p, h, res, r0)
+end
+
+get_δ(rg::ResGroup) = [r.δ0 for r in rg.res]
+get_energy(rg::ResGroup, i; base=0) = [r.vals[i] - base for r in rg.res]
