@@ -9,5 +9,5 @@ const prange = parse.(Int, split(ARGS[2], ','))
 
 @sync @distributed for p in prange
     BLAS.set_num_threads(2)
-    run(p, outdir, δ0s, f1=f_cs, f2=f_na, z1=0.4, z2=1.0)
+    run(p, outdir, δ0s, f1=f_cs, f2=f_na, z1=0.4, z2=1.0, maxf=900e3)
 end
