@@ -14,6 +14,43 @@ const rg1 = load_dir(joinpath(@__DIR__, "data/real0/2"))
 δs = get_δ(rg0)
 states = 1:9
 
+const plt_data_dir = joinpath(@__DIR__, "plot_data")
+mkpath(plt_data_dir, 0o755)
+
+function write_dlmstr(io, dlm, vals; print_first=false)
+    first = !print_first
+    for v in vals
+        if !first
+            print(io, dlm, v)
+        else
+            print(io, v)
+            first = false
+        end
+    end
+end
+
+write_energycsv(fname, rg) = open(fname, "w") do io
+    write(io, "State")
+    write_dlmstr(io, ',', get_δ(rg), print_first=true)
+    println(io)
+    for i in 1:50
+        write_dlmstr(io, ' ', rg.h.states[i])
+        write_dlmstr(io, ',', get_energy(rg, i), print_first=true)
+        println(io)
+    end
+end
+
+write_overlapcsv(fname, rg, init) = open(fname, "w") do io
+    write(io, "State")
+    write_dlmstr(io, ',', get_δ(rg), print_first=true)
+    println(io)
+    for i in 1:50
+        write_dlmstr(io, ' ', rg.h.states[i])
+        write_dlmstr(io, ',', get_overlap(rg, i, init), print_first=true)
+        println(io)
+    end
+end
+
 figure()
 for i in states
     plot(δs ./ 1000, get_energy(rg0, i) ./ 1000)
@@ -85,3 +122,8 @@ grid()
 NaCsPlot.maybe_save("$(prefix)_overlap_010_0")
 
 NaCsPlot.maybe_show()
+
+write_energycsv(joinpath(plt_data_dir, "energy_000.csv"), rg0)
+write_energycsv(joinpath(plt_data_dir, "energy_010.csv"), rg1)
+write_overlapcsv(joinpath(plt_data_dir, "overlap_000.csv"), rg0, init_state0)
+write_overlapcsv(joinpath(plt_data_dir, "overlap_010.csv"), rg1, init_state1)
