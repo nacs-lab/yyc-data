@@ -19,13 +19,15 @@ First line is "State" followed by the δ₀ for each column.
 Each following lines contains a state number (space separated Cs and Na motional states),
 followed by the energies of the state for the corresponding δ₀.
 
-[Energy for 000 parity](energy_000.csv)
-[Energy for 010 parity](energy_010.csv)
+* [Energy for 000 parity](energy_000.csv)
+
+* [Energy for 010 parity](energy_010.csv)
 
 ## Overlaps
 Same as the energies, but the energy result is replaced with the wavefunction overlap
 with the non-interacting ground state, or in case of the `010` parity, the overlap
 with the Na n=1 state in X direction.
 
-[Overlap for 000 parity](overlap_000.csv)
-[Overlap for 010 parity](overlap_010.csv)
+* [Overlap for 000 parity](overlap_000.csv)
+
+* [Overlap for 010 parity](overlap_010.csv)
