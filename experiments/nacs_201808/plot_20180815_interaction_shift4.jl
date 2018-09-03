@@ -64,6 +64,27 @@ data_nacs_cs_n1 = [split_nacs_a[:n1]; split_nacs_b[:n1]]
 data_na_n0 = split_na_c[:na]
 data_nacs_na_n0 = split_nacs_na_c[:na]
 
+const plt_data_dir = joinpath(@__DIR__, "plot_data")
+mkpath(plt_data_dir, 0o755)
+const plt_data_prefix = joinpath(plt_data_dir, "data_20180815_interaction_shift4")
+
+write_datacsv(fname, data) = open("$(fname).csv", "w") do io
+    params, _ratios, _uncs = NaCsData.get_values(data)
+    perm = sortperm(params)
+    params = params[perm]
+    ratios = _ratios[perm, 2]
+    uncs = _uncs[perm, 2]
+    write(io, "X,Y,Err\n")
+    writedlm(io, [params ratios uncs], ',')
+end
+
+write_datacsv("$(plt_data_prefix)_na_n0", data_na_n0)
+write_datacsv("$(plt_data_prefix)_nacs_na_n0", data_nacs_na_n0)
+write_datacsv("$(plt_data_prefix)_cs_n0", data_cs_n0)
+write_datacsv("$(plt_data_prefix)_nacs_cs_n0", data_nacs_cs_n0)
+write_datacsv("$(plt_data_prefix)_cs_n1", data_cs_n1)
+write_datacsv("$(plt_data_prefix)_nacs_cs_n1", data_nacs_cs_n1)
+
 figure()
 NaCsPlot.plot_survival_data(data_na_n0, fmt="C0.-", label="Na only")
 NaCsPlot.plot_survival_data(data_nacs_na_n0, fmt="C1.-", label="Na + Cs")
