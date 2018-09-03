@@ -31,6 +31,29 @@ data_na_n1 = split_na_a[:n1]
 data_nacs_n0 = split_nacs_a[:n0]
 data_nacs_n1 = split_nacs_a[:n1]
 
+const plt_data_dir = joinpath(@__DIR__, "plot_data")
+mkpath(plt_data_dir, 0o755)
+const plt_data_prefix = joinpath(plt_data_dir, "data_20180810_150954_interaction_shift_n1")
+
+write_datacsv(fname, x, y, err) = open("$(fname).csv", "w") do io
+    write(io, "X,Y,Err\n")
+    writedlm(io, [x y err], ',')
+end
+
+function write_datacsv(fname, data)
+    params, _ratios, _uncs = NaCsData.get_values(data)
+    perm = sortperm(params)
+    params = params[perm]
+    ratios = _ratios[perm, 2]
+    uncs = _uncs[perm, 2]
+    write_datacsv(fname, params, ratios, uncs)
+end
+
+write_datacsv("$(plt_data_prefix)_na_n0", data_na_n0)
+write_datacsv("$(plt_data_prefix)_nacs_na_n0", data_nacs_n0)
+write_datacsv("$(plt_data_prefix)_na_n1", data_na_n1)
+write_datacsv("$(plt_data_prefix)_nacs_na_n1", data_nacs_n1)
+
 figure()
 NaCsPlot.plot_survival_data(data_na_n0, fmt="C0.-", label="Na only")
 NaCsPlot.plot_survival_data(data_nacs_n0, fmt="C1.-", label="Na + Cs")
