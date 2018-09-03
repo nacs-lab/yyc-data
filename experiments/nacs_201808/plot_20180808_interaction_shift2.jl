@@ -102,6 +102,27 @@ data_44_na2 = [split_na2_b; split_na2_c[:cs44]; split_na2_d[:cs44]; split_na2_e[
 data_44_cs = [split_cs_b; split_cs_c[:cs44]; split_cs_d[:cs44]; split_cs_e[:cs44]]
 data_44_cs2 = [split_cs2_b; split_cs2_c[:cs44]; split_cs2_d[:cs44]; split_cs2_e[:cs44]]
 
+const plt_data_dir = joinpath(@__DIR__, "plot_data")
+mkpath(plt_data_dir, 0o755)
+const plt_data_prefix = joinpath(plt_data_dir, "data_20180808_interaction_shift2")
+
+write_datacsv(fname, x, y, err) = open("$(fname).csv", "w") do io
+    write(io, "X,Y,Err\n")
+    writedlm(io, [x y err], ',')
+end
+
+function write_datacsv(fname, data)
+    params, _ratios, _uncs = NaCsData.get_values(data)
+    perm = sortperm(params)
+    params = params[perm]
+    ratios = _ratios[perm, 2]
+    uncs = _uncs[perm, 2]
+    write_datacsv(fname, params, ratios, uncs)
+end
+
+write_datacsv("$(plt_data_prefix)_33_na", data_33_na)
+write_datacsv("$(plt_data_prefix)_33_nacs_na", data_33_na2)
+
 figure()
 NaCsPlot.plot_survival_data(data_33_na, fmt="C0.-", label="Na only")
 NaCsPlot.plot_survival_data(data_33_na2, fmt="C1.-", label="Na + Cs")
@@ -132,11 +153,12 @@ function plot_diff(na, cs; kws...)
     uncs = sqrt.(uncs_na.^2 .+ uncs_cs.^2)
 
     errorbar(params_na, ratios, uncs; kws...)
+    return params_na, ratios, uncs
 end
 
 figure()
-plot_diff(data_44_na, data_44_cs, fmt="C0.-", label="Na only")
-plot_diff(data_44_na2, data_44_cs2, fmt="C1.-", label="Na + Cs")
+diff_44_na = plot_diff(data_44_na, data_44_cs, fmt="C0.-", label="Na only")
+diff_44_na2 = plot_diff(data_44_na2, data_44_cs2, fmt="C1.-", label="Na + Cs")
 grid()
 legend()
 ylim([0, 0.9])
@@ -144,5 +166,8 @@ title("(4+2 -> 4+1) interaction shift")
 xlabel("Detuning (kHz)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_44")
+
+write_datacsv("$(plt_data_prefix)_44_na", diff_44_na...)
+write_datacsv("$(plt_data_prefix)_44_nacs_na", diff_44_na2...)
 
 NaCsPlot.maybe_show()
