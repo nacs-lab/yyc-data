@@ -79,6 +79,23 @@ function coupling_D_raman(D2::Bool, Ix2::Integer, F1x2::Integer, F2x2::Integer,
     return cpl
 end
 
+function scatter_bothD(Ix2::Integer, F1x2::Integer, F2x2::Integer,
+                       mF1x2::Integer, mF2x2::Integer, pol::NTuple{3,Real},
+                       fscale=(D2, F, mF)->1)
+    rate = 0.0
+    for i in 1:3
+        p = pol[i]
+        if p == 0
+            continue
+        end
+        rate += abs2(coupling_D_raman(false, Ix2, F1x2, F2x2, mF1x2, mF2x2, i - 2,
+                                      (F, mF)->fscale(false, F, mF)) +
+                     coupling_D_raman(true, Ix2, F1x2, F2x2, mF1x2, mF2x2, i - 2,
+                                      (F, mF)->fscale(true, F, mF))) * p
+    end
+    return rate
+end
+
 function scatter_D(D2::Bool, Ix2::Integer, F1x2::Integer, F2x2::Integer,
                    mF1x2::Integer, mF2x2::Integer, pol::NTuple{3,Real}, fscale=dummy_fscale)
     rate = 0.0
@@ -146,6 +163,36 @@ function all_scatter_D(D2::Bool, Ix2, pol, fscale)
             let (F2x2, mF2x2) = idx_to_state(j)
                 rates[j, i] = scatter_D(D2, Ix2, F1x2, F2x2, mF1x2, mF2x2, pol,
                                         (F, mF)->fscale(F1x2, mF1x2, F, mF))
+            end
+        end
+    end
+    return rates
+end
+
+function all_scatter_bothD(fscale, Ix2, pol)
+    # Order: F high->low; mF low->high
+    idx_to_state = function (idx)
+        local Fx2, mFx2
+        if idx > Ix2 + 2
+            # low F
+            idx -= Ix2 + 2
+            Fx2 = Ix2 - 1
+            mFx2 = idx * 2 - Ix2 - 1
+        else
+            # high F
+            Fx2 = Ix2 + 1
+            mFx2 = idx * 2 - Ix2 - 3
+        end
+        return Fx2, mFx2
+    end
+    nstates = (Ix2 + 1) * 2
+    rates = Matrix{Float64}(nstates, nstates)
+    @inbounds for i in 1:nstates
+        F1x2, mF1x2 = idx_to_state(i)
+        for j in 1:nstates
+            let (F2x2, mF2x2) = idx_to_state(j)
+                rates[j, i] = scatter_bothD(Ix2, F1x2, F2x2, mF1x2, mF2x2, pol,
+                                            (D2, F, mF)->fscale(D2, F1x2, mF1x2, F, mF))
             end
         end
     end
