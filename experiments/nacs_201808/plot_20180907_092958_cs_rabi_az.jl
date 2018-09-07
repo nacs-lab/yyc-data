@@ -23,7 +23,7 @@ const split_cs_a = NaCsData.split_data(data_cs_a, spec_cs_a)
 const prefix = joinpath(@__DIR__, "imgs", "data_20180907_092958_cs_rabi_az")
 
 figure()
-NaCsPlot.plot_survival_data(split_cs_a[:nm1], fmt="C0.-", label="-1 order")
+NaCsPlot.plot_survival_data(split_cs_a[:nm1], fmt="C0.-", label="+1 order")
 NaCsPlot.plot_survival_data(split_cs_a[:n0], fmt="C1.-", label="0 order")
 grid()
 legend()
