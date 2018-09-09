@@ -139,7 +139,7 @@ function all_scatter_D(D2::Bool, Ix2, pol, rhi, rlo)
     return rates
 end
 
-function all_scatter_D(D2::Bool, Ix2, pol, fscale)
+function all_scatter_D(fscale, D2::Bool, Ix2, pol)
     # Order: F high->low; mF low->high
     idx_to_state = function (idx)
         local Fx2, mFx2

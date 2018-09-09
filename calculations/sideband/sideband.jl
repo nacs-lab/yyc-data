@@ -276,7 +276,7 @@ function (::Type{BeamSpec{T}})(D2::Bool, η, pol::NTuple{3,Any}, δ0, scale) whe
     for i in 1:3
         p = pol[i]
         p == 0 && continue
-        rate = all_scatter_D(D2, 3, all_pols[i], gen_fscale(D2, δ0, δzeeman))
+        rate = all_scatter_D(gen_fscale(D2, δ0, δzeeman), D2, 3, all_pols[i])
         push!(rates2, (T.(rate .* p .* scale), isσs_all[i]))
     end
     return BeamSpec{T}(η, rates2)
