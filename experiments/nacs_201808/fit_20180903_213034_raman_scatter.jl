@@ -302,7 +302,7 @@ figure()
 fit_cs_f4_up = fit_and_plot_op(rates_cs_f4_up, data_cs_up,
                                τ_cs, rates0=rates_cs0)
 fit_text_cs(100, 0.09, fit_cs_f4_up)
-title("Cs F3 up")
+title("Cs F4 up")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_cs_f4_up")
