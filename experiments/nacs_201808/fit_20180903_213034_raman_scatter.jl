@@ -261,18 +261,18 @@ const p0_cs = Unc(fit_cs.param[1], fit_cs.unc[1])
 const τ_na = fit_na.param[2]
 const τ_cs = fit_cs.param[2]
 
-function fit_text_cs(x, y, fit)
-    text(x, y, "\$\\tau_{F3}=$(fit.τ_lof)\$ms\n\$\\tau_{F4}=$(fit.τ_hif)\$ms\n\$Total=$(fit.nrm)\$")
+function fit_text_cs(x, y, fit; kws...)
+    text(x, y, "\$\\tau_{F3}=$(fit.τ_lof)\$ms\n\$\\tau_{F4}=$(fit.τ_hif)\$ms\n\$Total=$(fit.nrm)\$"; kws...)
 end
 
-function fit_text_na(x, y, fit)
-    text(x, y, "\$\\tau_{F1}=$(fit.τ_lof)\$ms\n\$\\tau_{F2}=$(fit.τ_hif)\$ms\n\$Total=$(fit.nrm)\$")
+function fit_text_na(x, y, fit; kws...)
+    text(x, y, "\$\\tau_{F1}=$(fit.τ_lof)\$ms\n\$\\tau_{F2}=$(fit.τ_hif)\$ms\n\$Total=$(fit.nrm)\$"; kws...)
 end
 
 figure()
 fit_cs_tw = fit_and_plot_op(rates_cs_tw, data_cs_tw, τ_cs, p0=p0_cs, label="Cs")
 NaCsPlot.plot_survival_data(data_na_tw, fmt="C1.-", label="Na")
-fit_text_cs(800, 0.02, fit_cs_tw)
+fit_text_cs(1000, 0.06, fit_cs_tw, color="C0")
 legend()
 title("Tweezer")
 xlabel("Time (\$ms\$)")
@@ -351,7 +351,7 @@ NaCsPlot.maybe_save("$(prefix)_na_f1_up")
 
 figure()
 fit_na_f2_counterop = fit_and_plot_op(rates_na_f2_counterop, data_na_counterop, τ_na, p0=p0_na)
-fit_text_na(30, 0.04, fit_na_f2_counterop)
+fit_text_na(15, 0.01, fit_na_f2_counterop)
 title("Na F2 counter-OP")
 xlabel("Time (\$ms\$)")
 ylabel("Survival")
