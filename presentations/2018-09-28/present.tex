@@ -21,6 +21,8 @@
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{multimedia}
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
 \usepackage{bm}
 \usepackage{siunitx}
 \usetikzlibrary{
@@ -308,13 +310,13 @@
 
         \draw[black!40,dashed,line width=1] (0.25, 5) -- (7.25, 5);
 
-        \draw[->,green!80!black,line width=0.8] (6.8, 2.7) -- (5.5, 5)
-        node[midway, right] {$\approx1038nm$};
-        \draw[->,green!80!black,line width=0.8] (5.45, 5) -- (4.165, 2.25);
+        \draw[->,green!80!black,alt=<-6>{line width=0.8}{line width=2}] (6.8, 2.7) -- (5.5, 5)
+        node[midway, right, align=left] {$\approx1038\mathrm{nm}$\only<7->{\\\ \ \ Tweezer}};
+        \draw[->,green!80!black,alt=<-6>{line width=0.8}{line width=2}] (5.45, 5) -- (4.165, 2.25);
 
-        \visible<4->{
+        \visible<5-6>{
           \draw[->,orange,line width=2] (3, 2.15) -- (3, 6.1)
-          node[midway, left, align=center] {$976nm$\\\only<4>{Tweezer}\only<5->{Problem}};
+          node[midway, left, align=center] {$976\mathrm{nm}$\\\only<5>{Tweezer}\only<6->{Problem}};
         }
       \end{scope}
       \visible<2-3> {
@@ -325,6 +327,29 @@
         \node at (8.4, 4.2) {\includegraphics[width=4cm]{../damop-2018-poster/data_20180421_002556_eit-v0}};
         \node at (9.2, 1) {\includegraphics[width=4cm]{../damop-2018-poster/raman-v0}};
         \draw[->,dashed,cyan,line width=1] (7, 2.5) -- (3, 1.5);
+      }
+      \visible<5-6>{
+        \node[above right,green!60!black,align=left] at (6.5, 4.5) {
+          $\mathbf{1038nm}$:\\
+          Power: $10\mathrm{mW}$\\
+          Size: $12\mathrm{\mu m}$\\
+          {\visible<6->{Rabi frequency: $\approx 100\mathrm{Hz}$}}};
+        \node[below right,orange!90!black,align=left] at (6.5, 4.0)
+        {$\mathbf{976nm}$:\\
+          Power: $15\mathrm{mW}$\\
+          Size: $0.7\mathrm{\mu m}$\\
+          {\visible<6->{Stark shift: $300\mathrm{kHz}$}}\\
+          {\visible<6->{Scattering: $\approx 10\mathrm{kHz}$}}};
+      }
+      \visible<7->{
+        \node[right,green!60!black,align=left] at (6.5, 4.25) {
+          $\mathbf{1038nm}$:\\
+          Power: $15\mathrm{mW}$\\
+          Size: $0.7\mathrm{\mu m}$\\
+          Rabi frequency: $\approx 3\mathrm{kHz}$\\
+          Stark shift: $\approx 200\mathrm{kHz}$\\
+          Scattering: $\approx 160\mathrm{Hz}$\\
+          {\small (at $\delta=-\!100\mathrm{GHz}$)}};
       }
     \end{tikzpicture}
   \end{center}
