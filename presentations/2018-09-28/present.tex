@@ -339,10 +339,10 @@
           Power: $15\mathrm{mW}$\\
           Size: $0.7\mathrm{\mu m}$\\
           {\visible<6->{Stark shift: $300\mathrm{kHz}$}}\\
-          {\visible<6->{Scattering: $\approx 10\mathrm{kHz}$}}};
+          {\visible<6->{Scattering: $\approx 10\mathrm{kHz}$ {\tiny (molecular state)}}}};
       }
       \visible<7->{
-        \node[right,green!60!black,align=left] at (6.5, 4.25) {
+        \node[right,green!60!black,align=left] at (6.5, 5) {
           $\mathbf{1038nm}$:\\
           Power: $15\mathrm{mW}$\\
           Size: $0.7\mathrm{\mu m}$\\
@@ -350,6 +350,12 @@
           Stark shift: $\approx 200\mathrm{kHz}$\\
           Scattering: $\approx 160\mathrm{Hz}$\\
           {\small (at $\delta=-\!100\mathrm{GHz}$)}};
+      }
+      \visible<8->{
+        \node[right,align=left,text width=4.5cm] at (6.5, 1.5) {
+          Use tunable liquid crystal waveplate from Meadowlark to switch between
+          full power tweezer and Raman configuration during the sequence.
+        };
       }
     \end{tikzpicture}
   \end{center}
@@ -367,20 +373,26 @@
 \begin{frame}{Interaction shift}
   \begin{columns}
     \column{5.5cm}
-    \only<-5>{
-      \begin{block}{Goal}
-        \begin{itemize}
-        \item<+-> Calculate binding energy
-        \item<+-> Refine Feshbach resonance prediction
-        \end{itemize}
-      \end{block}
-    }
-    \only<6->{
-      \begin{center}
-        \includegraphics[width=5cm]{../../experiments/nacs_201808/imgs/data_20180815_interaction_shift4_cs_n0}\\
-        \includegraphics[width=5cm]{../../experiments/nacs_201808/imgs/data_20180815_interaction_shift4_na_n0}
-      \end{center}
-    }
+    \begin{tikzpicture}
+      \visible<-5>{
+        \node[align=center,text width=5.5cm] at (0, 0) {
+          \begin{block}{Goal}
+            \begin{itemize}
+            \item<+-> Calculate binding energy
+            \item<+-> Refine Feshbach resonance prediction
+            \end{itemize}
+          \end{block}
+        };
+      }
+      \visible<6->{
+        \node[align=center,text width=5.5cm] at (0, 0) {
+          \begin{center}
+            \includegraphics[width=5cm]{../../experiments/nacs_201808/imgs/data_20180815_interaction_shift4_cs_n0}\\
+            \includegraphics[width=5cm]{../../experiments/nacs_201808/imgs/data_20180815_interaction_shift4_na_n0}
+          \end{center}
+        };
+      }
+    \end{tikzpicture}
     \column{6cm}
     \begin{center}
       \vspace{-1.5cm}
