@@ -45,6 +45,7 @@ split_nas = [NaCsData.split_data(d, spec) for d in data_nas]
 split_css = [NaCsData.split_data(d, spec) for d in data_css]
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20180816_merge_align")
+const data_prefix = joinpath(@__DIR__, "plot_data", "data_20180816_merge_align")
 
 const ypos = (1:length(names)) .* 3 * 0.03
 
@@ -61,62 +62,75 @@ function show_survival_image(ys, datas; kws...)
         img[i, :] = ratios[perm, 2]
     end
     imshow(img, interpolation="nearest", extent=[xs[1], xs[end], ys[end], ys[1]]; kws...)
+    data = Matrix{Float64}(length(ys) + 1, length(xs) + 1)
+    data[1, 1] = 0
+    data[2:end, 1] = ys
+    data[1, 2:end] = xs
+    data[2:end, 2:end] = img
+    return data
 end
 
 figure()
-show_survival_image(ypos, [split_css[i][:align] for i in 1:length(names)])
+data = show_survival_image(ypos, [split_css[i][:align] for i in 1:length(names)])
 colorbar()
 title("Cs alignment")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_cs_align.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_cs_align")
 
 figure()
-show_survival_image(ypos, [split_css[i][:az] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_css[i][:az] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Cs axial")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_cs_az.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_cs_az")
 
 figure()
-show_survival_image(ypos, [split_css[i][:rx] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_css[i][:rx] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Cs radial X")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_cs_rx.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_cs_rx")
 
 figure()
-show_survival_image(ypos, [split_css[i][:ry] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_css[i][:ry] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Cs radial Y")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_cs_ry.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_cs_ry")
 
 figure()
-show_survival_image(ypos, [split_nas[i][:az] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_nas[i][:az] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Na axial")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_na_az.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_na_az")
 
 figure()
-show_survival_image(ypos, [split_nas[i][:rx] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_nas[i][:rx] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Na radial X")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_na_rx.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_na_rx")
 
 figure()
-show_survival_image(ypos, [split_nas[i][:ry] for i in 1:length(names)], vmin=0)
+data = show_survival_image(ypos, [split_nas[i][:ry] for i in 1:length(names)], vmin=0)
 colorbar()
 title("Na radial Y")
 xlabel("dMerge (um)")
 ylabel("Vertical position (um)")
+writedlm("$(data_prefix)_na_ry.csv", data, ',')
 NaCsPlot.maybe_save("$(prefix)_na_ry")
 
 NaCsPlot.maybe_show()
