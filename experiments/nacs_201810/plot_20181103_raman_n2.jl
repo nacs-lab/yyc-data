@@ -162,4 +162,23 @@ xlabel("Power (mW)")
 ylabel("Raman Frequency (MHz)")
 NaCsPlot.maybe_save("$(prefix)_powers")
 
+params2 = copy(fit.param)
+params2[2] -= 2.8 / 6 * 8.85 * 0.4
+params2[3] -= 2.8 / 6 * 8.85 * 0.4 * 2
+plot2x, plot2e1, plot2e2, plot2e3 = eval_model(linspace(0, 10, 1000), params2)
+
+figure()
+plot(plot2x, plot2e1, "C0")
+plot(plot2x, plot2e2, "C0")
+plot(plot2x, plot2e3, "C0")
+# plot(plotx, plote1, "C1")
+# plot(plotx, plote2, "C1")
+# plot(plotx, plote3, "C1")
+grid()
+xlim([0, 11])
+title("Prediction for 60% B field")
+xlabel("Power (mW)")
+ylabel("Raman Frequency (MHz)")
+NaCsPlot.maybe_save("$(prefix)_b60")
+
 NaCsPlot.maybe_show()
