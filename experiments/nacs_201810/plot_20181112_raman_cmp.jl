@@ -55,7 +55,7 @@ const prefix = joinpath(@__DIR__, "imgs", "data_20181112_raman_cmp")
 
 figure()
 NaCsPlot.plot_survival_data(data_time_0, fmt="C0.-", label="\$N=0\$")
-NaCsPlot.plot_survival_data(data_time_x1, fmt="C1.-", label="\$N_x=0\$")
+NaCsPlot.plot_survival_data(data_time_x1, fmt="C1.-", label="\$N_x=1\$")
 NaCsPlot.plot_survival_data(data_time_z1, fmt="C2.-", label="\$N_z=1\$")
 grid()
 legend()
