@@ -1214,8 +1214,14 @@ z
      <use transform="translate(1253.336589 0.015625)" xlink:href="#DejaVuSans-48"/>
      <use transform="translate(1328.531902 0.015625)" xlink:href="#DejaVuSans-7a"/>
     </g>
-    <!-- $a=8.628(33)\ $MHz/mW -->
+    <!-- $a=8.628(33)\ $MHz$\cdot$GHz/mW -->
     <defs>
+     <path d="M 10.6875 40.921875 
+L 21 40.921875 
+L 21 28.515625 
+L 10.6875 28.515625 
+z
+" id="DejaVuSans-22c5"/>
      <path d="M 25.390625 72.90625 
 L 33.6875 72.90625 
 L 8.296875 -9.28125 
@@ -1253,9 +1259,13 @@ z
      <use transform="translate(708.056316 0.125)" xlink:href="#DejaVuSans-4d"/>
      <use transform="translate(794.335613 0.125)" xlink:href="#DejaVuSans-48"/>
      <use transform="translate(869.530925 0.125)" xlink:href="#DejaVuSans-7a"/>
-     <use transform="translate(922.02116 0.125)" xlink:href="#DejaVuSans-2f"/>
-     <use transform="translate(955.712566 0.125)" xlink:href="#DejaVuSans-6d"/>
-     <use transform="translate(1053.124675 0.125)" xlink:href="#DejaVuSans-57"/>
+     <use transform="translate(922.02116 0.125)" xlink:href="#DejaVuSans-22c5"/>
+     <use transform="translate(953.808269 0.125)" xlink:href="#DejaVuSans-47"/>
+     <use transform="translate(1031.298503 0.125)" xlink:href="#DejaVuSans-48"/>
+     <use transform="translate(1106.493816 0.125)" xlink:href="#DejaVuSans-7a"/>
+     <use transform="translate(1158.98405 0.125)" xlink:href="#DejaVuSans-2f"/>
+     <use transform="translate(1192.675457 0.125)" xlink:href="#DejaVuSans-6d"/>
+     <use transform="translate(1290.087566 0.125)" xlink:href="#DejaVuSans-57"/>
     </g>
     <!-- $f_{PA0}=696.26(14)\ $GHz -->
     <defs>
@@ -1336,12 +1346,6 @@ L 73.1875 27.203125
 L 10.59375 27.203125 
 z
 " id="DejaVuSans-2212"/>
-     <path d="M 10.6875 40.921875 
-L 21 40.921875 
-L 21 28.515625 
-L 10.6875 28.515625 
-z
-" id="DejaVuSans-22c5"/>
     </defs>
     <g transform="translate(84.0435 78.95625)scale(0.2 -0.2)">
      <use transform="translate(0 0.875)" xlink:href="#DejaVuSans-Oblique-66"/>

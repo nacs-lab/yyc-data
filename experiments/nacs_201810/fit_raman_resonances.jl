@@ -44,7 +44,7 @@ plot(plotf2, resonance(plotf2, 10, fit.param), "C1")
 errorbar(single_freqs[powers .== 10], res_freqs[powers .== 10], res_freqs_unc[powers .== 10],
          fmt="C0.")
 text(380, 299.5, "\$f_{Raman0}=$(uncs[1])\\ \$MHz\n" *
-     "\$a=$(uncs[2])\\ \$MHz/mW\n" *
+     "\$a=$(uncs[2])\\ \$MHz\$\\cdot\$GHz/mW\n" *
      "\$f_{PA0}=$(uncs[3])\\ \$GHz", fontsize="small")
 text(370, 304.5, "\$f_{Raman}=f_{Raman0}-\\dfrac{a\\cdot P}{f_{PA} - f_{PA0}}\$")
 grid()
