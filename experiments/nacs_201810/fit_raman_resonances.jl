@@ -55,48 +55,37 @@ xlabel("288XXX (GHz)")
 ylabel("Raman resonance (MHz)")
 NaCsPlot.maybe_save("$(prefix)")
 
+figure()
+function plot_power(p, plotfs, color)
+    first = true
+    for plotf in plotfs
+        if first
+            plot(plotf, resonance(plotf, p, fit.param), color, label="$p mW")
+            first = false
+        else
+            plot(plotf, resonance(plotf, p, fit.param), color)
+        end
+    end
+    errorbar(single_freqs[powers .== p], res_freqs[powers .== p], res_freqs_unc[powers .== p],
+             fmt="$color.")
+end
+
+plot_power(2, (linspace(fit.param[3] + 0.1, 750, 1000),), "C0")
+plot_power(4, (linspace(fit.param[3] + 0.1, 750, 1000),), "C1")
+plot_power(10, (plotf1, plotf2), "C2")
+plot_power(15, (linspace(540, 625, 1000),), "C3")
+plot_power(20, (linspace(540, 625, 1000),), "C4")
+text(380, 300, "\$f_{Raman0}=$(uncs[1])\\ \$MHz\n" *
+     "\$a=$(uncs[2])\\ \$MHz\$\\cdot\$GHz/mW\n" *
+     "\$f_{PA0}=$(uncs[3])\\ \$GHz", fontsize="small")
+text(370, 304.5, "\$f_{Raman}=f_{Raman0}-\\dfrac{a\\cdot P}{f_{PA} - f_{PA0}}\$")
+legend(ncol=2, fontsize="small", loc="lower left", labelspacing=0.4)
+grid()
+xlim([350, 750])
+ylim([293, 307])
+title("Light shift")
+xlabel("288XXX (GHz)")
+ylabel("Raman resonance (MHz)")
+NaCsPlot.maybe_save("$(prefix)_all")
+
 NaCsPlot.maybe_show()
-
-# exit()
-
-# const times_a = Float64[0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]
-# const ntimes_a = length(times_a)
-# const freqs_a = 298.126:0.0005:298.134
-
-# const spec_a = (1.0:(ntimes_a * length(freqs_a)), 0.0:0.0)
-# const split_nacs_a = NaCsData.split_data(data_nacs_a, spec_a)
-
-# const time_datas =
-#     [[split_nacs_a[2];
-#       NaCsData.map_params((i, v)->times_a[i],
-#                           split_nacs_a[1][((i - 1) * ntimes_a + 1):((i - 1) * ntimes_a + ntimes_a)])]
-#      for i in 1:length(freqs_a)]
-# const freq_datas =
-#     [NaCsData.map_params((i, v)->freqs_a[i], split_nacs_a[1][i:ntimes_a:end])
-#      for i in 1:ntimes_a]
-
-# const prefix = joinpath(@__DIR__, "imgs", "data_20181114_raman_2d")
-
-# figure()
-# for data in time_datas
-#     NaCsPlot.plot_survival_data(data, fmt=".-")
-# end
-# grid()
-# ylim([0, 1])
-# title("Raman time")
-# xlabel("Time (\$ms\$)")
-# ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_time")
-
-# figure()
-# for data in freq_datas
-#     NaCsPlot.plot_survival_data(data, fmt=".-")
-# end
-# grid()
-# ylim([0, 1])
-# title("Raman spectrum")
-# xlabel("Detuning (\$MHz\$)")
-# ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_freq")
-
-# NaCsPlot.maybe_show()
