@@ -25,7 +25,7 @@ data_norm = split_nacs_a[1]
 data_b60 = split_nacs_a[2]
 data_b60_45 = split_nacs_a[3]
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20181121_002516_raman_20mw")
+const prefix = joinpath(@__DIR__, "imgs", "data_20181121_002516_raman_vs_b")
 
 figure()
 NaCsPlot.plot_survival_data(data_norm, fmt="C0.-", label="100%")
