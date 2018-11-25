@@ -40,6 +40,12 @@ data_nacs_i = NaCsData.select_count(params_i, logicals_i, NaCsData.select_single
 const iname_j = joinpath(@__DIR__, "data", "data_20181124_145022.mat")
 const params_j, logicals_j = NaCsData.load_striped_mat(iname_j)
 data_nacs_j = NaCsData.select_count(params_j, logicals_j, NaCsData.select_single((1, 2), (3, 4)))
+const iname_k = joinpath(@__DIR__, "data", "data_20181124_163310.mat")
+const params_k, logicals_k = NaCsData.load_striped_mat(iname_k)
+data_nacs_k = NaCsData.select_count(params_k, logicals_k, NaCsData.select_single((1, 2), (3, 4)))
+const iname_l = joinpath(@__DIR__, "data", "data_20181124_171034.mat")
+const params_l, logicals_l = NaCsData.load_striped_mat(iname_l)
+data_nacs_l = NaCsData.select_count(params_l, logicals_l, NaCsData.select_single((1, 2), (3, 4)))
 
 const spec_a = (298.2055 .+ (-5:0.5:5) .* 1e-3,
                 298.2055 .+ (-5:0.5:5) .* 1e-3)
@@ -52,6 +58,14 @@ const spec_g = 298.194 .+ (-5:1:5) .* 1e-3
 const spec_h = 298.180 .+ (-5:1:5) .* 1e-3
 const spec_i = 298.177 .+ (-5:1:5) .* 1e-3
 const spec_j = 298.173 .+ (-5:1:5) .* 1e-3
+const spec_k = 298.173 .+ (-5:1:5) .* 1e-3
+const spec_l = OrderedDict(
+    75=>298.172 .+ (-5:1:5) .* 1e-3,
+    60=>298.181 .+ (-5:1:5) .* 1e-3,
+    45=>298.190 .+ (-5:1:5) .* 1e-3,
+    30=>298.199 .+ (-5:1:5) .* 1e-3,
+    15=>298.203 .+ (-5:1:5) .* 1e-3,
+)
 
 const split_nacs_a = NaCsData.split_data(data_nacs_a, spec_a)
 const split_nacs_b = NaCsData.split_data(data_nacs_b, spec_b)
@@ -63,6 +77,8 @@ const split_nacs_g = NaCsData.split_data(data_nacs_g, spec_g)
 const split_nacs_h = NaCsData.split_data(data_nacs_h, spec_h)
 const split_nacs_i = NaCsData.split_data(data_nacs_i, spec_i)
 const split_nacs_j = NaCsData.split_data(data_nacs_j, spec_j)
+const split_nacs_k = NaCsData.split_data(data_nacs_k, spec_k)
+const split_nacs_l = NaCsData.split_data(data_nacs_l, spec_l)
 
 data_a0 = split_nacs_a[1]
 data_a5 = split_nacs_a[2]
@@ -75,6 +91,12 @@ data_a45 = split_nacs_g
 data_a60 = split_nacs_h
 data_a75 = split_nacs_i
 data_a90 = split_nacs_j
+data_am15 = split_nacs_l[15]
+data_am30 = split_nacs_l[30]
+data_am45 = split_nacs_l[45]
+data_am60 = split_nacs_l[60]
+data_am75 = split_nacs_l[75]
+data_am90 = split_nacs_k
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20181124_raman_b_agl")
 
@@ -98,5 +120,21 @@ title("Raman spectrum at 60% B field")
 xlabel("Detuning (\$MHz\$)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_pos")
+
+figure()
+NaCsPlot.plot_survival_data(data_am15, fmt="C0o-", label="-15\${}^\\circ\$")
+NaCsPlot.plot_survival_data(data_am30, fmt="C1o-", label="-30\${}^\\circ\$")
+NaCsPlot.plot_survival_data(data_am45, fmt="C2o-", label="-45\${}^\\circ\$")
+NaCsPlot.plot_survival_data(data_am60, fmt="C3o-", label="-60\${}^\\circ\$")
+NaCsPlot.plot_survival_data(data_am75, fmt="C4o-", label="-75\${}^\\circ\$")
+NaCsPlot.plot_survival_data(data_am90, fmt="C5o-", label="-90\${}^\\circ\$")
+grid()
+legend(ncol=4, fontsize="small", borderpad=0.3, labelspacing=0.2,
+       handletextpad=0.4, columnspacing=0.6, borderaxespad=0.4)
+ylim([0, 0.8])
+title("Raman spectrum at 60% B field")
+xlabel("Detuning (\$MHz\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_neg")
 
 NaCsPlot.maybe_show()
