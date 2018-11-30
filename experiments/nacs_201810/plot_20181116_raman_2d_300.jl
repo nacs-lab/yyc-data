@@ -131,5 +131,37 @@ xlabel("Detuning (\$MHz\$)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_freq_short")
 
+figure()
+for i in 1:length(time_datas)
+    if freqs_b[i] != 298.130
+        continue
+    end
+    global data_130
+    data_130 = time_datas[i]
+end
+for i in 1:length(time_datas_c)
+    if freqs_c[i] != 298.130
+        continue
+    end
+    global data_130
+    data_130 = [data_130; time_datas_c[i]]
+end
+NaCsPlot.plot_survival_data(data_130, fmt=".-")
+grid()
+ylim([0, 1])
+title("Raman time @ 298.13MHz")
+xlabel("Time (\$ms\$)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_time_130khz")
+
+figure()
+data_1ms = NaCsData.map_params((i, v)->(v - 298) * 1000, [freq_datas[2]; freq_datas_c[end]])
+NaCsPlot.plot_survival_data(data_1ms, fmt=".-")
+grid()
+ylim([0, 1])
+title("Raman spectrum @ 1ms")
+xlabel("Detuning (298XXX kHz)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_freq_1ms")
 
 NaCsPlot.maybe_show()
