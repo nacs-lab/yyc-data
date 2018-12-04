@@ -109,7 +109,8 @@ model_exp1(x, p) = p[1] .* exp.(x ./ -p[2])
 model_exp2(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3] .* exp.(x ./ -p[4])
 model_exp_off(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3]
 
-function fit_survival(model, data, p0; plotx=nothing, use_unc=true, plot_scale=1.1)
+function fit_survival(model, data, p0; plotx=nothing, plot_lo=nothing, plot_hi=nothing,
+                      use_unc=true, plot_scale=1.1)
     if use_unc
         params, ratios, uncs = NaCsData.get_values(data)
     else
@@ -120,7 +121,13 @@ function fit_survival(model, data, p0; plotx=nothing, use_unc=true, plot_scale=1
         hi = maximum(params)
         span = hi - lo
         mid = (hi + lo) / 2
-        plotx = linspace(mid - span * plot_scale / 2, mid + span * plot_scale / 2, 10000)
+        if plot_lo === nothing
+            plot_lo = mid - span * plot_scale / 2
+        end
+        if plot_hi === nothing
+            plot_hi = mid + span * plot_scale / 2
+        end
+        plotx = linspace(plot_lo, plot_hi, 10000)
     end
     if use_unc
         fit = curve_fit(model, params, ratios[:, 2], uncs[:, 2].^-(2/3), p0)
@@ -146,7 +153,7 @@ for (name, data_na) in datas_na
     end
 end
 fit_na_lifetime = fit_survival(model_exp1, data_na_lifetime, [1.0, 400],
-                               use_unc=false, plotx=linspace(0, 2100, 1000))
+                               use_unc=false, plot_lo=0)
 @show Unc.(fit_na_lifetime.param, fit_na_lifetime.unc)
 # Na lifetime in 30mW 1038
 for (name, data_na_na) in datas_na_na
@@ -163,7 +170,7 @@ for (name, data_na_na) in datas_na_na
     end
 end
 fit_na_1038_30_lifetime = fit_survival(model_exp1, data_na_1038_30_lifetime, [1.0, 4000],
-                                       plotx=linspace(0, 2100, 1000))
+                                       plot_lo=0)
 @show Unc.(fit_na_1038_30_lifetime.param, fit_na_1038_30_lifetime.unc)
 # Na lifetime in 20mW 1038
 for (name, data_na_na) in datas_na_na
@@ -180,7 +187,7 @@ for (name, data_na_na) in datas_na_na
     end
 end
 fit_na_1038_20_lifetime = fit_survival(model_exp1, data_na_1038_20_lifetime, [1.0, 4000],
-                                       plotx=linspace(0, 2100, 1000))
+                                       plot_lo=0)
 @show Unc.(fit_na_1038_20_lifetime.param, fit_na_1038_20_lifetime.unc)
 # Cs lifetime
 for (name, data_cs) in datas_cs
@@ -205,8 +212,7 @@ for (name, data_cs_cs) in datas_cs_cs
     end
     data_cs_lifetime = [data_cs_lifetime; data_cs_cs[:p30]]
 end
-fit_cs_lifetime = fit_survival(model_exp1, data_cs_lifetime, [1.0, 4000],
-                               plotx=linspace(0, 2100, 1000))
+fit_cs_lifetime = fit_survival(model_exp1, data_cs_lifetime, [1.0, 4000], plot_lo=0)
 @show Unc.(fit_cs_lifetime.param, fit_cs_lifetime.unc)
 # Cs lifetime 20mW
 for (name, data_cs_cs) in datas_cs_cs
@@ -222,8 +228,7 @@ for (name, data_cs_cs) in datas_cs_cs
         data_cs_20_lifetime = data_cs_cs[:p20]
     end
 end
-fit_cs_20_lifetime = fit_survival(model_exp1, data_cs_20_lifetime, [1.0, 4000],
-                                  plotx=linspace(0, 2100, 1000))
+fit_cs_20_lifetime = fit_survival(model_exp1, data_cs_20_lifetime, [1.0, 4000], plot_lo=0)
 @show Unc.(fit_cs_20_lifetime.param, fit_cs_20_lifetime.unc)
 # Cs scattering
 for (name, data_cs) in datas_cs
