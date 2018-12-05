@@ -109,6 +109,12 @@ model_exp1(x, p) = p[1] .* exp.(x ./ -p[2])
 model_exp2(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3] .* exp.(x ./ -p[4])
 model_exp_off(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3]
 
+function get_param_unc(fit)
+    unc = estimate_errors(fit)
+    return (param=fit.param, unc=unc,
+            uncs=Unc.(fit.param, unc, Sci))
+end
+
 function fit_survival(model, data, p0; plotx=nothing, plot_lo=nothing, plot_hi=nothing,
                       use_unc=true, plot_scale=1.1)
     if use_unc
@@ -281,8 +287,8 @@ for f in freqs_20
     push!(rates_20, r.a)
     push!(rate_uncs_20, r.s)
 end
-fit_rate_20 = curve_fit(rate_model, freqs_20, rates_20, rate_uncs_20.^-(2/3), [2.0, 100.0])
-@show Unc.(fit_rate_20.param, estimate_errors(fit_rate_20))
+fit_rate_20 = get_param_unc(curve_fit(rate_model, freqs_20, rates_20,
+                                      rate_uncs_20.^-(2/3), [2.0, 100.0]))
 
 data_2body_30 = Dict{Int,Any}()
 
@@ -308,8 +314,8 @@ for f in freqs_30
     push!(rates_30, r.a)
     push!(rate_uncs_30, r.s)
 end
-fit_rate_30 = curve_fit(rate_model, freqs_30, rates_30, rate_uncs_30.^-(2/3), [2.0, 100.0])
-@show Unc.(fit_rate_30.param, estimate_errors(fit_rate_30))
+fit_rate_30 = get_param_unc(curve_fit(rate_model, freqs_30, rates_30,
+                                      rate_uncs_30.^-(2/3), [2.0, 100.0]))
 
 figure()
 NaCsPlot.plot_survival_data(data_na_lifetime, fmt="C0.", label="Na 700")
@@ -387,13 +393,21 @@ ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_pa30")
 
 figure()
-errorbar(freqs_20, rates_20, rate_uncs_20, fmt="C0o")
-plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_20.param), "C0")
-errorbar(freqs_30, rates_30, rate_uncs_30, fmt="C1o")
-plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_30.param), "C1")
+errorbar(freqs_30, rates_30, rate_uncs_30, fmt="C0o", label="30mW")
+plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_30.param), "C0")
+errorbar(freqs_20, rates_20, rate_uncs_20, fmt="C1o", label="20mW")
+plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_20.param), "C1")
+text(603, 22, "\$\\Gamma=\\Gamma_0+\\dfrac{a}{(f-696.26)^2}\$\n")
+text(603, 5, "\$\\Gamma_0=$(fit_rate_30.uncs[1])\$Hz\n" *
+     "\$a=$(fit_rate_30.uncs[2])\$Hz\$\\cdot\$GHz\${}^2\$", color="C0", fontsize="small")
+text(603, 14, "\$\\Gamma_0=$(fit_rate_20.uncs[1])\$Hz\n" *
+     "\$a=$(fit_rate_20.uncs[2])\$Hz\$\\cdot\$GHz\${}^2\$", color="C1", fontsize="small")
+legend(fontsize="small")
+xlabel("Tweezer frequency (288XXX GHz)")
+ylabel("Decay rate (Hz)")
 grid()
 xlim([600, 695])
 ylim([0, 40])
-# NaCsPlot.maybe_save("$(prefix)_cs_shift")
+NaCsPlot.maybe_save("$(prefix)_rates")
 
 NaCsPlot.maybe_show()
