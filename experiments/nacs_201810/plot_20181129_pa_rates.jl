@@ -245,6 +245,71 @@ for (name, data_cs) in datas_cs
     end
 end
 # NaCs lifetime
+function process_2body_data(data, model, p0)
+    fit = fit_survival(model, data, p0, plot_lo=0)
+    return (data=data, fit=fit, uncs=Unc.(fit.param, fit.unc))
+end
+function plot_2body_data(data, color; fmt="o", label=nothing)
+    NaCsPlot.plot_survival_data(data.data, fmt=fmt, color=color, label=label)
+    plot(data.fit.plotx, data.fit.ploty, "-", color=color)
+end
+function rate_model(x, p)
+    return p[1] .+ p[2] ./ (x .- 696.26).^2
+end
+
+data_2body_20 = Dict{Int,Any}()
+
+data_2body_20[92] = process_2body_data(datas_nacs[:f092_2][:p20], model_exp1, [1.0, 500])
+data_2body_20[396] = process_2body_data(datas_nacs[:f396][:p20], model_exp1, [1.0, 500])
+data_2body_20[456] = process_2body_data(datas_nacs[:f456][:p20], model_exp1, [1.0, 500])
+data_2body_20[497] = process_2body_data(datas_nacs[:f497][:p20], model_exp1, [1.0, 500])
+data_2body_20[514] = process_2body_data(datas_nacs[:f514][:p20], model_exp1, [1.0, 500])
+data_2body_20[573] = process_2body_data(datas_nacs[:f573][:p20], model_exp1, [1.0, 500])
+data_2body_20[613] = process_2body_data(datas_nacs[:f613][:p20], model_exp1, [1.0, 500])
+data_2body_20[652] = process_2body_data(datas_nacs[:f652][:p20], model_exp1, [1.0, 500])
+data_2body_20[678] = process_2body_data(datas_nacs[:f678][:p20], model_exp1, [1.0, 500])
+data_2body_20[683] = process_2body_data(datas_nacs[:f683][:p20], model_exp_off, [1.0, 500, 0.2])
+data_2body_20[686] = process_2body_data(datas_nacs[:f686][:p20], model_exp_off, [1.0, 500, 0.2])
+data_2body_20[689] = process_2body_data(datas_nacs[:f689][:p20], model_exp_off, [1.0, 500, 0.2])
+data_2body_20[692] = process_2body_data(datas_nacs[:f692][:p20], model_exp_off, [1.0, 500, 0.2])
+
+freqs_20 = sort!(collect(keys(data_2body_20)))
+rates_20 = Float64[]
+rate_uncs_20 = Float64[]
+for f in freqs_20
+    r = 1000 / data_2body_20[f].uncs[2]
+    push!(rates_20, r.a)
+    push!(rate_uncs_20, r.s)
+end
+fit_rate_20 = curve_fit(rate_model, freqs_20, rates_20, rate_uncs_20.^-(2/3), [2.0, 100.0])
+@show Unc.(fit_rate_20.param, estimate_errors(fit_rate_20))
+
+data_2body_30 = Dict{Int,Any}()
+
+data_2body_30[92] = process_2body_data(datas_nacs[:f092_2][:p30], model_exp1, [1.0, 500])
+data_2body_30[396] = process_2body_data(datas_nacs[:f396][:p30], model_exp1, [1.0, 500])
+data_2body_30[456] = process_2body_data(datas_nacs[:f456][:p30], model_exp1, [1.0, 500])
+data_2body_30[497] = process_2body_data(datas_nacs[:f497][:p30], model_exp1, [1.0, 500])
+data_2body_30[514] = process_2body_data(datas_nacs[:f514][:p30], model_exp1, [1.0, 500])
+data_2body_30[573] = process_2body_data(datas_nacs[:f573][:p30], model_exp1, [1.0, 500])
+data_2body_30[613] = process_2body_data(datas_nacs[:f613][:p30], model_exp1, [1.0, 500])
+data_2body_30[652] = process_2body_data(datas_nacs[:f652][:p30], model_exp1, [1.0, 500])
+data_2body_30[678] = process_2body_data(datas_nacs[:f678][:p30], model_exp1, [1.0, 500])
+data_2body_30[683] = process_2body_data(datas_nacs[:f683][:p30], model_exp_off, [1.0, 500, 0.2])
+data_2body_30[686] = process_2body_data(datas_nacs[:f686][:p30], model_exp_off, [1.0, 500, 0.2])
+data_2body_30[689] = process_2body_data(datas_nacs[:f689][:p30], model_exp_off, [1.0, 500, 0.2])
+data_2body_30[692] = process_2body_data(datas_nacs[:f692][:p30], model_exp_off, [1.0, 500, 0.2])
+
+freqs_30 = sort!(collect(keys(data_2body_30)))
+rates_30 = Float64[]
+rate_uncs_30 = Float64[]
+for f in freqs_30
+    r = 1000 / data_2body_30[f].uncs[2]
+    push!(rates_30, r.a)
+    push!(rate_uncs_30, r.s)
+end
+fit_rate_30 = curve_fit(rate_model, freqs_30, rates_30, rate_uncs_30.^-(2/3), [2.0, 100.0])
+@show Unc.(fit_rate_30.param, estimate_errors(fit_rate_30))
 
 figure()
 NaCsPlot.plot_survival_data(data_na_lifetime, fmt="C0.", label="Na 700")
@@ -265,66 +330,70 @@ xlabel("Time (ms)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_lifetimes")
 
-# figure()
-# NaCsPlot.plot_survival_data(data_cs_scatter, fmt="C0.-", label="Cs F3")
-# grid()
-# legend(fontsize="small")
-# ylim([0, 1])
-# title("Lifetimes")
-# xlabel("Time (ms)")
-# ylabel("Survival")
+figure()
+NaCsPlot.plot_survival_data(data_cs_scatter, fmt="C0.-", label="Cs F3")
+grid()
+legend(fontsize="small")
+ylim([0, 1])
+title("Lifetimes")
+xlabel("Time (ms)")
+ylabel("Survival")
 # NaCsPlot.maybe_save("$(prefix)_scatter")
 
-# figure()
-# for (name, data) in datas_cs
-#     name = String(name)
-#     @assert startswith(name, "f")
-#     if endswith(name, "_2")
-#         continue
-#     end
-#     NaCsPlot.plot_survival_data(data[:flip], fmt=".-", label=name)
-#     # if @isdefined data_na_lifetime
-#     #     data_na_lifetime = [data_na_lifetime; data_na[:life]]
-#     # else
-#     #     data_na_lifetime = data_na[:life]
-#     # end
-# end
-# for (name, data) in datas_cs_cs
-#     name = String(name)
-#     @assert startswith(name, "f")
-#     if endswith(name, "_1")
-#         continue
-#     end
-#     NaCsPlot.plot_survival_data(data[:p20], fmt=".-", label=name)
-#     # if @isdefined data_na_lifetime
-#     #     data_na_lifetime = [data_na_lifetime; data_na[:life]]
-#     # else
-#     #     data_na_lifetime = data_na[:life]
-#     # end
-# end
-# grid()
-# legend()
-# ylim([0, 1])
-# # title("Cs (4 + 2) -> (3 + 2)")
-# # xlabel("Detuning (kHz)")
-# ylabel("Survival")
-# NaCsPlot.maybe_save("$(prefix)_cs_shift")
+figure()
+plot_2body_data(data_2body_20[92], "C0", label="092")
+plot_2body_data(data_2body_20[396], "C1", label="396")
+plot_2body_data(data_2body_20[456], "C2", label="456")
+plot_2body_data(data_2body_20[497], "C3", label="497")
+plot_2body_data(data_2body_20[514], "C4", label="514")
+plot_2body_data(data_2body_20[573], "C5", label="573")
+plot_2body_data(data_2body_20[613], "C6", label="613")
+plot_2body_data(data_2body_20[652], "C7", label="652")
+plot_2body_data(data_2body_20[678], "C8", label="678")
+plot_2body_data(data_2body_20[683], "C9", label="683")
+plot_2body_data(data_2body_20[686], "C0", fmt="s", label="686")
+plot_2body_data(data_2body_20[689], "C1", fmt="s", label="689")
+plot_2body_data(data_2body_20[692], "C2", fmt="s", label="692")
+grid()
+legend(ncol=4, fontsize="small", labelspacing=0.2, borderpad=0.2,
+       handletextpad=0.2, columnspacing=0.3, borderaxespad=0.2)
+ylim([0, 1])
+title("2 body survival (20mW)")
+xlabel("Time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_pa20")
 
 figure()
-NaCsPlot.plot_survival_data(datas_nacs[:f092_2][:p20], fmt="C0.-")
-NaCsPlot.plot_survival_data(datas_nacs[:f092_2][:p30], fmt="C1.-")
-NaCsPlot.plot_survival_data(datas_nacs[:f678][:p20], fmt="C2.-")
-NaCsPlot.plot_survival_data(datas_nacs[:f678][:p30], fmt="C3.-")
-# NaCsPlot.plot_survival_data(datas_nacs[:f692][:p20], fmt="C0.-")
-# NaCsPlot.plot_survival_data(datas_nacs[:f692][:p30], fmt="C1.-")
-# NaCsPlot.plot_survival_data(datas_nacs[:f689][:p20], fmt="C2.-")
-# NaCsPlot.plot_survival_data(datas_nacs[:f689][:p30], fmt="C3.-")
+plot_2body_data(data_2body_30[92], "C0", label="092")
+plot_2body_data(data_2body_30[396], "C1", label="396")
+plot_2body_data(data_2body_30[456], "C2", label="456")
+plot_2body_data(data_2body_30[497], "C3", label="497")
+plot_2body_data(data_2body_30[514], "C4", label="514")
+plot_2body_data(data_2body_30[573], "C5", label="573")
+plot_2body_data(data_2body_30[613], "C6", label="613")
+plot_2body_data(data_2body_30[652], "C7", label="652")
+plot_2body_data(data_2body_30[678], "C8", label="678")
+plot_2body_data(data_2body_30[683], "C9", label="683")
+plot_2body_data(data_2body_30[686], "C0", fmt="s", label="686")
+plot_2body_data(data_2body_30[689], "C1", fmt="s", label="689")
+plot_2body_data(data_2body_30[692], "C2", fmt="s", label="692")
 grid()
-# legend()
+legend(ncol=4, fontsize="small", labelspacing=0.2, borderpad=0.2,
+       handletextpad=0.2, columnspacing=0.3, borderaxespad=0.2)
 ylim([0, 1])
-# title("Cs (4 + 2) -> (3 + 2)")
-# xlabel("Detuning (kHz)")
+title("2 body survival (30mW)")
+xlabel("Time (ms)")
 ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_pa30")
+
+figure()
+errorbar(freqs_20, rates_20, rate_uncs_20, fmt="C0o")
+plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_20.param), "C0")
+errorbar(freqs_30, rates_30, rate_uncs_30, fmt="C1o")
+plot(linspace(600, 695, 1000), rate_model(linspace(600, 695, 1000), fit_rate_30.param), "C1")
+grid()
+xlim([600, 695])
+ylim([0, 40])
 # NaCsPlot.maybe_save("$(prefix)_cs_shift")
 
 NaCsPlot.maybe_show()
