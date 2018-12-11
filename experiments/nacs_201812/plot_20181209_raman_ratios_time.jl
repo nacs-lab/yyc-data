@@ -88,7 +88,7 @@ fit_r200′ = fit_survival(model′, data_r200, [0.2, 302.125, 0.1, 0.7])
 fit_tr50 = fit_survival(model_exp2, data_tr50, [0.53, 1, 0.22, 10], plot_lo=0)
 fit_tr200 = fit_survival(model_exp2, data_tr200, [0.5, 4, 0.22, 40], plot_lo=0)
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20181207_raman_ratios_time")
+const prefix = joinpath(@__DIR__, "imgs", "data_20181209_raman_ratios_time")
 
 figure()
 NaCsPlot.plot_survival_data(data_r50, fmt="C0.", label="0.02")
