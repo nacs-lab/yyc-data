@@ -102,7 +102,7 @@ legend()
 title("\$\\Delta = 12\$ kHz")
 xlabel("Raman frequency (MHz)")
 ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_freq_off")
+NaCsPlot.maybe_save("$(prefix)_freq")
 
 figure()
 NaCsPlot.plot_survival_data(data_tr50, fmt="C0.", label="0.02")
@@ -118,6 +118,6 @@ legend(fontsize="small", labelspacing=0.2, borderpad=0.2,
        handletextpad=0.2, columnspacing=0.3, borderaxespad=0.2)
 xlabel("Raman time (ms)")
 ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_time")
+NaCsPlot.maybe_save("$(prefix)_time_off")
 
 NaCsPlot.maybe_show()
