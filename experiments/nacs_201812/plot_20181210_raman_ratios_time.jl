@@ -10,9 +10,11 @@ using PyPlot
 using DataStructures
 using LsqFit
 
-const inames = ["data_20181210_194835.mat"]
+const inames = ["data_20181210_194835.mat",
+                "data_20181211_085025.mat"]
 const datas = [NaCsData.load_striped_mat(joinpath(@__DIR__, "data", iname)) for iname in inames]
-const maxcnts = [typemax(Int)]
+const maxcnts = [typemax(Int),
+                 typemax(Int)]
 const specs = [OrderedDict(:tr50=>[0.1, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40],
                            :tr200=>[0.1, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40] .* 4,
                            :r50=>302.125 .+ [-300; -250; -200; -150; -120;
@@ -20,7 +22,9 @@ const specs = [OrderedDict(:tr50=>[0.1, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40],
                                              120; 150; 200; 250; 300] .* 1e-3,
                            :r200=>302.125 .+ [-300; -250; -200; -150; -120;
                                               -100:10:100;
-                                              120; 150; 200; 250; 300] .* 1e-3)]
+                                              120; 150; 200; 250; 300] .* 1e-3),
+               OrderedDict(:tr50=>[0.1, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40],
+                           :tr200=>[0.1, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40] .* 4)]
 select_datas(datas, selector, maxcnts, specs) =
     [NaCsData.split_data(NaCsData.select_count(data..., selector, maxcnt), spec)
      for (data, maxcnt, spec) in zip(datas, maxcnts, specs)]
@@ -61,6 +65,8 @@ const datas_nacs = select_datas(datas, NaCsData.select_single((1, 2,), (3, 4,)),
 
 data_tr50 = datas_nacs[1][:tr50]
 data_tr200 = datas_nacs[1][:tr200]
+data_tr50_2 = datas_nacs[2][:tr50]
+data_tr200_2 = datas_nacs[2][:tr200]
 data_r50 = datas_nacs[1][:r50]
 data_r200 = datas_nacs[1][:r200]
 
@@ -87,6 +93,8 @@ fit_r200′ = fit_survival(model′, data_r200, [0.2, 302.125, 0.1, 0.7])
 
 fit_tr50 = fit_survival(model_exp2, data_tr50, [0.53, 1, 0.22, 10], plot_lo=0)
 fit_tr200 = fit_survival(model_exp2, data_tr200, [0.5, 4, 0.22, 40], plot_lo=0)
+fit_tr50_2 = fit_survival(model_exp2, data_tr50_2, [0.53, 1, 0.22, 10], plot_lo=0)
+fit_tr200_2 = fit_survival(model_exp2, data_tr200_2, [0.5, 4, 0.22, 40], plot_lo=0)
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20181210_raman_ratios_time")
 
@@ -99,7 +107,6 @@ plot(fit_r200.plotx, fit_r200.ploty, "C1-")
 plot(fit_r200′.plotx, fit_r200′.ploty, "C1--")
 grid()
 legend()
-title("\$\\Delta = 12\$ kHz")
 xlabel("Raman frequency (MHz)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_freq")
@@ -114,10 +121,28 @@ ylim([0, 0.8])
 xlim([0, 170])
 text(8, 0.02, "\$\\tau=$(fit_tr50.uncs[2])\$ms", color="C0")
 text(40, 0.2, "\$\\tau=$(fit_tr200.uncs[2])\$ms", color="C1")
+title("\$\\Delta = 12\$ kHz")
 legend(fontsize="small", labelspacing=0.2, borderpad=0.2,
        handletextpad=0.2, columnspacing=0.3, borderaxespad=0.2)
 xlabel("Raman time (ms)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_time_off")
+
+figure()
+NaCsPlot.plot_survival_data(data_tr50_2, fmt="C0.", label="0.02")
+plot(fit_tr50_2.plotx, fit_tr50_2.ploty, "C0-")
+NaCsPlot.plot_survival_data(data_tr200_2, fmt="C1.", label="0.005")
+plot(fit_tr200_2.plotx, fit_tr200_2.ploty, "C1-")
+grid()
+ylim([0, 0.8])
+xlim([0, 170])
+text(8, 0.02, "\$\\tau=$(fit_tr50_2.uncs[2])\$ms", color="C0")
+text(40, 0.18, "\$\\tau=$(fit_tr200_2.uncs[2])\$ms", color="C1")
+title("\$\\Delta = 0\$ kHz")
+legend(fontsize="small", labelspacing=0.2, borderpad=0.2,
+       handletextpad=0.2, columnspacing=0.3, borderaxespad=0.2)
+xlabel("Raman time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_time")
 
 NaCsPlot.maybe_show()
