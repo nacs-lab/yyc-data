@@ -50,7 +50,7 @@ end
 
 figure()
 show_survival_image(by, bz, data_cs)
-title("Cs depumping 0.5s")
+title("Cs depumping 6ms")
 xlabel("\$B_y\$ (G)")
 ylabel("\$B_z\$ (G)")
 colorbar()
@@ -61,7 +61,7 @@ _, ratios_cs0, _ = NaCsData.get_values(data_cs0)
 figure()
 show_survival_image(by, bz, data_cs, offset=-ratios_cs0[1, 2],
                     cmap="seismic", vmin=-0.2, vmax=0.2)
-title("Cs depumping 0.5s: \$\\Delta\$")
+title("Cs depumping 6ms: \$\\Delta\$")
 xlabel("\$B_y\$ (G)")
 ylabel("\$B_z\$ (G)")
 colorbar()
