@@ -111,6 +111,6 @@ xlim([0, 27])
 title("Na depumping")
 xlabel("Time (ms)")
 ylabel("Survival")
-NaCsPlot.maybe_save("$(prefix)_cs")
+NaCsPlot.maybe_save("$(prefix)_na")
 
 NaCsPlot.maybe_show()
