@@ -10,8 +10,8 @@ using PyPlot
 using DataStructures
 using LsqFit
 
-const by = linspace(-0.4, 0.4, 17)
-const bz = linspace(-0.4, 0.4, 17)
+const by = -0.125 .+ linspace(-0.4, 0.4, 17)
+const bz = -0.005 .+ linspace(-0.4, 0.4, 17)
 
 const inames = ["data_20190103_172118.mat"]
 const datas = [NaCsData.load_striped_mat(joinpath(@__DIR__, "data", iname)) for iname in inames]
