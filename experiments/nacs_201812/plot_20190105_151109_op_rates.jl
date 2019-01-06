@@ -77,7 +77,7 @@ fit_cs_33 = fit_survival(model_exp, data_cs_33, [0.9, 10, 0])
 fit_na_21 = fit_survival(model_exp, data_na_21, [-0.5, 10, 0.5])
 fit_na_11 = fit_survival(model_exp, data_na_11, [0.9, 10, 0])
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20190105_151109_depump")
+const prefix = joinpath(@__DIR__, "imgs", "data_20190105_151109_op_rates")
 
 figure()
 NaCsPlot.plot_survival_data(data_cs_43, fmt="C0.", label="4, 4")
