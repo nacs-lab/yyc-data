@@ -62,12 +62,12 @@ Base.:-(u::Unc, v) = Unc(u.a - v, u.s, u.exp_type)
 Base.:-(v, u::Unc) = Unc(v - u.a, u.s, u.exp_type)
 Base.:-(u::Unc, v::Unc) = Unc(u.a - v.a, sqrt(v.s^2 + u.s^2), u.exp_type)
 
-Base.:*(u::Unc, v) = Unc(u.a * v, u.s * v, u.exp_type)
+Base.:*(u::Unc, v) = Unc(u.a * v, abs(u.s * v), u.exp_type)
 Base.:*(v, u::Unc) = u * v
 Base.:*(u::Unc, v::Unc) = Unc(u.a * v.a, sqrt((u.a * v.s)^2 + (u.s * v.a)^2), u.exp_type)
 
-Base.:/(u::Unc, v) = Unc(u.a / v, u.s / v, u.exp_type)
-Base.:/(v, u::Unc) = Unc(v / u.a, u.s * v / u.a^2, u.exp_type)
+Base.:/(u::Unc, v) = Unc(u.a / v, abs(u.s / v), u.exp_type)
+Base.:/(v, u::Unc) = Unc(v / u.a, abs(u.s * v / u.a^2), u.exp_type)
 Base.:/(u::Unc, v::Unc) = Unc(u.a / v.a, sqrt((u.s / v.a)^2 + (v.s * u.a / v.a^2)^2), u.exp_type)
 
 Base.:\(u::Unc, v) = v / u
