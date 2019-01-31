@@ -85,6 +85,9 @@ matopen(opts.iname) do mf
     sa = read(mf, "Analysis")["SingleAtomLogical"]
     scan = read(mf, "Scan")
     param_name = scan["ParamName"]
+    if eltype(sa) == Bool
+        sa = UInt8.(sa)
+    end
 
     matopen(opts.oname, "w") do out
         write(out, "ParamList", pl)
