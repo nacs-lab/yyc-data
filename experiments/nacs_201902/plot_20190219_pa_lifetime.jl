@@ -31,7 +31,17 @@ const inames = ["data_20190219_151703.mat",
                 "data_20190224_213643.mat",
                 "data_20190225_065431.mat",
                 "data_20190225_101432.mat",
-                "data_20190225_133508.mat"
+                "data_20190225_133508.mat",
+                "data_20190225_185048.mat",
+                "data_20190225_222710.mat", # 705 GHz
+                "data_20190226_020710.mat", # 707 GHz
+                "data_20190226_054558.mat", # 709 GHz
+                "data_20190226_094328.mat", # 709 GHz
+                "data_20190226_131609.mat", # 707 GHz
+                "data_20190226_155840.mat",
+                "data_20190226_205050.mat",
+                "data_20190227_013017.mat",
+                "data_20190227_092022.mat",
                 ]
 const datas = [NaCsData.load_striped_mat(joinpath(@__DIR__, "data", iname)) for iname in inames]
 const maxcnts = [typemax(Int),
@@ -55,7 +65,17 @@ const maxcnts = [typemax(Int),
                  typemax(Int),
                  typemax(Int),
                  typemax(Int),
-                 typemax(Int)
+                 typemax(Int),
+                 typemax(Int),
+                 typemax(Int), # 705 GHz
+                 typemax(Int), # 707 GHz
+                 typemax(Int), # 709 GHz
+                 typemax(Int), # 709 GHz
+                 typemax(Int), # 707 GHz
+                 typemax(Int),
+                 typemax(Int),
+                 typemax(Int),
+                 typemax(Int),
                  ]
 const specs = [([0, 10, 20, 50, 100, 200, 500],
                 [0, 10, 20, 50, 100, 200, 500],
@@ -90,7 +110,7 @@ const specs = [([0, 10, 20, 50, 100, 200, 500],
                 [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
                ([0, 2, 5, 10, 20, 50, 100],
                 [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
-               ([0, 2, 5, 10, 20, 50, 100],
+               ([0, 2, 5, 10, 20, 50, 100], # 697.5
                 [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
                ([0, 2, 5, 10, 20, 50, 100],
                 [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
@@ -99,7 +119,27 @@ const specs = [([0, 10, 20, 50, 100, 200, 500],
                ([0, 2, 5, 10, 20, 50, 100],
                 [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
                ([0, 2, 5, 10, 20, 50, 100],
-                [0, 1, 2, 4, 6, 8, 10, 12, 15, 20])]
+                [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
+               ([0, 2, 5, 10, 20, 50, 100],
+                [0, 1, 2, 4, 6, 8, 10, 12, 15, 20]),
+               ([0, 5, 10, 20, 50, 100, 200], # 705 GHz
+                [0, 1, 2, 4, 6, 8, 10, 15, 20, 30]),
+               ([0, 5, 10, 20, 50, 100, 200], # 707 GHz
+                [0, 1, 2, 4, 6, 8, 10, 15, 20, 30]),
+               ([0, 5, 10, 20, 50, 100, 200], # 709 GHz
+                [0, 1, 2, 4, 6, 8, 10, 15, 20, 30]),
+               ([500], # 709 GHz
+                [0, 20, 30, 50, 100]),
+               [0, 20, 30, 50, 100], # 709 GHz
+               ([0, 5, 10, 20, 50, 100, 200, 500], # 712 GHz
+                [0, 5, 10, 20, 50, 100, 200, 500]),
+               ([0, 5, 10, 20, 50, 100, 200, 500], # 715 GHz
+                [0, 5, 10, 20, 50, 100, 200, 500]),
+               ([0, 5, 10, 20, 50, 100, 200, 500], # 718 GHz
+                [0, 5, 10, 20, 50, 100, 200, 500]),
+               ([0, 5, 10, 20, 50, 100, 200, 500], # 722 GHz
+                [0, 5, 10, 20, 50, 100, 200, 500]),
+                ]
 select_datas(datas, selector, maxcnts, specs) =
     [NaCsData.split_data(NaCsData.select_count(data..., selector, maxcnt), spec)
      for (data, maxcnt, spec) in zip(datas, maxcnts, specs)]
@@ -166,6 +206,15 @@ data_698_5 = datas_nacs[19]
 data_699_5 = datas_nacs[20]
 data_700_5 = datas_nacs[21]
 data_701_5 = datas_nacs[22]
+data_703 = datas_nacs[23]
+data_705 = datas_nacs[24]
+data_707 = [datas_nacs[25][1], [datas_nacs[25][2]; datas_nacs[28]]]
+data_709 = [[datas_nacs[26][1]; datas_nacs[27][1]],
+            [datas_nacs[26][2]; datas_nacs[27][2]]]
+data_712 = datas_nacs[29]
+data_715 = datas_nacs[30]
+data_718 = datas_nacs[31]
+data_722 = datas_nacs[32]
 
 fit_640_hot = fit_survival(model_exp, data_640[2], [0.75, 800])
 fit_640_cold = fit_survival(model_exp2, data_640[4], [0.5, 200, 0.2, 800])
@@ -199,6 +248,22 @@ fit_700_5_hot = fit_survival(model_exp, data_700_5[1], [0.75, 100])
 fit_700_5_cold = fit_survival(model_exp, data_700_5[2], [0.2, 40])
 fit_701_5_hot = fit_survival(model_exp, data_701_5[1], [0.75, 100])
 fit_701_5_cold = fit_survival(model_exp, data_701_5[2], [0.2, 40])
+fit_703_hot = fit_survival(model_exp, data_703[1], [0.75, 100])
+fit_703_cold = fit_survival(model_exp2, data_703[2], [0.3, 10, 0.1, 100])
+fit_705_hot = fit_survival(model_exp, data_705[1], [0.75, 100])
+fit_705_cold = fit_survival(model_exp2, data_705[2], [0.3, 10, 0.1, 100])
+fit_707_hot = fit_survival(model_exp, data_707[1], [0.75, 200])
+fit_707_cold = fit_survival(model_exp2, data_707[2], [0.5, 40, 0.2, 200])
+fit_709_hot = fit_survival(model_exp, data_709[1], [0.75, 200])
+fit_709_cold = fit_survival(model_exp2, data_709[2], [0.5, 40, 0.2, 200])
+fit_712_hot = fit_survival(model_exp, data_712[1], [0.75, 500])
+fit_712_cold = fit_survival(model_exp2, data_712[2], [0.5, 100, 0.2, 500])
+fit_715_hot = fit_survival(model_exp, data_715[1], [0.75, 500])
+fit_715_cold = fit_survival(model_exp2, data_715[2], [0.5, 100, 0.2, 500])
+fit_718_hot = fit_survival(model_exp, data_718[1], [0.75, 500])
+fit_718_cold = fit_survival(model_exp2, data_718[2], [0.5, 100, 0.2, 500])
+fit_722_hot = fit_survival(model_exp, data_722[1], [0.75, 500])
+fit_722_cold = fit_survival(model_exp2, data_722[2], [0.5, 100, 0.2, 500])
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20190219_ps_lifetime")
 
@@ -265,12 +330,6 @@ NaCsPlot.plot_survival_data(data_697_5[1], fmt="C5.", label="697.5")
 plot(fit_697_5_hot.plotx, fit_697_5_hot.ploty, "C5")
 NaCsPlot.plot_survival_data(data_698_5[1], fmt="C6.", label="698.5")
 plot(fit_698_5_hot.plotx, fit_698_5_hot.ploty, "C6")
-NaCsPlot.plot_survival_data(data_699_5[1], fmt="C7.", label="699.5")
-plot(fit_699_5_hot.plotx, fit_699_5_hot.ploty, "C7")
-NaCsPlot.plot_survival_data(data_700_5[1], fmt="C8.", label="700.5")
-plot(fit_700_5_hot.plotx, fit_700_5_hot.ploty, "C8")
-NaCsPlot.plot_survival_data(data_701_5[1], fmt="C9.", label="701.5")
-plot(fit_701_5_hot.plotx, fit_701_5_hot.ploty, "C9")
 legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
 grid()
 ylim([0, 1])
@@ -291,12 +350,6 @@ NaCsPlot.plot_survival_data(data_697_5[2], fmt="C5.", label="697.5")
 plot(fit_697_5_cold.plotx, fit_697_5_cold.ploty, "C5")
 NaCsPlot.plot_survival_data(data_698_5[2], fmt="C6.", label="698.5")
 plot(fit_698_5_cold.plotx, fit_698_5_cold.ploty, "C6")
-NaCsPlot.plot_survival_data(data_699_5[2], fmt="C7.", label="699.5")
-plot(fit_699_5_cold.plotx, fit_699_5_cold.ploty, "C7")
-NaCsPlot.plot_survival_data(data_700_5[2], fmt="C8.", label="700.5")
-plot(fit_700_5_cold.plotx, fit_700_5_cold.ploty, "C8")
-NaCsPlot.plot_survival_data(data_701_5[2], fmt="C9.", label="701.5")
-plot(fit_701_5_cold.plotx, fit_701_5_cold.ploty, "C9")
 legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
 grid()
 ylim([0, 0.25])
@@ -305,5 +358,89 @@ title("2-Body Lifetime (Cold)")
 xlabel("Time (ms)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_cold2")
+
+figure()
+NaCsPlot.plot_survival_data(data_699_5[1], fmt="C0.", label="699.5")
+plot(fit_699_5_hot.plotx, fit_699_5_hot.ploty, "C0")
+NaCsPlot.plot_survival_data(data_700_5[1], fmt="C1.", label="700.5")
+plot(fit_700_5_hot.plotx, fit_700_5_hot.ploty, "C1")
+NaCsPlot.plot_survival_data(data_701_5[1], fmt="C2.", label="701.5")
+plot(fit_701_5_hot.plotx, fit_701_5_hot.ploty, "C2")
+NaCsPlot.plot_survival_data(data_703[1], fmt="C3.", label="703")
+plot(fit_703_hot.plotx, fit_703_hot.ploty, "C3")
+NaCsPlot.plot_survival_data(data_705[1], fmt="C4.", label="705")
+plot(fit_705_hot.plotx, fit_705_hot.ploty, "C4")
+legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
+grid()
+ylim([0, 1])
+xlim([0, 105])
+title("2-Body Lifetime (Hot)")
+xlabel("Time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_hot3")
+
+figure()
+NaCsPlot.plot_survival_data(data_699_5[2], fmt="C0.", label="699.5")
+plot(fit_699_5_cold.plotx, fit_699_5_cold.ploty, "C0")
+NaCsPlot.plot_survival_data(data_700_5[2], fmt="C1.", label="700.5")
+plot(fit_700_5_cold.plotx, fit_700_5_cold.ploty, "C1")
+NaCsPlot.plot_survival_data(data_701_5[2], fmt="C2.", label="701.5")
+plot(fit_701_5_cold.plotx, fit_701_5_cold.ploty, "C2")
+NaCsPlot.plot_survival_data(data_703[2], fmt="C3.", label="703")
+plot(fit_703_cold.plotx, fit_703_cold.ploty, "C3")
+NaCsPlot.plot_survival_data(data_705[2], fmt="C4.", label="705")
+plot(fit_705_cold.plotx, fit_705_cold.ploty, "C4")
+legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
+grid()
+ylim([0, 0.6])
+xlim([0, 22])
+title("2-Body Lifetime (Cold)")
+xlabel("Time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_cold3")
+
+figure()
+NaCsPlot.plot_survival_data(data_707[1], fmt="C0.", label="707")
+plot(fit_707_hot.plotx, fit_707_hot.ploty, "C0")
+NaCsPlot.plot_survival_data(data_709[1], fmt="C1.", label="709")
+plot(fit_709_hot.plotx, fit_709_hot.ploty, "C1")
+NaCsPlot.plot_survival_data(data_712[1], fmt="C2.", label="712")
+plot(fit_712_hot.plotx, fit_712_hot.ploty, "C2")
+NaCsPlot.plot_survival_data(data_715[1], fmt="C3.", label="715")
+plot(fit_715_hot.plotx, fit_715_hot.ploty, "C3")
+NaCsPlot.plot_survival_data(data_718[1], fmt="C4.", label="718")
+plot(fit_718_hot.plotx, fit_718_hot.ploty, "C4")
+NaCsPlot.plot_survival_data(data_722[1], fmt="C5.", label="722")
+plot(fit_722_hot.plotx, fit_722_hot.ploty, "C5")
+legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
+grid()
+ylim([0, 1])
+xlim([0, 550])
+title("2-Body Lifetime (Hot)")
+xlabel("Time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_hot4")
+
+figure()
+NaCsPlot.plot_survival_data(data_707[2], fmt="C0.", label="707")
+plot(fit_707_cold.plotx, fit_707_cold.ploty, "C0")
+NaCsPlot.plot_survival_data(data_709[2], fmt="C1.", label="709")
+plot(fit_709_cold.plotx, fit_709_cold.ploty, "C1")
+NaCsPlot.plot_survival_data(data_712[2], fmt="C2.", label="712")
+plot(fit_712_cold.plotx, fit_712_cold.ploty, "C2")
+NaCsPlot.plot_survival_data(data_715[2], fmt="C3.", label="715")
+plot(fit_715_cold.plotx, fit_715_cold.ploty, "C3")
+NaCsPlot.plot_survival_data(data_718[2], fmt="C4.", label="718")
+plot(fit_718_cold.plotx, fit_718_cold.ploty, "C4")
+NaCsPlot.plot_survival_data(data_722[2], fmt="C5.", label="722")
+plot(fit_722_cold.plotx, fit_722_cold.ploty, "C5")
+legend(fontsize="small", ncol=2, labelspacing=0.2, borderpad=0.2)
+grid()
+ylim([0, 1])
+xlim([0, 250])
+title("2-Body Lifetime (Cold)")
+xlabel("Time (ms)")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_cold4")
 
 NaCsPlot.maybe_show()
