@@ -265,6 +265,67 @@ fit_718_cold = fit_survival(model_exp2, data_718[2], [0.5, 100, 0.2, 500])
 fit_722_hot = fit_survival(model_exp, data_722[1], [0.75, 500])
 fit_722_cold = fit_survival(model_exp2, data_722[2], [0.5, 100, 0.2, 500])
 
+struct Line
+    freqs::Vector{Float64}
+    p::Vector{Float64}
+    p_s::Vector{Float64}
+    r::Vector{Float64}
+    r_s::Vector{Float64}
+    Line() = new(Float64[], Float64[], Float64[], Float64[], Float64[])
+end
+
+const line_hot = Line()
+const line_cold1 = Line()
+const line_cold2 = Line()
+
+function add_point!(line::Line, freq, fit, i0=1)
+    push!(line.freqs, freq)
+    push!(line.p, fit.param[i0])
+    push!(line.p_s, fit.unc[i0])
+    push!(line.r, 1000 / fit.param[i0 + 1])
+    push!(line.r_s, fit.unc[i0 + 1] / fit.param[i0 + 1]^2 * 1000)
+end
+
+function add_fit!(freq, hot, cold=nothing)
+    add_point!(line_hot, freq, hot)
+    cold === nothing && return
+    if length(cold.param) == 2
+        add_point!(line_cold1, freq, cold)
+    elseif cold.param[4] < cold.param[2]
+        add_point!(line_cold1, freq, cold, 1)
+        add_point!(line_cold2, freq, cold, 3)
+    else
+        add_point!(line_cold2, freq, cold, 1)
+        add_point!(line_cold1, freq, cold, 3)
+    end
+end
+
+add_fit!(640, fit_640_hot, fit_640_cold)
+add_fit!(656, fit_656_hot, fit_656_cold)
+add_fit!(670, fit_670_hot, fit_670_cold)
+add_fit!(682, fit_682_hot, fit_682_cold)
+add_fit!(688, fit_688_hot, fit_688_cold)
+add_fit!(690, fit_690_hot, fit_690_cold)
+add_fit!(691.5, fit_691_5_hot, fit_691_5_cold)
+add_fit!(692.5, fit_692_5_hot, fit_692_5_cold)
+add_fit!(693.5, fit_693_5_hot)
+add_fit!(694.5, fit_694_5_hot)
+add_fit!(695.5, fit_695_5_hot, fit_695_5_cold)
+add_fit!(696.5, fit_696_5_hot, fit_696_5_cold)
+add_fit!(697.5, fit_697_5_hot, fit_697_5_cold)
+add_fit!(698.5, fit_698_5_hot, fit_698_5_cold)
+add_fit!(699.5, fit_699_5_hot, fit_699_5_cold)
+add_fit!(700.5, fit_700_5_hot, fit_700_5_cold)
+add_fit!(701.5, fit_701_5_hot, fit_701_5_cold)
+add_fit!(703, fit_703_hot, fit_703_cold)
+add_fit!(705, fit_705_hot, fit_705_cold)
+add_fit!(707, fit_707_hot, fit_707_cold)
+add_fit!(709, fit_709_hot, fit_709_cold)
+add_fit!(712, fit_712_hot, fit_712_cold)
+add_fit!(715, fit_715_hot, fit_715_cold)
+add_fit!(718, fit_718_hot, fit_718_cold)
+add_fit!(722, fit_722_hot, fit_722_cold)
+
 const prefix = joinpath(@__DIR__, "imgs", "data_20190219_ps_lifetime")
 
 figure()
@@ -442,5 +503,33 @@ title("2-Body Lifetime (Cold)")
 xlabel("Time (ms)")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)_cold4")
+
+figure()
+errorbar(line_hot.freqs, line_hot.p, line_hot.p_s, fmt=".-", label="Hot")
+errorbar(line_cold1.freqs, line_cold1.p, line_cold1.p_s, fmt=".-", label="Cold (slow)")
+errorbar(line_cold2.freqs, line_cold2.p, line_cold2.p_s, fmt=".-", label="Cold (fast)")
+grid()
+legend()
+ylim([0, 1])
+title("2-Body lifetime fits")
+xlabel("Frequency (288XXX GHz)")
+ylabel("Initial survival")
+NaCsPlot.maybe_save("$(prefix)_p0s")
+
+figure()
+errorbar(line_hot.freqs, line_hot.r, line_hot.r_s, fmt=".-", label="Hot")
+errorbar(line_cold1.freqs, line_cold1.r, line_cold1.r_s, fmt=".-", label="Cold (slow)")
+errorbar(line_cold2.freqs, line_cold2.r, line_cold2.r_s, fmt=".-", label="Cold (fast)")
+grid()
+legend()
+ax = gca()
+ax[:set_yscale]("log", nonposy="clip")
+ax[:set_yticks]([1, 10, 100])
+ax[:set_yticklabels](["1", "10", "100"])
+ylim([0.7, 700])
+title("2-Body lifetime fits")
+xlabel("Frequency (288XXX GHz)")
+ylabel("Decay rate (\$s^{-1}\$)")
+NaCsPlot.maybe_save("$(prefix)_rates")
 
 NaCsPlot.maybe_show()
