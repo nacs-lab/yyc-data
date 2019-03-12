@@ -18,9 +18,9 @@ const maxcnts = [typemax(Int),
                  ]
 const specs = [(298.295 .+ (-16:2:16) .* 1e-3,
                 298.295 .+ (-16:2:16) .* 1e-3,
-                [0.1, 0.2, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40],
-                [0.1, 0.2, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40]),
-               [0.1, 0.2, 0.3, 0.4, 0.5]]
+                [0.1, 0.2, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40] .- 0.04,
+                [0.1, 0.2, 0.5, 1, 1.5, 2, 4, 7, 10, 15, 25, 40] .- 0.04),
+               [0.1, 0.2, 0.3, 0.4, 0.5] .- 0.04]
 select_datas(datas, selector, maxcnts, specs) =
     [NaCsData.split_data(NaCsData.select_count(data..., selector, maxcnt), spec)
      for (data, maxcnt, spec) in zip(datas, maxcnts, specs)]
@@ -111,7 +111,7 @@ ax[:set_xscale]("log", nonposx="clip")
 ax[:set_xticks]([0.1, 1, 10])
 ax[:set_xticklabels](["0.1", "1", "10"])
 ylim([0, 1])
-xlim([0.08, 45])
+xlim([0.05, 45])
 title("Raman time")
 xlabel("Time (ms)")
 ylabel("2-Body Survival")
