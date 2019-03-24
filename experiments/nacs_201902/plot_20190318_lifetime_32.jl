@@ -70,16 +70,28 @@ end
 
 const datas_cs = select_datas(datas, NaCsData.select_single((1, 2), (4,)), maxcnts, specs)
 
+model_exp_off(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3]
+
 data_488 = datas_cs[1]
 data_635 = datas_cs[2]
+
+fit_488 = fit_survival(model_exp_off, data_488[3], [0.5, 5, 0.5])
+fit_635 = fit_survival(model_exp_off, data_635[3], [0.5, 5, 0.5])
+
+# @show fit_488.uncs
+# @show fit_635.uncs
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20190318_lifetime_32")
 
 figure()
-NaCsPlot.plot_survival_data(data_488[3], fmt="C0.-", label="488 GHz Total")
+NaCsPlot.plot_survival_data(data_488[3], fmt="C0.")
+plot(fit_488.plotx, fit_488.ploty, "C0-", label="488 GHz Total")
 NaCsPlot.plot_survival_data(data_488[4], fmt="C1.-", label="488 GHz F = 3")
-NaCsPlot.plot_survival_data(data_635[3], fmt="C2.-", label="635 GHz Total")
+NaCsPlot.plot_survival_data(data_635[3], fmt="C2.")
+plot(fit_635.plotx, fit_635.ploty, "C2-", label="635 GHz Total")
 NaCsPlot.plot_survival_data(data_635[4], fmt="C3.-", label="635 GHz F = 3")
+text(0.06, 0.9, "\$\\tau_{488}=$(fit_488.uncs[2]) ms\$", color="C0")
+text(1.7, 0.78, "\$\\tau_{635}=$(fit_635.uncs[2]) ms\$", color="C2")
 legend(fontsize="small")
 grid()
 ax = gca()
