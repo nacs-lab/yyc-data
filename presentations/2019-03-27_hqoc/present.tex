@@ -1,0 +1,445 @@
+\documentclass{beamer}
+\mode<presentation>{
+  \usetheme{Boadilla}
+  \usefonttheme[onlylarge]{structurebold}
+  \usefonttheme[stillsansseriflarge]{serif}
+  \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+  % \setbeamertemplate{navigation symbols}{}
+  \setbeamercovered{transparent}
+}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{esint}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xkeyval}
+\usepackage{xargs}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{multimedia}
+\usepackage{bm}
+\usepackage{siunitx}
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes,
+  arrows.meta
+}
+\usepgfmodule{oo}
+
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\mode<handout>{
+  \usepackage{pgfpages}
+  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+  \setbeamercolor{background canvas}{bg=black!10}
+}
+
+\newcommand\pgfmathsinandcos[3]{%
+  \pgfmathsetmacro#1{sin(#3)}%
+  \pgfmathsetmacro#2{cos(#3)}%
+}
+\newcommand\LongitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % azimuth
+  \tikzset{#1/.estyle={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
+}
+\newcommand\LatitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % latitude
+  \pgfmathsetmacro\yshift{\cosEl*\sint}
+  \tikzset{#1/.estyle={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
+}
+\newcommand\DrawLongitudeCircle[2][1]{
+  \LongitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1);
+  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1);
+}
+\newcommand\DrawLatitudeCircleArrow[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane,decoration={markings, mark=at position 0.6 with {\arrow{<}}},postaction={decorate},line width=.6mm] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed,line width=.6mm] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\DrawLatitudeCircle[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\coil[1]{
+  {\rh * cos(\t * pi r)}, {\apart * (2 * #1 + \t) + \rv * sin(\t * pi r)}
+}
+\makeatletter
+\define@key{DrawFromCenter}{style}[{->}]{
+  \tikzset{DrawFromCenterPlane/.style={#1}}
+}
+\define@key{DrawFromCenter}{r}[1]{
+  \def\@R{#1}
+}
+\define@key{DrawFromCenter}{center}[(0, 0)]{
+  \def\@Center{#1}
+}
+\define@key{DrawFromCenter}{theta}[0]{
+  \def\@Theta{#1}
+}
+\define@key{DrawFromCenter}{phi}[0]{
+  \def\@Phi{#1}
+}
+\presetkeys{DrawFromCenter}{style, r, center, theta, phi}{}
+\newcommand*\DrawFromCenter[1][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY);
+  }
+}
+\newcommand*\DrawFromCenterText[2][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY) node {#2};
+  }
+}
+\makeatother
+
+% not mandatory, but I though it was better to set it blank
+\setbeamertemplate{headline}{}
+\def\beamer@entrycode{\vspace{-\headheight}}
+
+\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.2cm,
+  post length=0.2cm, snake, amplitude=.4mm,
+  segment length=2mm},thick, ->]
+
+%% document-wide tikz options and styles
+
+\tikzset{%
+  % >=latex, % option for nice arrows
+  inner sep=0pt,%
+  outer sep=2pt,%
+  mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
+    fill=black,circle}%
+}
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, very thick,
+    text width=8em,
+    minimum height=2.5em,
+    text centered},
+}
+
+\tikzset{onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
+    % \pgfkeysalso doesn't change the path
+  }}
+
+\makeatletter
+\newbox\@backgroundblock
+\newenvironment{backgroundblock}[2]{%
+  \global\setbox\@backgroundblock=\vbox\bgroup%
+  \unvbox\@backgroundblock%
+  \vbox to0pt\bgroup\vskip#2\hbox to0pt\bgroup\hskip#1\relax%
+}{\egroup\egroup\egroup}
+\addtobeamertemplate{background}{\box\@backgroundblock}{}
+\makeatother
+
+% \def\timeleft{15:00->14:55}
+
+\title[Collision between single atoms]{Collision between single atoms in optical tweezers}
+\date{March 27, 2019}
+\author[Yichao Yu]{Yichao Yu\\
+  \vspace{0.5cm}
+  {\footnotesize Lee Liu, Lewis Picard, Kenneth Wang, Dr. Jon Hood}}
+\institute{Ni Group/Harvard}
+
+\begin{document}
+
+\pgfdeclarelayer{tweezer}
+\pgfsetlayers{tweezer,main}
+\pgfooclass{tweezer}{
+  \method tweezer() {
+  }
+  \method drawTweezer(#1,#2,#3) {
+    \begin{pgfonlayer}{tweezer}
+      \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
+      fill opacity=0.9,inner color=#3]
+      plot[draw,samples=200,domain=-1.5:1.5] function {sqrt(0.01 + x**2 / 5)}
+      -- plot[draw,samples=200,domain=1.5:-1.5] function {-sqrt(0.01 + x**2 / 5)};
+    \end{pgfonlayer}
+  }
+  \method drawAtom(#1,#2,#3,#4) {
+    \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
+  }
+  \method drawNaAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,orange);
+  }
+  \method drawCsAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
+  }
+  \method drawNaTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,orange!35!black!30);
+  }
+  \method drawCsTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,blue!30!black!30);
+  }
+  \method up(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2+0.06,0.12);
+    \pgfoothis.drawCsAtom(#1,#2-0.06,0.16);
+  }
+  \method down(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2+0.06,0.16);
+    \pgfoothis.drawNaAtom(#1,#2-0.06,0.12);
+  }
+  \method naTrap(#1,#2) {
+    \pgfoothis.drawNaTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2,0.12);
+  }
+  \method csTrap(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2,0.16);
+  }
+}
+\pgfoonew \mytweezer=new tweezer()
+
+% Title
+%% Talk about our experiment on measuring the collision properties
+%% between single atoms in optical tweezer.
+
+{
+  \usebackgroundtemplate{
+    \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{front_bg.png}}
+  }
+  \setbeamercolor{title}{fg=cyan!50}
+  \setbeamercolor{author}{fg=white}
+  \setbeamercolor{institute}{fg=white}
+  \setbeamercolor{date}{fg=white}
+  \begin{frame}{}
+    \titlepage
+  \end{frame}
+}
+
+% Motivation
+%% We are intersted in the collisional properties, in another word scattering length,
+%% between Na and Cs since it governs many aspects of the interaction between the two atoms
+%% * Binding energy
+%% * Molecular potential
+%% * Feshbach resonance
+%% * Molecule formation
+%
+%% Show you how we use our measurement of the scattering length to refine our
+%% prediction of FB resonance and potentially guide our molecule formation.
+
+\begin{frame}{Scattering length $a$}
+  \begin{center}
+    \begin{itemize}
+    \item Binding energy
+    \item Molecular potential
+    \item Feshbach resonance
+    \item Molecule formation\\
+    $\vdots$
+    \end{itemize}
+  \end{center}
+\end{frame}
+
+% Experiment sequence
+%% * Start with single atoms (Na and Cs) trapped from laser cooled gas
+%% * RSC and OP to prepare a single quantum state
+%% * Merge to enable interaction
+
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.75]
+      \mytweezer.drawCsTweezer(0, 0)
+      \mytweezer.drawNaTweezer(-1, 0)
+      \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
+      \mytweezer.drawNaAtom(-1.06, -0.09, 0.27)
+
+      \mytweezer.drawCsTweezer(0, -3.1)
+      \mytweezer.drawNaTweezer(-1, -3.1)
+      \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
+      \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
+
+      \mytweezer.drawCsTweezer(-1, -7.0)
+      \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
+      \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
+
+      \fill[white,temporal=<1>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5) rectangle (0.5, -1.5);
+      \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
+      \fill[white,temporal=<3>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
+
+      \visible<2->{
+        \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
+          \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+          \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
+        \end{scope}
+      }
+
+      \visible<3->{
+        \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
+          \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
+        \end{scope}
+      }
+      \visible<1>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
+        \node[below,align=center] at (6.5, -0.5)
+        {\includegraphics[width=5cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
+        \node[below,align=center] at (7, -7.5)
+        {Loading probability per site: 60\%\\
+          Post select on initial and final state.};
+      }
+      \visible<2>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
+        \node[below] at (6.5, -1)
+        {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
+        Don't mention axis.
+        Explain the sideband spectrum more.
+        \node[below,align=center] at (7, -7)
+        {Cs: 96\% ground state\\Na: 94\% ground state};
+      }
+      \visible<3>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
+        \mytweezer.drawNaAtom(6, -1.22, 0.15)
+        \mytweezer.drawCsAtom(9, -2.06, 0.11)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+        \mytweezer.drawNaAtom(6, -3.72, 0.15)
+        \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
+        \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
+        \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+        \mytweezer.drawNaAtom(6, -8.55, 0.14)
+        \mytweezer.drawCsAtom(6, -9.56, 0.11)
+
+        \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
+        \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Measure interaction by driving Raman or microwave transitions between HF state.
+%% Similar to the experiement done in optical lattice on Mott insulator but the anisotropy
+%% causes some difference.
+
+% Interaction shift data
+%% Significant state mixing due to low axial trapping frequency
+%% Theory model
+
+\begin{frame}{Interaction shift}
+  \begin{center}
+    \begin{columns}
+      \column{6cm}
+      \begin{center}
+        \includegraphics[width=5cm]{shift_raman.pdf}\\
+        \includegraphics[width=5cm]{shift_theory.pdf}
+      \end{center}
+      \column{6cm}
+      \begin{center}
+        \includegraphics[width=5cm]{na2cs4.pdf}\\
+        \includegraphics[width=5cm]{na2cs3.pdf}
+      \end{center}
+    \end{columns}
+  \end{center}
+\end{frame}
+
+% FB resonance data
+%% Better prediction than before.
+\begin{frame}{Feshbach resonance}
+  \begin{center}
+    \includegraphics[width=11cm]{fb.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Next step}
+  \begin{center}
+    Take advantage of the large scattering length to enhance molecule formation.
+    \vspace{0.5cm}
+    \visible<2->{
+      Thank you for your attention.
+    }
+  \end{center}
+\end{frame}
+
+\end{document}
