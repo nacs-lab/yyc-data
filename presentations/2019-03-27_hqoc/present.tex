@@ -288,7 +288,8 @@
 %% prediction of FB resonance and potentially guide our molecule formation.
 
 \begin{frame}{Scattering length $a$}
-  \begin{center}
+  \begin{columns}
+    \column{4.5cm}
     \begin{itemize}
     \item<+-> Binding energy
     \item<+-> Molecular potential
@@ -296,7 +297,32 @@
     \item<+-> Molecule formation\\
       $\vdots$
     \end{itemize}
-  \end{center}
+    \column{6.5cm}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.65]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.5) {Internuclear distance};
+
+        \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
+        \draw (1.0793 - 0.25, -0.4631 + 2.5) -- (4.5 - 0.25, -0.4631 + 2.5);
+
+        \draw[line width=1.1]
+        plot[samples=200,domain=0.8:7,variable=\x]
+        ({\x - 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+
+        \mytweezer.drawNaAtom(5.55, 2.7, 0.12)
+        \mytweezer.drawCsAtom(6.05, 2.7, 0.10)
+
+        \mytweezer.drawNaAtom(2.08, 2.15, 0.12)
+        \mytweezer.drawCsAtom(2.25, 2.15, 0.10)
+
+        \draw[->, cyan!50!blue, line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
+        arc (270:90:0.2) -- ++(2.5, 0);
+      \end{scope}
+    \end{tikzpicture}
+  \end{columns}
 \end{frame}
 
 % Experiment sequence
