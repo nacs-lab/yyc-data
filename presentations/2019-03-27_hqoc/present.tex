@@ -290,11 +290,11 @@
 \begin{frame}{Scattering length $a$}
   \begin{center}
     \begin{itemize}
-    \item Binding energy
-    \item Molecular potential
-    \item Feshbach resonance
-    \item Molecule formation\\
-    $\vdots$
+    \item<+-> Binding energy
+    \item<+-> Molecular potential
+    \item<+-> Feshbach resonance
+    \item<+-> Molecule formation\\
+      $\vdots$
     \end{itemize}
   \end{center}
 \end{frame}
@@ -412,13 +412,20 @@
     \begin{columns}
       \column{6cm}
       \begin{center}
-        \includegraphics[width=5cm]{shift_raman.pdf}\\
-        \includegraphics[width=5cm]{shift_theory.pdf}
+        \includegraphics[width=4.5cm]{shift_raman.pdf}\\
+        \visible<3->{
+          \begin{tikzpicture}
+            \node at (0, 0) {\includegraphics[width=5cm]{shift_theory.pdf}};
+            \visible<4->{
+              \draw[<->, opacity=0.7, color=blue!80!black, line width=1]
+              (-0.65, -0.8) -- (0.39, 0.3) -- (-0.65, 0.88);
+            }
+          \end{tikzpicture}
+        }
       \end{center}
       \column{6cm}
       \begin{center}
-        \includegraphics[width=5cm]{na2cs4.pdf}\\
-        \includegraphics[width=5cm]{na2cs3.pdf}
+        \visible<2->{\includegraphics[width=5cm]{na2cs4.pdf}}
       \end{center}
     \end{columns}
   \end{center}
@@ -428,14 +435,26 @@
 %% Better prediction than before.
 \begin{frame}{Feshbach resonance}
   \begin{center}
-    \includegraphics[width=11cm]{fb.pdf}
+    \includegraphics[width=10cm]{fb.pdf}\\
+    \vspace{1cm}
+    \visible<2->{
+      \begin{tabular}{|c|c|c|}
+        \hline
+        &$s$-wave&$p$-wave\\\hline
+        Predicted (MQDT)&$663$ G&$799$ G\\\hline
+        Measured&$652(3)$ G&$791.2(2)$ G\\\hline
+      \end{tabular}
+    }
   \end{center}
 \end{frame}
 
 \begin{frame}{Next step}
   \begin{center}
-    Take advantage of the large scattering length to enhance molecule formation.
-    \vspace{0.5cm}
+    \begin{itemize}
+    \item Make Feshbach molecules
+    \item Take advantage of the large scattering length to enhance molecule formation
+    \end{itemize}
+    \vspace{1cm}
     \visible<2->{
       Thank you for your attention.
     }
