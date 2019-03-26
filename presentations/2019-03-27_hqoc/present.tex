@@ -291,10 +291,10 @@
   \begin{columns}
     \column{4.5cm}
     \begin{itemize}
-    \item<+-> Binding energy
-    \item<+-> Molecular potential
-    \item<+-> Feshbach resonance
-    \item<+-> Molecule formation\\
+    \item<2-> Binding energy
+    \item<3-> Molecular potential
+    \item<4-> Feshbach resonance
+    \item<5-> Molecule formation\\
       $\vdots$
     \end{itemize}
     \column{6.5cm}
@@ -325,7 +325,7 @@
   \end{columns}
 \end{frame}
 
-% Experiment sequence
+% Our measurement is done on single Na and Cs atoms.
 %% * Start with single atoms (Na and Cs) trapped from laser cooled gas
 %% * RSC and OP to prepare a single quantum state
 %% * Merge to enable interaction
@@ -425,13 +425,20 @@
   \end{center}
 \end{frame}
 
-%% Measure interaction by driving Raman or microwave transitions between HF state.
-%% Similar to the experiement done in optical lattice on Mott insulator but the anisotropy
-%% causes some difference.
+%% When we successfully loaded two atoms in the tweezer,
+%% their energy levels will be shifted due to the interaction.
+%% This shift depends on the spin state of the atom and we can measure this difference
+%% by driving a Raman or microwave transition between HF states.
+%% As shown.... by comparing the spectrum with and without another atom...
+%% This way of measuring the scattering length is similar to the experiement done
+%% in optical lattice on Mott insulator but the anisotropy causes some difference as shown in.
 
 % Interaction shift data
+%% One peak on the right, lowering energy -> attractive interaction.
+%% Another peak on the left...
 %% Significant state mixing due to low axial trapping frequency
 %% Theory model
+%% 33+22 -> 33+11
 
 \begin{frame}{Interaction shift}
   \begin{center}
@@ -442,16 +449,22 @@
         \visible<3->{
           \begin{tikzpicture}
             \node at (0, 0) {\includegraphics[width=5cm]{shift_theory.pdf}};
-            \visible<4->{
+            \visible<4>{
               \draw[<->, opacity=0.7, color=blue!80!black, line width=1]
               (-0.65, -0.8) -- (0.39, 0.3) -- (-0.65, 0.88);
+            }
+            \visible<5>{
+              \draw[<->, opacity=0.7, color=blue!80!black, line width=1]
+              (0.46, 0.40) -- (-0.65, -0.8) -- (0.46, 1.9);
             }
           \end{tikzpicture}
         }
       \end{center}
       \column{6cm}
       \begin{center}
-        \visible<2->{\includegraphics[width=5cm]{na2cs4.pdf}}
+        \visible<2->{\includegraphics[width=5cm]{na2cs4.pdf}}\\
+        \vspace{0.5cm}
+        \visible<5->{\includegraphics[width=5cm]{na2cs3.pdf}}
       \end{center}
     \end{columns}
   \end{center}
@@ -459,17 +472,30 @@
 
 % FB resonance data
 %% Better prediction than before.
-\begin{frame}{Feshbach resonance}
-  \begin{center}
-    \includegraphics[width=10cm]{fb.pdf}\\
-    \vspace{1cm}
-    \visible<2->{
-      \begin{tabular}{|c|c|c|}
+\begin{frame}[t]{Feshbach resonance}
+  \only<1>{
+    \begin{center}
+      \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
+        \hline
+        &$s$-wave&$p$-wave\\\hline
+        Predicted (MQDT)&$663$ G&$799$ G\\\hline
+      \end{tabular}
+    \end{center}
+  }
+  \only<2->{
+    \begin{center}
+      \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
         \hline
         &$s$-wave&$p$-wave\\\hline
         Predicted (MQDT)&$663$ G&$799$ G\\\hline
         Measured&$652(3)$ G&$791.2(2)$ G\\\hline
       \end{tabular}
+    \end{center}
+  }
+  \begin{center}
+    \vspace{1cm}
+    \visible<2->{
+      \includegraphics[width=10cm]{fb.pdf}\\
     }
   \end{center}
 \end{frame}
