@@ -201,11 +201,13 @@
 
 % \def\timeleft{15:00->14:55}
 
-\title[Collision between single atoms]{Collision between single atoms in optical tweezers}
+\title[Collision between single atoms]{Collision between single atoms\\in optical tweezers}
 \date{March 27, 2019}
 \author[Yichao Yu]{Yichao Yu\\
   \vspace{0.5cm}
-  {\footnotesize Lee Liu, Lewis Picard, Kenneth Wang, Dr. Jon Hood}}
+  {\footnotesize Lee Liu, Kenneth Wang, Lewis Picard, Jonathan Hood}\\
+  {\footnotesize Jessie Zhang, Eliot Fenton, Yen-Wei Lin}}
+% Add 1.5
 \institute{Ni Group/Harvard}
 
 \begin{document}
@@ -267,7 +269,7 @@
   \usebackgroundtemplate{
     \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{front_bg.png}}
   }
-  \setbeamercolor{title}{fg=cyan!50}
+  \setbeamercolor{title}{fg=white}
   \setbeamercolor{author}{fg=white}
   \setbeamercolor{institute}{fg=white}
   \setbeamercolor{date}{fg=white}
@@ -276,60 +278,7 @@
   \end{frame}
 }
 
-% Motivation
-%% We are intersted in the collisional properties, in another word scattering length,
-%% between Na and Cs since it governs many aspects of the interaction between the two atoms
-%% * Binding energy
-%% * Molecular potential
-%% * Feshbach resonance
-%% * Molecule formation
-%
-%% Show you how we use our measurement of the scattering length to refine our
-%% prediction of FB resonance and potentially guide our molecule formation.
-
-\begin{frame}{Scattering length $a$}
-  \begin{columns}
-    \column{4.5cm}
-    \begin{itemize}
-    \item<2-> Binding energy
-    \item<3-> Molecular potential
-    \item<4-> Feshbach resonance
-    \item<5-> Molecule formation\\
-      $\vdots$
-    \end{itemize}
-    \column{6.5cm}
-    \begin{tikzpicture}
-      \begin{scope}[scale=0.65]
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
-        \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (8, 0);
-        \node[below] at (4, -0.5) {Internuclear distance};
-
-        \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
-        \draw (1.0793 - 0.25, -0.4631 + 2.5) -- (4.5 - 0.25, -0.4631 + 2.5);
-
-        \draw[line width=1.1]
-        plot[samples=200,domain=0.8:7,variable=\x]
-        ({\x - 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
-
-        \mytweezer.drawNaAtom(5.55, 2.7, 0.12)
-        \mytweezer.drawCsAtom(6.05, 2.7, 0.10)
-
-        \mytweezer.drawNaAtom(2.08, 2.15, 0.12)
-        \mytweezer.drawCsAtom(2.25, 2.15, 0.10)
-
-        \draw[->, cyan!50!blue, line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
-        arc (270:90:0.2) -- ++(2.5, 0);
-      \end{scope}
-    \end{tikzpicture}
-  \end{columns}
-\end{frame}
-
-% Our measurement is done on single Na and Cs atoms.
-%% * Start with single atoms (Na and Cs) trapped from laser cooled gas
-%% * RSC and OP to prepare a single quantum state
-%% * Merge to enable interaction
-
+%% The way we measure this
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}[scale=0.75]
@@ -425,6 +374,60 @@
   \end{center}
 \end{frame}
 
+% Motivation
+%% We are intersted in the collisional properties, in another word scattering length,
+%% between Na and Cs since it captures many aspects of the atom-atom interaction
+%% * Binding energy
+%% * Molecular potential
+%% * Feshbach resonance
+%% * Molecule formation
+%
+%% Show you how we use our measurement of the scattering length to refine our
+%% prediction of FB resonance and potentially guide our molecule formation.
+
+\begin{frame}{Scattering length $a$}
+  \begin{columns}
+    \column{4.5cm}
+    \begin{itemize}
+    \item<2-> Binding energy
+    \item<3-> Molecular potential
+    \item<4-> Feshbach resonance
+    \item<5-> Molecule formation\\
+      $\vdots$
+    \end{itemize}
+    \column{6.5cm}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.65]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.5) {Internuclear distance};
+
+        \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
+        \draw (1.0793 - 0.25, -0.4631 + 2.5) -- (4.5 - 0.25, -0.4631 + 2.5);
+
+        \draw[line width=1.1]
+        plot[samples=200,domain=0.8:7,variable=\x]
+        ({\x - 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+
+        \mytweezer.drawNaAtom(5.55, 2.7, 0.12)
+        \mytweezer.drawCsAtom(6.05, 2.7, 0.10)
+
+        \mytweezer.drawNaAtom(2.08, 2.15, 0.12)
+        \mytweezer.drawCsAtom(2.25, 2.15, 0.10)
+
+        \draw[->, cyan!50!blue, line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
+        arc (270:90:0.2) -- ++(2.5, 0);
+      \end{scope}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% Our measurement is done on single Na and Cs atoms.
+%% * Start with single atoms (Na and Cs) trapped from laser cooled gas
+%% * RSC and OP to prepare a single quantum state
+%% * Merge to enable interaction
+
 %% When we successfully loaded two atoms in the tweezer,
 %% their energy levels will be shifted due to the interaction.
 %% This shift depends on the spin state of the atom and we can measure this difference
@@ -448,14 +451,14 @@
         \includegraphics[width=4.5cm]{shift_raman.pdf}\\
         \visible<3->{
           \begin{tikzpicture}
-            \node at (0, 0) {\includegraphics[width=5cm]{shift_theory.pdf}};
+            \visible<3>{
+              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory.pdf}};
+            }
             \visible<4>{
-              \draw[<->, opacity=0.7, color=blue!80!black, line width=1]
-              (-0.65, -0.8) -- (0.39, 0.3) -- (-0.65, 0.88);
+              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory42_32.pdf}};
             }
             \visible<5>{
-              \draw[<->, opacity=0.7, color=blue!80!black, line width=1]
-              (0.46, 0.40) -- (-0.65, -0.8) -- (0.46, 1.9);
+              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory32_31.pdf}};
             }
           \end{tikzpicture}
         }
@@ -472,13 +475,13 @@
 
 % FB resonance data
 %% Better prediction than before.
-\begin{frame}[t]{Feshbach resonance}
+\begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
   \only<1>{
     \begin{center}
       \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
         \hline
         &$s$-wave&$p$-wave\\\hline
-        Predicted (MQDT)&$663$ G&$799$ G\\\hline
+        Predicted {\tiny (based on interaction shift)\footnote{In collaboration with Bo Gao}}&$663$ G&$799$ G\\\hline
       \end{tabular}
     \end{center}
   }
@@ -487,13 +490,13 @@
       \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
         \hline
         &$s$-wave&$p$-wave\\\hline
-        Predicted (MQDT)&$663$ G&$799$ G\\\hline
+        Predicted {\tiny (based on interaction shift)\footnote{In collaboration with Bo Gao}}&$663$ G&$799$ G\\\hline
         Measured&$652(3)$ G&$791.2(2)$ G\\\hline
       \end{tabular}
     \end{center}
   }
   \begin{center}
-    \vspace{1cm}
+    \vspace{0.5cm}
     \visible<2->{
       \includegraphics[width=10cm]{fb.pdf}\\
     }
