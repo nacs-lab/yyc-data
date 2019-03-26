@@ -446,28 +446,33 @@
 \begin{frame}{Interaction shift}
   \begin{center}
     \begin{columns}
-      \column{6cm}
+      \column{6.5cm}
       \begin{center}
-        \includegraphics[width=4.5cm]{shift_raman.pdf}\\
-        \visible<3->{
-          \begin{tikzpicture}
-            \visible<3>{
-              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory.pdf}};
-            }
-            \visible<4>{
-              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory42_32.pdf}};
-            }
-            \visible<5>{
-              \node at (0, 0) {\includegraphics[width=5cm]{shift_theory32_31.pdf}};
-            }
-          \end{tikzpicture}
-        }
+        \begin{tikzpicture}
+          \visible<1>{
+            \node at (0, 1) {\includegraphics[width=6.3cm]{shift_raman_1.pdf}};
+          }
+          \visible<2-4>{
+            \node at (0, 1) {\includegraphics[width=6.3cm]{shift_raman.pdf}};
+          }
+          \visible<5>{
+            \node at (0, 0) {\includegraphics[width=6.3cm]{shift_theory.pdf}};
+          }
+          \visible<6>{
+            \node at (0, 0) {\includegraphics[width=6.3cm]{shift_theory42_32.pdf}};
+          }
+          \visible<7>{
+            \node at (0, 0) {\includegraphics[width=6.3cm]{shift_theory32_31.pdf}};
+          }
+        \end{tikzpicture}
       \end{center}
-      \column{6cm}
+      \column{5.5cm}
       \begin{center}
-        \visible<2->{\includegraphics[width=5cm]{na2cs4.pdf}}\\
-        \vspace{0.5cm}
-        \visible<5->{\includegraphics[width=5cm]{na2cs3.pdf}}
+        \begin{tikzpicture}
+          \visible<2-5>{\node at (0, 2) {\includegraphics[width=5cm]{na2cs4_0.pdf}};}
+          \visible<6->{\node at (0, 2) {\includegraphics[width=5cm]{na2cs4.pdf}};}
+          \visible<7->{\node at (0, -2) {\includegraphics[width=5cm]{na2cs3.pdf}};}
+        \end{tikzpicture}
       \end{center}
     \end{columns}
   \end{center}
@@ -476,15 +481,10 @@
 % FB resonance data
 %% Better prediction than before.
 \begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
-  \only<1>{
-    \begin{center}
-      \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
-        \hline
-        &$s$-wave&$p$-wave\\\hline
-        Predicted {\tiny (based on interaction shift)\footnote{In collaboration with Bo Gao}}&$663$ G&$799$ G\\\hline
-      \end{tabular}
-    \end{center}
-  }
+  \begin{center}
+    \includegraphics[width=10cm]{fb.pdf}\\
+    \vspace{0.5cm}
+  \end{center}
   \only<2->{
     \begin{center}
       \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
@@ -495,12 +495,6 @@
       \end{tabular}
     \end{center}
   }
-  \begin{center}
-    \vspace{0.5cm}
-    \visible<2->{
-      \includegraphics[width=10cm]{fb.pdf}\\
-    }
-  \end{center}
 \end{frame}
 
 \begin{frame}{Next step}
