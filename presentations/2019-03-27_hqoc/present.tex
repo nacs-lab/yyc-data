@@ -523,11 +523,18 @@
 % Another thing we can measure is the FB resonance
 %% Better prediction than before.
 \begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
-  \begin{center}
-    \includegraphics[width=10cm]{fb.pdf}\\
-    \vspace{0.5cm}
-  \end{center}
+  \only<1>{
+    \begin{center}
+      \includegraphics[height=7cm]{chamber1_5.jpg}
+    \end{center}
+  }
   \only<2->{
+    \begin{center}
+      \includegraphics[width=10cm]{fb.pdf}\\
+      \vspace{0.5cm}
+    \end{center}
+  }
+  \only<3->{
     \begin{center}
       \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
         \hline
@@ -539,14 +546,22 @@
   }
 \end{frame}
 
-\begin{frame}{Next step}
+\begin{frame}{Conclusion}
   \begin{center}
     \begin{itemize}
-    \item Make Feshbach molecules
-    \item Take advantage of the large scattering length to enhance molecule formation
+    \item Interaction shift of Na and Cs
+    \item Feshbach resonance Na(1,-1) Cs(3,-3)
     \end{itemize}
     \vspace{1cm}
     \visible<2->{
+      {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Next step}}
+      \begin{itemize}
+      \item Make Feshbach molecules
+      \item Optical molecule formation taking advantage of the large scattering length
+      \end{itemize}
+      \vspace{1cm}
+    }
+    \visible<3->{
       Thank you for your attention.
     }
   \end{center}
