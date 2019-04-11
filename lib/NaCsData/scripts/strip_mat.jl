@@ -85,6 +85,7 @@ matopen(opts.iname) do mf
     sa = read(mf, "Analysis")["SingleAtomLogical"]
     scan = read(mf, "Scan")
     param_name = scan["ParamName"]
+    sg = haskey(scan, "ScanGroup") ? scan["ScanGroup"] : Dict{String,Any}()
     if eltype(sa) == Bool
         sa = UInt8.(sa)
     end
@@ -93,6 +94,7 @@ matopen(opts.iname) do mf
         write(out, "ParamList", pl)
         write(out, "SingleAtomLogical", sa)
         write(out, "ParamName", param_name)
+        write(out, "ScanGroup", sg)
         if opts.images
             write(out, "Images", scan["Images"])
         end
