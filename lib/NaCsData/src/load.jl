@@ -393,10 +393,12 @@ calc_survival(fnames::AbstractVector{T} where T<:AbstractString, z=1.0) =
     calc_survival((readdlm(fname, ',', Float64, skipstart=1) for fname in fnames), z)
 calc_survival(fnames::AbstractString, z=1.0) = calc_survival([fnames], z)
 
-function load_striped_mat(fname)
-    matopen(fname) do fd
-        params = read(fd, "ParamList")
-        @assert size(params, 1) == 1
-        return params[1, :], read(fd, "SingleAtomLogical") .!= 0
-    end
+function load_striped_mat(fname::AbstractString)
+    matopen(load_striped_mat, fname)
+end
+
+function load_striped_mat(fd)
+    params = read(fd, "ParamList")
+    @assert size(params, 1) == 1
+    return params[1, :], read(fd, "SingleAtomLogical") .!= 0
 end
