@@ -6,9 +6,16 @@ names = matopen(ARGS[1]) do fd
     read(fd, "names")
 end
 
+from_dir = ARGS[2]
+if length(ARGS) > 2
+    to_dir = ARGS[3]
+else
+    to_dir = joinpath(@__DIR__, "data")
+end
+
 for name in names
     println("Moving $name")
-    from = joinpath(ARGS[2], "data_$name.mat")
-    to = joinpath(@__DIR__, "data", "data_$name.mat")
+    from = joinpath(from_dir, "data_$name.mat")
+    to = joinpath(to_dir, "data_$name.mat")
     mv(from, to)
 end
