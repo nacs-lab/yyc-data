@@ -34,15 +34,27 @@ const names_files = ["data_20190414_pa_names2.mat"]
 const datas = [load_data(matopen(fd->read(fd, "names"), joinpath(@__DIR__, "data", names_file)),
                          NaCsData.select_single((1, 2,), (3, 4,)))
                for names_file in names_files]
+const datas_na = [load_data(matopen(fd->read(fd, "names"),
+                                    joinpath(@__DIR__, "data", names_file)),
+                            NaCsData.select_single((1, 2,), (3,)))
+                  for names_file in names_files]
+const datas_cs = [load_data(matopen(fd->read(fd, "names"),
+                                    joinpath(@__DIR__, "data", names_file)),
+                            NaCsData.select_single((1, 2,), (4,)))
+                  for names_file in names_files]
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20190414_pa")
 
 figure()
-NaCsPlot.plot_survival_data(datas[1], fmt="C0.-")
+NaCsPlot.plot_survival_data(datas[1], fmt="C0.-", label="Na+Cs")
+NaCsPlot.plot_survival_data(datas_na[1], fmt="C1.-", label="Na")
+NaCsPlot.plot_survival_data(datas_cs[1], fmt="C2.-", label="Cs")
+legend(fontsize="small", ncol=3)
+ylim([0.35, 0.9])
 grid()
 title("PA spectrum")
 xlabel("288XXX GHz")
-ylabel("Two-body survival")
+ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)")
 
 NaCsPlot.maybe_show()
