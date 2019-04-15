@@ -42,6 +42,10 @@ const datas_cs = [load_data(matopen(fd->read(fd, "names"),
                                     joinpath(@__DIR__, "data", names_file)),
                             NaCsData.select_single((1, 2,), (4,)))
                   for names_file in names_files]
+const datas_cs_cs = [load_data(matopen(fd->read(fd, "names"),
+                                       joinpath(@__DIR__, "data", names_file)),
+                               NaCsData.select_single((-1, 2,), (-3, 4,)))
+                     for names_file in names_files]
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20190414_pa")
 
@@ -56,5 +60,16 @@ title("PA spectrum")
 xlabel("288XXX GHz")
 ylabel("Survival")
 NaCsPlot.maybe_save("$(prefix)")
+
+figure()
+NaCsPlot.plot_survival_data(datas_cs[1], fmt="C0.-", label="Cs/Na+Cs")
+NaCsPlot.plot_survival_data(datas_cs_cs[1], fmt="C1.-", label="Cs/Cs")
+legend(fontsize="small", ncol=2)
+ylim([0.35, 0.9])
+grid()
+title("Cs survival")
+xlabel("288XXX GHz")
+ylabel("Survival")
+NaCsPlot.maybe_save("$(prefix)_cs")
 
 NaCsPlot.maybe_show()
