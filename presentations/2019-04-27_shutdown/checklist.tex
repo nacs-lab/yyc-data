@@ -244,6 +244,19 @@ For powering up, go through the checklist in the following order
 \end{itemize}
 Also wait before everyone else finish their corresponding steps before starting the next one.\\
 
+Please check to make sure the temperature controller for a laser is not turned off before
+the laser itself is. If a temperature controller is powered by homebuilt power supply,
+mark the output so that it won't be unplugged from the power supply and plug the whole
+power supply into the UPS instead of turning off.
+Homebuilt power supplies on the UPS should still be switched off if there's no load on it
+that needs to be on to reduce load on the UPS/external power.\\
+
+For machine table and 1.5 table, use a normal power strip to collect devices that
+needs to be on the UPS. We'll plug the power strip into an actual UPS after the computer
+is shut down and the UPS's are freed up.\\
+
+All numbering are from bottom to top and from left to right.\\
+
 \textbf{\Large #2}
 \vfill
 }
@@ -1370,6 +1383,7 @@ Also wait before everyone else finish their corresponding steps before starting 
 \subsection{Computers}
 \DevDef{Radio computer [3]}{
   \textbf{Lv2}\\
+  Ask Yichao
 }
 
 \DevDef{FPGA box for 1.0 [11]}{
@@ -1398,7 +1412,7 @@ Also wait before everyone else finish their corresponding steps before starting 
 }
 
 \onecolumn
-\Person{Jessie}{
+\Person{Jessie and Lewis}{
   Equipments and power supplies are mostly located between the machine table and the 1.5 table.
 }
 \begin{center}
@@ -1444,7 +1458,7 @@ Also wait before everyone else finish their corresponding steps before starting 
   34&High voltage power&Above Lv2 on power outlet\\\hline
   \multicolumn{3}{|c|}{1.5 Rack}\\\hline
   35&Home power (24)&Bottom level\\\hline
-  36&SEAS pump controller&Middle left\\\hline
+  36&SAES pump controller&Middle left\\\hline
   37&Benchtop power&Middle next to pump controller\\\hline
   38&Oscilloscope for 1.5 monitor&Above pump controller\\\hline
   39&Benchtop power 2chn for 1.5 coil&Above oscilloscope\\\hline
@@ -1465,42 +1479,74 @@ Also wait before everyone else finish their corresponding steps before starting 
 \subsection{Equipments}
 \DevDef{Current servo for compensation coil [5]}{
   \textbf{Lv1 below home power (24)}\\
-}
-
-\DevDef{Kenneth servo for 1.0 Cs tweezer [6]}{
-  \textbf{Lv1}\\
+  Ask Lewis\\
 }
 
 \DevDef{High voltage Amp for 630 lock [7]}{
   \textbf{Lv1}\\
+  Ask Lewis\\
 }
 
 \DevDef{Vincent servo x2 for STIRAP lasers [8]}{
   \textbf{Lv1}\\
-}
-
-\DevDef{Greiner servo for 1.0 Na tweezer [9]}{
-  \textbf{Lv1 above Vincent servos}\\
+  Ask Lewis\\
 }
 
 \DevDef{Rack for STRAP [10]}{
   \textbf{Lv1 next to Vincent servos}\\
+  Ask Lewis\\
 }
 
 \DevDef{Till driver v2 x2 for STIRAP lasers [11]}{
   \textbf{Lv1 above rack for 1.5}\\
+  Record current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 Current&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 2 Current&\\\hline
+  \end{tabular}\\
+
+  Ask Lewis\\
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power (zip tie to controller)
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Turn on
+  \end{itemize}
 }
 
 \DevDef{Temp servo x3 for STIRAP [12]}{
   \textbf{Lv2 next to 9x benchtop power}\\
-}
 
-\DevDef{FPGA box for 1.5 [13]}{
-  \textbf{Lv2}\\
+  Ask Lewis\\
+  Check plugged into UPS.
 }
 
 \DevDef{Till driver v2 x2 for 1.5 Cs Raman [18]}{
   \textbf{Floor rack Lv2}\\
+  Record current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 Current&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 2 Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power (zip tie to controller)
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Turn on
+  \end{itemize}
 }
 
 \DevDef{Kenneth servo for 1.5 Cs Raman phase lock [19]}{
@@ -1509,6 +1555,7 @@ Also wait before everyone else finish their corresponding steps before starting 
 
 \DevDef{Temp servo x2 for 1.5 Cs Raman [21]}{
   \textbf{Floor rack Lv2}\\
+  Check plugged into UPS.
 }
 
 \DevDef{Piezo driver for 1.5 Cs Raman [22]}{
@@ -1517,69 +1564,63 @@ Also wait before everyone else finish their corresponding steps before starting 
 
 \DevDef{Delay generator for 1.5 Na [23]}{
   \textbf{Lv1 below 1.5 output panel}\\
+  Record current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
+    &\\\hline
+    &\\\hline
+    &\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox
+  \item\OffBox
+  \item\OffBox
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox
+  \item\OnBox
+  \item\OnBox
+  \end{itemize}
 }
 
 \DevDef{Till driver v2 for 1.0 Innolume [24]}{
   \textbf{Lv1 next to delay generator}\\
-}
+  Record current values:\\
 
-\DevDef{Kenneth servo for 1.5 tweezers [25]}{
-  \textbf{Lv1}\\
+  \begin{tabular}{|c|c|}
+    \hline
+    Current&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power (zip tie to controller)
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Turn on
+  \end{itemize}
 }
 
 \DevDef{Temp servo for 1.0 Innolume [26]}{
   \textbf{Lv1}\\
+  Check plugged into UPS.
 }
 
 \DevDef{Shutter driver [27]}{
   \textbf{Lv1 on M2 controller}\\
+  Switch off/on with the switch on the back.
 }
 
 \DevDef{TiSapph [28]}{
   \textbf{Floor}\\
-}
-
-\DevDef{Function generator for 1.0 Na switching [29]}{
-  \textbf{Lv1 above TiSapph}\\
-}
-
-\DevDef{Keithley power for 1.0 Innolume [30]}{
-  \textbf{Lv2 above TiSapph}\\
-}
-
-\DevDef{Till driver v2 for 1.0 Cs MOT [31]}{
-  \textbf{Lv2 above 1.5 Cs MOT}\\
-}
-
-\DevDef{Temp servo for 1.0 Cs MOT [32]}{
-  \textbf{Lv2 on Till driver v2}\\
-}
-
-\DevDef{SEAS pump controller [36]}{
-  \textbf{Middle left}\\
-}
-
-\DevDef{Oscilloscope for 1.5 monitor [38]}{
-  \textbf{Above pump controller}\\
-}
-
-\DevDef{High voltage Amp for 1.5 MOT piezo [40]}{
-  \textbf{Top level}\\
-}
-
-\DevDef{Function generator for 1.5 MOT piezo [41]}{
-  \textbf{Top level on high voltage Amp}\\
-}
-
-\DevDef{IGBT stack [43]}{
-  \textbf{Floor}\\
-}
-
-\DevDef{LED driver [44]}{
-  \textbf{Near inner edge}\\
-}
-
-\DevDef{TiSapph}{
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Turn off pump, unplug from wall
@@ -1593,112 +1634,124 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug into wall, turn on pump
   \end{itemize}
 }
-\DevDef{Quantel Laser}{
-  \textbf{1st level in the middle, facing 1.5 table}\\
-  Ask Frederic.
-  \vspace{1cm}
+
+\DevDef{Function generator for 1.0 Na switching [29]}{
+  \textbf{Lv1 above TiSapph}\\
+  Record High, Low, Frequency, Phase, Duty cycle\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 High V&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 1 Low V&\\\hline
+    No. 1 Frequency&\\\hline
+    No. 1 Phase&\\\hline
+    No. 1 Duty cycle&\\\hline
+    No. 2 High V&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 2 Low V&\\\hline
+    No. 2 Frequency&\\\hline
+    No. 2 Phase&\\\hline
+    No. 2 Duty cycle&\\\hline
+  \end{tabular}\\
 }
-\DevDef{Intensity servo for Na}{
-  \textbf{1st level above Na tweezer, below 1.0 computer control box}\\
-  Unplug power
+
+\DevDef{Keithley power for 1.0 Innolume [30]}{
+  \textbf{Lv2 above TiSapph}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  Turn off after the Innolume is off.
 }
-\DevDef{1st version Till's current controller for butterfly laser}{
-  \textbf{1st level above TiSapph}\\
+
+\DevDef{Till driver v2 for 1.0 Cs MOT [31]}{
+  \textbf{Lv2 above 1.5 Cs MOT}\\
+  Record current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Current&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Turn off
   \item\OffBox Unplug power (zip tie to controller)
   \end{itemize}
-}
-\DevDef{Homebuilt temperature servo for butterfly laser}{
-  \textbf{1st level above TiSapph}\\
-  Switch off/on the front switch
-}
-\subsection{Power supplies}
-\DevDef{Benchtop power 2chn [1]}{
-  \textbf{Lv2}\\
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Turn on
+  \end{itemize}
 }
 
-\DevDef{Home power (24) [2]}{
-  \textbf{Lv2 above 1.0 tweezer breadboard}\\
+\DevDef{Temp servo for 1.0 Cs MOT [32]}{
+  \textbf{Lv2 on Till driver v2}\\
+  Check plugged into UPS.
 }
 
-\DevDef{Home power ($\pm$15,5) [3]}{
-  \textbf{Lv2 above home power (24)}\\
+\DevDef{SAES pump controller [36]}{
+  \textbf{Middle left}\\
+
+  Check plugged into UPS.
 }
 
-\DevDef{Benchtop power x9 (2chn x3) [4]}{
-  \textbf{Lv2 next to home power (24) and ($\pm$15,5)}\\
+\DevDef{Oscilloscope for 1.5 monitor [38]}{
+  \textbf{Above pump controller}\\
+
+  \begin{itemize}
+  \item\OffBox Unplug from wall
+  \end{itemize}
 }
 
-\DevDef{Home power ($\pm$15,5) [14]}{
-  \textbf{Lv2 next to FPGA box}\\
+\DevDef{High voltage Amp for 1.5 MOT piezo [40]}{
+  \textbf{Top level}\\
 }
 
-\DevDef{Benchtop power x2 [15]}{
-  \textbf{Lv2 on home power ($\pm$15,5)}\\
-}
+\DevDef{Function generator for 1.5 MOT piezo [41]}{
+  \textbf{Top level on high voltage Amp}\\
 
-\DevDef{Benchtop power [16]}{
-  \textbf{Lv2 next to home power ($\pm$15,5)}\\
-}
-
-\DevDef{Benchtop power x2 (2chn x1) [17]}{
-  \textbf{Floor rack Lv1}\\
-}
-
-\DevDef{Benchtop power [20]}{
-  \textbf{Floor rack Lv2 next to Till drivers}\\
-}
-
-\DevDef{Benchtop power 2chn [33]}{
-  \textbf{Lv2 facing computer}\\
-}
-
-\DevDef{High voltage power [34]}{
-  \textbf{Above Lv2 on power outlet}\\
-}
-
-\DevDef{Home power (24) [35]}{
-  \textbf{Bottom level}\\
-}
-
-\DevDef{Benchtop power [37]}{
-  \textbf{Middle next to pump controller}\\
-}
-
-\DevDef{Benchtop power 2chn for 1.5 coil [39]}{
-  \textbf{Above oscilloscope}\\
-}
-
-\DevDef{Benchtop power x3 [42]}{
-  \textbf{Near outer edge}\\
-}
-
-\DevDef{Benchtop power [46]}{
-  \textbf{Lv1}\\
-}
-
-\DevDef{Benchtop power [47]}{
-  \textbf{Lv2}\\
-}
-
-\DevDef{Homebuilt $24$V power supply}{
-  \textbf{2nd level above NaCs 1.0 chamber, facing the drawers/wall}\\
+  1.0 turn off procedure for reference:\\
+  \textbf{Turn on-off together with the HV amplifiers for 1.0 piezo mirrors above
+    and the high voltage power supply on the left}\\
   \textbf{Turn off check list}
   \begin{itemize}
-  \item\OffBox Unplug load
-  \item\OffBox Label and zip tie loads to the power supply
-  \item\OffBox Switch off on the back
+  \item\OffBox Turn off the function generator
+  \item\OffBox Unplug function generator output (zip tie and label)
+  \item\OffBox Unplug HV power supply from the wall
   \end{itemize}
   \textbf{Turn on check list}
   \begin{itemize}
-  \item\OnBox Switch on
-  \item\OnBox Plug the load back in
+  \item\OnBox Plugin HV power supply to the wall
+  \item\OnBox Plugin function generator output
+  \item\OnBox Turn on the function generator
   \end{itemize}
 }
-\DevDef{Benchtop power supply for dispensers}{
-  \textbf{1st level above NaCs 1.0 chamber}\\
+
+\DevDef{IGBT stack [43]}{
+  \textbf{Floor}\\
+}
+
+\DevDef{LED driver [44]}{
+  \textbf{Near inner edge}\\
+}
+
+\subsection{Power supplies}
+\DevDef{Benchtop power 2chn [1]}{
+  \textbf{Lv2}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Left Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Left Current&\\\hline
+    Right Voltage&\\\hline
+    Right Current&\\\hline
+  \end{tabular}\\
+
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug loads
@@ -1713,8 +1766,119 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug the load back in
   \end{itemize}
 }
-\DevDef{Benchtop power supply for 1.5 computer control clock}{
-  \textbf{2nd level next to 1.5 computer control box}\\
+
+\DevDef{Home power (24) [2]}{
+  \textbf{Lv2 above 1.0 tweezer breadboard}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug load
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Switch off on the back
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Switch on
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Home power ($\pm$15,5) [3]}{
+  \textbf{Lv2 above home power (24)}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug load
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Switch off on the back
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Switch on
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power x9 (2chn x3) [4]}{
+  \textbf{Lv2 next to home power (24) and ($\pm$15,5)}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    \small{No. 1 Voltage/Current}&\hphantom{\hspace{4.5cm}}\\\hline
+    \small{No. 2 Left Voltage/Current}&\\\hline
+    \small{No. 2 Right Voltage/Current}&\\\hline
+    \small{No. 3 Voltage/Current}&\\\hline
+    \small{No. 4 Voltage/Current}&\\\hline
+    \small{No. 5 Left Voltage/Current}&\\\hline
+    \small{No. 5 Right Voltage/Current}&\\\hline
+    \small{No. 6 Left Voltage/Current}&\\\hline
+    \small{No. 6 Right Voltage/Current}&\\\hline
+    \small{No. 7 Voltage/Current}&\\\hline
+    \small{No. 8 Voltage/Current}&\\\hline
+    \small{No. 9 Voltage/Current}&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Home power ($\pm$15,5) [14]}{
+  \textbf{Lv2 next to FPGA box}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug load
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Switch off on the back
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Switch on
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power x2 [15]}{
+  \textbf{Lv2 on home power ($\pm$15,5)}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 1 Current&\\\hline
+    No. 2 Voltage&\\\hline
+    No. 2 Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power [16]}{
+  \textbf{Lv2 next to home power ($\pm$15,5)}\\
   Record voltage/current values:\\
 
   \begin{tabular}{|c|c|}
@@ -1737,8 +1901,95 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug the load back in
   \end{itemize}
 }
-\DevDef{Homebuilt $\pm15,5$V power supply}{
-  \textbf{2nd level above TiSapph}\\
+
+\DevDef{Benchtop power x2 (2chn x1) [17]}{
+  \textbf{Floor rack Lv1}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 1 Current&\\\hline
+    No. 2 Left Voltage&\\\hline
+    No. 2 Left Current&\\\hline
+    No. 2 Right Voltage&\\\hline
+    No. 2 Right Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power [20]}{
+  \textbf{Floor rack Lv2 next to Till drivers}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power 2chn [33]}{
+  \textbf{Lv2 facing computer}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Left Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Left Current&\\\hline
+    Right Voltage&\\\hline
+    Right Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{High voltage power [34]}{
+  \textbf{Above Lv2 on power outlet}\\
+}
+
+\DevDef{Home power (24) [35]}{
+  \textbf{Bottom level}\\
+
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox Unplug load
@@ -1751,16 +2002,155 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug the load back in
   \end{itemize}
 }
-\subsection{Computers}
-\DevDef{AWG computer [45]}{
-  \textbf{Floor}\\
+
+\DevDef{Benchtop power [37]}{
+  \textbf{Middle next to pump controller}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
 }
 
-\DevDef{Radio computer [48]}{
+\DevDef{Benchtop power 2chn for 1.5 coil [39]}{
+  \textbf{Above oscilloscope}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Left Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Left Current&\\\hline
+    Right Voltage&\\\hline
+    Right Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power x3 [42]}{
+  \textbf{Near outer edge}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    No. 1 Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    No. 1 Current&\\\hline
+    No. 2 Voltage&\\\hline
+    No. 2 Current&\\\hline
+    No. 3 Voltage&\\\hline
+    No. 3 Current&\\\hline
+  \end{tabular}\\
+
+  May need to be adjusted for the uWave Amp.\\
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power [46]}{
+  \textbf{Lv1}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
+}
+
+\DevDef{Benchtop power [47]}{
   \textbf{Lv2}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{3.5cm}}\\\hline
+    Current&\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug loads
+  \item\OffBox Label and zip tie loads to the power supply
+  \item\OffBox Turn off the power supply
+  \item\OffBox Unplug from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug into the wall
+  \item\OnBox Turn on the power supply \textbf{Do NOT do this with loads pluged in}
+  \item\OnBox Plug the load back in
+  \end{itemize}
 }
 
-\DevDef{Computer control box for 1.5}{
+\subsection{Computers}
+\DevDef{Control computers}{
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Check update.
+  \item\OffBox Turn off.
+  \item\OffBox Unplug from UPS.
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Get UPS back
+  \item\OnBox Turn on.
+  \end{itemize}
+}
+\DevDef{FPGA box for 1.5 [13]}{
+  \textbf{Lv2}\\
   \textbf{Turn off check list}
   \begin{itemize}
   \item\OffBox (Do following three steps quickly)
@@ -1782,6 +2172,14 @@ Also wait before everyone else finish their corresponding steps before starting 
   \item\OnBox Plug in high voltage power supply. The fans should start spinning.
   \item\OnBox Turn on the power switch of the box.
   \end{itemize}
+}
+\DevDef{AWG computer [45]}{
+  \textbf{Floor}\\
+  Ask Yichao
+}
+\DevDef{Radio computer [48]}{
+  \textbf{Lv2}\\
+  Ask Yichao
 }
 
 \end{document}
