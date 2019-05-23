@@ -64,7 +64,7 @@ const datas_nacs = select_datas(datas, NaCsData.select_single((1, 2), (3, 4,)), 
 
 model_exp_off(x, p) = p[1] .* exp.(x ./ -p[2]) .+ p[3]
 
-data_nacs = [datas_nacs[1]; datas_nacs[1]]
+data_nacs = [datas_nacs[1]; datas_nacs[2]]
 data_nacs = data_nacs[[1; 3:6; 8:10]]
 
 fit_nacs = fit_survival(model_exp_off, data_nacs, [0.45, 2, 0.2])
