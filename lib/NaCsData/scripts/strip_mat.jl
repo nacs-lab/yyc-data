@@ -80,12 +80,37 @@ end
 
 const opts = process_args()
 
+# Work around MAT.jl bug
+function clear_char!(dict::Dict)
+    for k in keys(dict)
+        v = dict[k]
+        if isa(v, Char)
+            dict[k] = String([v])
+        else
+            clear_char!(v)
+        end
+    end
+end
+function clear_char!(ary::Array)
+    for i in 1:length(ary)
+        v = ary[i]
+        if isa(v, Char)
+            ary[i] = String([v])
+        else
+            clear_char!(v)
+        end
+    end
+end
+function clear_char!(o)
+end
+
 matopen(opts.iname) do mf
     pl = read(mf, "ParamList")
     sa = read(mf, "Analysis")["SingleAtomLogical"]
     scan = read(mf, "Scan")
     param_name = scan["ParamName"]
     sg = haskey(scan, "ScanGroup") ? scan["ScanGroup"] : Dict{String,Any}()
+    clear_char!(sg)
     if eltype(sa) == Bool
         sa = UInt8.(sa)
     end
