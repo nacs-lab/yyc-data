@@ -8,9 +8,6 @@ using DelimitedFiles
 
 abstract type AbstractValues{N} end
 
-@inline to_arrayidx(idx::Integer) = idx:idx
-@inline to_arrayidx(idx) = idx
-
 function depth end
 function combiner_type end
 function combine end
@@ -43,10 +40,10 @@ SortedData1{K,Vs} = SortedData{1,2,K,Vs}
     args = [Symbol("arg$i") for i in 1:N2]
     quote
         $(Expr(:meta, :inline))
-        $((:($(args[i]) = to_arrayidx(_args[$i])) for i in 1:nargs)...)
+        $((:($(args[i]) = _args[$i]) for i in 1:nargs)...)
         $((:($(args[i]) = :) for i in (nargs + 1):N2)...)
-        return SortedData{N,N2,K,Vs}(data.params[$((args[i] for i in 1:N)...)],
-                                     data.values[$((args[i] for i in 1:N2)...)])
+        return SortedData(data.params[$((args[i] for i in 1:N)...)],
+                          data.values[$((args[i] for i in 1:N2)...)])
     end
 end
 
