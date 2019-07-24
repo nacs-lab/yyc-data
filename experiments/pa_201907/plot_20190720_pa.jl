@@ -48,7 +48,7 @@ const datas_cscs = [load_data(matopen(fd->read(fd, "names"), joinpath(@__DIR__, 
                               NaCsData.select_single((-1, 2,), (4,)))
                     for names_file in names_files]
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20190409_pa")
+const prefix = joinpath(@__DIR__, "imgs", "data_20190720_pa")
 
 figure()
 NaCsPlot.plot_survival_data([datas_cs[1]; datas_cs[2]], fmt="C2.-", label="Cs/NaCs")
