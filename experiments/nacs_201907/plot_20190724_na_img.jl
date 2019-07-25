@@ -52,7 +52,7 @@ show_survival_image(xs, ys, data; kws...) = show_ratio_image(xs, ys, data, 2; kw
 
 figure()
 show_survival_image(det, amp, data_na)
-title("Na MOT loading")
+title("Na imaging survival")
 xlabel("Detuning (MHz)")
 ylabel("Amplitude")
 colorbar()
