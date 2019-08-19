@@ -126,11 +126,18 @@ tight_layout()
 NaCsPlot.maybe_save("$(prefix)")
 
 model_pow_off(x, p) = p[1] .* x.^p[2] .+ p[3]
+function gen_pow_off_model(pow)
+    model(x, p) = p[1] .* x.^pow .+ p[2]
+end
 fit_rs = fit_data(model_pow_off, tps, rs, rs_s, [0.07, 2.5, 1.0], plot_lo=0)
+fit_rs_pm = fit_data(gen_pow_off_model(1.8), tps, rs, rs_s, [0.1, 1.0], plot_lo=0)
+fit_rs_pp = fit_data(gen_pow_off_model(3.2), tps, rs, rs_s, [0.1, 1.0], plot_lo=0)
 
 figure()
 errorbar(tps, rs, rs_s, fmt="C0.")
 plot(fit_rs.plotx, fit_rs.ploty, "C0")
+plot(fit_rs_pm.plotx, fit_rs_pm.ploty, "C1--")
+plot(fit_rs_pp.plotx, fit_rs_pp.ploty, "C1--")
 text(0.3, 50, "\$r=r_0+a\\cdot P^b\$", color="C0")
 text(2.2, 23, ("\$r_0=$(fit_rs.uncs[3]) s^{-1}\$\n" *
                "\$a=$(fit_rs.uncs[1])\$\n" *
