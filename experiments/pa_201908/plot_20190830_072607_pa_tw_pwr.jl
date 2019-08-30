@@ -100,7 +100,6 @@ end
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20190830_072607_pa_tw_pwr")
 
-fit_1 = fit_survival(model_lorentzian, datas[1][:, 1], [0.7, 0.35, 496.02, 0.05])
 fit_5 = fit_survival(model_lorentzian, datas[1][:, 2], [0.7, 0.35, 496.06, 0.1])
 
 figure()
