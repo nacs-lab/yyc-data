@@ -272,32 +272,81 @@
   \end{frame}
 }
 
-%% Most of you are probably familar with atoms
+% I'm going to talk about our experiment on ....
+% I was told that not everyone here is familar with molecules
+% so I'll start with why we are using .....
+
+% Most of you are probably familar with atoms
 % * Laser cooling/trapping
 % * Internal state control
 % * High fidelity imagining
-% * ...
-% Was going to find a picture but there are literally too many
-% * Too simple
+% * ... (and you can put in your favorate property of atoms here)
 
-%% Molecule
+% Was going to find a picture but there are literally too many ...
+% On the other hand, there's basically one probably with atoms
+% * Too simple
+% The tricks that you can play with them is limited.
+
+% Molecule
 % * Interaction
 % * Rich internal structure
+% If we can have the same control
 
-%% Applications
+% Applications
 % * Quantum information
 % * Quantum simulations
 % * Quantum chemistry
+% * Precision measurement
 
-% If we can have the same control
-% * Spoiler: harder to control
+% Spoiler: we cant achieve the same level of control yet
 % That's what I'll talk about
 
 \begin{frame}[t]{From Atom to Molecule}
   \begin{center}
     \begin{tikzpicture}
       \node at (-3, 0) {\LARGE Atom};
-      \node at (3, 0) {\LARGE Molecule};
+      \node[align=left, text width=6cm, below] at (-3, -0.5) {
+        \begin{itemize}
+        \item Laser cooling/trapping
+        \item Internal state control
+        \item High fidelity imagining
+        \item ...
+        \end{itemize}
+      };
+      \visible<2->{
+        \node at (3, 0) {\LARGE Molecule};
+        \node[align=left, text width=6cm, below] at (3, -0.5) {
+          \begin{itemize}
+          \item Strong interaction
+          \item Rich internal structure
+          \end{itemize}
+        };
+      }
+      % TODO: applications
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Different approaches
+% * Direct cooling
+% * Bulk gas
+% * Our approach
+
+\begin{frame}[t]{Path to Ultracold Molecules}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<1-2> {
+        \node at (-3, 0) {\textbf{\large Direct molecule cooling}};
+        % TODO: picture/ref
+      }
+      \visible<2-> {
+        \node at (3, 0) {\textbf{\large Making molecule from atoms}};
+        % TODO: picture/ref
+      }
+      \visible<3-> {
+        \node at (-3, 0) {\textbf{\large Assemble molecule in tweezers}};
+        % TODO: picture/ref
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -309,24 +358,18 @@
 
 \section{System Overview}
 
-%% Different approaches
-% * Direct cooling
-% * Bulk gas
-% * Our approach
-
 %% Procedure
-% * Na + Cs MOT
 % * Load single atom
-% * RSC
 % * Merge
 % * Interaction
 
-\AtBeginSection[]
-{
-  \begin{frame}{Outline}
-    \tableofcontents[currentsection]
-  \end{frame}
-}
+\begin{frame}{Steps}
+  % TODO steps
+\end{frame}
+
+\begin{frame}{}
+  % TODO pictures of the experiment
+\end{frame}
 
 \section{Trapping and Cooling of Atoms}
 
@@ -339,6 +382,10 @@
 % * Na
 
 %% Trap merging
+
+\begin{frame}{Outline}
+  \tableofcontents[currentsection]
+\end{frame}
 
 \section{Atom-Atom Interaction and Molecule Formation}
 
