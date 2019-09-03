@@ -318,7 +318,7 @@
         \item Laser cooling/trapping
         \item Internal state control
         \item High fidelity imagining\\
-          $\vdots$
+          \visible<1-3>{$\vdots$}
         \end{itemize}
       };
       \visible<2-3>{
@@ -335,7 +335,24 @@
           \end{itemize}
         };
       }
-      % TODO: applications
+      \visible<4>{
+        \node[align=center] at (-4.6, -5.5) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
+          \includegraphics[width=2.3cm]{quantum_chemistry}\\
+          {\tiny Nature 464, 1324 (2010)}};
+        \node[align=center] at (-1.5, -4.5) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Simulation}\\
+          \includegraphics[width=2.9cm]{quantum_simulation}\\
+          {\tiny Nat. Phys. 2, 341 (2006)}};
+        \node[align=center] at (3.6, -3.4) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
+          \includegraphics[width=2.9cm]{quantum_computing}\\
+          {\tiny Phys. Rev. Lett. 97, 33003 (2006)}};
+        \node[align=center] at (2.8, -6.35) {
+          \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
+          \includegraphics[width=3.6cm]{edm}\\
+          {\tiny Science 343, p. 269-272 (2014)}};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -642,7 +659,44 @@
 
 % Also measured deeper lines after we found these lines
 % and I might show it later if we have time.
-\begin{frame}{Photoassociation (PA) Spectroscopy}
+\begin{frame}[t]{Photoassociation (PA) Spectroscopy}
+  \vspace{-0.4cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[shift={(-4.3, -3.3)}, scale=0.7]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+      \end{scope}
+      \visible<2>{
+        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow_1b}};
+      }
+      \visible<3>{
+        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 % Now we know the excited state properties,
