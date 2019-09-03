@@ -276,6 +276,8 @@
 % I was told that not everyone here is familar with molecules
 % so I'll start with why we are using .....
 
+% (1min)
+
 % Most of you are probably familar with atoms
 % * Laser cooling/trapping
 % * Internal state control
@@ -286,6 +288,8 @@
 % On the other hand, there's basically one probably with atoms
 % * Too simple
 % The tricks that you can play with them is limited.
+
+% (3min)
 
 % Molecule
 % * Interaction
@@ -300,6 +304,8 @@
 
 % Spoiler: we cant achieve the same level of control yet
 % That's what I'll talk about
+
+% (5min)
 
 \begin{frame}[t]{From Atom to Molecule}
   \begin{center}
@@ -327,10 +333,23 @@
   \end{center}
 \end{frame}
 
-%% Different approaches
+% As I said, cooling or in general controlling molecules is hard.
+% There has been a few ways that people used to obtain ultracold molecules:
 % * Direct cooling
-% * Bulk gas
+% -- Hard because absense of cycling transition.
+% -- But can be done on some molecules that sort of do.
+% -- Pioneered by ... including here at Harvard in the Doyle group.
+% * Making molecules from atoms
+% -- Take advantage of atom cooling.
+% -- Use a combination of magnetic and optical transitions.
+% -- First realized by ....
 % * Our approach
+% -- Combine the bulk gas approach with recent progress on optical tweezers
+% -- Do not rely as heavily on collisional properties for cooling and overlapping.
+% -- Naturally single site resolution and manipulation
+% -- Fast cycle time/high fidelity
+
+% (8min)
 
 \begin{frame}[t]{Path to Ultracold Molecules}
   \begin{center}
@@ -351,43 +370,138 @@
   \end{center}
 \end{frame}
 
-%% Table of content
+% So here's an outline for the rest of my talk.
+% I'll first give an overview of out experiment, both the procedure and the apparatus
+% Then I'll talk about a few intersting aspect of the atom part of our experiment
+% i.e. some trapping and cooling issues that we've had
+% which required us to develop new techniques for our setup.
+% Finally, I'll talk about our progress on measuring the interaction between atoms
+% and making molecules.
+% (9min)
 \begin{frame}{Outline}
   \tableofcontents
 \end{frame}
 
 \section{System Overview}
 
-%% Procedure
-% * Load single atom
-% * Merge
-% * Interaction
+% As I said, in our experiment, we make molecules from atoms inside the optical tweezer
+% so the obvious first step is to get the atoms in there.
+% Load directly from the MOT and further cool in the tweezer which I'll talk about later.
+
+% We load the Na and Cs atoms separately in two tweezers, that are ... apart.
+% Obviously, serves no good to make molecules
+% So we merge them by moving the beam.
+% A few ways to do this but we use AOBD.
+
+% After merge without killing or heating the atoms
+% Try to make molecules or do some study on the interaction to help us make molecules
 
 \begin{frame}{Steps}
   % TODO steps
+  % TODO AOBD drawing
 \end{frame}
 
+% The whole experiment looks like this
+% A Na MOT and for scale.
 \begin{frame}{}
   % TODO pictures of the experiment
 \end{frame}
 
+% (12 min)
+
 \section{Trapping and Cooling of Atoms}
 
-%% Trapping of Na atom
+% Our experiment starts with trapped atoms in tweezers.
+% People have demonstrated before us.
+% It sounds simple but turns out to be anything but.
+
+% Well, Cs is fine.
+% Got without too much effort.
+% But Na is not.
+% A few properties.
+% * Low vapor pressure (fewer atoms to load from)
+% * Broad linewidth (higher Doppler temperature)
+% * Low mass (move faster and higher recoil velocity/energy)
+% * Small HF structure (6 line width, worse PG cooling)
+
+% Fine just need deeper trap but run into the real issue
 % * Light shift
-% * Switching tweezer
+% In order to load, need cooling in the tweezer
+% However, since we need such a deep trap, light shift turns off the cooling
+% Got stuck in an awkward situation where a shallow trap can keep the cooling work but
+% can't hold the atom while a deeper trap can hold the atom but the atom doesn't want to come in.
 
-%% Raman sideband cooling
-% * Cs
-% * Na
+% Tried a bunch of ways (turn trap around atom, two wavelengths to cancel the trap)
+% before Nick came up with a genius/crazy idea that people have used on large ODT.
 
-%% Trap merging
+% See laser cooling relies on scattering that happens at a rate of tens of MHz
+% OTOH, the tweezer is only needed for trap motion that happens ~ few hundred kHz.
+% Means that if we switch the tweezer on and off. .....
+
+% Tried on Cs
+% Essentially made a magic trap.
+
+% Then tried on Na, it worked.
+% Na live atom.
+
+% Na and Cs 60 % loading on a good day.
+% (20min)
+\begin{frame}{Single Atom in Tweezer}
+  % TODO ref of other tweezers
+\end{frame}
+
+% Since we want to control the state of the molecule by controlling the state of the atom
+% including the motional state,
+% we want to cool the atoms in the trap to the motional ground state in the tweezer.
+
+% We use RSC
+
+% Again, this has been done in other tweezers/optical lattice for some species.
+% And you can probably guess which atom is harder.
+\begin{frame}{Raman Sideband Cooling}
+\end{frame}
 
 \begin{frame}{Outline}
   \tableofcontents[currentsection]
 \end{frame}
 
 \section{Atom-Atom Interaction and Molecule Formation}
+
+% So after getting both atom into a single quantum state,
+% we can finally study their interaction and make molecules.
+
+% The way we want to make molecule is by optical transfer.
+% Essentially drive a transition from the atomic to the molecular state.
+% This spare us of a huge FB coil although we are also working on that at the same time
+
+% So we started in atomic state in the potential, here...
+% Want to get to here.
+% No matter which state, the energy difference is huge and the wavefunction is dissimilar.
+% So even though in an ideal world we might be able to do the transfer a single step,
+% it's at least technically challenging to pull it off.
+
+% Two steps
+% First step (Raman) that replaces the FB association to transfer to a loosely bound state
+% Then the same as previous experiement using a STIRAP.
+% By splitting the two, we can do the slow inital transfer with a smaller energy difference
+% and therefore easier to manage with the laser
+% Do the big gap faster
+\begin{frame}{Optical Transfer to Molecular State}
+\end{frame}
+
+% Raman transfer obviously need some information about the excited state
+% So that's what we set out to measure first. (i.e. PA spectroscopy)
+
+% We really have the most textbook system to do this measurement.
+% We only have two atoms
+% We know the initial state
+% We shine some light on it, which might create some excited state molecule that
+% falls down to some states that we can't see.
+% We know the final state
+
+% Full state info, improve signal-to-noise
+\begin{frame}{Photoassociation (PA) Spectroscopy}
+\end{frame}
 
 %% Interaction shift
 % * Sideband
