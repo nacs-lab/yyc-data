@@ -379,16 +379,59 @@
   \begin{center}
     \begin{tikzpicture}
       \visible<1-2> {
-        \node at (-3, 0) {\textbf{\large Direct molecule cooling}};
-        % TODO: picture/ref
+        \node[align=center,below] at (-3, 0) {\textbf{\large Direct molecule cooling}\\
+          ``Diagonal molecules'':\\
+          CaF, SrF, YO, $\dots$\\
+          \includegraphics[width=5cm]{caf_levels}\\
+          {\tiny Phys. Rev. Lett. 119, 103201 (2017)}
+        };
       }
       \visible<2-> {
-        \node at (3, 0) {\textbf{\large Making molecule from atoms}};
-        % TODO: picture/ref
+        \node[align=center,below,text width=6cm] at (3, 0)
+        {\textbf{\large Making molecule from atoms}\\
+          Bi-Alkali/Alkaline Earth:\\
+          KRb, RbCs, NaK, LiNa, $\dots$\\
+          \vspace{0.8cm}
+          \begin{enumerate}
+          \item Cold gas
+          \item Feshbach association
+          \item STIRAP
+          \end{enumerate}
+        };
       }
       \visible<3-> {
-        \node at (-3, 0) {\textbf{\large Assemble molecule in tweezers}};
-        % TODO: picture/ref
+        \node[align=center,below,text width=6cm] at (-3, 0)
+        {\textbf{\large Assemble molecule in tweezers}\\
+          \vspace{0.8cm}
+          \begin{itemize}
+          \item Single site detection
+          \item Single site addressing
+          \item Control loading and interaction
+            by rearranging.
+          \end{itemize}
+        };
+        \begin{scope}[shift={(-4.5, -5.5)}, scale=0.8]
+          \mytweezer.up(0, 0)
+          \mytweezer.down(2, 0.8/2.5)
+          \mytweezer.up(4, 1.2/2.5)
+          \begin{pgfonlayer}{tweezer}
+            \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (2, 0.8/2.5);
+            \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (1, -1.7/2.5);
+            \draw[line width=1,dashed,color=cyan] (2, 0.8/2.5) -- (1, -1.7/2.5);
+            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (1, -1.7/2.5);
+            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (2, 0.8/2.5);
+            \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (2, 0.8/2.5);
+            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (4, 1.2/2.5);
+            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (5, -1.9/2.5);
+            \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (5, -1.9/2.5);
+            \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (4, 1.2/2.5);
+            \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (5, -1.9/2.5);
+          \end{pgfonlayer}
+          \mytweezer.down(1, -1.7/2.5)
+          \mytweezer.up(3, -2.1/2.5)
+          \mytweezer.down(5, -1.9/2.5)
+          \mytweezer.down(6.2, -0.9/2.5)
+        \end{scope}
       }
     \end{tikzpicture}
   \end{center}
