@@ -804,7 +804,7 @@
 % PA process ...
 
 % We scanned around the theoritical prediction between 200-300 MHz and indeed found the resonance.
-\begin{frame}[t]{\alt<-3>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
+\begin{frame}[t]{\alt<-4>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
   \vspace{-0.4cm}
   \begin{center}
     \begin{tikzpicture}
@@ -834,7 +834,7 @@
 
         \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
 
-        \only<4->{
+        \only<5->{
           \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
           \draw[cyan!85!blue,<->] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
           {\tiny $\delta$};
@@ -843,13 +843,24 @@
           \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
         }
       \end{scope}
-      \visible<2>{
-        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow_1b}};
+      \visible<2-4>{
+        \node[text width=5cm] at (4.2, -1) {
+          \begin{block}{Single Atom PA}
+            \begin{itemize}
+            \item Clean initial state
+            \item Narrow excitation laser
+            \item Final state detection
+            \end{itemize}
+          \end{block}
+        };
       }
       \visible<3>{
+        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow_1b}};
+      }
+      \visible<4>{
         \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow}};
       }
-      \visible<5>{
+      \visible<6>{
         \node at (4, 2.5) {\includegraphics[width=5cm]{eit.png}};
       }
     \end{tikzpicture}
