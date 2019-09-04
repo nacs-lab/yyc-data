@@ -1,0 +1,112 @@
+\documentclass[border={-65pt -5pt -5pt -3pt}]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes,
+  arrows.meta
+}
+\usepgfmodule{oo}
+
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{document}
+
+\pgfdeclarelayer{tweezer}
+\pgfsetlayers{tweezer,main}
+\pgfooclass{tweezer}{
+  \method tweezer() {
+  }
+  \method drawTweezer(#1,#2,#3) {
+    \begin{pgfonlayer}{tweezer}
+      \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
+      fill opacity=0.9,inner color=#3]
+      plot[draw,samples=200,domain=-1.5:1.5] function {sqrt(0.01 + x**2 / 5)}
+      -- plot[draw,samples=200,domain=1.5:-1.5] function {-sqrt(0.01 + x**2 / 5)};
+    \end{pgfonlayer}
+  }
+  \method drawAtom(#1,#2,#3,#4) {
+    \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
+  }
+  \method drawNaAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,orange);
+  }
+  \method drawCsAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
+  }
+  \method drawNaTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,orange!35!black!30);
+  }
+  \method drawCsTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,blue!30!black!30);
+  }
+  \method up(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2+0.06,0.12);
+    \pgfoothis.drawCsAtom(#1,#2-0.06,0.16);
+  }
+  \method down(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2+0.06,0.16);
+    \pgfoothis.drawNaAtom(#1,#2-0.06,0.12);
+  }
+  \method naTrap(#1,#2) {
+    \pgfoothis.drawNaTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2,0.12);
+  }
+  \method csTrap(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2,0.16);
+  }
+}
+\pgfoonew \mytweezer=new tweezer()
+
+\begin{tikzpicture}
+  \mytweezer.up(0, 0)
+  \mytweezer.down(2, 0.8/2.5)
+  \mytweezer.up(4, 1.2/2.5)
+  \begin{pgfonlayer}{tweezer}
+    \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (2, 0.8/2.5);
+    \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (1, -1.7/2.5);
+    \draw[line width=1,dashed,color=cyan] (2, 0.8/2.5) -- (1, -1.7/2.5);
+    \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (1, -1.7/2.5);
+    \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (2, 0.8/2.5);
+    \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (2, 0.8/2.5);
+    \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (4, 1.2/2.5);
+    \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (5, -1.9/2.5);
+    \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (5, -1.9/2.5);
+    \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (4, 1.2/2.5);
+    \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (5, -1.9/2.5);
+  \end{pgfonlayer}
+  \mytweezer.down(1, -1.7/2.5)
+  \mytweezer.up(3, -2.1/2.5)
+  \mytweezer.down(5, -1.9/2.5)
+  \mytweezer.down(6.2, -0.9/2.5)
+\end{tikzpicture}
+
+
+\end{document}

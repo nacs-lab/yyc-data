@@ -410,28 +410,7 @@
             by rearranging.
           \end{itemize}
         };
-        \begin{scope}[shift={(-4.5, -5.5)}, scale=0.8]
-          \mytweezer.up(0, 0)
-          \mytweezer.down(2, 0.8/2.5)
-          \mytweezer.up(4, 1.2/2.5)
-          \begin{pgfonlayer}{tweezer}
-            \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (2, 0.8/2.5);
-            \draw[line width=1,dashed,color=cyan] (0, 0/2.5) -- (1, -1.7/2.5);
-            \draw[line width=1,dashed,color=cyan] (2, 0.8/2.5) -- (1, -1.7/2.5);
-            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (1, -1.7/2.5);
-            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (2, 0.8/2.5);
-            \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (2, 0.8/2.5);
-            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (4, 1.2/2.5);
-            \draw[line width=1,dashed,color=cyan] (3, -2.1/2.5) -- (5, -1.9/2.5);
-            \draw[line width=1,dashed,color=cyan] (4, 1.2/2.5) -- (5, -1.9/2.5);
-            \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (4, 1.2/2.5);
-            \draw[line width=1,dashed,color=cyan] (6.2, -0.9/2.5) -- (5, -1.9/2.5);
-          \end{pgfonlayer}
-          \mytweezer.down(1, -1.7/2.5)
-          \mytweezer.up(3, -2.1/2.5)
-          \mytweezer.down(5, -1.9/2.5)
-          \mytweezer.down(6.2, -0.9/2.5)
-        \end{scope}
+        \node[right] at (-4.5, -5.5) {\includegraphics[width=6.2cm]{molecule_in_tweezers}};
       }
     \end{tikzpicture}
   \end{center}
@@ -865,7 +844,7 @@
 \begin{frame}{Optical Transfer to Weakly-Bound Molecular}
   \begin{center}
     \begin{tikzpicture}
-      \visible<-3> {
+      \visible<-4> {
         \begin{scope}[scale=0.7]
           \draw[->,line width=1.2] (0, 0) -- (0, 8);
           \node[above,rotate=90] at (0, 4) {Energy};
@@ -900,16 +879,17 @@
       }
       \visible<2-> {
         \node at (9, 1.5) {\includegraphics[width=4.5cm]{raman_width}};
-        \visible<-3>{
+        \visible<-4>{
           \draw[->,dashed,cyan,line width=1] (6.8, 2.5) -- (3, 1.5);
         }
       }
       \visible<3-> {
-        \node[align=center] at (9, 4.5) {But no Rabi oscillation\\
-          and $\Gamma_e$ is about\\
-          $50\sim100$x theory prediction.};
+        \node[above, align=center] at (9, 4.7) {But no Rabi oscillation};
       }
       \visible<4-> {
+        \node[below, align=center] at (9, 4.4) {$\Gamma_e$ is $\approx50\sim100$x theory value.};
+      }
+      \visible<5-> {
         \node[align=center] at (2.5, 4.5) {
           \includegraphics[width=5cm]{../../experiments/pa_201908/imgs/data_20190830_005224_pa_tw_pwr_2b}};
         \node[align=center] at (2.5, 0.45) {
