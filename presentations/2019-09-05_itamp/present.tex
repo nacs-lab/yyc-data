@@ -581,7 +581,77 @@
 % Na and Cs 60 % loading on a good day.
 % (20min)
 \begin{frame}{Single Atom in Tweezer}
-  % TODO ref of other tweezers
+  \begin{columns}[t]
+    \column{5cm}
+    \begin{block}{}
+      \begin{itemize}
+      \item Previously done with Rb
+      \item<2-> Works for Cs
+      \item<3-> Doesn't work for Na
+      \end{itemize}
+    \end{block}
+    \column{6cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2> {
+          \node at (0, 0)
+          {\includegraphics[width=6cm]{cs-histogram}};
+        }
+        \visible<3> {
+          \node at (0, 0)
+          {\includegraphics[width=5cm]{na-noatom}};
+        }
+        \visible<4> {
+          \node[text width=6cm] at (0, 0) {
+            \begin{block}{Issues with Na}
+              \begin{itemize}
+              \item Low vapor pressure
+              \item Broad linewidth
+              \item Low mass
+              \item Small hyperfine structure
+              \end{itemize}
+            \end{block}
+          };
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Real Issue with Na: Light Shift}
+  \vspace{-1cm}
+  \begin{columns}
+    \column{5.7cm}
+    \begin{center}
+      \only<-2>{\includegraphics[width=5.5cm]{light-shift.png}}
+      \only<3->{
+        \begin{block}{Trap modulation}
+          Alternate between trap and resonant {\small (cooling and imaging)} light
+          at $2.5$\ MHz\\
+          {\small $f_{trap}=100\sim500$\ kHz}\\
+          {\small $\Gamma=2\pi\times 10$\ MHz}
+        \end{block}
+        \includegraphics[width=5cm]{switching.png}
+      }
+    \end{center}
+    \column{5.8cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2-3>{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{det-vs-photon-dc}};
+        }
+        \visible<4->{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{det-vs-photon-ac}};
+        }
+        \visible<5->{
+          \node at (0, -4.5)
+          {\includegraphics[width=4cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
 \end{frame}
 
 % Since we want to control the state of the molecule by controlling the state of the atom
@@ -593,6 +663,32 @@
 % Again, this has been done in other tweezers/optical lattice for some species.
 % And you can probably guess which atom is harder.
 \begin{frame}{Raman Sideband Cooling}
+  \begin{tikzpicture}
+    \visible<-2> {
+      \node at (-3, 0) {\includegraphics[width=5.5cm]{Na_RSC_schematic}};
+    }
+    \visible<3> {
+      \node at (-3, 1) {\includegraphics[width=5.5cm]{raman_rabi_1}};
+    }
+    \visible<4-> {
+      \node at (-3, 1) {\includegraphics[width=5.5cm]{raman_rabi_all}};
+    }
+    \visible<5-> {
+      \node[red] at (-3, -2.5) {3D ground state: $93.5(7)\%$};
+    }
+    \visible<2-4> {
+      \node[align=center] at (3, 0) {
+        Axial sideband spectrum\\
+        \includegraphics[width=6.3cm]{spectrum_az_hot}
+      };
+    }
+    \visible<5-> {
+      \node[align=center] at (3, 0) {
+        Axial sideband spectrum\\
+        \includegraphics[width=6.3cm]{spectrum_az}
+      };
+    }
+  \end{tikzpicture}
 \end{frame}
 
 \section{Atom-Atom Interaction and Molecule Formation}
