@@ -393,7 +393,7 @@
           KRb, RbCs, NaK, LiNa, $\dots$\\
           \vspace{0.8cm}
           \begin{enumerate}
-          \item Cold gas
+          \item Cold gas of atoms
           \item Feshbach association
           \item STIRAP
           \end{enumerate}
@@ -402,15 +402,22 @@
       \visible<3-> {
         \node[align=center,below,text width=6cm] at (-3, 0)
         {\textbf{\large Assemble molecule in tweezers}\\
-          \vspace{0.8cm}
-          \begin{itemize}
-          \item Single site detection
-          \item Single site addressing
-          \item Control loading and interaction
-            by rearranging.
-          \end{itemize}
+          \vspace{0.4cm}
+          \begin{enumerate}
+          \item Atoms in tweezers
+          \item Optical association
+          \end{enumerate}
+          \vspace{0.4cm}
+          \visible<4-> {
+            \begin{itemize}
+            \item Single site detection
+            \item Single site addressing
+            \item Control loading and interaction
+              by rearranging.
+            \end{itemize}
+          }
         };
-        \node[right] at (-4.5, -5.5) {\includegraphics[width=6.2cm]{molecule_in_tweezers}};
+        \node[right] at (-2.5, -6) {\includegraphics[width=6cm]{molecule_in_tweezers}};
       }
     \end{tikzpicture}
   \end{center}
@@ -604,8 +611,8 @@
   \begin{columns}
     \column{5.7cm}
     \begin{center}
-      \only<-2>{\includegraphics[width=5.5cm]{light-shift.png}}
-      \only<3->{
+      \only<-3>{\includegraphics[width=5.5cm]{light-shift.png}}
+      \only<4->{
         \begin{block}{Trap modulation}
           Alternate between trap and resonant {\small (cooling and imaging)} light
           at $2.5$\ MHz\\
@@ -618,15 +625,25 @@
     \column{5.8cm}
     \begin{center}
       \begin{tikzpicture}
-        \visible<2-3>{
+        \visible<2-4>{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
             \includegraphics[width=5.5cm]{det-vs-photon-dc}};
         }
-        \visible<4->{
+        \visible<3-5>{
+          \node[align=center, text width=5cm] at (0, -4.5) {
+            \begin{block}{}
+              \begin{itemize}
+              \item Low imaging signal
+              \item No cooling in tweezer
+              \end{itemize}
+            \end{block}
+          };
+        }
+        \visible<5->{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
             \includegraphics[width=5.5cm]{det-vs-photon-ac}};
         }
-        \visible<5->{
+        \visible<6->{
           \node at (0, -4.5)
           {\includegraphics[width=4cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
         }
