@@ -863,7 +863,7 @@
 \begin{frame}{Optical Transfer to Weakly-Bound Molecular}
   \begin{center}
     \begin{tikzpicture}
-      \visible<-4> {
+      \visible<-3> {
         \begin{scope}[scale=0.7]
           \draw[->,line width=1.2] (0, 0) -- (0, 8);
           \node[above,rotate=90] at (0, 4) {Energy};
@@ -894,24 +894,24 @@
           \draw[->,green!80!black,line width=2] (6.8, 2.7) -- (5.5, 5)
           node[midway, right, align=left] {$\approx1038\mathrm{nm}$\\\ \ \ Tweezer};
           \draw[->,green!80!black,line width=2] (5.45, 5) -- (4.165, 2.25);
-
         \end{scope}
       }
-      \visible<3-> {
+      \visible<2-> {
         \node at (9, 1.5) {\includegraphics[width=4.5cm]{raman_width}};
-        \visible<-4>{
+        \visible<-3>{
           \draw[->,dashed,cyan,line width=1] (6.8, 2.5) -- (3, 1.5);
         }
       }
-      \visible<4-> {
+      \visible<3-> {
         \node[align=center] at (9, 4.5) {But no Rabi oscillation\\
           and $\Gamma_e$ is about\\
           $50\sim100$x theory prediction.};
       }
-      \visible<5-> {
-        % TODO width comparison
-        \node[align=center] at (3, 4) {
+      \visible<4-> {
+        \node[align=center] at (2.5, 4.5) {
           \includegraphics[width=5cm]{../../experiments/pa_201908/imgs/data_20190830_005224_pa_tw_pwr_2b}};
+        \node[align=center] at (2.5, 0.45) {
+          \includegraphics[width=5cm]{pa_widths}};
       }
     \end{tikzpicture}
   \end{center}
@@ -1050,8 +1050,7 @@
     }
     \visible<10->{
       \draw[->, line width=1, color=red!50!black] (0.8, -0.65) -- (-1, -2)
-      node[below] {Enhanced coupling to molecular state?};
-      % TODO: enhancement data
+      node[below] {$\sim50$ enhanced coupling to molecular state};
     }
   \end{tikzpicture}
 \end{frame}
@@ -1080,6 +1079,14 @@
       \end{tabular}
     \end{center}
   }
+\end{frame}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+  \item A single Na and Cs atom prepared in the motional ground state of the same optical tweezer.
+  \item Photoassociation and Raman transfer to weakly-bound state.
+  \item Characterized Na-Cs scattering and observed first Feshbach resonances.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{}
