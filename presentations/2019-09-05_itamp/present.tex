@@ -796,9 +796,17 @@
 % Two body - peaks
 % Agreement with the theory/see new lines
 
-% Also measured deeper lines after we found these lines
-% and I might show it later if we have time.
-\begin{frame}[t]{Photoassociation (PA) Spectroscopy}
+% Also found deeper lines afterwards with very similar signal so I'm not showing it here.
+
+% Now we know the excited states.
+% After measuring this line, we can use add another beam in order to find
+% the ground molecular state.
+% With one laser parked on the PA resonance, we can scan the frequency of the other.
+% When the difference between the two lasers match ... we can create a EIT and stops the
+% PA process ...
+
+% We scanned around the theoritical prediction between 200-300 MHz and indeed found the resonance.
+\begin{frame}[t]{\alt<-3>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
   \vspace{-0.4cm}
   \begin{center}
     \begin{tikzpicture}
@@ -827,6 +835,15 @@
         \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
 
         \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+
+        \only<4->{
+          \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+          \draw[cyan!85!blue,<->] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
+          {\tiny $\delta$};
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+          \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
+        }
       \end{scope}
       \visible<2>{
         \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow_1b}};
@@ -834,13 +851,70 @@
       \visible<3>{
         \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow}};
       }
+      \visible<5>{
+        \node at (4, 2.5) {\includegraphics[width=5cm]{eit.png}};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
-% Now we know the excited state properties,
-% we are ready to find/drive the ground state Raman resonance
+% With the states that are important to the transition all mapped out,
+% we are ready to drive the ground state Raman transition by detuning the two beams further.
 \begin{frame}{Optical Transfer to Weakly-Bound Molecular}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<-4> {
+        \begin{scope}[scale=0.7]
+          \draw[->,line width=1.2] (0, 0) -- (0, 8);
+          \node[above,rotate=90] at (0, 4) {Energy};
+          \draw[->,line width=1.2] (0, 0) -- (8, 0);
+          \node[below] at (4, -0.5) {Internuclear distance};
+
+          \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+          \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+
+          \draw[line width=1.1,cyan!85!blue]
+          plot[samples=200,domain=1:7,variable=\x]
+          ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+          \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+          \draw[line width=1.1,red]
+          plot[samples=200,domain=1:7.5,variable=\x]
+          ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+          \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+          \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+          \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+
+          \draw[black!40,dashed,line width=1] (0.25, 5) -- (7.25, 5);
+
+          \draw[->,green!80!black,line width=2] (6.8, 2.7) -- (5.5, 5)
+          node[midway, right, align=left] {$\approx1038\mathrm{nm}$\\\ \ \ Tweezer};
+          \draw[->,green!80!black,line width=2] (5.45, 5) -- (4.165, 2.25);
+
+        \end{scope}
+      }
+      \visible<3-> {
+        \node at (9, 1.5) {\includegraphics[width=4.5cm]{raman_width}};
+        \visible<-4>{
+          \draw[->,dashed,cyan,line width=1] (6.8, 2.5) -- (3, 1.5);
+        }
+      }
+      \visible<4-> {
+        \node[align=center] at (9, 4.5) {But no Rabi oscillation\\
+          and $\Gamma_e$ is about\\
+          $50\sim100$x theory prediction.};
+      }
+      \visible<5-> {
+        % TODO width comparison
+        \node[align=center] at (3, 4) {
+          \includegraphics[width=5cm]{../../experiments/pa_201908/imgs/data_20190830_005224_pa_tw_pwr_2b}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 % Related to/useful for ....
