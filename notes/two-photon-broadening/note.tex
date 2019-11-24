@@ -1,0 +1,571 @@
+\documentclass[10pt,fleqn]{article}
+% \usepackage[journal=rsc]{chemstyle}
+% \usepackage{mhchem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{esint}
+\usepackage{bbm}
+\usepackage{amscd}
+\usepackage{caption}
+\usepackage{picinpar}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{indentfirst}
+\usepackage{wrapfig}
+\usepackage{units}
+\usepackage{textcomp}
+\usepackage[utf8x]{inputenc}
+% \usepackage{feyn}
+\usepackage{feynmp}
+\usepackage{xkeyval}
+\usepackage{xargs}
+\usepackage{verbatim}
+\usepackage{pgfplots}
+\usepackage{hyperref}
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes
+}
+
+\DeclareGraphicsRule{*}{mps}{*}{}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\ue}{\mathrm{e}}
+\newcommand{\ui}{\mathrm{i}}
+\newcommand{\res}{\mathrm{Res}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\dsum}{\displaystyle\sum}
+\newcommand{\dprod}{\displaystyle\prod}
+\newcommand{\dlim}{\displaystyle\lim}
+\newcommand{\dint}{\displaystyle\int}
+\newcommand{\fsno}[1]{{\!\not\!{#1}}}
+\newcommand{\eqar}[1]
+{
+  \begin{align*}
+    #1
+  \end{align*}
+}
+\newcommand{\texp}[2]{\ensuremath{{#1}\times10^{#2}}}
+\newcommand{\dexp}[2]{\ensuremath{{#1}\cdot10^{#2}}}
+\newcommand{\eval}[2]{{\left.{#1}\right|_{#2}}}
+\newcommand{\paren}[1]{{\left({#1}\right)}}
+\newcommand{\lparen}[1]{{\left({#1}\right.}}
+\newcommand{\rparen}[1]{{\left.{#1}\right)}}
+\newcommand{\abs}[1]{{\left|{#1}\right|}}
+\newcommand{\sqr}[1]{{\left[{#1}\right]}}
+\newcommand{\crly}[1]{{\left\{{#1}\right\}}}
+\newcommand{\angl}[1]{{\left\langle{#1}\right\rangle}}
+\newcommand{\tpdiff}[4][{}]{{\paren{\frac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}_{#4}}}
+\newcommand{\tpsdiff}[4][{}]{{\paren{\frac{\partial^{#1}}{\partial {#3}{}^{#1}}{#2}}_{#4}}}
+\newcommand{\pdiff}[3][{}]{{\frac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}}
+\newcommand{\diff}[3][{}]{{\frac{\ud^{#1} {#2}}{\ud {#3}{}^{#1}}}}
+\newcommand{\psdiff}[3][{}]{{\frac{\partial^{#1}}{\partial {#3}{}^{#1}} {#2}}}
+\newcommand{\sdiff}[3][{}]{{\frac{\ud^{#1}}{\ud {#3}{}^{#1}} {#2}}}
+\newcommand{\tpddiff}[4][{}]{{\left(\dfrac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}\right)_{#4}}}
+\newcommand{\tpsddiff}[4][{}]{{\paren{\dfrac{\partial^{#1}}{\partial {#3}{}^{#1}}{#2}}_{#4}}}
+\newcommand{\pddiff}[3][{}]{{\dfrac{\partial^{#1} {#2}}{\partial {#3}{}^{#1}}}}
+\newcommand{\ddiff}[3][{}]{{\dfrac{\ud^{#1} {#2}}{\ud {#3}{}^{#1}}}}
+\newcommand{\psddiff}[3][{}]{{\frac{\partial^{#1}}{\partial{}^{#1} {#3}} {#2}}}
+\newcommand{\sddiff}[3][{}]{{\frac{\ud^{#1}}{\ud {#3}{}^{#1}} {#2}}}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{fontenc}
+% \usepackage{tipa}
+\usepackage{ulem}
+\usepackage{color}
+\usepackage{cancel}
+\newcommand{\hcancel}[2][black]{\setbox0=\hbox{#2}%
+  \rlap{\raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}}#2}
+\pagestyle{fancy}
+\setlength{\headheight}{67pt}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\fancyhead[R]{}
+\renewcommand{\footruleskip}{0pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand\pgfmathsinandcos[3]{%
+  \pgfmathsetmacro#1{sin(#3)}%
+  \pgfmathsetmacro#2{cos(#3)}%
+}
+\newcommand\LongitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % azimuth
+  \tikzset{#1/.estyle={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
+}
+\newcommand\LatitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % latitude
+  \pgfmathsetmacro\yshift{\cosEl*\sint}
+  \tikzset{#1/.estyle={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
+}
+\newcommand\DrawLongitudeCircle[2][1]{
+  \LongitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1);
+  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1);
+}
+\newcommand\DrawLatitudeCircleArrow[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane,decoration={markings, mark=at position 0.6 with {\arrow{<}}},postaction={decorate},line width=.6mm] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed,line width=.6mm] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\DrawLatitudeCircle[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\coil[1]{
+  {\rh * cos(\t * pi r)}, {\apart * (2 * #1 + \t) + \rv * sin(\t * pi r)}
+}
+\makeatletter
+\define@key{DrawFromCenter}{style}[{->}]{
+  \tikzset{DrawFromCenterPlane/.style={#1}}
+}
+\define@key{DrawFromCenter}{r}[1]{
+  \def\@R{#1}
+}
+\define@key{DrawFromCenter}{center}[(0, 0)]{
+  \def\@Center{#1}
+}
+\define@key{DrawFromCenter}{theta}[0]{
+  \def\@Theta{#1}
+}
+\define@key{DrawFromCenter}{phi}[0]{
+  \def\@Phi{#1}
+}
+\presetkeys{DrawFromCenter}{style, r, center, theta, phi}{}
+\newcommand*\DrawFromCenter[1][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY);
+  }
+}
+\newcommand*\DrawFromCenterText[2][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY) node {#2};
+  }
+}
+\makeatother
+\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.2cm,
+  post length=0.2cm, snake, amplitude=.4mm,
+  segment length=2mm},thick, ->]
+%% document-wide tikz options and styles
+\tikzset{%
+  >=latex, % option for nice arrows
+  inner sep=0pt,%
+  outer sep=2pt,%
+  mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
+    fill=black,circle}%
+}
+\addtolength{\hoffset}{-1.3cm}
+\addtolength{\voffset}{-2cm}
+\addtolength{\textwidth}{3cm}
+\addtolength{\textheight}{2.5cm}
+\renewcommand{\footskip}{10pt}
+\setlength{\headwidth}{\textwidth}
+\setlength{\headsep}{20pt}
+\setlength{\marginparwidth}{0pt}
+\parindent=0pt
+\title{Notes on two photon scattering of the molecular state}
+
+% \DeclareCaptionLabelFormat{sectionnumber}{#1 \thesection.#2}
+% \captionsetup{labelformat=sectionnumber}
+
+\makeatletter
+\long\def\my@drawfill#1#2;{%
+  \@skipfalse
+  \fill[#1,draw=none] #2;
+  \@skiptrue
+  \draw[#1,fill=none] #2;
+}
+\newif\if@skip
+\newcommand{\skipit}[1]{%
+  \if@skip
+  \else
+  #1
+  \fi
+}
+\newcommand{\drawfill}[1][]{%
+  \my@drawfill{#1}}
+\makeatother
+
+\begin{document}
+
+\maketitle
+
+\section{Experiment observations}
+We have seen experimental evidences of an anomalous scattering / loss in the
+lifetime of the ground atomic / molecular states as well as broadening in excited state
+line width. We have measured power dependencies for some of the processes that is
+consistent with a two photon process from the ground state (or equivalently a one
+photon process from the excited state). The measurement we have done includes
+
+\begin{enumerate}
+\item Line width and decay time measurement of Raman process near $v=0$ ($1038 \mathrm{nm}$)\\
+  The result is consistent with a $300 \mathrm{MHz}$ to $600 \mathrm{MHz}$
+  excited state line width.\\
+  We did not make a power dependency measurement.\\
+  We measured carefully at multiple red detunings, which all shows similar results.\\
+  We measured one point not as carefully for blue detuning
+  ($18 \mathrm{GHz}$ or $10 \mathrm{GHz}$ detuned depending on the excited state $J$)
+  which shows similar result as the corresponding red detuning.
+\item Excited state line width for $v=0$.\\
+  The line width is narrow ($\leqslant 50 \mathrm{MHz}$)
+  when the tweezer is near $976 \mathrm{nm}$ but is wide ($\geqslant 500 \textrm{MHz}$)
+  when the tweezer is near $1038 \mathrm{nm}$ red detuned from the $v=0$ resonance
+  by a few hundred GHz.\\
+  We did not make a power dependency measurement.
+\item Line width of a ``mysterious'' line\\
+  Tweezer $100 \mathrm{GHz}$ red detuned.\\
+  Line width $\approx 100 \mathrm{MHz}$
+  (determined to be narrow at the time but could have some broadening)\\
+  We did not make a power dependency measurement.
+\item $|F^{Cs}=3, m_{F}^{Cs}=3; F^{Na}=2, m_{F}^{Na}=2\rangle$ lifetime
+  in $307366 \mathrm{GHz}$ tweezer.\\
+  We measured a shorter than expected lifetime.\\
+  The dependency of the loss rate to tweezer power is consistent with the prediction of
+  a two photo process from the tweezer. In another word, it is consistent with
+  a excited state broadened proportional to the tweezer power.
+\item $|F^{Cs}=3, m_{F}^{Cs}=3; F^{Na}=2, m_{F}^{Na}=2\rangle$ lifetime
+  in $306638 \mathrm{GHz}$ tweezer.\\
+  We measured a shorter than expected lifetime.\\
+  The power dependency may be consistent with a single photon process.
+\item $v=12$ line width.\\
+  Narrow ($25 \mathrm{MHz}$) for tweezer at around $307366 \mathrm{GHz}$
+  (blue detuned $\approx 900\mathrm{GHz}$). (No tweezer power dependency taken.)\\
+  Narrow ($20 \mathrm{MHz}$) for tweezer at $306612 \mathrm{GHz}$
+  (blue detuned $\approx 130\mathrm{GHz}$). (No tweezer power dependency taken.)
+  We have also indirectly observed a Raman coupling to a deeper molecular bound state
+  between the tweezer and the PA probe beam.\\
+  Broad ($250 \mathrm{MHz}$) for tweezer at $306344.5 \mathrm{GHz}$
+  (red detuned $\approx 150\mathrm{GHz}$). Linearly depending on tweezer power.\\
+\item $v=14$ line width.\\
+  Broad ($200 \mathrm{MHz}$) for tweezer at around $307366 \mathrm{GHz}$
+  (red detuned $\approx 1900\mathrm{GHz}$). Linearly depending on tweezer power.\\
+\item Raman blue detuned from $v=12$.\\
+  Tweezer at around $306614 \mathrm{GHz}$.\\
+  No Rabi flopping observed.
+\end{enumerate}
+
+\section{Preliminary explanations for some of the results}
+The power dependencies we measured makes it clear that we very likely
+have some two photon (from ground state, one photon from excited state) process involved.
+We originally suspected a two photon process to a higher excited state but Olivier also
+suggested potentially a coupling to the ground state (unbound) motional continuum.
+This initially seems improbable due to the small matrix element with the ground state.
+However, I later learned that due to the mismatch in the excited state and ground state
+electronic potential, the excited state only have about $20\%$ projection onto the ground
+bound state. In another word, even though the coupling to a particular ground trapped
+state is small, the total coupling to the ground state continuum is actually significant.\\
+
+In terms of a two photon coupling (from ground state) to higher excited state,
+it is harder to calculate but it is easy to believe the existence of highly lossy
+state either from radiative or non-radiative (pre-dissociation) process.\\
+
+In terms of a two photon coupling (from ground state) back to the ground electronic state,
+it should be easier to calculate (see below) and can more easily explain the apparent
+sensitivity to the detuning (red vs blue) of the excited state line width measurements.
+We have also directly measured a coupling to the ground bound state when we switched
+to blue detuning.
+
+\section{Caveat in the interpretation}
+
+There are two kinds of measurements above
+\begin{enumerate}
+\item Ground state scattering/loss rate\\
+  This includes Raman decay time / line width and atomic state 2-body lifetime.
+\item Excited state line width.
+\end{enumerate}
+
+The first kind of measurement mainly involve a single laser frequency
+or two that are not very far apart ($\approx 300 \mathrm{MHz}$).
+This single frequency is also detuned from any known excited state frequency
+by tens to hundreds of GHz (up to around $1 \mathrm{THz}$).
+This is more directly related to the loss we care about.
+(FWIW, the loss during Raman process is one of this type of measurements).\\
+
+The second kind of measurement usually involve two laser frequencies.
+\footnote{We've done measurements using the tweezer as PA without additional frequencies but
+  those data are generally assumed to be power broadened since we cannot turn down the
+  tweezer power too much during the measurement. Therefore, the tweezer PA measurement
+  don't usually offer us much information on the excited state line width.}
+One of the two frequencies is detuned by few GHz to a THz and the other one is scanned
+around the resonance by up to a few GHz.\\
+
+Since we usually express the difference in the ground state scattering rate in terms of
+a difference in the excited state line width (lifetime), it is tempting to compare this
+line width to the excited state line width direction measured at the same tweezer
+frequency. This is the main reason why we were measuring Raman transition using
+tweezer around $306614 \mathrm{GHz}$ after observing narrow line width for the nearby
+excited state.\\
+
+However, the two are not directly comparable. When we use the directly measured
+excited state line width ($\Gamma_e$) to calculate the ground state scattering rate ($\gamma$)
+for a certain large detuning ($\Delta$) as,
+
+\[ \gamma=\Gamma\frac{\Omega_1\Omega_2}{\Delta^2} \]
+
+(where $\Omega_1$ and $\Omega_2$ are the single photon Rabi frequencies), we have
+assumed that the loss of the excited state
+(i.e. the continuum the excited state is coupled to in order to decay)
+does not depend strongly on the final energy of the two photon process.
+Depending on the structure of the continuum we couple to via the two photon process,
+this may be a bad assumption.\\
+
+This has subtly different implications for two photon couple up or two photon couple down.
+
+\subsection{Two photon coupling up}
+\begin{wrapfigure}{R}{9cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[->, line width=2] (0, -0.5) -- (0, 5.5);
+      \draw[line width=1] (0.5, 0) -- (2, 0) node[right] {$|g\rangle$};
+      \draw[line width=1] (0.5, 2.3) -- (2, 2.3) node[right] {$|e\rangle$};
+      \fill[opacity=0.2] (0.5, 3.8) rectangle (2, 5.4);
+      \drawfill[domain=-0.8:0.8,smooth,variable=\y,red,line width=1,
+      fill opacity=0.2]
+      plot ({2.8 + 0.8 * exp(-100*pow(\y-0.5, 2)) +
+        0.5 * exp(-40*pow(\y-0.2, 2)) +
+        0.7 * exp(-70*pow(\y+0.1, 2)) +
+        0.9 * exp(-50*pow(\y+0.6, 2))},{\y + 4.6})
+      \skipit{--} (2.7, 4.6 + 0.8) \skipit{--} (2.7, 4.6 - 0.8) \skipit{-- cycle};
+      \node[below] at (3.4, 4.6 - 0.9) {\small{Loss rate}};
+
+      \draw[->, line width=1,blue] (1.25, 0) -- node[right] {$\Omega_1$} (1.25, 2);
+      \draw[->, line width=1,green!80!black] (1.25, 2) -- node[right] {$\Omega_2$} (1.25, 4.0);
+      \draw[dashed] (0.5, 4.0) -- (3.72, 4.0);
+      \node at (3, 0.2) {(A)};
+      \begin{scope}[shift={(4, 0)}]
+        \draw[line width=1] (0.5, 0) -- (2, 0) node[right] {$|g\rangle$};
+        \draw[line width=1] (0.5, 2.3) -- (2, 2.3) node[right] {$|e\rangle$};
+        \fill[opacity=0.2] (0.5, 3.8) rectangle (2, 5.4);
+        \drawfill[domain=-0.8:0.8,smooth,variable=\y,red,line width=1,
+        fill opacity=0.2]
+        plot ({2.8 + 0.8 * exp(-100*pow(\y-0.5, 2)) +
+          0.5 * exp(-40*pow(\y-0.2, 2)) +
+          0.7 * exp(-70*pow(\y+0.1, 2)) +
+          0.9 * exp(-50*pow(\y+0.6, 2))},{\y + 4.6})
+        \skipit{--} (2.7, 4.6 + 0.8) \skipit{--} (2.7, 4.6 - 0.8) \skipit{-- cycle};
+        \node[below] at (3.4, 4.6 - 0.9) {\small{Loss rate}};
+
+        \draw[->, line width=1,green!80!black] (1.25, 2.3) -- node[right] {$\Omega_2$} (1.25, 4.3);
+        \draw[dashed] (0.5, 4.3) -- (2.85, 4.3);
+        \node at (3, 0.2) {(B)};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  \caption{Two photon coupling to a (lossy) continuum. (A) Off resonance measurement,
+    (B) On resonance measurement.}
+  \label{two-up-1}
+\end{wrapfigure}
+
+See figure \ref{two-up-1}A, the loss mechanism we suspect is a two photon coupling
+to a lossy continuum with a frequency dependent loss rate
+\footnote{The loss rate depends on the laser power, i.e. $\Omega_1$ and $\Omega_2$. Here
+  ``loss rate'' essentially mean the loss rate per power squared, which is proportional to
+  the square of the coupling from $|e\rangle$ and the density of state.
+  Also note here since the second beam is coupling to a continuum rather than a single state
+  in the generic case, $\Omega_2$ is not a single number but a function of frequency
+  depending of the selection of normalization of the continuum.}.
+Generically, the loss rate is not flat which may give us a frequency dependent
+two photon loss rate. One way to see the difference between a detuned measurement
+and a on-resonance (with the singe photon excited state $|e\rangle$)
+measurement of the two photon decay rate is that the two process does not have the same
+two photon frequencies. For the on-resonance measurement using the same laser that couples
+$|e\rangle$ to the higher excited state (figure \ref{two-up-1}B),
+the loss rate experienced by the two photon resonance can be different.
+Since the loss rate can have an arbitrary dependency on frequency, one shouldn't expect
+the difference in the loss rate to be included in the detuning factor when calculating
+the scattering in the off-resonance case.\\
+
+\begin{wrapfigure}{R}{5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[->, line width=2] (0, -0.5) -- (0, 5.5);
+
+      \draw[dashed] (-0.05, 0) node[left] {$0$} -- (1.5, 0);
+      \draw[dashed] (-0.05, 2.3) node[left] {$\omega_0$} -- (1.5, 2.3);
+      \draw[dashed] (-0.05, 4.3) node[left] {$\omega_0 + \omega$} -- (1.5, 4.3);
+
+      \draw[line width=1] (1.5, 0) -- (2, 0) node[right] {$|g\rangle$};
+      \draw[line width=1] (1.5, 2.3) -- (2, 2.3) node[right] {$|e_1\rangle$};
+      \draw[line width=1] (1.5, 4.3) -- (2, 4.3) node[right] {$|e_2\rangle$};
+      \draw[line width=1] (0.2, 0) -- node[below] {$|g'\rangle$} (0.7, 0);
+      \draw[snakearrow, line width=1, red] (1.75, 4.3) -- node[below left=0.2cm]
+      {\large $\Gamma$} (0.45, 0);
+
+      \draw[->, line width=1,blue] (1.75, 0) -- node[right] {$\omega$, $\Omega_1$} (1.75, 2);
+      \draw[->, line width=1,green!80!black] (1.75, 2) --
+      node[right] {$\omega$, $\Omega_2$} (1.75, 4);
+
+      \draw[dashed] (0.5, 4) -- (2, 4);
+      \draw[<->] (1, 4.3) -- (1, 4);
+      \node[below] at (0.8, 4) {\footnotesize $\Delta\!\equiv\!\omega_0\!-\!\omega$};
+
+      \draw[dashed] (1.3, 2) -- (2, 2);
+      \draw[<->] (1.32, 2.3) -- (1.32, 2);
+      \node[right] at (1.33, 2.13) {\footnotesize $\Delta$};
+    \end{tikzpicture}
+  \end{center}
+  \caption{Four level model.}
+  \label{two-up-2}
+\end{wrapfigure}
+
+As a more concrete example, we'll consider a single two photon excited state with
+a stable single photon excited state.\\
+
+See figure \ref{two-up-2}. The ground state $|g\rangle$ is coupled to $|e_1\rangle$,
+$|e_1\rangle$ is coupled to $|e_2\rangle$ and $|e_2\rangle$ can decay to another ground
+state $|g'\rangle$ with decay rate $\Gamma$ and a $100\%$ branching ratio.
+The energy of the two ground states $|g\rangle$ and $|g'\rangle$ are both $0$,
+the energy of $|e_1\rangle$ is $\omega_0$ and the energy of $|e_2\rangle$ is $\omega_0+\omega$.\\
+
+The states are coupled by a single external laser with frequency $\omega$.
+The laser drives the $|g\rangle\leftrightarrow|e_1\rangle$ transition
+with a Rabi frequency $\Omega_1$ and the $|g\rangle\leftrightarrow|e_1\rangle$ transition
+with a Rabi frequency $\Omega_2$. The single photon detuning on the $|e_1\rangle$ and
+the two photon detuning on $|e_2\rangle$ are both $-\Delta\equiv\omega-\omega_0$.\\
+
+For simplicity we have ignored the decay of the $|e_1\rangle$ state
+and we assume the laser frequency is the same as the $|e_1\rangle$ $|e_2\rangle$
+energy splitting. We will also assume that $\Omega_{1,2}\ll\Delta\ll\omega<\omega_0$
+as well as $\Gamma\ll\Delta$. Some of the conditions may not be true in the real experiment
+but this example should be enough to demonstrate the correct way to calculate
+the scattering rate.\\
+
+We'll calculate the scattering rate of the state $|g\rangle$ using a few different methods.
+\footnote{All of the calculation below ignores the frequency dependency of the $|g'\rangle$
+  continuum $|e_2\rangle$ decays to. All the scattering rate should be scaled by
+  a factor of $\paren{\dfrac{2\omega}{\omega+\omega_0}}^3$.}
+
+\subsubsection{Off resonance Raman scattering}
+
+We can treat this as an off-resonance Raman scattering process.
+The Raman Rabi rate for the $|g\rangle\rightarrow|e_1\rangle\rightarrow|e_2\rangle$ is
+
+\[\Omega_R=\frac{\Omega_1\Omega_2}{2\Delta}\]
+
+since $\Omega_R\ll\Omega_1\ll\Delta$, the off resonant scattering rate is,
+
+\eqar{
+  \gamma\approx&\frac{\Gamma}{4}\frac{\Omega_R^2}{\Delta^2}\\
+  =&\frac{\Gamma}{16}\frac{\Omega_1^2\Omega_2^2}{\Delta^4}
+}
+
+\subsubsection{Single photon off resonance scattering from coupled excited state}
+\begin{wrapfigure}{R}{10cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[->, line width=2] (0, -0.5) -- (0, 3.5);
+
+      \draw[dashed] (-0.05, 0) node[left] {$0$} -- (1.5, 0);
+      \draw[dashed] (-0.05, 2.15) node[left] {$\omega_0 - \Omega_2/2$} -- (1.5, 2.15);
+      \draw[dashed] (-0.05, 2.45) node[left] {$\omega_0 + \Omega_2/2$} -- (1.5, 2.45);
+
+      \draw[line width=1] (1.5, 0) -- (2, 0) node[right] {$|g\rangle$};
+      \draw[line width=1] (1.5, 2.15) -- (2, 2.15) node[right] {$|-\rangle$};
+      \draw[line width=1] (1.5, 2.45) -- (2, 2.45) node[right] {$|+\rangle$};
+      \draw[line width=1] (0.2, 0) -- node[below] {$|g'\rangle$} (0.7, 0);
+      \draw[snakearrow, line width=1, red] (1.75, 2.15) -- node[below right]
+      {\large $\Gamma/2$} (0.5, 0);
+      \draw[snakearrow, line width=1, red] (1.75, 2.45) -- node[left=0.1cm]
+      {\large $\Gamma/2$} (0.3, 0);
+
+      \node[above] at (1, 2.6) {(A)};
+
+      \begin{scope}[shift={(3, 0)}]
+        % \draw[dashed] (-0.05, 0) -- (1.5, 0);
+        % \draw[dashed] (-0.05, 2.15) -- (1.5, 2.15);
+        % \draw[dashed] (-0.05, 2.45) -- (1.5, 2.45);
+
+        \draw[line width=1] (1.5, 0) -- (2, 0) node[right] {$|g\rangle$};
+        \draw[line width=1] (1.5, 2.15) -- (2, 2.15) node[right] {$|-\rangle$};
+        \draw[line width=1] (1.5, 2.45) -- (2, 2.45) node[right] {$|+\rangle$};
+        \draw[line width=1] (0.2, 0) -- node[below] {$|g'\rangle$} (0.7, 0);
+        \draw[<->, line width=1, blue] (2, 0) -- node[right]
+        {$\frac{D_1}{\sqrt2}$} (2, 2.15);
+        \draw[<->, line width=1, blue] (1.9, 0) -- node[above left]
+        {$\frac{D_1}{\sqrt2}$} (1.9, 2.45);
+        \draw[<->, line width=1, red] (0.2, 0) -- node[left=0.1]
+        {$\frac{D'}{\sqrt2}$} (1.5, 2.45);
+        \draw[<->, line width=1, red] (0.43, 0) -- (1.6, 2.15);
+        \node[red, below right] at (0.9, 1.075) {$\frac{-D'}{\sqrt2}$};
+
+        \node[above] at (1, 2.6) {(B)};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  \caption{Coupled excited states. (B) Dipole moments between new states.}
+  \label{two-up-coupled}
+\end{wrapfigure}
+
+More directly related to the excited state linewidth measurement, we can first couple the
+two excited states together with $\Omega_2$.\\
+
+See figure \ref{two-up-coupled}A. The excited states becomes
+
+\[|\pm\rangle=\frac{1}{\sqrt2}\paren{|e_1\rangle\pm|e_2\rangle}\]
+
+with energy $\omega_0\pm\Omega_2/2$ and each with a lifetime of $\dfrac\Gamma2$.
+The Rabi frequency between the two excited states and the ground state is
+$\Omega_\pm=\dfrac{\Omega_1}{\sqrt2}$.\\
+The scattering from the two excited states are
+\eqar{
+  \gamma_\pm\approx&\frac{\Gamma}{8}\frac{\Omega_\pm^2}{\paren{\Delta\mp\Omega_2/2}^2}\\
+  \approx&\frac{\Gamma}{16}\frac{\Omega_1^2}{\Delta^2}
+}
+and the total scattering rate
+\eqar{
+  \gamma=&\gamma_-+\gamma_+\\
+  \approx&\frac{\Gamma}{8}\frac{\Omega_1^2}{\Delta^2}
+}
+which clearly doesn't agree with the result we calculated above.
+
+\subsubsection{Single photon off resonance scattering from coupled excited state
+  (the correct way)}
+
+The apparent disagreement between the two result above suggests that one of them must be wrong
+and it turns out that the second one is incorrect due to the wrong assumption it made.\\
+
+In this case, the issue manifests itself as an incorrect off resonant scattering rate
+from the excited state. There is not problem in coupling the excited state first to get
+$|\pm\rangle$ but the decay process from the two states are not independent which give rise
+to a different scattering rate away from resonance. (when $\Delta\gg\Omega_2$).
+Instead, the scattering from the two excited states have to be treated as interfering
+Raman processes and their amplitudes needs to be added, which will lead to cancellation
+as we'll see soon, before squared to get the scattering rate.\\
+
+\subsection{Two photon coupling down}
+
+% Ground state coupling calculation
+
+\end{document}
