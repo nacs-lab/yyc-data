@@ -238,6 +238,10 @@ photon process from the excited state). The measurement we have done includes
   We measured one point not as carefully for blue detuning
   ($18 \mathrm{GHz}$ or $10 \mathrm{GHz}$ detuned depending on the excited state $J$)
   which shows similar result as the corresponding red detuning.
+\item Off resonance PA rate (lifetime) in $|F^{\mathrm{Cs}}\!=\!4, m_{F}^{\mathrm{Cs}}\!=\!4; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$
+  near $v=0$ PA line.\\
+  The result is consistent with the Raman line width and decay time measurements above
+  which gives a wide excited state line width.
 \item Excited state line width for $v=0$.\\
   The line width is narrow ($\leqslant 50 \mathrm{MHz}$)
   when the tweezer is near $976 \mathrm{nm}$ but is wide ($\geqslant 500 \textrm{MHz}$)
@@ -249,13 +253,13 @@ photon process from the excited state). The measurement we have done includes
   Line width $\approx 100 \mathrm{MHz}$
   (determined to be narrow at the time but could have some broadening)\\
   We did not make a power dependency measurement.
-\item $|F^{Cs}=3, m_{F}^{Cs}=3; F^{Na}=2, m_{F}^{Na}=2\rangle$ lifetime
+\item $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ lifetime
   in $307366 \mathrm{GHz}$ tweezer.\\
   We measured a shorter than expected lifetime.\\
   The dependency of the loss rate to tweezer power is consistent with the prediction of
   a two photo process from the tweezer. In another word, it is consistent with
   a excited state broadened proportional to the tweezer power.
-\item $|F^{Cs}=3, m_{F}^{Cs}=3; F^{Na}=2, m_{F}^{Na}=2\rangle$ lifetime
+\item $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ lifetime
   in $306638 \mathrm{GHz}$ tweezer.\\
   We measured a shorter than expected lifetime.\\
   The power dependency may be consistent with a single photon process.
@@ -503,10 +507,6 @@ since $\Omega_R\ll\Omega_1\ll\Delta$, the off resonant scattering rate is,
       \node[above] at (1, 2.6) {(A)};
 
       \begin{scope}[shift={(2.6, 0)}]
-        % \draw[dashed] (-0.05, 0) -- (1.5, 0);
-        % \draw[dashed] (-0.05, 2.15) -- (1.5, 2.15);
-        % \draw[dashed] (-0.05, 2.45) -- (1.5, 2.45);
-
         \draw[line width=1] (1.5, 0) -- (2, 0) node[right] {$|g\rangle$};
         \draw[line width=1] (1.5, 2.15) -- (2, 2.15) node[right] {$|-\rangle$};
         \draw[line width=1] (1.5, 2.45) -- (2, 2.45) node[right] {$|+\rangle$};
@@ -598,6 +598,21 @@ and the correct answer is
   =&\frac{\Gamma}{16}\frac{\Omega_1^2\Omega_2^2}{\Delta^4}
 }
 which is exactly what we got above.
+
+\subsubsection{Summary for two photon coupling down}
+
+In the particular case (two photon excite to a single state) we calculated,
+the naive calculation using coupled excited state (i.e. direct result from PA measurement)
+gives the wrong result because of the interference from different scattering channels.
+More generally, to avoid this problem one need to realize,
+\begin{enumerate}
+\item The scattering is never a one photon process, one need to calculate the rate
+  after considering all photon involved.
+\item It is OK to couple some intermediate states first and use a dressed state picture
+  to eliminate the number of photon/coupling/intermediate states involved. However,
+  the coupled result may not be a single state and the scattering from the resulting
+  states may not follow a simple $\Delta^{-2}$ rule.
+\end{enumerate}
 
 \subsection{Two photon coupling down}
 
