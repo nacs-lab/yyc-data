@@ -529,7 +529,7 @@ since $\Omega_R\ll\Omega_1\ll\Delta$, the off resonant scattering rate is,
   \label{two-up-coupled}
 \end{wrapfigure}
 
-More directly related to the excited state linewidth measurement, we can first couple the
+More directly related to the excited state line width measurement, we can first couple the
 two excited states together with $\Omega_2$.\\
 
 See \mbox{figure \ref{two-up-coupled}A}. The excited states becomes
@@ -575,8 +575,8 @@ and scales our previous result correspondingly.\\
 Let the $D_1=\langle g|\hat d|e_1\rangle$ and $D_2=\langle g'|\hat d|e_2\rangle$ be
 the dipole moment coupling $e_1$ and $e_2$ to the corresponding ground states $g$ and $g'$.
 The dipole moments between the new states are shown in \mbox{figure \ref{two-up-coupled}B
-\footnote{The sign of the dipole moment depends on the selection of the phase for
-  $|\pm\rangle$ but the relative sign of the product does not depend on the phase selection}.}\\
+  \footnote{The sign of the dipole moment depends on the selection of the phase for
+    $|\pm\rangle$ but the relative sign of the product does not depend on the phase selection}.}\\
 
 The wrong way to calculate the scattering gives a factor of
 \eqar{
@@ -616,6 +616,157 @@ More generally, to avoid this problem one need to realize,
 \end{enumerate}
 
 \subsection{Two photon coupling down}
+\begin{wrapfigure}{R}{8.4cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[->, line width=2] (0, -0.5) -- (0, 4);
+      \draw[line width=1] (1, 0) node[left] {$|0\rangle$} -- (2, 0);
+      \draw (1, 0.1) -- (2, 0.1);
+      \draw (1, 0.2) -- (2, 0.2);
+      \node[rotate=90] at (1.5, 0.5) {$\cdots$};
+      \node[left] at (1, 0.5) {$|n\rangle$};
+      \draw (1, 0.8) -- (2, 0.8);
+      \draw (1, 0.9) -- (2, 0.9);
+      \fill[opacity=0.2] (1, 1) rectangle (2, 1.5);
+
+      \draw[line width=1] (1, 3.5) node[left] {$|e\rangle$} -- (2, 3.5);
+
+      \draw[dashed] (1, 3) -- (2, 3);
+      \draw[->, line width=1,green!80!black] (1.5, 3) -- node[right] {$\Omega_2$} (1.7, 1.2);
+      \draw[->, line width=1,blue] (1.2, 0) -- node[above left] {$\Omega_1$} (1.5, 3);
+
+      \node[above] at (1.5, 3.65) {(A)};
+      \begin{scope}[shift={(1.4, 0)}]
+        \draw[line width=1] (1, 0) -- (2, 0);
+        \draw (1, 0.1) -- (2, 0.1);
+        \draw (1, 0.2) -- (2, 0.2);
+        \node[rotate=90] at (1.5, 0.5) {$\cdots$};
+        \draw (1, 0.8) -- (2, 0.8);
+        \draw (1, 0.9) -- (2, 0.9);
+        \fill[opacity=0.2] (1, 1) rectangle (2, 1.5);
+
+        \draw[line width=1] (1, 3.5) -- (2, 3.5);
+
+        \draw[dashed] (1, 3) -- (2, 3);
+        \draw[<->, line width=1,blue] (1.65, 0) -- node[above left] {$\Omega_1$} (1.65, 3);
+
+        \node[above] at (1.5, 3.65) {(B)};
+      \end{scope}
+      \begin{scope}[shift={(2.8, 0)}]
+        \draw[line width=1] (1, -0.5) node[left] {$|\!-\!1\rangle$} -- (2, -0.5);
+        \draw[line width=1] (1, 0) -- (2, 0);
+        \draw (1, 0.1) -- (2, 0.1);
+        \draw (1, 0.2) -- (2, 0.2);
+        \node[rotate=90] at (1.5, 0.5) {$\cdots$};
+        \draw (1, 0.8) -- (2, 0.8);
+        \draw (1, 0.9) -- (2, 0.9);
+        \fill[opacity=0.2] (1, 1) rectangle (2, 1.5);
+
+        \draw[line width=1] (1, 3.5) -- (2, 3.5);
+
+        \draw[dashed] (1, 3) -- (2, 3);
+        \draw[<->, line width=1,green!80!black] (1.51, 3) -- (1.7, -0.5);
+        \node[above right,green!80!black] at (1.6, 1.5) {$\Omega_2$};
+        \draw[<->, line width=1,blue] (1.2, 0) -- node[above left] {$\Omega_1$} (1.49, 3);
+
+        \node[above] at (1.5, 3.65) {(C)};
+      \end{scope}
+      \begin{scope}[shift={(4.2, 0)}]
+        \draw[line width=1] (1, 0) -- (2, 0);
+        \draw (1, 0.1) -- (2, 0.1);
+        \draw (1, 0.2) -- (2, 0.2);
+        \node[rotate=90] at (1.5, 0.5) {$\cdots$};
+        \draw (1, 0.8) -- (2, 0.8);
+        \draw (1, 0.9) -- (2, 0.9);
+        \fill[opacity=0.2] (1, 1) rectangle (2, 1.5);
+
+        \draw[line width=1] (1, 3.5) -- (2, 3.5);
+
+        \draw[dashed] (1, 3) -- (2, 3);
+        \draw[->, dashed, line width=0.3,blue] (1.5, 3) -- node[right] {$\Omega_1'$} (1.7, 1.2);
+        \draw[->, line width=1,blue] (1.2, 0) -- node[above left] {$\Omega_1$} (1.5, 3);
+
+        \node[above] at (1.5, 3.65) {(D)};
+      \end{scope}
+      \begin{scope}[shift={(5.6, 0)}]
+        \fill[red,opacity=0.2] (1.8, -0.5) rectangle (2.5, 0.5);
+        \draw[line width=1] (1, 0) -- (1.7, 0);
+        \draw (1, 0.1) -- (1.7, 0.1);
+        \draw (1, 0.2) -- (1.7, 0.2);
+        \node[rotate=90] at (1.35, 0.5) {$\cdots$};
+        \draw (1, 0.8) -- (1.7, 0.8);
+        \draw (1, 0.9) -- (1.7, 0.9);
+        \fill[opacity=0.2] (1, 1) rectangle (1.7, 1.5);
+
+        \draw[line width=1] (1, 3.5) -- (2.5, 3.5);
+
+        \draw[dashed] (1, 3) -- (2.5, 3);
+        \draw[<->, line width=1,blue] (1.4, 0) -- node[above left] {$\Omega_1$} (1.75, 3);
+        \draw[<->, line width=1,blue] (2.1, 0) -- node[above right] {$\Omega_1'$} (1.75, 3);
+
+        \node[above] at (1.75, 3.65) {(E)};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  \caption{Coupling to ground state motional continuum. (A) Raman into motional continuum.
+    (B) Single ground HF state, single laser frequency. (C) Single ground HF state,
+    two frequencies for molecular Raman. (D) Unexpected sideband in laser.
+    (E) Zero energy continuum.}
+  \label{two-down}
+\end{wrapfigure}
+
+The potential second photon coupling down pathway is very similar.
+See \mbox{figure \ref{two-down}A}. The loss is caused by the ground state (atomic or molecular)
+coupling to the ground motional continuum.\\
+
+We can also directly apply the two points from the summary above.
+\begin{enumerate}
+\item In order to calculate ground state loss, we should consider the Raman process,
+  which will likely have very different motional energies compared to the motional energy
+  coupling down from the excited state.
+\item The excited state is coupled to an atomic motional continuum and the resulting loss
+  will have a very different profile from then $\Delta^{-2}$ scaling. Even if we
+  see a broadening of the excited state due to this coupling, it does not mean much
+  for the corresponding ground state loss rate.
+\end{enumerate}
+
+The two kinds of ground state scattering measurements we have are atomic state PA rate
+and molecular state scattering (using Raman transition).
+Assuming the laser is clean and no other states are involved,
+\begin{enumerate}
+\item For atomic scattering rate (\mbox{figure \ref{two-down}B}), there is only
+  one frequency so the Raman process can only come back down to the same energy as
+  the initial state, which is not in an continuum.
+\item For molecular scattering rate during transfer (\mbox{figure \ref{two-down}C}),
+  similarly, the only energy the molecular state could couple to is the initial energy
+  or a deeper bound state (2x the binding energy). Neither of these is a continuum either.\\
+  The atomic state can indeed be coupled to the continuum but it should be much weaker than
+  the molecular state (the up leg is much smaller) and we have not measured a decrease in
+  atomic 2-body lifetime when the Raman beam is turned on.
+\end{enumerate}
+Therefore, in order to generate any loss from this process for the ground state,
+we need to have either,
+\begin{enumerate}
+\item Additional frequencies in the laser (\mbox{figure \ref{two-down}D}) which
+  can couple the state of interest to the motional continuum. Or,
+\item Continuum that has zero energy (\mbox{figure \ref{two-down}E}) that the Raman beam
+  can couple to.\\
+  Candidate for this continuum includes the center of mass (COM) motional states and
+  the motional continuum from other HF states.\\
+  The COM motional continuum actually also starts at a positive energy so it doesn't seems
+  possible. The continuum from other HF states is much more promising especially since
+  we know that the $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state has a strong coupling to the molecular excited states.
+  However, this cannot be applied to the $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state lifetime since it is already
+  the HF state with the lowest energy.
+\end{enumerate}
+
+\subsection{Summary for interpreting and connecting excited state and ground state results}
+
+From the discussion above, we see that no matter what kind of couple we have,
+the excited state line width may not be directly related to the life time in the tweezer
+of the corresponding frequency. For up coupling, the result is more closely related
+to the lifetime for tweezer of the average frequency, whereas for down coupling,
+the lifetime may not be related to the excited state line width at all.
 
 % Ground state coupling calculation
 
