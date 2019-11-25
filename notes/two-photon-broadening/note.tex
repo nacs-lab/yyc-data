@@ -880,4 +880,34 @@ The decay rate is
 }
 where $E$ is the energy (in frequency unit) of the continuum energy we are coupling to.
 
+\subsection{Spherical box}
+
+We can also treat the continuum as the spectrum of a large spherical infinitely deep well
+when the radius of the sphere $R$ is infinite.
+The radial wavefunctions of the eigenstates are,
+
+\eqar{
+  u_n=&\sqrt{\frac{2}{R}}\sin\paren{\frac{\pi nr}{R}}
+}
+
+with energy\footnote{In frequency unit} $E=\dfrac{\pi^2\hbar n^2}{2mR^2}$.
+Energy gap between neighboring state is $\Delta E\approx\dfrac{\pi^2\hbar n}{mR^2}$,
+
+\eqar{
+  \psi(r=0)=&\left.\dfrac{1}{\sqrt{4\pi}}\ddiff{u}{r}\right|_{r=0}\\
+  =&\frac{\pi n}{\sqrt{2\pi R}R}\\
+  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega_R\frac{\pi n}{\sqrt{2\pi R}R}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
+}
+
+The decay rate is
+\eqar{
+  \gamma=&\frac{2\pi\Omega_R'^2}{\Delta E}\\
+  =&2\pi\Omega_R^2\frac{\pi^2 n^2}{2\pi R^3}\sqrt{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}\frac{mR^2}{\pi^2\hbar n}\\
+  =&\Omega_R^2\frac{n}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}}\\
+  =&\Omega_R^2\frac{1}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}\frac{2mR^2E}{\pi^2\hbar}}\\
+  =&\Omega_R^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
+}
+Which is the same result we got using the harmonic oscillator states.
+
 \end{document}
