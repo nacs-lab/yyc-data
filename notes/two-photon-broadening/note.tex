@@ -768,6 +768,116 @@ of the corresponding frequency. For up coupling, the result is more closely rela
 to the lifetime for tweezer of the average frequency, whereas for down coupling,
 the lifetime may not be related to the excited state line width at all.
 
-% Ground state coupling calculation
+\section{Loss due to coupling to ground state motional continuum}
+
+Calculating the loss rate for coupling to the continuum requires knowledge of the
+continuum wavefunction. This is hard to do accurately for states with significant
+energy since the fine energy spacing will blow up the number of states involved.
+Fortunately, since we know the interaction potential is short range and much deeper
+than any of the motional energy scales, we can make certain approximations in order
+to get the coupling to the continuum based on the known coupling to the trapped atomic
+states in the tweezer.\\
+
+First of all, we are going to ignore the COM motion and only consider the relative motion.
+This shouldn't affect our answer for coupling to the relative motional continuum too much
+but it does prevent us from calculating the coupling to the COM motional continuum.
+Since the COM motional continuum only exists at roughly the same energy levels as the
+relative motion, this should not be an issue (the coupling to the relative continuum
+at the same energy should always be stronger).\\
+
+We'll also only consider $L=0$ motional states since,
+\begin{enumerate}
+\item The selection rule means that we can only couple to at most a few low $L$ states.
+\item The coupling to $L\neq0$ states are weaker due to smaller wave function amplitude
+  for short distance.
+\end{enumerate}
+
+We can then consider a small enough volume around the $r=0$ of the relative coordinate.
+The coupling to the excited molecular state is entirely determined by the wavefunction
+inside. The wavefunction inside is determined by the boundary condition,
+which for $L=0$\footnote{Or for any particular $L$ and $m_L$} is a single number,
+and the energy of the state. Since the energy of the motional state is much smaller than
+the depth of the interaction potential, we can expect the shape of the wavefunction
+to be almost independent of the energy and the amplitude of it to be proportional to
+the boundary condition. In the weak interaction limit\footnote{This should be true for most
+  motional state with the exception of $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state.},
+we can assume that the boundary condition is given by the value of
+the non-interacting wavefunctions at $r=0$.\\
+
+In the ground motional state, the trapping frequencies are $\omega_i$ where $i=1,2,3$
+along the three axis. The value of the wavefunction at $r=0$ is,
+
+\eqar{
+  \psi_0=&\prod_{i=1}^{3}\paren{\frac{m\omega_i}{\pi\hbar}}^{1/4}\\
+  =&\paren{\frac{m^3\omega_1\omega_2\omega_3}{\pi^3\hbar^3}}^{1/4}
+}
+
+Assume the Raman Rabi frequency between the initial state and the ground motional state
+is $\Omega_R$, the Raman Rabi frequency for another motional state would be,
+
+\eqar{
+  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
+}
+
+In order to calculate the coupling to the continuum, we'll start with a discrete set of states
+and and then take the energy gap to $0$ to calculate the result for true continuum.
+We'll use two different sets of states to calculate for cross-checking\footnote{
+  Note that both calculations will be done under the same assumptions given above so their
+  agreement does not necessarily mean that the assumption is valid.}.
+
+\subsection{Harmonic oscillator states}
+
+We can treat the continuum as the limit of a infinitely loose 3D harmonic oscillator state.
+Assuming a trapping frequency $\omega$, we are interested in the value of the wavefunction
+at $r=0$ for large $n$ where $n$ is the radial quantum number (energy gap of $2\omega$).
+
+I'll calculate this value using two methods as well.
+
+\subsubsection{Using radial wavefunction $u=r\psi_r$}
+
+After doing the subsitution of $u=r\psi_r(r)$, the Schr\"odinger equation for $u$ becomes
+that of a 1D harmonic oscillator with a hard wall at $r=0$. The eigenstates are the odd
+harmonic oscillator states for the normal 1D potential and $\psi(r=0)$ is given by $\left.\dfrac{1}{\sqrt{4\pi}}\ddiff{u}{r}\right|_{r=0}$.\\
+
+The normalized wavefunction for $u$ is,
+
+\eqar{
+  u_n=&\frac{(-1)^n\sqrt{2}}{\sqrt{2^{2n+1}(2n+1)!}}\paren{\frac{m\omega}{\pi\hbar}}^{1/4}\exp\paren{-\frac{m\omega r^2}{2\hbar}}H_{2n+1}\paren{\sqrt{\frac{m\omega}{\hbar}}r}\\
+  \psi(r=0)=&\left.\dfrac{1}{\sqrt{4\pi}}\ddiff{u}{r}\right|_{r=0}\\
+  =&\dfrac{1}{\sqrt{2\pi}}\frac{(-1)^n}{\sqrt{2^{2n+1}(2n+1)!}}\paren{\frac{m\omega}{\pi\hbar}}^{1/4}
+  \left.\ddiff{}{r}H_{2n+1}\paren{\sqrt{\frac{m\omega}{\hbar}}r}\right|_{r=0}\\
+  =&\dfrac{1}{\sqrt{2\pi}}\frac{(-1)^n}{\sqrt{2^{2n+1}(2n+1)!}}\paren{\frac{m\omega}{\pi\hbar}}^{1/4}\sqrt{\frac{m\omega}{\hbar}}2(2n + 1) H_{2n}\paren{0}\\
+  =&\frac{(-1)^n}{\sqrt{2^{2n+2}(2n+1)!}}2(2n + 1)(-2)^n (2n - 1)!!\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  =&\frac{2^{n+1}(2n + 1) (2n - 1)!}{(n-1)!2^{n-1}\sqrt{2^{2n+2}(2n+1)!}}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  =&\sqrt{\frac{(2n + 1)!}{2^{2n}n^2}}\frac{1}{(n-1)!}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  =&\sqrt{\frac{\sqrt{2\pi (2n+1)}(2n+1)^{2n+1}}{2^{2n}n^2\ue^{2n+1}}}\frac{\ue^{n-1}}{\sqrt{2\pi (n-1)}(n-1)^{n-1}}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  \approx&\sqrt{\frac{\sqrt{2\pi(2n+1)}(2n+1)^{2n+1}}{\pi\ue^{3}(2n-2)^{2n+1}}}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  \approx&\paren{\frac{4n}{\pi}}^{1/4}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}
+}
+
+\subsubsection{Using 3D harmonic wavefunction}
+\eqar{
+  \psi(r=0)=&\frac{1}{\sqrt{4\pi}}\sqrt{\sqrt{\frac{m^3\omega^3}{4\pi\hbar^3}}\frac{2^{n+3}n!}{(2n+1)!!}}L_n^{1/2}(0)\\
+  =&\frac{1}{\sqrt{4\pi}}\sqrt{\sqrt{\frac{m^3\omega^3}{4\pi\hbar^3}}\frac{2^{n+3}2^n}{(2n+1)!}}n!L_n^{1/2}(0)\\
+  \approx&\frac{1}{\sqrt{4\pi}}\sqrt{\sqrt{\frac{m^3\omega^3}{\pi\hbar^3}}\frac{2^{2n+2}}{(2n+1)!}}\frac{n! 2\sqrt{n}}{\sqrt{\pi}}\\
+  \approx&\frac{1}{\sqrt{4\pi}}\sqrt{\frac{\pi 2^{2n+2}\ue^{2n+1}}{\sqrt{2\pi (2n+1)}(2n+1)^{2n+1}}}\sqrt{2\pi n}\paren{\frac{n}{\ue}}^n\frac{2\sqrt{n}}{\sqrt{\pi}}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  =&\sqrt{\frac{2\pi (2n)^{2n+2}\ue}{\pi\sqrt{2\pi (2n+1)}(2n+1)^{2n+1}}}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\\
+  \approx&\paren{\frac{4n}{\pi}}^{1/4}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}
+}
+which agrees with the other method.\\
+
+The Raman Rabi frequency to the motional state is therefore,
+\eqar{
+  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega_R\paren{\frac{4n}{\pi}}^{1/4}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega_R\paren{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}^{1/4}
+}
+The decay rate is
+\eqar{
+  \gamma=&\frac{2\pi\Omega_R'^2}{2\omega}\\
+  =&\frac{\pi\Omega_R^2}{\omega}\sqrt{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}\\
+  =&\Omega_R^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
+}
+where $E$ is the energy (in frequency unit) of the continuum energy we are coupling to.
 
 \end{document}
