@@ -812,18 +812,20 @@ along the three axis. The value of the wavefunction at $r=0$ is,
   =&\paren{\frac{m^3\omega_1\omega_2\omega_3}{\pi^3\hbar^3}}^{1/4}
 }
 
-Assume the Raman Rabi frequency between the initial state and the ground motional state
-is $\Omega_R$, the Raman Rabi frequency for another motional state would be,
+Assume the Rabi frequency between the state of interest and the ground motional state
+is $\Omega$\footnote{This can be either a Raman Rabi frequency for ground state loss rate,
+  or the up leg single photon Rabi frequency for the excited state broadening.},
+the Rabi frequency for another motional state would be,
 
 \eqar{
-  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
+  \Omega'=&\Omega\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
 }
 
 In order to calculate the coupling to the continuum, we'll start with a discrete set of states
 and and then take the energy gap to $0$ to calculate the result for true continuum.
 We'll use two different sets of states to calculate for cross-checking\footnote{
   Note that both calculations will be done under the same assumptions given above so their
-  agreement does not necessarily mean that the assumption is valid.}.
+  agreement does not validate the assumption.}.
 
 \subsection{Harmonic oscillator states}
 
@@ -866,17 +868,17 @@ The normalized wavefunction for $u$ is,
 }
 which agrees with the other method.\\
 
-The Raman Rabi frequency to the motional state is therefore,
+The Rabi frequency to the motional state is therefore,
 \eqar{
-  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
-  =&\Omega_R\paren{\frac{4n}{\pi}}^{1/4}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
-  =&\Omega_R\paren{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}^{1/4}
+  \Omega'=&\Omega\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega\paren{\frac{4n}{\pi}}^{1/4}\paren{\frac{m\omega}{\pi\hbar}}^{3/4}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega\paren{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}^{1/4}
 }
 The decay rate is
 \eqar{
-  \gamma=&\frac{2\pi\Omega_R'^2}{2\omega}\\
-  =&\frac{\pi\Omega_R^2}{\omega}\sqrt{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}\\
-  =&\Omega_R^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
+  \gamma=&\frac{2\pi\Omega'^2}{2\omega}\\
+  =&\frac{\pi\Omega^2}{\omega}\sqrt{\frac{4n\omega^3}{\pi\omega_1\omega_2\omega_3}}\\
+  =&\Omega^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
 }
 where $E$ is the energy (in frequency unit) of the continuum energy we are coupling to.
 
@@ -896,17 +898,17 @@ Energy gap between neighboring state is $\Delta E\approx\dfrac{\pi^2\hbar n}{mR^
 \eqar{
   \psi(r=0)=&\left.\dfrac{1}{\sqrt{4\pi}}\ddiff{u}{r}\right|_{r=0}\\
   =&\frac{\pi n}{\sqrt{2\pi R}R}\\
-  \Omega_R'=&\Omega_R\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
-  =&\Omega_R\frac{\pi n}{\sqrt{2\pi R}R}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
+  \Omega'=&\Omega\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}\\
+  =&\Omega\frac{\pi n}{\sqrt{2\pi R}R}\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
 }
 
 The decay rate is
 \eqar{
-  \gamma=&\frac{2\pi\Omega_R'^2}{\Delta E}\\
-  =&2\pi\Omega_R^2\frac{\pi^2 n^2}{2\pi R^3}\sqrt{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}\frac{mR^2}{\pi^2\hbar n}\\
-  =&\Omega_R^2\frac{n}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}}\\
-  =&\Omega_R^2\frac{1}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}\frac{2mR^2E}{\pi^2\hbar}}\\
-  =&\Omega_R^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
+  \gamma=&\frac{2\pi\Omega'^2}{\Delta E}\\
+  =&2\pi\Omega^2\frac{\pi^2 n^2}{2\pi R^3}\sqrt{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}\frac{mR^2}{\pi^2\hbar n}\\
+  =&\Omega^2\frac{n}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}}\\
+  =&\Omega^2\frac{1}{R}\sqrt{\frac{\pi^3\hbar}{m\omega_1\omega_2\omega_3}\frac{2mR^2E}{\pi^2\hbar}}\\
+  =&\Omega^2\sqrt{\frac{2\pi E}{\omega_1\omega_2\omega_3}}
 }
 Which is the same result we got using the harmonic oscillator states.
 
