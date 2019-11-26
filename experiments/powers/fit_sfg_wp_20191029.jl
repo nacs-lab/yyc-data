@@ -9,15 +9,12 @@ using PyPlot
 using LsqFit
 import NaCsCalc.Format: Unc, Sci
 
-const prefix = joinpath(@__DIR__, "imgs", "powers_20191031")
+const iname_1040 = joinpath(@__DIR__, "data", "sfg_wp_1040_20191029.csv")
+const data_1040 = readdlm(iname_1040, ',', Float64, skipstart=1)
+const iname_1550 = joinpath(@__DIR__, "data", "sfg_wp_1550_20191029.csv")
+const data_1550 = readdlm(iname_1550, ',', Float64, skipstart=1)
 
-P1550(θ) = 7.43 .* sind.(2 .* (θ - 2.44)).^2
-P1040(θ) = 9.94 .* sind.(2 .* (θ + 1.4)).^2
-
-const Input1550 = [0.150; P1550.([8, 12, 15, 18, 26, 36, 47])]
-const Input1040 = [0.150; P1040.([4, 6, 10, 16, 24, 32, 44])]
-const Output = [0.00252, 0.01030, 0.0440, 0.165,
-                0.451, 1.70 / 0.479 * 0.451, 3.44 / 0.479 * 0.451, 4.70 / 0.479 * 0.451]
+const prefix = joinpath(@__DIR__, "imgs", "sfg_wp_20191029")
 
 fit_data(model, x, y, p0; kws...) =
     fit_data(model, x, y, nothing, p0; kws...)
@@ -66,23 +63,34 @@ function fit_survival(model, data, p0; use_unc=true, kws...)
     end
 end
 
-model(x, p) = p[1] .* x
+model(x, p) = p[1] .+ p[2] .* sind.((x .- p[3]) .* 2).^2
 
-fit_output = fit_data(model, Input1040[1:3] .* Input1550[1:3],
-                      Output[1:3], [100.0], plot_hi=Input1040[end] .* Input1550[end] * 1.3)
-
+fit_1040 = fit_data(model, data_1040[:, 1], data_1040[:, 2],
+                    [0.0, maximum(data_1040[:, 2]), data_1040[1, 1]])
 figure()
-plot(fit_output.plotx, fit_output.ploty, "C1-")
-plot(Input1040 .* Input1550, Output, "C0o")
+plot(data_1040[:, 1], data_1040[:, 2], "C2o")
+plot(fit_1040.plotx, fit_1040.ploty, "C0")
+title("1040 Power calibration")
 grid()
-text(0.2, 0.003, "\$$(fit_output.uncs[1])\\mathrm{W}^{-1}\$", fontsize=18, color="C1")
-xlim([Input1040[1] * Input1550[1] * 0.5, xlim()[2]])
-ylim([Output[1] * 0.5, ylim()[2]])
-gca()[:set_xscale]("log", nonposx="clip")
-gca()[:set_yscale]("log", nonposy="clip")
-xlabel("Input power product (W\$^2\$)")
-ylabel("Output Power (W)")
-tight_layout()
-NaCsPlot.maybe_save("$(prefix)")
+ylim([0, ylim()[2]])
+text(-2, 5, "\$a+b\\cdot\\sin^2(2(\\theta - \\theta_0))\$", fontsize=18, color="C0")
+text(17, 0.25, "\$a=$(fit_1040.uncs[1] * 1000)\$ mW\n\$b=$(fit_1040.uncs[2])\$ W\n\$\\theta_0=$(fit_1040.uncs[3])^\\circ\$", fontsize=20, color="C0")
+xlabel("HWP Angle (deg)")
+ylabel("Power (W)")
+NaCsPlot.maybe_save("$(prefix)_1040")
+
+fit_1550 = fit_data(model, data_1550[:, 1], data_1550[:, 2],
+                    [0.0, maximum(data_1550[:, 2]), data_1550[1, 1]])
+figure()
+plot(data_1550[:, 1], data_1550[:, 2], "C2o")
+plot(fit_1550.plotx, fit_1550.ploty, "C0")
+title("1550 Power calibration")
+grid()
+ylim([0, ylim()[2]])
+text(-2, 5, "\$a+b\\cdot\\sin^2(2(\\theta - \\theta_0))\$", fontsize=18, color="C0")
+text(23, 0.25, "\$a=$(fit_1550.uncs[1] * 1000)\$ mW\n\$b=$(fit_1550.uncs[2])\$ W\n\$\\theta_0=$(fit_1550.uncs[3])^\\circ\$", fontsize=20, color="C0")
+xlabel("HWP Angle (deg)")
+ylabel("Power (W)")
+NaCsPlot.maybe_save("$(prefix)_1550s")
 
 NaCsPlot.maybe_show()
