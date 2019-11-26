@@ -13,18 +13,18 @@ param_str(fit, i) = @sprintf("%.4f", fit.param[i])
 params_strs(fit) =
     "\$a=$(param_str(fit, 1))\$\n\$b=$(param_str(fit, 2))\$\n\$c=$(param_str(fit, 3))\$"
 
-const iname_f3_counterop = joinpath(@__DIR__, "data", "f3_counterop_20180903.csv")
+const iname_f3_counterop = joinpath(@__DIR__, "data", "cs_f3_counterop_20180903.csv")
 const data_f3_counterop = readdlm(iname_f3_counterop, ',', Float64, skipstart=1)
-const iname_f4_coprop = joinpath(@__DIR__, "data", "f4_coprop_20180903.csv")
+const iname_f4_coprop = joinpath(@__DIR__, "data", "cs_f4_coprop_20180903.csv")
 const data_f4_coprop = readdlm(iname_f4_coprop, ',', Float64, skipstart=1)
-const iname_f3_coprop = joinpath(@__DIR__, "data", "f3_coprop_20180903.csv")
+const iname_f3_coprop = joinpath(@__DIR__, "data", "cs_f3_coprop_20180903.csv")
 const data_f3_coprop = readdlm(iname_f3_coprop, ',', Float64, skipstart=1)
-const iname_f4_up = joinpath(@__DIR__, "data", "f4_up_20180903.csv")
+const iname_f4_up = joinpath(@__DIR__, "data", "cs_f4_up_20180903.csv")
 const data_f4_up = readdlm(iname_f4_up, ',', Float64, skipstart=1)
-const iname_f4_down = joinpath(@__DIR__, "data", "f4_down_20180903.csv")
+const iname_f4_down = joinpath(@__DIR__, "data", "cs_f4_down_20180903.csv")
 const data_f4_down = readdlm(iname_f4_down, ',', Float64, skipstart=1)
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20180903")
+const prefix = joinpath(@__DIR__, "imgs", "cs_20180903")
 
 model(x, p) = p[1] .* sin.(p[2] .* sin.(p[3] .* x).^2)
 # model′(x, p) = p[1] .* sin.(p[2] .* x.^2)
