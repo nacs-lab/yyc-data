@@ -9,10 +9,10 @@ using PyPlot
 using LsqFit
 import NaCsCalc.Format: Unc, Sci
 
-const iname = joinpath(@__DIR__, "data", "venus_power_20191126.csv")
+const iname = joinpath(@__DIR__, "data", "venus_20191126.csv")
 const data = readdlm(iname, ',', Float64, skipstart=1)
 
-const prefix = joinpath(@__DIR__, "imgs", "venus_power_20191126")
+const prefix = joinpath(@__DIR__, "imgs", "venus_20191126")
 
 figure()
 plot(data[:, 1], data[:, 2], "C0o-")
