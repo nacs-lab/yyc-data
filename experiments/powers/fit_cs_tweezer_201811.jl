@@ -15,17 +15,17 @@ params_strs(fit) =
 params_strs2(fit) =
     "\$a=$(param_str(fit, 1))\$\n\$b=$(param_str(fit, 2))\$"
 
-const iname_paaom = joinpath(@__DIR__, "data", "paaom_201811.csv")
+const iname_paaom = joinpath(@__DIR__, "data", "cs_tweezer_paaom_201811.csv")
 const data_paaom = readdlm(iname_paaom, ',', Float64, skipstart=1)
-const iname_padpaom = joinpath(@__DIR__, "data", "padpaom_201811.csv")
+const iname_padpaom = joinpath(@__DIR__, "data", "cs_tweezer_padpaom_201811.csv")
 const data_padpaom = readdlm(iname_padpaom, ',', Float64, skipstart=1)
-const iname_padpaom2 = joinpath(@__DIR__, "data", "padpaom2_201811.csv")
+const iname_padpaom2 = joinpath(@__DIR__, "data", "cs_tweezer_padpaom2_201811.csv")
 const data_padpaom2 = readdlm(iname_padpaom2, ',', Float64, skipstart=1)
 
 @assert data_padpaom2[:, 1] == data_padpaom[:, 1]
 data_padpaom2[:, 2] .-= data_padpaom[:, 2]
 
-const prefix = joinpath(@__DIR__, "imgs", "data_tweezer_201811")
+const prefix = joinpath(@__DIR__, "imgs", "cs_tweezer_201811")
 
 model(x, p) = p[1] .* sin.(p[2] .* sin.(p[3] .* x).^2)
 model2(x, p) = p[1] .* sin.(p[2] .* x).^4

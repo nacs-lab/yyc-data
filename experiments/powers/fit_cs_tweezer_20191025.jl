@@ -15,17 +15,17 @@ params_strs(fit, suffix="") =
 params_strs2(fit, suffix="") =
     "\$a$suffix=$(param_str(fit, 1))\$\n\$b$suffix=$(param_str(fit, 2))\$"
 
-const iname_paaom = joinpath(@__DIR__, "data", "paaom_20190315.csv")
+const iname_paaom = joinpath(@__DIR__, "data", "cs_tweezer_paaom_20191025.csv")
 const data_paaom = readdlm(iname_paaom, ',', Float64, skipstart=1)
-const iname_padpaom = joinpath(@__DIR__, "data", "padpaom_20190315.csv")
+const iname_padpaom = joinpath(@__DIR__, "data", "cs_tweezer_padpaom_20191025.csv")
 const data_padpaom = readdlm(iname_padpaom, ',', Float64, skipstart=1)
-const iname_padpaom2 = joinpath(@__DIR__, "data", "padpaom2_20190315.csv")
+const iname_padpaom2 = joinpath(@__DIR__, "data", "cs_tweezer_padpaom2_20191025.csv")
 const data_padpaom2 = readdlm(iname_padpaom2, ',', Float64, skipstart=1)
 
 @assert data_padpaom2[:, 1] == data_padpaom[:, 1]
 data_padpaom2[:, 2] .-= data_padpaom[:, 2]
 
-const prefix = joinpath(@__DIR__, "imgs", "data_tweezer_20190315")
+const prefix = joinpath(@__DIR__, "imgs", "cs_tweezer_20191025")
 
 model(x, p) = p[1] .* sin.(p[2] .* sin.(p[3] .* x).^2)
 model2(x, p) = p[1] .* sin.(p[2] .* x).^4
@@ -60,13 +60,13 @@ title("PAAOM")
 grid()
 xlim([0, plotmax_paaom])
 ylim([0, ylim()[2]])
-text(0.28, 15.5, "\$a_1\\cdot\\sin(b_1\\cdot\\sin^2(c_1\\cdot AMP))\$", fontsize=18, color="C0")
-text(0.4, 3, params_strs(fit_paaom, "_1"), fontsize=20, color="C0")
+text(0.3, 7, "\$a_1\\cdot\\sin(b_1\\cdot\\sin^2(c_1\\cdot AMP))\$", fontsize=18, color="C0")
+text(0.45, 1, params_strs(fit_paaom, "_1"), fontsize=20, color="C0")
 xlabel("PAAOM/AMP")
 ylabel("Power (mW)")
 NaCsPlot.maybe_save("$(prefix)_paaom")
 
-plotmax_padpaom = maximum(data_padpaom[:, 1]) * 1.3
+plotmax_padpaom = maximum(data_padpaom[:, 1]) * 1.05
 plotamp_padpaom = linspace(0, plotmax_padpaom, 10000)
 
 fit_padpaom = curve_fit(model2, data_padpaom[:, 1], data_padpaom[:, 2],
@@ -84,7 +84,7 @@ plot(plotamp_padpaom, model2(plotamp_padpaom, fit_padpaom.param) .+
 plot(x0, y0, "bs")
 ax = gca()
 ax[:annotate]("x=$(@sprintf("%.5f", x0))\ny=$(@sprintf("%.4f", y0))",
-              (x0, y0 + 0.3), xytext=(0.20, 29),
+              (x0, y0 + 0.3), xytext=(0.35, 17),
               arrowprops=Dict(:arrowstyle=>"fancy", :color=>"b"),
               color="b")
 title("PADPAOM")
@@ -92,10 +92,10 @@ legend(ncol=2, fontsize="small")
 grid()
 xlim([0, plotmax_padpaom])
 ylim([0, 1.3 * max(maximum(data_padpaom[:, 2]), maximum(data_padpaom2[:, 2]))])
-text(0.01, 21 - 5, "\$a_2\\cdot\\sin^4(b_2\\cdot AMP)\$", fontsize=18, color="C0")
-text(0.012, 11 - 5, params_strs2(fit_padpaom, "_2"), fontsize=20, color="C0")
-text(0.365, 22 - 5, "\$a_3\\cdot\\cos^4(b_3\\cdot AMP)\$", fontsize=18, color="C1")
-text(0.37, 12 - 5, params_strs2(fit_padpaom2, "_3"), fontsize=20, color="C1")
+text(0.002, 9.5, "\$a_2\\cdot\\sin^4(b_2\\cdot AMP)\$", fontsize=18, color="C0")
+text(0.006, 3, params_strs2(fit_padpaom, "_2"), fontsize=20, color="C0")
+text(0.585, 9.5, "\$a_3\\cdot\\cos^4(b_3\\cdot AMP)\$", fontsize=18, color="C1")
+text(0.62, 3, params_strs2(fit_padpaom2, "_3"), fontsize=20, color="C1")
 xlabel("PADPAOM/AMP")
 ylabel("Power (mW)")
 NaCsPlot.maybe_save("$(prefix)_padpaom")
