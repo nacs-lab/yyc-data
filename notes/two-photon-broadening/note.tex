@@ -337,7 +337,7 @@ However, the two are not directly comparable. When we use the directly measured
 excited state line width ($\Gamma_e$) to calculate the ground state scattering rate ($\gamma$)
 for a certain large detuning ($\Delta$) as,
 
-\[ \gamma=\Gamma\frac{\Omega_1\Omega_2}{\Delta^2} \]
+\[ \gamma=\Gamma\frac{\Omega_1\Omega_2}{4\Delta^2} \]
 
 (where $\Omega_1$ and $\Omega_2$ are the single photon Rabi frequencies), we have
 assumed that the loss of the excited state
@@ -756,8 +756,10 @@ we need to have either,
   The COM motional continuum actually also starts at a positive energy so it doesn't seem
   possible. The continuum from other HF states is much more promising especially since
   we know that the $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state has a strong coupling to the molecular excited states.
-  However, this cannot be applied to the $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state lifetime since it is already
-  the HF state with the lowest energy.
+  \sout{However, this cannot be applied to the $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ state lifetime since it is already
+    the HF state with the lowest energy.}
+  Kang-Kuen and Kenneth pointed out that $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!1, m_{F}^{\mathrm{Na}}\!=\!1\rangle$ is the state with the lowest energy
+  so $|F^{\mathrm{Cs}}\!=\!3, m_{F}^{\mathrm{Cs}}\!=\!3; F^{\mathrm{Na}}\!=\!2, m_{F}^{\mathrm{Na}}\!=\!2\rangle$ indeed have a (in fact, multiple Zeeman states) continuum to couple to.
 \end{enumerate}
 
 \subsection{Summary for interpreting and connecting excited state and ground state results}
@@ -820,6 +822,7 @@ the Rabi frequency for another motional state would be,
 \eqar{
   \Omega'=&\Omega\psi'(r=0)\paren{\frac{\pi^3\hbar^3}{m^3\omega_1\omega_2\omega_3}}^{1/4}
 }
+where $\psi'(r=0)$ is the value of the wavefunction for the other motional state at $r=0$.\\
 
 In order to calculate the coupling to the continuum, we'll start with a discrete set of states
 and and then take the energy gap to $0$ to calculate the result for true continuum.
