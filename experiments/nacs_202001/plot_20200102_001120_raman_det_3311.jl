@@ -81,13 +81,13 @@ fit2 = fit_survival(model_lorentzian, datas_nacs[1][2], [0.7, 0.4, 368.889, 0.05
 # fit1 = fit_survival(model_gaussian, datas_nacs[1], [0.5, 0.1, 367.4, 0.05])
 
 figure()
-NaCsPlot.plot_survival_data(datas_nacs[1][1], fmt="C0.", label="3 ms")
+NaCsPlot.plot_survival_data(datas_nacs[1][1], fmt="C0.", label="2 ms")
 plot(fit1.plotx, fit1.ploty, "C0-")
 NaCsPlot.plot_survival_data(datas_nacs[1][2], fmt="C1.", label="8 ms")
 plot(fit2.plotx, fit2.ploty, "C1-")
 # ylim([0.18, 0.42])
-text(368.846, 0.684, "\$f_{3 ms}=$(fit1.uncs[3])\$ MHz", color="C0", fontsize="small")
-text(368.858, 0.594, "\$\\Gamma_{3 ms}=$(fit1.uncs[4] * 1000)\$ kHz", color="C0", fontsize="small")
+text(368.846, 0.684, "\$f_{2 ms}=$(fit1.uncs[3])\$ MHz", color="C0", fontsize="small")
+text(368.858, 0.594, "\$\\Gamma_{2 ms}=$(fit1.uncs[4] * 1000)\$ kHz", color="C0", fontsize="small")
 
 text(368.812, 0.19, "\$f_{8 ms}=$(fit2.uncs[3])\$ MHz", color="C1", fontsize="small")
 text(368.812, 0.25, "\$\\Gamma_{8 ms}=$(fit2.uncs[4] * 1000)\$ kHz", color="C1", fontsize="small")
