@@ -367,7 +367,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 above 1.0 Cs MOT facing computer}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -401,7 +401,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 above New Focus lock box}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -419,7 +419,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 above oscilloscope}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -511,7 +511,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv1 next to New Focus driver}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -687,7 +687,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 northwest corner}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -720,7 +720,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 left of 2 Chn benchtop power}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1104,7 +1104,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 on two home power (24)}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1138,7 +1138,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 above uWave breadboard}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1421,7 +1421,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Lv2 northwest corner facing KRb}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1707,7 +1707,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Floor rack Lv2 left of uWave foam}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1752,7 +1752,7 @@ Make sure the ``On UPS'' label is correct.\\
   \textbf{Floor rack Lv1}\\
   Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|}
+  \begin{tabular}{|c|c|}
     \hline
     Voltage&Current\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}\\\hline
@@ -1896,11 +1896,42 @@ Make sure the ``On UPS'' label is correct.\\
 \subsection{Other}
 \DevDef{Feshbach power [11]}{
   \textbf{HVAC room}\\
-  TODO
+  Record settings,
+  \begin{tabular}{|c|c|}
+    \hline
+    Voltage&\hphantom{\hspace{2cm}}\\\hline
+    Current&\\\hline
+    &\\\hline
+    &\\\hline
+    &\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Switch off.
+  \item\OffBox
+  \item\OffBox
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox
+  \item\OnBox
+  \item\OnBox Make sure water cooling is on.
+  \item\OnBox Switch on.
+  \item\OnBox Restore settings.
+  \end{itemize}
 }
 
 \DevDef{Cooling water [12]}{
-  TODO
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Make sure coil power and IGBTs are off.
+  \item\OffBox Switch off.
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Switch on before turning on coil power.
+  \end{itemize}
 }
 
 
