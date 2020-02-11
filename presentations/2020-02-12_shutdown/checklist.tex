@@ -244,6 +244,8 @@ Also wait before everyone else finish their corresponding steps before starting 
 
 \textbf{Record settings before turning things off.}\\
 All the lasers should be turned off.\\
+All power supplies should be either off or on UPS.
+(Keeping them on the wall supply may cause a power surge when the power come back)\\
 All the home built $\pm$15 V, 5V power supplies should be on UPS.
 24 V ones are mainly powering amplifiers and can be shut down.\\
 All locks should be disabled.\\
@@ -1900,7 +1902,7 @@ Make sure the ``On UPS'' label is correct.\\
   1&Home power (24)&Bottom level\\\hline
   2&Benchtop power 2 Chn&Above home power (24)\\\hline
   3&SAES pump controller&Middle left\\\hline
-  4&Benchtop power 1 Chn x2 for dispensers&Middle next to pump controller\\\hline
+  4&Benchtop power 1 Chn x3 for dispensers and fan&Middle next to pump controller\\\hline
   5&Benchtop power 2 Chn for 1.5 coil&Above oscilloscopes\\\hline
   6&Home power ($\pm$15,5)&Top level\\\hline
   7&Function generator for 1.5 MOT piezo&Top level on high voltage Amp\\\hline
@@ -1941,8 +1943,17 @@ Make sure the ``On UPS'' label is correct.\\
   \UPSAction
 }
 
-\DevDef{Benchtop power 1 Chn x2 for dispensers [4]}{
+\DevDef{Benchtop power 1 Chn x3 for dispensers and fan [4]}{
   \textbf{Middle next to pump controller}\\
+  Record voltage/current values:\\
+
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    &Voltage&Current&UPS&OFF\\\hline
+    1&\hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}&&\\\hline
+    2&&&&\\\hline
+    3&&&&\\\hline
+  \end{tabular}\\
 
   \PowerSupplyAction
 }
