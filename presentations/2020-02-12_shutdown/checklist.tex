@@ -328,7 +328,7 @@ Make sure the ``On UPS'' label is correct.\\
   9&Benchtop power 2+1 Chn for Cs MOT beat lock&Lv1 above 1.0 Cs MOT facing computer\\\hline
   10&Till driver v2 for 1.0 Cs MOT&Lv1 above benchtop powere supply\\\hline
   11&Home temp servo for 1.0 Cs MOT&Lv1 above Till driver\\\hline
-  12&Valan&1.5 amplifier stack Lv1 above 1.0 Cs MOT\\\hline
+  12&Valon&1.5 amplifier stack Lv1 above 1.0 Cs MOT\\\hline
   13&Till driver v2 for 1.5 Na Raman&Lv1 above 1.5 Na Raman\\\hline
   14&Home temp servo for 1.5 Na Raman (x2 + adaptor box)&Lv1 above 1.5 Na Raman\\\hline
   15&New Focus driver for Cs Raman&Lv1 above 1.0 Cs Raman\\\hline
@@ -456,7 +456,7 @@ Make sure the ``On UPS'' label is correct.\\
   \UPSAction
 }
 
-\DevDef{Valan [12]}{
+\DevDef{Valon [12]}{
   \textbf{1.5 amplifier stack Lv1 above 1.0 Cs MOT}\\
   Check with 1.5 to record setting\\
 
@@ -466,8 +466,13 @@ Make sure the ``On UPS'' label is correct.\\
     Amplitude&\hphantom{\hspace{3.5cm}}\\\hline
   \end{tabular}\\
 
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power from wall
+  \end{itemize}
   \textbf{Turn on check list}
   \begin{itemize}
+  \item\OnBox Plug in power
   \item\OnBox Restore settings
   \end{itemize}
 }
@@ -941,9 +946,8 @@ Make sure the ``On UPS'' label is correct.\\
 
   \begin{tabular}{|c|c|}
     \hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
+    ACC&\hphantom{\hspace{3cm}}\\\hline
+    Pin&\hphantom{\hspace{3cm}}\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
   \end{tabular}\\
@@ -952,11 +956,13 @@ Make sure the ``On UPS'' label is correct.\\
   \begin{itemize}
   \item\OffBox Power to 0
   \item\OffBox Turn off
+  \item\OffBox Key off
   \item\OffBox Unplug power
   \end{itemize}
   \textbf{Turn on check list}
   \begin{itemize}
   \item\OnBox Plug in power
+  \item\OnBox Key on
   \item\OnBox Turn on
   \item\OnBox Restore settings
   \end{itemize}
@@ -964,8 +970,14 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{SFG temp servo [21]}{
   \textbf{Floor on NKT amplifier}\\
+  Record temperature settings\\
 
-  Turn off.
+  \begin{tabular}{|c|c|}
+    \hline
+    Setpoint&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \UPSAction
 }
 
 \DevDef{Home temp servo [22]}{
@@ -1002,9 +1014,8 @@ Make sure the ``On UPS'' label is correct.\\
 
   \begin{tabular}{|c|c|}
     \hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
-    \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
+    Power&\hphantom{\hspace{3cm}}\\\hline
+    Current&\hphantom{\hspace{3cm}}\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
     \hphantom{\hspace{2cm}}&\hphantom{\hspace{3cm}}\\\hline
   \end{tabular}\\
@@ -1013,11 +1024,13 @@ Make sure the ``On UPS'' label is correct.\\
   \begin{itemize}
   \item\OffBox Power to 0
   \item\OffBox Turn off
+  \item\OffBox Key off
   \item\OffBox Unplug power
   \end{itemize}
   \textbf{Turn on check list}
   \begin{itemize}
   \item\OnBox Plug in power
+  \item\OnBox Key on
   \item\OnBox Turn on
   \item\OnBox Restore settings
   \end{itemize}
@@ -1064,7 +1077,7 @@ Make sure the ``On UPS'' label is correct.\\
   22&PLL for 1.5 Cs MOT&Table near 1.5 Cs MOT\\\hline
   23&Controllers for TiSapph (Mercury)&Floor northwest corner\\\hline
   24&Controllers for TiSapph (Venus)&Floor southwest corner\\\hline
-  25&Water chiller for uWave breadboard&Floor\\\hline
+  25&Water chiller for uWave breadboard&Floor below 1.5 Na MOT beam path\\\hline
 \end{longtable}
 \twocolumn
 
@@ -1079,6 +1092,8 @@ Make sure the ``On UPS'' label is correct.\\
     1&\hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}&&\\\hline
     2&&&&\\\hline
   \end{tabular}\\
+
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power 2+1 Chn [2]}{
@@ -1136,17 +1151,8 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{Benchtop power (x2, 1 Chn \& 2+1 Chn) for uWave Amp [7]}{
   \textbf{Lv2 next to home power ($\pm$15,5)}\\
-  Record voltage/current values:\\
 
-  \begin{tabular}{|c|c|c|c|c|}
-    \hline
-    &Voltage&Current&UPS&OFF\\\hline
-    1&\hphantom{\hspace{2cm}}&\hphantom{\hspace{2cm}}&&\\\hline
-    2 L&&&&\\\cline{1-3}
-    2 R&&&&\\\hline
-  \end{tabular}\\
-
-  \PowerSupplyAction
+  Off
 }
 
 \DevDef{Benchtop power 1 Chn [8]}{
@@ -1282,7 +1288,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Temperature and pump controllers for cavity [19]}{
   \textbf{Lv1 next to function generator}\\
 
-  Check plugged into UPS.
+  \UPSAction
 }
 
 \DevDef{Power (for Na uWave) [20]}{
@@ -1294,7 +1300,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{SAES pump [21]}{
   \textbf{Lv1 above 1.0 chamber}\\
 
-  Check plugged into UPS.
+  \UPSAction
 }
 
 \subsection{Table}
@@ -1373,7 +1379,7 @@ Make sure the ``On UPS'' label is correct.\\
 }
 
 \DevDef{Water chiller for uWave breadboard [25]}{
-  \textbf{Floor}\\
+  \textbf{Floor below 1.5 Na MOT beam path}\\
 
   Turn off.
 }
@@ -1395,7 +1401,7 @@ Make sure the ``On UPS'' label is correct.\\
   4&Benchtop power 1 Chn (x2)&Lv2 on home power ($\pm$15,5)\\\hline
   5&High voltage power&Lv2 between home power ($\pm$15,5) and FPGA box\\\hline
   6&FPGA box for 1.5&Lv2\\\hline
-  7&Valan&Lv2 left of FPGA box\\\hline
+  7&Valon&Lv2 left of FPGA box\\\hline
   8&Home temp servo x3 for STIRAP&Lv2 left of FPGA box\\\hline
   9&Benchtop power (x9, 2+1 Chn x2 \& 2 Chn x1 \& 1 Chn x6)&Lv2\\\hline
   10&Home power (24)&Lv2 above 1.0 tweezer breadboard\\\hline
@@ -1467,6 +1473,8 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{High voltage power [5]}{
   \textbf{Lv2 between home power ($\pm$15,5) and FPGA box}\\
+
+  Check connection and power off.
 }
 
 \DevDef{FPGA box for 1.5 [6]}{
@@ -1501,7 +1509,7 @@ Make sure the ``On UPS'' label is correct.\\
   \end{itemize}
 }
 
-\DevDef{Valan [7]}{
+\DevDef{Valon [7]}{
   \textbf{Lv2 left of FPGA box}\\
   Save frequency and amplitude\\
 
@@ -1511,6 +1519,16 @@ Make sure the ``On UPS'' label is correct.\\
     Ch 1&&\\\hline
     Ch 2&&\\\hline
   \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power from wall
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug in power
+  \item\OnBox Restore settings
+  \end{itemize}
 }
 
 \DevDef{Home temp servo x3 for STIRAP [8]}{
@@ -1719,7 +1737,15 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Greiner servo [25]}{
   \textbf{Lv1 northeast corner}\\
 
-  \UPSAction
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power
+  \item\OffBox Tie power to box
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \end{itemize}
 }
 
 \subsection{Floor}
@@ -1945,28 +1971,16 @@ Make sure the ``On UPS'' label is correct.\\
 \subsection{Below 1.5 table}
 \DevDef{IGBT stack [8]}{
   \textbf{Floor}\\
-  Record settings,
-
-  \begin{tabular}{|c|c|}
-    \hline
-    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
-    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
-    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
-  \end{tabular}\\
 
   \textbf{Turn off check list}
   \begin{itemize}
-  \item\OffBox
-  \item\OffBox
-  \item\OffBox
-  \item\OffBox
+  \item\OffBox Make sure Feshbach current is off
+  \item\OffBox Turn off/unplug Feshbach servo box
   \end{itemize}
   \textbf{Turn on check list}
   \begin{itemize}
-  \item\OnBox
-  \item\OnBox
-  \item\OnBox
-  \item\OnBox
+  \item\OnBox Plug in/turn on Feshbach servo box
+  \item\OnBox Make sure IGBTs are still working
   \end{itemize}
 }
 
@@ -2071,18 +2085,6 @@ Make sure the ``On UPS'' label is correct.\\
 % \DevDef{Rack for STRAP [10]}{
 %   \textbf{Lv1 next to Vincent servos}\\
 %   Ask Lewis\\
-% }
-
-% \DevDef{Temp servo x3 for STIRAP [12]}{
-%   \textbf{Lv2 next to 9x benchtop power}\\
-
-%   Ask Lewis\\
-%   Check plugged into UPS.
-% }
-
-% \DevDef{Temp servo x2 for 1.5 Cs Raman [21]}{
-%   \textbf{Floor rack Lv2}\\
-%   Check plugged into UPS.
 % }
 
 % \DevDef{Keithley power for 1.0 Innolume [30]}{
