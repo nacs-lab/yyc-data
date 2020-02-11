@@ -244,11 +244,13 @@ Also wait before everyone else finish their corresponding steps before starting 
 
 \textbf{Record settings before turning things off.}\\
 All the lasers should be turned off.\\
-All the home built power supplies should be on UPS.\\
+All the home built $\pm$15 V, 5V power supplies should be on UPS.
+24 V ones are mainly powering amplifiers and can be shut down.\\
 All locks should be disabled.\\
 All temperature controllers should be on UPS and left on.\\
 \\
-For each equipment, check the power and make sure if is/should be on UPS.
+For each equipment, check if it is in used.
+Then check the power and make sure if is/should be on UPS.
 Make sure the ``On UPS'' label is correct.\\
 
 \textbf{\Large #2}
@@ -394,7 +396,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Home power (24) (x2) [5]}{
   \textbf{Lv2 above 1.0 Cs Raman}\\
 
-  \UPSAction
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power for 1.0 Cs Raman [6]}{
@@ -527,7 +529,20 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{New Focus lock box for 1.0 Cs Raman [18]}{
   \textbf{Lv1 above 1.0 Cs Raman}\\
-  Unplug power.
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unlock
+  \item\OffBox Turn down VGA gain
+  \item\OffBox Power off from the back
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Power on
+  \item\OnBox Make sure PLL setting is restored
+  \item\OnBox Turn up VGA gain
+  \item\OnBox Lock
+  \end{itemize}
 }
 
 \DevDef{Timebase drivers for 1.0 Na Raman and Na D2 [19]}{
@@ -699,7 +714,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Home power (24) [2]}{
   \textbf{Lv2 above 623 nm box}\\
 
-  \UPSAction
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power 2+1 Chn [3]}{
@@ -1097,7 +1112,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Home power (24) x2 [4]}{
   \textbf{Lv2 next to benchtop power}\\
 
-  \UPSAction
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power [5]}{
@@ -1390,7 +1405,7 @@ Make sure the ``On UPS'' label is correct.\\
   14&Shutter driver&Lv1 on M2 controller\\\hline
   15&Function generator&Lv1 on shutter driver\\\hline
   16&Home temp servo&Lv1 left of M2 controller\\\hline
-  17&Home lock box x2&Lv1 left of home temp servo\\\hline
+  17&Home servo x2 for 1.5 tweezers&Lv1 left of home temp servo\\\hline
   18&Till driver v2&Lv1 above 1.5 Cs Raman beam path\\\hline
   19&Delay generator for 1.5 Na&Lv1 below 1.5 output panel\\\hline
   20&Rack for STIRAP&Lv1 above STIRAP\\\hline
@@ -1400,7 +1415,7 @@ Make sure the ``On UPS'' label is correct.\\
   24&Current servo for compensation coil&Lv1 below home power (24)\\\hline
   25&Greiner servo&Lv1 northeast corner\\\hline
   26&Home temp servo x2 for 1.5 Cs Raman&Floor rack Lv2\\\hline
-  27&Benchtop power 2 Chn?&Floor rack Lv2 on home temp servo x2\\\hline
+  27&Piezo driver&Floor rack Lv2 on home temp servo x2\\\hline
   28&Benchtop power 1 Chn&Floor rack Lv2 left of uWave foam\\\hline
   29&Till driver v2 x2 for 1.5 Cs Raman&Floor rack Lv2\\\hline
   30&Home servo for 1.5 Cs Raman phase lock&Floor rack Lv2 above Till drivers\\\hline
@@ -1531,7 +1546,8 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{Home power (24) [10]}{
   \textbf{Lv2 above 1.0 tweezer breadboard}\\
-  \UPSAction
+
+  \PowerSupplyAction
 }
 
 \DevDef{Home power ($\pm$15,5) [11]}{
@@ -1567,7 +1583,7 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Function generator [15]}{
   \textbf{Lv1 on shutter driver}\\
 
-  TODO
+  Unused. Remove.
 }
 
 \DevDef{Home temp servo [16]}{
@@ -1575,10 +1591,18 @@ Make sure the ``On UPS'' label is correct.\\
   \UPSAction
 }
 
-\DevDef{Home lock box x2 [17]}{
+\DevDef{Home servo x2 for 1.5 tweezers [17]}{
   \textbf{Lv1 left of home temp servo}\\
 
-  TODO
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power
+  \item\OffBox Tie power to box
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \end{itemize}
 }
 
 \DevDef{Till driver v2 [18]}{
@@ -1663,7 +1687,15 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Home servo x2 [23]}{
   \textbf{Lv1}\\
 
-  TODO
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power
+  \item\OffBox Tie power to box
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \end{itemize}
 }
 
 \DevDef{Current servo for compensation coil [24]}{
@@ -1697,10 +1729,10 @@ Make sure the ``On UPS'' label is correct.\\
   \UPSAction
 }
 
-\DevDef{Benchtop power 2 Chn? [27]}{
+\DevDef{Piezo driver [27]}{
   \textbf{Floor rack Lv2 on home temp servo x2}\\
 
-  TODO
+  Check high voltage off/on.
 }
 
 \DevDef{Benchtop power 1 Chn [28]}{
@@ -1731,7 +1763,15 @@ Make sure the ``On UPS'' label is correct.\\
 \DevDef{Home servo for 1.5 Cs Raman phase lock [30]}{
   \textbf{Floor rack Lv2 above Till drivers}\\
 
-  \UPSAction
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Unplug power
+  \item\OffBox Tie power to box
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \end{itemize}
 }
 
 \DevDef{Benchtop power 2+1 Chn [31]}{
@@ -1763,8 +1803,25 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{Chiller for 1.0 camera [33]}{
   \textbf{Floor}\\
+  Record temperature setting,
 
-  TODO
+  \begin{tabular}{|c|c|}
+    \hline
+    Setpoint&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off camera
+  \item\OffBox Turn off chiller
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \item\OnBox Turn on chiller
+  \item\OnBox Turn on camera
+  \end{itemize}
 }
 
 \DevDef{Benchtop power 1 Chn x 3 [34]}{
@@ -1797,7 +1854,7 @@ Make sure the ``On UPS'' label is correct.\\
   1&Home power (24)&Bottom level\\\hline
   2&Benchtop power 2 Chn&Above home power (24)\\\hline
   3&SAES pump controller&Middle left\\\hline
-  4&Benchtop power 1 Chn x2?&Middle next to pump controller\\\hline
+  4&Benchtop power 1 Chn x2 for dispensers&Middle next to pump controller\\\hline
   5&Benchtop power 2 Chn for 1.5 coil&Above oscilloscopes\\\hline
   6&Home power ($\pm$15,5)&Top level\\\hline
   7&Function generator for 1.5 MOT piezo&Top level on high voltage Amp\\\hline
@@ -1814,7 +1871,7 @@ Make sure the ``On UPS'' label is correct.\\
 \subsection{1.5 Rack}
 \DevDef{Home power (24) [1]}{
   \textbf{Bottom level}\\
-  \UPSAction
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power 2 Chn [2]}{
@@ -1837,9 +1894,10 @@ Make sure the ``On UPS'' label is correct.\\
   \UPSAction
 }
 
-\DevDef{Benchtop power 1 Chn x2? [4]}{
+\DevDef{Benchtop power 1 Chn x2 for dispensers [4]}{
   \textbf{Middle next to pump controller}\\
-  TODO
+
+  \PowerSupplyAction
 }
 
 \DevDef{Benchtop power 2 Chn for 1.5 coil [5]}{
@@ -1863,18 +1921,77 @@ Make sure the ``On UPS'' label is correct.\\
 
 \DevDef{Function generator for 1.5 MOT piezo [7]}{
   \textbf{Top level on high voltage Amp}\\
-  TODO
+  \textbf{Floor}\\
+  Record settings,
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Frequency&\hphantom{\hspace{3.5cm}}\\\hline
+    Amplitude&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \item\OnBox Turn on
+  \end{itemize}
 }
 
 \subsection{Below 1.5 table}
 \DevDef{IGBT stack [8]}{
   \textbf{Floor}\\
-  TODO
+  Record settings,
+
+  \begin{tabular}{|c|c|}
+    \hline
+    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
+    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
+    \hphantom{\hspace{3.5cm}}&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox
+  \item\OffBox
+  \item\OffBox
+  \item\OffBox
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox
+  \item\OnBox
+  \item\OnBox
+  \item\OnBox
+  \end{itemize}
 }
 
 \DevDef{Chiller for 1.5 camera [9]}{
   \textbf{Floor behind IGBT}\\
-  TODO
+  \textbf{Floor}\\
+  Record temperature setting,
+
+  \begin{tabular}{|c|c|}
+    \hline
+    Setpoint&\hphantom{\hspace{3.5cm}}\\\hline
+  \end{tabular}\\
+
+  \textbf{Turn off check list}
+  \begin{itemize}
+  \item\OffBox Turn off camera
+  \item\OffBox Turn off chiller
+  \item\OffBox Unplug power
+  \end{itemize}
+  \textbf{Turn on check list}
+  \begin{itemize}
+  \item\OnBox Plug power
+  \item\OnBox Turn on chiller
+  \item\OnBox Turn on camera
+  \end{itemize}
 }
 
 \DevDef{Benchtop power 1 Chn x 4 [10]}{
