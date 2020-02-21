@@ -599,64 +599,25 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{}
-  \begin{columns}
-    \column{6cm}
-    \begin{itemize}
-    \item<+-> Rabi frequencies ($\Omega_R$, $\Omega_1$, $\Omega_2$)\\
-      and light shift ($\delta_L$) matches theory.
-    \item<+-> Scattering is faster than expected.
-    \item<+-> $\Gamma_e\approx2\pi\cdot300\mathrm{MHz}$
-    \end{itemize}
-    \column{6cm}
-    \begin{center}
-      \visible<+->{
-        \includegraphics[width=5cm]{../damop-2018-poster/pa-v0}
-      }
-      \visible<+->{
-        \includegraphics[width=5cm]{../../experiments/pa_201904/imgs/data_20190409_pa_avg}
-      }
-    \end{center}
-  \end{columns}
-\end{frame}
-
 % What's next.
-%% Two tasks
+%% Back to the cycle
 %% * Understand our issue
 %%   % Calculations
 %% * Make it work
 %%   % Find a better state (33+22)
 \begin{frame}{Next}
-  \begin{columns}
-    \column{6cm}
-    \begin{block}{Cause}
-      \begin{itemize}
-      \item<+-> PA beam size?
-      \item<+-> Two photon process?
-      \end{itemize}
-    \end{block}
-    \visible<3->{
-      \begin{block}{Alternative}
-        \begin{itemize}
-        \item<+-> Different wavelength (976nm?)
-        \item<+-> Different transfer path (singlet?)
-        \end{itemize}
-      \end{block}
-    }
-    \column{6cm}
-    \begin{tikzpicture}
-      \visible<2>{
-        \draw[line width=1] (-2, 0) -- (0, 0);
-        \draw[line width=1] (-5, -2) -- (-3, -2);
-        \draw[dashed,line width=0.7] (-5, -1.8) -- (-3, -1.8);
-        \draw[line width=1] (-3.5, 3) -- (-1.5, 3);
-        \draw[dashed,line width=0.7] (-3.5, 2.5) -- (-1.5, 2.5);
-        \draw[->,line width=1,green!80!black] (-1, 0) -- (-2.45, 2.5);
-        \draw[->,line width=1,green!80!black] (-2.55, 2.5) -- (-4, -1.8);
-        \draw[->,line width=2,green!80!black] (-2.5, 2.5) -- (-3, 5) node[right] {\textbf{???}};
+  \begin{center}
+    \begin{itemize}
+    \item Understand the issue\\
+      \uncover<2->{
+        Calculating decay rate due to different effects.
       }
-    \end{tikzpicture}
-  \end{columns}
+    \item Find a better approach\\
+      \uncover<3->{
+        New initial state: $F^{Cs}=3, m_{F}^{Cs}=3; F^{Na}=2, m_{F}^{Na}=2$
+      }
+    \end{itemize}
+  \end{center}
 \end{frame}
 
 \end{document}
