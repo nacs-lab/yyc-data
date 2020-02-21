@@ -443,13 +443,78 @@
 \end{frame}
 
 % Two photons
+%% * We have stronger tweezer power
+%% * Hard to predict
+%% * Evidence from other group
+%% We were talking about these for a while and even found some evidence for it
 %% Excited state
 %% * Frequency dependency
 %% * Power dependency
 %% So two photon effect is definately there.
-%% We were talking about these for a while before we realized two things.
+%% Before we realized two things.
 %% * Excited state effect is different from ground state effect.
 %% * Linear scaling
+\begin{frame}{Two photon scattering}
+  \vspace{-1cm}
+  \begin{columns}
+    \column{5cm}
+    \only<-5>{
+      \begin{block}{}
+        \begin{itemize}
+        \item<1-> Stronger intensity than bulk gas
+        \item<2-> Less accurate/no prediction
+        \item<3-> Evidence from other group
+        \end{itemize}
+      \end{block}
+    }
+    \only<6->{
+      \begin{center}
+        {\Large \textit{Until \dots}}
+        \begin{block}{}
+          \begin{itemize}
+          \item<7-> Two photon up vs down
+          \item<8-> One beam vs two beams
+          \item<9-> Linear dependency on power for Raman line width
+          \end{itemize}
+        \end{block}
+      \end{center}
+    }
+    \column{6cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<4-6>{
+          \node[above] at (0, 0) {
+            \includegraphics[width=5cm]{../2019-09-05_itamp/pa_widths}
+          };
+        }
+        \visible<5-6>{
+          \node[below] at (0, 0) {
+            \includegraphics[width=4.5cm]{../../experiments/pa_201908/imgs/data_20190819_pa_linewidths}
+          };
+        }
+        \visible<7-8>{
+          \node at (0, 1) {
+            \includegraphics[width=5cm]{../../notes/two-photon-broadening/kenneth_figure}
+          };
+        }
+        \visible<9->{
+          \node at (0, 1) {
+            \includegraphics[width=5.5cm]{../../experiments/nacs_202001/imgs/data_20200103_raman_width_vs_power_3311}
+          };
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+% One photon
+%% * Direct contradiction
+%% * Should be ``easy''
+%%   % I got three consecutive days where someone told me because it's single photon
+%%   % it should be easy to understand.
+%% * Do calculation
+%%   % SO coupling?
+%%   % Coupling to motional decoherence?
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -496,53 +561,6 @@
       }
     \end{tikzpicture}
   \end{center}
-\end{frame}
-
-% One photon
-%% * Direct contradiction
-%% * Should be ``easy''
-%%   % I got three consecutive days where someone told me because it's single photon
-%%   % it should be easy to understand.
-%% * Do calculation
-%%   % SO coupling?
-%%   % Coupling to motional decoherence?
-\begin{frame}{Detuning fluctuation}
-  \begin{columns}
-    \column{6cm}
-    \begin{itemize}
-    \item<+-> Raman Rabi rate $\Omega_R\propto\dfrac{\Omega_1\Omega_2}{\Delta}$\\
-    \item<+-> Light shift $\delta_L\propto\dfrac{\Omega_1^2+\Omega_2^2}{\Delta}$\\
-    \item<+-> For $\Omega_2\gg\Omega_1$\\\vspace{0.4cm}
-      $\dfrac{\delta_L}{\Omega_R}\approx\dfrac{\Omega_2}{\Omega_1}\gg1$\\
-    \item<+-> Raman linewidth\\\vspace{0.4cm}
-      $\Gamma_2\propto\dfrac{1}{\Delta^2}$ or $\dfrac{\delta_L}{\Gamma_2}\propto\Delta$
-    \end{itemize}
-    \column{6cm}
-    \begin{tikzpicture}
-      \draw[line width=1] (-2, 0) -- (0, 0);
-      \draw[line width=1] (-5, -2) -- (-3, -2);
-      \draw[->,dashed,line width=1,green!80!black]
-      (-1, 0) -- (-4, -1.8) node[midway, right=0.4] {$\Omega_R$};
-      \draw[dashed,line width=0.7] (-5, -1.8) -- (-3, -1.8);
-      \node[left] at (-5.1, -1.9) {$\delta$};
-      \draw[->,line width=0.7] (-4.8, -1.4) -- (-4.8, -1.8);
-      \draw[->,line width=0.7] (-4.8, -2.4) -- (-4.8, -2.0);
-      \draw[snakearrow,line width=1,red!80!black]
-      (-0.8, 0) -- (0, 1.5) node[midway, left=0.1] {$\Gamma_1$};
-      \draw[snakearrow,line width=1,orange!80!black]
-      (-4.2, -2) -- (-5, -0.5) node[midway, right=0.1] {$\Gamma_2$};
-      \draw[line width=1] (-3.5, 4) -- (-1.5, 4);
-      \draw[dashed,line width=0.7] (-3.5, 3.5) -- (-1.5, 3.5);
-      \draw[->,line width=1,green!80!black] (-1, 0) -- (-2.45, 3.5)
-      node[midway,right=0.1] {$\Omega_1$};
-      \draw[->,line width=1,green!80!black] (-2.55, 3.5) -- (-4, -1.8)
-      node[midway,left=0.1] {$\Omega_2$};
-      \draw[<->,line width=0.7] (-3.3, 3.5) -- (-3.3, 4);
-      \node[left] at (-3.6, 3.75) {$\Delta$};
-      \draw[snakearrow,line width=1,blue!80!black] (-2, 4) -- (-1, 2.5)
-      node[midway,right=0.1] {$\Gamma_e$};
-    \end{tikzpicture}
-  \end{columns}
 \end{frame}
 
 \begin{frame}{}
