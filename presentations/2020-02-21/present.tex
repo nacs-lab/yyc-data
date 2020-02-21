@@ -383,7 +383,7 @@
           \begin{block}{}
             \begin{itemize}
             \item<5-> Single PA line effect
-            \item<6-> Flucutation
+            \item<6-> Fluctuation
             \item<7-> Scattering
             \end{itemize}
           \end{block}
@@ -430,6 +430,11 @@
         \visible<5>{
           \node[right] at (0, 1.8) {
             \includegraphics[width=5cm]{../../experiments/nacs_202002/imgs/data_20200220_raman_vs_freq_3311}};
+
+        }
+        \visible<6>{
+          \node[right] at (0, 1.8) {
+            \includegraphics[width=5cm]{fb_lifetime}};
 
         }
         \visible<8->{
@@ -525,18 +530,18 @@
         \draw[->,line width=1,green!80!black] (-2.55, 3.5) -- (-4, -2)
         node[midway,left=0.1] {$\Omega$};
         \draw[<->,line width=0.7] (-3.3, 3.5) -- (-3.3, 4);
-        \node[left,purple!80!black] at (-3.6, 3.75) {$\Delta$};
+        \node[left,purple] at (-3.6, 3.75) {$\Delta$};
         \draw[snakearrow,line width=1,blue!80!black] (-2, 4) -- (-1, 2.5)
         node[midway,right=0.1] {$\Gamma_e$};
       }
       \begin{scope}[shift={(0, 1.2)}]
         \visible<2-6>{
           \node[right,align=left] at (1, 1) {
-            $\gamma_{scatter}=\dfrac{{\color{blue!80!black} \Gamma_e}\ {\color{green!80!black} \Omega}^2}{2\ {\color{purple!80!black} \Delta}^2}$};
+            $\gamma_{scatter}=\dfrac{{\color{blue!80!black} \Gamma_e}\ {\color{green!80!black} \Omega}^2}{2\ {\color{purple} \Delta}^2}$};
         }
         \visible<7->{
           \node[right,align=left] at (1, 1) {
-            $\gamma_{scatter}=\dfrac{{\color{blue!80!black} \Gamma_e}\ {\color{green!80!black} \Omega}^2}{2\ {\color{purple!80!black} \Delta}^2}{\color{red}\times 10 \sim 100}$};
+            $\gamma_{scatter}=\dfrac{{\color{blue!80!black} \Gamma_e}\ {\color{green!80!black} \Omega}^2}{2\ {\color{purple} \Delta}^2}{\color{red}\times 10 \sim 100}$};
         }
         \visible<3->{
           \draw[->, line width=1] (1, 0.9) -- (0.5, 0.5) node[below] {\footnotesize Raman linewidth};
@@ -548,7 +553,7 @@
           \draw[->, line width=1,green!80!black] (3.25, 1.4) -- (4.2, 2.6) node[above] {\footnotesize From light shift};
         }
         \visible<6->{
-          \draw[->, line width=1,purple!80!black] (3.14, 0.5) -- (2.9, -0.2) node[below] {\footnotesize Detuning};
+          \draw[->, line width=1,purple] (3.14, 0.5) -- (2.9, -0.2) node[below] {\footnotesize Detuning};
         }
         \visible<8->{
           \node[below,align=center,text width=5cm] at (2.9, -1) {
