@@ -85,7 +85,7 @@ function clear_char!(dict::Dict)
     for k in keys(dict)
         v = dict[k]
         if isa(v, Char)
-            dict[k] = String([v])
+            dict[k] = string(v)
         else
             clear_char!(v)
         end
@@ -95,7 +95,7 @@ function clear_char!(ary::Array)
     for i in 1:length(ary)
         v = ary[i]
         if isa(v, Char)
-            ary[i] = String([v])
+            ary[i] = string(v)
         else
             clear_char!(v)
         end
@@ -109,6 +109,9 @@ matopen(opts.iname) do mf
     sa = read(mf, "Analysis")["SingleAtomLogical"]
     scan = read(mf, "Scan")
     param_name = scan["ParamName"]
+    if isa(param_name, Char)
+        param_name = string(param_name)
+    end
     sg = haskey(scan, "ScanGroup") ? scan["ScanGroup"] : Dict{String,Any}()
     clear_char!(sg)
     if eltype(sa) == Bool
