@@ -120,7 +120,7 @@ NaCsPlot.plot_survival_data(NaCsData.map_params((i, v)->v * 100, data_cs_43),
                             fmt="C1.", label="4, 3\${}_{t\\times100}\$")
 plot(fit_cs_43.plotx .* 100, fit_cs_43.ploty, "C1")
 text(400, 0.6, "\$\\tau_{4, 4}=$(fit_cs_44.uncs[2])ms\$", color="C0")
-text(350, 0.35, "\$\\tau_{4, 3}=$(fit_cs_43.uncs[2] * 100)\\mu s\$", color="C1")
+text(350, 0.35, "\$\\tau_{4, 3}=$(fit_cs_43.uncs[2])ms\$", color="C1")
 text(50, 0.02, "\$r=$(fit_cs_44.uncs[2] / fit_cs_43.uncs[2])\$")
 legend(fontsize="small")
 grid()
