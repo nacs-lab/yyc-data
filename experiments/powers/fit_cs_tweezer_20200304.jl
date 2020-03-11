@@ -165,7 +165,7 @@ ylim([0, 1.3 * max(maximum(data_padpaom[:, 2]), maximum(data_padpaom2[:, 2]))])
 text(0.002, 25, "\$a_2\\!\\cdot\\!\\sin^2(b_2\\!\\cdot\\! \\mathrm{atan}^2(c_2\\!\\cdot\\! AMP))\$",
      fontsize=13, color="C0")
 text(0.006, 3, params_strs(fit_padpaom, "_2"), fontsize=15, color="C0")
-text(0.40, 35, "\$a_3\\!\\cdot\\!(1\\!-\\!d_3\\!\\cdot\\!\\sin^4(b_3\\!\\cdot\\! \\mathrm{atan}^2(c_3\\!\\cdot\\! AMP)))^2\$", fontsize=13, color="C1")
+text(0.40, 35, "\$a_3\\!\\cdot\\!(1\\!-\\!d_3\\!\\cdot\\!\\sin(b_3\\!\\cdot\\! \\mathrm{atan}^2(c_3\\!\\cdot\\! AMP)))^2\$", fontsize=13, color="C1")
 text(0.66, 6, params_strs2(fit_padpaom2, "_3"), fontsize=15, color="C1")
 xlabel("PADPAOM/AMP")
 ylabel("Power (mW)")
