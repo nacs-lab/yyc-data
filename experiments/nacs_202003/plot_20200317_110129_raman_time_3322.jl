@@ -86,8 +86,6 @@ function model_expsin(x, p)
 end
 fit = fit_survival(model_expsin, data, [0.25, 3, 0.25, 0.02])
 
-@show fit.uncs
-
 figure()
 NaCsPlot.plot_survival_data(data, fmt="C0.")
 plot(fit.plotx, fit.ploty)
@@ -97,7 +95,7 @@ text(0.1, 0.19, "\$\\Omega=2\\pi\\cdot$(fit.uncs[2])\$ kHz", color="C0", fontsiz
 text(0.1, 0.16, "\$\\tau=$(fit.uncs[3])\$ ms", color="C0", fontsize="small")
 xlim([0, 0.26])
 grid()
-xlabel("Raman time (ms)\${}_{(with 0.06 offset)}\$")
+xlabel("Raman time (ms)\${}_{\\mathrm{(with\\ 0.06\\ ms\\ offset)}}\$")
 ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)")
 
