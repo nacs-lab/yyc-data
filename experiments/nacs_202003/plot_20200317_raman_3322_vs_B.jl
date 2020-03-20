@@ -87,7 +87,7 @@ text(55, 770.355, ("\$f_0=$(fit_freq.uncs[1]) \\mathrm{MHz}\$\n" *
 #      color="C2", fontsize="small")
 # legend(fontsize="small", loc="upper left", ncol=2)
 grid()
-title("Raman Resonance (288560 GHz, 15 mWs)")
+title("Raman Resonance 288560 GHz 15 mW")
 xlabel("B field (%)")
 ylabel("Raman Frequency (MHz)")
 NaCsPlot.maybe_save("$(prefix)")
