@@ -65,7 +65,7 @@ end
 
 const prefix = joinpath(@__DIR__, "imgs", "cs_tweezer_20200325")
 
-function real_model(pa, dp, p)
+function real_model(pa, dp, p, clip=true)
     # 0th order power:
     #   P0 = a3 * (1 - d3 * sin(b3 * atan(c3 * DP)^2))^2 * sin(b1 * sin(c1 * PA)^2)
     # 1st order power:
@@ -73,7 +73,7 @@ function real_model(pa, dp, p)
     b1, c1, a2, b2, c2, a3, b3, c3, d3 = p
     p0 = a3 * (1 - d3 * sin(b3 * atan(c3 * dp)^2))^2 * sin(b1 * sin(c1 * pa)^2)
     p1 = a2 * sin(b2 * atan(c2 * dp)^2)^2
-    return min(p0 + p1, 1.0) # saturation
+    return clip ? min(p0 + p1, 1.0) : p0 + p1 # saturation
 end
 
 function model(x, p)
@@ -89,54 +89,64 @@ function model2(x, p)
     b1, c1, a2, b2, c2, a3, b3, c3, d3 = p
     return a2 .* sin.(b2 .* atan.(c2 .* x).^2).^2
 end
-function model3(x, p)
+function model3(x, p, pa)
     b1, c1, a2, b2, c2, a3, b3, c3, d3 = p
-    return a3 .* (1 .- d3 .* sin.(b3 .* atan.(c3 .* x).^2)).^2
+    return a3 .* (1 .- d3 .* sin.(b3 .* atan.(c3 .* x).^2)).^2 * sin(b1 * sin(c1 * pa)^2)
 end
 
-function find_crossing_23(fit, maxamp)
-    diff23(x) = model2(x, fit.param) - model3(x, fit.param)
+function find_crossing(f1, f2, maxx)
+    diff12(x) = f1(x) - f2(x)
     a0 = 0.0
-    a1 = Float64(maxamp)
-    v0 = diff23(a0)
-    v1 = diff23(a1)
+    a1 = Float64(maxx)
+    v0 = diff12(a0)
+    v1 = diff12(a1)
     assert(v0 * v1 < 0)
     while abs(a0 - a1) > 0.000001
         a2 = (a1 * v0 - a0 * v1) / (v0 - v1)
-        v2 = diff23(a2)
+        v2 = diff12(a2)
         if v2 == 0
             return a2
         end
         a0, a1 = a1, a2
         v0, v1 = v1, v2
     end
-    return a1, (model2(a1, fit.param) + model3(a1, fit.param)) / 2
+    return a1, (f1(a1) + f2(a1)) / 2
 end
 
-function find_min_23(fit, maxamp)
-    sum23(x) = model2(x, fit.param) + model3(x, fit.param)
+function find_min(f, xmin, xmax)
     w1 = (sqrt(5) - 1) / 2
     w2 = 1 - w1
 
-    a0 = 0.0
-    a3 = Float64(maxamp)
+    a0 = Float64(xmin)
+    a3 = Float64(xmax)
     a1 = a0 * w1 + a3 * w2
     a2 = a0 * w2 + a3 * w1
-    v0 = sum23(a0)
-    v1 = sum23(a1)
-    v2 = sum23(a2)
-    v3 = sum23(a3)
+    v0 = f(a0)
+    v1 = f(a1)
+    v2 = f(a2)
+    v3 = f(a3)
     assert(min(v1, v2) < max(v0, v3))
     while abs(a0 - a1) > 0.00001
         if v1 > v2
             a0, a1, a2, a3 = a1, a2, a1 * w2 + a3 * w1, a3
-            v0, v1, v2, v3 = v1, v2, sum23(a2), v3
+            v0, v1, v2, v3 = v1, v2, f(a2), v3
         else
             a0, a1, a2, a3 = a0, a0 * w1 + a2 * w2, a1, a2
-            v0, v1, v2, v3 = v0, sum23(a1), v1, v2
+            v0, v1, v2, v3 = v0, f(a1), v1, v2
         end
     end
     return a1 > a2 ? (a2, v2) : (a1, v2)
+end
+
+find_crossing_23(fit, maxamp, pa) =
+    find_crossing(x->model2(x, fit.param), x->model3(x, fit.param, pa), maxamp)
+
+find_min_23(fit, maxamp, pa) =
+    find_min(x->model2(x, fit.param) + model3(x, fit.param, pa), 0, maxamp)
+
+function find_max_pa(fit, maxamp)
+    x, y = find_min(x->-real_model(x, 0, fit.param, false), 0, maxamp)
+    return x, -y
 end
 
 fit_pa2d = fit_data(model, 1:size(data_pa2d, 1), data_pa2d[:, 3],
@@ -173,9 +183,6 @@ gca()[:set_yscale]("log", nonposy="clip")
 grid()
 NaCsPlot.maybe_save("$(prefix)_sp_ratio")
 
-function plot_model(dps, pa, fit)
-    return real_model.(pa, dps, (fit.param,))
-end
 param_str(v) = @sprintf("%.4f", v)
 
 plot_dps = linspace(0, dps[end] * 1.02, 1000)
@@ -183,7 +190,7 @@ plot_dps = linspace(0, dps[end] * 1.02, 1000)
 figure()
 for i in 1:npa
     errorbar(dps, powers_2d[i, :], fill(unc, ndp), fmt="C$i.", label="$(pas[i])")
-    plot(plot_dps, plot_model(plot_dps, pas[i], fit_pa2d), "C$i")
+    plot(plot_dps, real_model.(pas[i], plot_dps, (fit_pa2d.param,)), "C$i")
 end
 xlim([0, dps[end] * 1.04])
 ylim([0, 1])
@@ -204,12 +211,31 @@ title("Total Power (normalized)")
 grid()
 NaCsPlot.maybe_save("$(prefix)_total")
 
-x0, y0 = find_crossing_23(fit_pa2d, 0.6)
-xmin, ymin = find_min_23(fit_pa2d, 0.6)
+plot_pas = linspace(0, pas[end] * 1.02, 1000)
+
+xmax_pa, ymax_pa = find_max_pa(fit_pa2d, 1)
+figure()
+errorbar(pas, powers_2d[:, 1], fill(unc, npa), fmt="C0.")
+plot(plot_pas, real_model.(plot_pas, 0, (fit_pa2d.param,), false), "C0")
+xlim([0, pas[end] * 1.04])
+ylim([0, 1.3])
+plot(xmax_pa, ymax_pa, "rs")
+ax = gca()
+ax[:annotate]("\$x_{max}=$(@sprintf("%.5f", xmax_pa))\$\n\$y_{max}=$(@sprintf("%.4f", ymax_pa))\$",
+              (xmax_pa, ymax_pa + 0.004), xytext=(0.4, 0.6),
+              arrowprops=Dict(:arrowstyle=>"fancy", :color=>"r"),
+              color="r", fontsize="small")
+xlabel("PAAOM/AMP")
+title("PAAOM")
+grid()
+NaCsPlot.maybe_save("$(prefix)_paaom")
+
+x0, y0 = find_crossing_23(fit_pa2d, 0.6, xmax_pa)
+xmin, ymin = find_min_23(fit_pa2d, 0.6, xmax_pa)
 figure()
 plot(plot_dps, model2(plot_dps, fit_pa2d.param), "C0-", label="1st order")
-plot(plot_dps, model3(plot_dps, fit_pa2d.param), "C1-", label="0th order")
-plot(plot_dps, model2(plot_dps, fit_pa2d.param) .+ model3(plot_dps, fit_pa2d.param),
+plot(plot_dps, model3(plot_dps, fit_pa2d.param, xmax_pa), "C1-", label="0th order")
+plot(plot_dps, model2(plot_dps, fit_pa2d.param) .+ model3(plot_dps, fit_pa2d.param, xmax_pa),
      "--", color="#d452d4", label="Both")
 plot(x0, y0, "bs")
 plot(xmin, ymin, "rs")
