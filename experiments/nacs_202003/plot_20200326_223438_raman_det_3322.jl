@@ -90,9 +90,9 @@ end
 
 const datas_nacs = select_datas(datas, NaCsData.select_single((1, 2), (3, 4,)), maxcnts, specs)
 const data_nacs_00 = datas_nacs[3][1]
-const data_nacs_08 = datas_nacs[1][1]
-const data_nacs_09 = [datas_nacs[2][1]; datas_nacs[3][2]]
-const data_nacs_13 = [datas_nacs[2][2]; datas_nacs[3][3]]
+const data_nacs_05 = datas_nacs[1][1]
+const data_nacs_06 = [datas_nacs[2][1]; datas_nacs[3][2]]
+const data_nacs_10 = [datas_nacs[2][2]; datas_nacs[3][3]]
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20200326_005204_raman_det_3322")
 
@@ -102,31 +102,31 @@ end
 function model_gaussian(x, p)
     p[1] .- p[2] ./ exp.(((x .- p[3]) ./ p[4]).^2)
 end
-fit_08 = fit_survival(model_lorentzian, data_nacs_08, [0.35, 0.15, 594, 5])
-fit_09 = fit_survival(model_lorentzian, data_nacs_09, [0.35, 0.15, 594, 5])
-fit_13 = fit_survival(model_lorentzian, data_nacs_13, [0.35, 0.25, 594, 5])
+fit_05 = fit_survival(model_lorentzian, data_nacs_05, [0.35, 0.15, 594, 5])
+fit_06 = fit_survival(model_lorentzian, data_nacs_06, [0.35, 0.15, 594, 5])
+fit_10 = fit_survival(model_lorentzian, data_nacs_10, [0.35, 0.25, 594, 5])
 
-# @show fit_08.uncs
-# @show fit_09.uncs
-# @show fit_13.uncs
+# @show fit_05.uncs
+# @show fit_06.uncs
+# @show fit_10.uncs
 
 figure()
 ratio_00, uncs_00 = get_ratio_val(data_nacs_00)
 errorbar([560, 625], [ratio_00, ratio_00], [uncs_00, uncs_00], fmt="C0.-", label="0ms")
-NaCsPlot.plot_survival_data(data_nacs_08, fmt="C1.", label="0.08 ms")
-plot(fit_08.plotx, fit_08.ploty, "C1")
-NaCsPlot.plot_survival_data(data_nacs_09, fmt="C2.", label="0.09 ms")
-plot(fit_09.plotx, fit_09.ploty, "C2")
-NaCsPlot.plot_survival_data(data_nacs_13, fmt="C3.", label="0.13 ms")
-plot(fit_13.plotx, fit_13.ploty, "C3")
-text(557.5, 0.055, ("\$\\Gamma_{0.13}=\\!$(fit_13.uncs[4]) kHz\$\n" *
-                    "\$f_{0.13}=\\!$(770 + fit_13.uncs[3] / 1000) MHz\$"),
+NaCsPlot.plot_survival_data(data_nacs_05, fmt="C1.", label="0.05 ms")
+plot(fit_05.plotx, fit_05.ploty, "C1")
+NaCsPlot.plot_survival_data(data_nacs_06, fmt="C2.", label="0.06 ms")
+plot(fit_06.plotx, fit_06.ploty, "C2")
+NaCsPlot.plot_survival_data(data_nacs_10, fmt="C3.", label="0.10 ms")
+plot(fit_10.plotx, fit_10.ploty, "C3")
+text(557.5, 0.055, ("\$\\Gamma_{0.10}=\\!$(fit_10.uncs[4]) kHz\$\n" *
+                    "\$f_{0.10}=\\!$(770 + fit_10.uncs[3] / 1000) MHz\$"),
      color="C3", fontsize="x-small")
-text(557.5, 0.105, ("\$\\Gamma_{0.09}=\\!$(fit_09.uncs[4]) kHz\$\n" *
-                    "\$f_{0.09}=\\!$(770 + fit_09.uncs[3] / 1000) MHz\$"),
+text(557.5, 0.105, ("\$\\Gamma_{0.06}=\\!$(fit_06.uncs[4]) kHz\$\n" *
+                    "\$f_{0.06}=\\!$(770 + fit_06.uncs[3] / 1000) MHz\$"),
      color="C2", fontsize="x-small")
-text(557.5, 0.155, ("\$\\Gamma_{0.08}=\\!$(fit_08.uncs[4]) kHz\$\n" *
-                    "\$f_{0.08}=\\!$(770 + fit_08.uncs[3] / 1000) MHz\$"),
+text(557.5, 0.155, ("\$\\Gamma_{0.05}=\\!$(fit_05.uncs[4]) kHz\$\n" *
+                    "\$f_{0.05}=\\!$(770 + fit_05.uncs[3] / 1000) MHz\$"),
      color="C1", fontsize="x-small")
 legend(fontsize="x-small", loc="lower right")
 grid()
