@@ -131,7 +131,7 @@ legend(fontsize="x-small", loc="lower right")
 grid()
 xlabel("2-Photon Detuning (770XXX kHz)")
 ylabel("Two-body survival")
-title("288560 GHz, 15 mW")
+title("288560 GHz, 6 mW")
 NaCsPlot.maybe_save("$(prefix)")
 
 NaCsPlot.maybe_show()
