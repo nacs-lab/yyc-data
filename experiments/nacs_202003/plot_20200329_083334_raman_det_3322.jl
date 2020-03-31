@@ -91,7 +91,7 @@ const data_nacs_86 = datas_nacs[1][5]
 const data_nacs_126 = datas_nacs[2][3]
 const data_nacs_196 = datas_nacs[2][4]
 
-const prefix = joinpath(@__DIR__, "imgs", "data_20200327_234757_raman_det_3322")
+const prefix = joinpath(@__DIR__, "imgs", "data_20200329_083334_raman_det_3322")
 
 function model_lorentzian(x, p)
     p[1] .- p[2] ./ (1 .+ ((x .- p[3]) ./ (p[4] / 2)).^2)
