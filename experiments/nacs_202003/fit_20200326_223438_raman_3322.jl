@@ -190,4 +190,18 @@ xlabel("Raman time (ms)\${}_{\\mathrm{(with\\ 0.04\\ ms\\ offset)}}\$")
 ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)_t")
 
+figure()
+const img_freq = fit.param[3] .+ linspace(-10, 10, 201)
+const img_time = linspace(0, 0.3, 201)
+const mol_2d = [model_2d(t, f, fit.param, molecule=true) for f in img_freq, t in img_time]
+imshow(mol_2d, aspect="auto", interpolation="none", origin="lower",
+       extent=[img_time[1] - step(img_time) / 2, img_time[end] + step(img_time) / 2,
+               img_freq[1] - step(img_freq) / 2, img_freq[end] + step(img_freq) / 2])
+xlabel("Raman time (ms)\${}_{\\mathrm{(with\\ 0.04\\ ms\\ offset)}}\$")
+ylabel("2-Photon Detuning (770XXX kHz)")
+title("Molecule Population")
+grid()
+colorbar()
+NaCsPlot.maybe_save("$(prefix)_mol")
+
 NaCsPlot.maybe_show()
