@@ -175,7 +175,7 @@ title("Atomic Rabi frequency \$_{\\mathrm{(both\\ legs)}}\$")
 
 subplot(3, 2, 6)
 errorbar(powers, [v.a for v in gamma_ea], [v.s for v in gamma_ea], fmt="C0s")
-plot(fit_gamma_ea.plotx, fit_gamma_ea.ploty, "C0", label="\$p^{1}\$")
+plot(fit_gamma_ea.plotx, fit_gamma_ea.ploty, "C1", label="\$p^{1}\$")
 legend()
 grid()
 xlabel("Power (mW)")
