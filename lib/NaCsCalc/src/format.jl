@@ -74,6 +74,11 @@ Base.:\(u::Unc, v) = v / u
 Base.:\(v, u::Unc) = u / v
 Base.:\(v::Unc, u::Unc) = Unc(u.a / v.a, sqrt((u.s / v.a)^2 + (v.s * u.a / v.a^2)^2), v.exp_type)
 
+function Base.sqrt(u::Unc)
+    r = sqrt(u.a)
+    return Unc(r, (u.s / r) / 2)
+end
+
 function Base.show(io::IO, v::Unc)
     a = v.a
     s = v.s
