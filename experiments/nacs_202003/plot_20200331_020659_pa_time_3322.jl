@@ -143,7 +143,7 @@ text(9, 0.09, "\$\\gamma_{Cold}=$(fit_15m.uncs[2])\\ \\mathrm{ms}^{-1}\$",
      fontsize="small", color="C3")
 text(10, 0.45, "\$\\gamma_{PA}=$(γ_15pa)\\ \\mathrm{ms}^{-1}\$",
      fontsize="small")
-title("306560 GHz, 15 mW")
+title("288560 GHz, 15 mW")
 grid()
 xlabel("Time (ms)")
 ylabel("Two-body survival")
@@ -172,7 +172,7 @@ text(72, 0.11, "\$\\gamma_{Cold}=$(fit_6m.uncs[2] * 1000)\\ \\mathrm{s}^{-1}\$",
      fontsize="small", color="C3")
 text(78, 0.45, "\$\\gamma_{PA}=$(γ_6pa * 1000)\\ \\mathrm{s}^{-1}\$",
      fontsize="small")
-title("306560 GHz, 6 mW")
+title("288560 GHz, 6 mW")
 grid()
 xlabel("Time (ms)")
 ylabel("Two-body survival")
@@ -201,21 +201,21 @@ text(72 * 2, 0.05, "\$\\gamma_{Cold}=$(fit_3m.uncs[2] * 1000)\\ \\mathrm{s}^{-1}
      fontsize="small", color="C3")
 text(160, 0.45, "\$\\gamma_{PA}=$(γ_3pa * 1000)\\ \\mathrm{s}^{-1}\$",
      fontsize="small")
-title("306560 GHz, 3 mW")
+title("288560 GHz, 3 mW")
 grid()
 xlabel("Time (ms)")
 ylabel("Two-body survival")
 
-fit_pa_1 = fit_data(gen_power_model(1.75), [3, 6, 15], [γ_3pa.a, γ_6pa.a, γ_15pa.a] .* 1000,
+fit_pa_1 = fit_data(gen_power_model(1.58), [3, 6, 15], [γ_3pa.a, γ_6pa.a, γ_15pa.a] .* 1000,
                     [γ_3pa.s, γ_6pa.s, γ_15pa.s] .* 1000, [1.0]; plot_lo=2.6)
-fit_pa_2 = fit_data(gen_power_model(2.75), [3, 6, 15], [γ_3pa.a, γ_6pa.a, γ_15pa.a] .* 1000,
+fit_pa_2 = fit_data(gen_power_model(2.58), [3, 6, 15], [γ_3pa.a, γ_6pa.a, γ_15pa.a] .* 1000,
                     [γ_3pa.s, γ_6pa.s, γ_15pa.s] .* 1000, [1.0]; plot_lo=2.6)
 
 subplot(2, 2, 4)
 errorbar([3, 6, 15], [γ_3pa.a, γ_6pa.a, γ_15pa.a] .* 1000,
          [γ_3pa.s, γ_6pa.s, γ_15pa.s] .* 1000, fmt="C0s")
-plot(fit_pa_1.plotx, fit_pa_1.ploty, "C1", label="\$p^{1.75}\$")
-plot(fit_pa_2.plotx, fit_pa_2.ploty, "C2", label="\$p^{2.75}\$")
+plot(fit_pa_1.plotx, fit_pa_1.ploty, "C1", label="\$p^{1.58}\$")
+plot(fit_pa_2.plotx, fit_pa_2.ploty, "C2", label="\$p^{2.58}\$")
 legend()
 grid()
 xscale("log")
