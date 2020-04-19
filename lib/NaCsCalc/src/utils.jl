@@ -117,27 +117,39 @@ function binomial_interval(x, n, z::T=1.0) where T<:AbstractFloat
     return p - unc, p + unc
 end
 
-const ThreadRNG = MersenneTwister[]
+if VERSION >= v"1.0"
+    using Random
+end
+
 const _interactive = Ref(true)
+
+if VERSION < v"1.3"
+    const ThreadRNG = MersenneTwister[]
+
+    @noinline function init_thread_rng()
+        # Allocate the random number generator on the thread's own heap lazily
+        # instead of the master thread heap to minimize memory conflict.
+        ThreadRNG[Threads.threadid()] = MersenneTwister(0)
+    end
+
+    @inline function thread_rng()
+        @inbounds begin
+            tid = Threads.threadid()
+            return isassigned(ThreadRNG, tid) ? ThreadRNG[tid] : init_thread_rng()
+        end
+    end
+else
+    thread_rng() = Random.GLOBAL_RNG
+end
+
 function __init__()
-    nth = Threads.nthreads()
-    resize!(ThreadRNG, nth)
+    if VERSION < v"1.3"
+        nth = Threads.nthreads()
+        resize!(ThreadRNG, nth)
+    end
     interactive_str = get(ENV, "NACS_INTERACT", "true")
     if interactive_str == "false" || interactive_str == "0"
         _interactive[] = false
-    end
-end
-
-@noinline function init_thread_rng()
-    # Allocate the random number generator on the thread's own heap lazily
-    # instead of the master thread heap to minimize memory conflict.
-    ThreadRNG[Threads.threadid()] = MersenneTwister(0)
-end
-
-@inline function thread_rng()
-    @inbounds begin
-        tid = Threads.threadid()
-        return isassigned(ThreadRNG, tid) ? ThreadRNG[tid] : init_thread_rng()
     end
 end
 
