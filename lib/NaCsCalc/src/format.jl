@@ -78,6 +78,7 @@ Base.:\(v, u::Unc) = u / v
 Base.:\(v::Unc, u::Unc) = Unc(u.a / v.a, sqrt((u.s / v.a)^2 + (v.s * u.a / v.a^2)^2), v.exp_type)
 
 Base.:^(u::Unc, p) = Unc(u.a^p, p * u.a^(p - 1) * u.s)
+Base.:^(u::Unc, p::Integer) = Unc(u.a^p, p * u.a^(p - 1) * u.s)
 
 function Base.sqrt(u::Unc)
     r = sqrt(u.a)
