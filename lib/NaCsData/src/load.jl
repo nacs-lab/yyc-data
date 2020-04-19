@@ -48,7 +48,11 @@ SortedData1{K,Vs} = SortedData{1,2,K,Vs}
 end
 
 @inline Base.size(data::SortedData) = size(data.params)..., depth(data.values)
-@inline Base.endof(data::SortedData) = endof(data.params)
+if VERSION >= v"1.0"
+    @inline Base.lastindex(data::SortedData) = lastindex(data.params)
+else
+    @inline Base.endof(data::SortedData) = endof(data.params)
+end
 @inline Base.size(data::SortedData{N}, dim) where {N} = if dim <= N
     return size(data.params, dim)
 elseif dim <= N + 1

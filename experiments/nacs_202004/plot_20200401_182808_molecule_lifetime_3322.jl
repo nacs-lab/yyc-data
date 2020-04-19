@@ -2,6 +2,7 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
+using NaCsCalc
 import NaCsCalc.Format: Unc, Sci
 using NaCsCalc.Utils: interactive
 using NaCsData
@@ -27,7 +28,7 @@ function merge_unc(avg, unc)
     return N / D, 1 / sqrt(D)
 end
 
-function Base.mean(uncs::AbstractArray{T}) where T<:Unc
+function NaCsCalc.mean(uncs::AbstractArray{T}) where T<:Unc
     return Unc(merge_unc([u.a for u in uncs],
                          [u.s for u in uncs])...)
 end
