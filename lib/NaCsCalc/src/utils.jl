@@ -117,6 +117,14 @@ function binomial_interval(x, n, z::T=1.0) where T<:AbstractFloat
     return p - unc, p + unc
 end
 
+@inline function undef_array(::Type{ElTy}, dims...) where ElTy
+    @static if VERSION >= v"1.0"
+        return Array{ElTy}(undef, dims...)
+    else
+        return Array{ElTy}(dims...)
+    end
+end
+
 if VERSION >= v"1.0"
     using Random
 end

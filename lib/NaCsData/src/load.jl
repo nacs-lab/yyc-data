@@ -1,10 +1,14 @@
 #!/usr/bin/julia -f
 
 using MAT
-import NaCsCalc.Utils: binomial_estimate
+import NaCsCalc.Utils: binomial_estimate, undef_array
 import NaCsCalc.Format: Unc
 using DataStructures
 using DelimitedFiles
+
+if VERSION < v"1.0.0"
+    const CartesianIndices = CartesianRange
+end
 
 abstract type AbstractValues{N} end
 
@@ -65,7 +69,7 @@ function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
     # TODO
     CT = combiner_type(Vs)
     combiners = Dict{K,CT}()
-    params = Vector{K}()
+    params = K[]
     for data in datas
         ps = data.params
         vals = data.values
@@ -136,7 +140,7 @@ function create_values(params, dict::Dict{<:Any,CountCombiner})
     @assert nparams > 0
     c0 = dict[params[1]].counts
     ncnts = length(c0)
-    counts = Matrix{Int}(nparams, ncnts)
+    counts = undef_array(Int, nparams, ncnts)
     for i in 1:nparams
         c = dict[params[i]].counts
         for j in 1:ncnts
@@ -155,9 +159,9 @@ function SurvivalValues(vals::CountValues{N2}, z=1.0) where {N2}
     csize = size(counts)
     psize = ntuple(i->csize[i], N2 - 1)
     num_cnts = csize[N2]
-    ratios = Array{Float64,N2}(psize..., num_cnts - 1)
-    uncs = Array{Float64,N2}(psize..., num_cnts - 1)
-    for I in CartesianRange(psize)
+    ratios = undef_array(Float64, psize..., num_cnts - 1)
+    uncs = undef_array(Float64, psize..., num_cnts - 1)
+    for I in CartesianIndices(psize)
         base = counts[I.I..., 1]
         for j in 1:(num_cnts - 1)
             cur = counts[I.I..., j + 1]
@@ -188,8 +192,8 @@ function SurvivalCombiner(vals::SurvivalValues1, i)
     ratios = vals.ratios
     uncs = vals.uncs
     ncnts = size(ratios, 2)
-    sums = Vector{Float64}(ncnts)
-    ws = Vector{Float64}(ncnts)
+    sums = undef_array(Float64, ncnts)
+    ws = undef_array(Float64, ncnts)
     for j in 1:ncnts
         w = 1 / uncs[i, j]^2
         ws[j] = w
@@ -214,8 +218,8 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
     @assert nparams > 0
     s0 = dict[params[1]].sums
     ncnts = length(s0)
-    ratios = Matrix{Float64}(nparams, ncnts)
-    uncs = Matrix{Float64}(nparams, ncnts)
+    ratios = undef_array(Float64, nparams, ncnts)
+    uncs = undef_array(Float64, nparams, ncnts)
     for i in 1:nparams
         v = dict[params[i]]
         ss = v.sums
@@ -238,7 +242,7 @@ get_values(data::CountData, z=1.0) = get_values(SurvivalData(data, z))
 
 function map_params(f::F, data::SortedData) where {F}
     params = data.params
-    rng = CartesianRange(size(params))
+    rng = CartesianIndices(size(params))
     SortedData([f(idx.I..., params[idx.I...]) for idx in rng], data.values)
 end
 map_params(f::F, data::Tuple) where {F} = map(d->map_params(f, d), data)
@@ -254,8 +258,8 @@ end
 
 function _split_data(data, _offset, dict, spec::AbstractArray{T}) where {T}
     nspec = length(spec)
-    params = Vector{T}()
-    idxs = Vector{Int}()
+    params = T[]
+    idxs = Int[]
     offset = _offset[]
     _offset[] = offset + nspec
     for i in 1:nspec
@@ -347,7 +351,7 @@ function load_matscan(fnames)
     end
     numimages = glob_numimages[]
     params = sort(collect(keys(data_sorter)))
-    data = Matrix{Int}(numimages + 1, length(params))
+    data = undef_array(Int, numimages + 1, length(params))
     for i in 1:length(params)
         frame = data_sorter[params[i]]
         for j in 1:(numimages + 1)
@@ -377,8 +381,8 @@ function calc_survival(datas, z=1.0)
     end
     params = sort(collect(keys(data_dict)))
     len = length(params)
-    ratios = Matrix{Float64}(len, num_cnts - 1)
-    uncs = Matrix{Float64}(len, num_cnts - 1)
+    ratios = undef_array(Float64, len, num_cnts - 1)
+    uncs = undef_array(Float64, len, num_cnts - 1)
     for i in 1:len
         frame = data_dict[params[i]]
         base = frame[1]
