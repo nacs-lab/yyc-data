@@ -126,6 +126,10 @@ end
 end
 
 if VERSION >= v"1.0"
+    linspace(a, b, n) = range(a, stop=b, length=n)
+end
+
+if VERSION >= v"1.0"
     using Random
 end
 
