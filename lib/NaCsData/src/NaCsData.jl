@@ -6,5 +6,6 @@ module NaCsData
 
 include("load.jl")
 include("selector.jl")
+include("fitting.jl")
 
 end
