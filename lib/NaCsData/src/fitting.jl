@@ -3,9 +3,11 @@
 module Fitting
 
 using LsqFit
+using LinearAlgebra
+
 import NaCsCalc.Format: Unc, Sci
 using NaCsCalc.Utils: linspace
-using ..get_values, ..SortedData
+import ..get_values, ..SortedData
 
 export fit_data
 

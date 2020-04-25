@@ -34,7 +34,11 @@ function process_args()
         throw(ArgumentError("Missing output file name"))
     end
     if stat(oname).size == 0 && !endswith(basename(oname), ".mat")
-        mkpath(oname, 0o755)
+        if VERSION >= v"1.0.0"
+            mkpath(oname, mode=0o755)
+        else
+            mkpath(oname, 0o755)
+        end
     end
     if isdir(oname)
         oname = joinpath(oname, basename(iname))

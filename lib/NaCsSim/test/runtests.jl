@@ -347,7 +347,11 @@ end
 if interactive()
     plot_result(params, res, "")
 else
-    mkpath(ARGS[1], 0o750)
+    if VERSION >= v"1.0.0"
+        mkpath(ARGS[1], mode=0o755)
+    else
+        mkpath(ARGS[1], 0o755)
+    end
     plot_result(params, res, ARGS[1])
 end
 maybe_show()
