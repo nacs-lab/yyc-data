@@ -3,7 +3,9 @@
 module Fitting
 
 using LsqFit
-using LinearAlgebra
+if VERSION >= v"1.0.0"
+    using LinearAlgebra
+end
 
 import NaCsCalc.Format: Unc, Sci
 using NaCsCalc.Utils: linspace
