@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[xcolor={table}]{beamer}
 \mode<presentation>{
   \usetheme{Boadilla}
   \usefonttheme[onlylarge]{structurebold}
@@ -384,11 +384,53 @@
 \end{frame}
 
 % Algorithm
-
 % Improvements
+\begin{frame}{Algorithm}
+  \begin{center}
+    \includegraphics[width=7.5cm]{algorithm.pdf}\\
+    \vspace{0.4cm}
+    \visible<2->{
+      \includegraphics[width=7.5cm]{incremental-design.pdf}
+    }
+  \end{center}
+\end{frame}
 
 % Implementation
-
 % Performance
+\begin{frame}{Implementation and performance}
+  \begin{center}
+    \only<-5>{
+      \begin{columns}
+        \column{4.5cm}
+        \begin{itemize}
+        \item<1-> Hardware decoding
+        \item<2-> Low power
+        \item<3-> High speed
+        \end{itemize}
+        \column{7.3cm}
+        \rowcolors{2}{gray!15}{white}
+        \visible<4->{
+          \begin{tabular}{rrr}
+            Code Distance&Max (ns)&Average (ns)\\\hline
+            3&3.74&0.28\\
+            5&9.28&0.72\\
+            7&14.2&2.00\\
+            9&19.2&3.81
+          \end{tabular}
+        }
+        \vspace{0.4cm}
+        \visible<5->{
+          \begin{center}
+            \textbf{Power concumption}\\
+            3.78 mW for code distance 9.
+          \end{center}
+        }
+      \end{columns}
+    }
+    \only<6->{
+      \includegraphics[width=10cm]{accuracy_threshold_dephasing_percentage.pdf}
+    }
+  \end{center}
+\end{frame}
 
 \end{document}
