@@ -3,8 +3,10 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc.Format: Unc, Sci
+using NaCsCalc
 using NaCsCalc.Utils: interactive
 using NaCsData
+using NaCsData.Fitting: fit_data, fit_survival
 using NaCsPlot
 using PyPlot
 using DataStructures
@@ -56,44 +58,6 @@ const datas_cscs = [load_data(matopen(fd->read(fd, "names"), joinpath(@__DIR__, 
 #     ds[1] = [ds[1]; ds[2]]
 #     resize!(ds, 1)
 # end
-
-function fit_survival(model, data, p0; plotx=nothing, plot_lo=nothing, plot_hi=nothing,
-                      use_unc=true, plot_scale=1.1)
-    if use_unc
-        params, ratios, uncs = NaCsData.get_values(data)
-    else
-        params, ratios, uncs = NaCsData.get_values(data, 0.0)
-    end
-    if plotx === nothing
-        lo = minimum(params)
-        hi = maximum(params)
-        span = hi - lo
-        mid = (hi + lo) / 2
-        if plot_lo === nothing
-            plot_lo = mid - span * plot_scale / 2
-            if plot_lo * lo <= 0
-                plot_lo = 0
-            end
-        end
-        if plot_hi === nothing
-            plot_hi = mid + span * plot_scale / 2
-            if plot_hi * hi <= 0
-                plot_hi = 0
-            end
-        end
-        plotx = linspace(plot_lo, plot_hi, 10000)
-    end
-    if use_unc
-        fit = curve_fit(model, params, ratios[:, 2], uncs[:, 2].^-(2/3), p0)
-    else
-        fit = curve_fit(model, params, ratios[:, 2], p0)
-    end
-    param = fit.param
-    unc = estimate_errors(fit)
-    return (param=param, unc=unc,
-            uncs=Unc.(param, unc, Sci),
-            plotx=plotx, ploty=model.(plotx, (fit.param,)))
-end
 
 function model_lorentzian(x, p)
     p[1] .- p[2] ./ (1 .+ ((x .- p[3]) ./ (p[4] / 2)).^2)
