@@ -2,10 +2,11 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
-using NaCsCalc
 import NaCsCalc.Format: Unc, Sci
+using NaCsCalc
 using NaCsCalc.Utils: interactive
 using NaCsData
+using NaCsData.Fitting: fit_data, fit_survival
 using NaCsPlot
 using PyPlot
 using DataStructures
@@ -22,62 +23,15 @@ function NaCsCalc.mean(uncs::AbstractArray{T}) where T<:Unc
                          [u.s for u in uncs])...)
 end
 
-fit_data(model, x, y, p0; kws...) =
-    fit_data(model, x, y, nothing, p0; kws...)
-
-function fit_data(model, params, ratios, uncs, p0;
-                  plotx=nothing, plot_lo=nothing, plot_hi=nothing, plot_scale=1.1)
-    use_unc = uncs !== nothing
-    if plotx === nothing
-        lo = minimum(params)
-        hi = maximum(params)
-        span = hi - lo
-        mid = (hi + lo) / 2
-        if plot_lo === nothing
-            plot_lo = mid - span * plot_scale / 2
-            if plot_lo * lo <= 0
-                plot_lo = 0
-            end
-        end
-        if plot_hi === nothing
-            plot_hi = mid + span * plot_scale / 2
-            if plot_hi * hi <= 0
-                plot_hi = 0
-            end
-        end
-        plotx = linspace(plot_lo, plot_hi, 10000)
-    end
-    if use_unc
-        fit = curve_fit(model, params, ratios, uncs.^-(2/3), p0)
-    else
-        fit = curve_fit(model, params, ratios, p0)
-    end
-    param = fit.param
-    unc = estimate_errors(fit)
-    return (param=param, unc=unc,
-            uncs=Unc.(param, unc, Sci),
-            plotx=plotx, ploty=model.(plotx, (fit.param,)))
-end
-
-function fit_survival(model, data, p0; use_unc=true, kws...)
-    if use_unc
-        params, ratios, uncs = NaCsData.get_values(data)
-        return fit_data(model, params, ratios[:, 2], uncs[:, 2], p0; kws...)
-    else
-        params, ratios, uncs = NaCsData.get_values(data, 0.0)
-        return fit_data(model, params, ratios[:, 2], p0; kws...)
-    end
-end
-
 const powers = [15, 6, 3]
-const omega_r = [4.00, 1.178, 0.483] # kHz
-const omega_r_unc = [0.10, 0.061, 0.026]
-const gamma_m = [1.78, 0.580, 0.280] # kHz
-const gamma_m_unc = [0.20, 0.091, 0.048]
-const gamma_a = [22.6, 2.37, 0.39] # Hz
-const gamma_a_unc = [0.33, 0.50, 0.13]
+const omega_r = [3.948, 1.182, 0.477] # kHz
+const omega_r_unc = [0.061, 0.036, 0.015]
+const gamma_m = [1.72, 0.568, 0.261] # kHz
+const gamma_m_unc = [0.11, 0.053, 0.027]
+const gamma_a = [22.3, 2.31, 0.388] # Hz
+const gamma_a_unc = [1.6, 0.20, 0.059]
 
-const omega_m = Unc(91.2, 4.3) # MHz/mW^-1/2
+const omega_m = Unc(91.62, 0.42) # MHz/mW^-1/2
 const detuning = 145
 const gamma_e = Unc.(gamma_m, gamma_m_unc) .* (4 * detuning^2) ./ (omega_m.^2 .* powers) # GHz
 const gamma_e_avg = mean(Unc.(gamma_m, gamma_m_unc) ./ powers) * (4 * detuning^2) / omega_m^2
@@ -96,15 +50,15 @@ function power_model(x, p)
     return p[1] .* x.^p[2]
 end
 
-fit_omega_r = fit_data(gen_power_model(1.375), powers, omega_r, omega_r_unc, [1.0]; plot_lo=2.7)
+fit_omega_r = fit_data(gen_power_model(1.29), powers, omega_r, omega_r_unc, [1.0]; plot_lo=2.7)
 fit_omega_r_p = fit_data(power_model, powers, omega_r, omega_r_unc, [1.0, 1.375]; plot_lo=2.7)
 fit_gamma_m = fit_data(gen_power_model(1), powers, gamma_m, gamma_m_unc, [1.0]; plot_lo=2.7)
 fit_gamma_m2 = fit_data(gen_power_model(2), powers, gamma_m, gamma_m_unc, [1.0]; plot_lo=2.7)
 fit_gamma_m_p = fit_data(power_model, powers, gamma_m, gamma_m_unc, [1.0, 1]; plot_lo=2.7)
-fit_gamma_a = fit_data(gen_power_model(1.75), powers, gamma_a, gamma_a_unc, [1.0]; plot_lo=2.7)
-fit_gamma_a2 = fit_data(gen_power_model(2.75), powers, gamma_a, gamma_a_unc, [1.0]; plot_lo=2.7)
+fit_gamma_a = fit_data(gen_power_model(1.58), powers, gamma_a, gamma_a_unc, [1.0]; plot_lo=2.7)
+fit_gamma_a2 = fit_data(gen_power_model(2.58), powers, gamma_a, gamma_a_unc, [1.0]; plot_lo=2.7)
 fit_gamma_a_p = fit_data(power_model, powers, gamma_a, gamma_a_unc, [1.0, 2.75]; plot_lo=2.7)
-fit_omega_a = fit_data(gen_power_model(0.875), powers,
+fit_omega_a = fit_data(gen_power_model(0.79), powers,
                        [v.a for v in omega_a], [v.s for v in omega_a], [1.0]; plot_lo=2.7)
 # Don't fit with power_model on omega_a directly. Correlated uncertainty!
 fit_gamma_ea = fit_data(gen_power_model(1), powers,
