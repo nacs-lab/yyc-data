@@ -78,8 +78,8 @@ function compute_cached_op_branching(cache, rates_2d::Matrix{T}) where T
         nx, ny = size(rates_2d)
         nx == ny || throw(ArgumentError("Decay rate must be a square matrix"))
         nx >= 1 || throw(ArgumentError("Must have at least one state"))
-        rates_1d = Vector{T}(nx)
-        branchings = Vector{Vector{T}}(nx)
+        rates_1d = Vector{T}(undef, nx)
+        branchings = Vector{Vector{T}}(undef, nx)
         @inbounds for i in 1:nx
             r = zero(T)
             @simd for j in 1:nx
@@ -89,7 +89,7 @@ function compute_cached_op_branching(cache, rates_2d::Matrix{T}) where T
             if r == 0
                 (branchings[i] = zeros(T, nx))[1] = 1
             else
-                b = branchings[i] = Vector{T}(nx)
+                b = branchings[i] = Vector{T}(undef, nx)
                 @simd for j in 1:nx
                     b[j] = rates_2d[j, i] / r
                 end
@@ -287,7 +287,7 @@ function normalize0!(ary)
     return
 end
 
-function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
+function Setup.compile_pulse(pulse::RealRaman{T,N1,N2}, cache) where {T,N1,N2}
     @assert N1 != N2
     Meles = compute_cached_raman(cache, pulse.ηs, pulse.Δn, pulse.nmax)
     ns = length(pulse.scatters)
@@ -300,7 +300,7 @@ function Setup.compile_pulse{T,N1,N2}(pulse::RealRaman{T,N1,N2}, cache)
     @assert nhf >= N2
     Γs = zeros(T, nhf)
     sc_branchings = [zeros(T, ns) for i in 1:nhf]
-    scatters = Vector{ScatterPulse{T}}(ns)
+    scatters = Vector{ScatterPulse{T}}(undef, ns)
     for i in 1:ns
         st = pulse.scatters[i]
         @assert nhf == num_states(st)
@@ -424,13 +424,13 @@ struct MultiOPPulse{T}
     scatters::Vector{ScatterPulse{T}}
 end
 
-function Setup.compile_pulse{T}(pulse::MultiOP{T}, cache)
+function Setup.compile_pulse(pulse::MultiOP{T}, cache) where T
     ns = length(pulse.scatters)
     @assert(ns != 0)
     nhf = num_states(pulse.scatters[1])
     Γs = zeros(T, nhf)
     sc_branchings = [zeros(T, ns) for i in 1:nhf]
-    scatters = Vector{ScatterPulse{T}}(ns)
+    scatters = Vector{ScatterPulse{T}}(undef, ns)
     for i in 1:ns
         st = pulse.scatters[i]
         @assert nhf == num_states(st)

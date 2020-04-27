@@ -3,6 +3,7 @@
 module Atomic
 
 import GSL
+import ..Utils
 
 """
     coupling_LS(L1x2, L2x2, J1x2, J2x2, Ix2, F1x2, F2x2, mF1x2, mF2x2)
@@ -128,7 +129,7 @@ function all_scatter_D(D2::Bool, Ix2, pol, rhi, rlo)
         return r, Fx2, mFx2
     end
     nstates = (Ix2 + 1) * 2
-    rates = Matrix{Float64}(nstates, nstates)
+    rates = Utils.undef_array(Float64, nstates, nstates)
     @inbounds for i in 1:nstates
         r, F1x2, mF1x2 = idx_to_state(i)
         for j in 1:nstates
@@ -156,7 +157,7 @@ function all_scatter_D(fscale, D2::Bool, Ix2, pol)
         return Fx2, mFx2
     end
     nstates = (Ix2 + 1) * 2
-    rates = Matrix{Float64}(nstates, nstates)
+    rates = Utils.undef_array(Float64, nstates, nstates)
     @inbounds for i in 1:nstates
         F1x2, mF1x2 = idx_to_state(i)
         for j in 1:nstates
@@ -186,7 +187,7 @@ function all_scatter_bothD(fscale, Ix2, pol)
         return Fx2, mFx2
     end
     nstates = (Ix2 + 1) * 2
-    rates = Matrix{Float64}(nstates, nstates)
+    rates = Utils.undef_array(Float64, nstates, nstates)
     @inbounds for i in 1:nstates
         F1x2, mF1x2 = idx_to_state(i)
         for j in 1:nstates

@@ -4,7 +4,7 @@ import NaCsSim: Setup, System
 import NaCsCalc: Trap
 import NaCsCalc.Utils: interactive
 
-const BuilderT = Setup.SeqBuilder{System.StateC,Void}
+const BuilderT = Setup.SeqBuilder{System.StateC,Nothing}
 const sz = 500, 100, 100
 
 const m_Na = 23f-3 / 6.02f23
@@ -31,7 +31,7 @@ const η_raman3 = (0f0, 0f0, η(580f3) * sqrt(2f0))
 const η_ramans = (η_raman1, η_raman2, η_raman3)
 
 # 1: (2, -2); 2: (2, -1); 3: (1, -1)
-const statec = Vector{System.StateC}(Threads.nthreads())
+const statec = Vector{System.StateC}(undef, Threads.nthreads())
 Threads.@threads for i in 1:Threads.nthreads()
     statec[i] = System.StateC(sz...)
 end
@@ -224,8 +224,8 @@ function threadmap(f, arg)
     # A really simple work queue
     n = length(arg)
     counter = Threads.Atomic{Int}(1)
-    T = Core.Inference.return_type(f, Tuple{eltype(arg)})
-    res = Vector{T}(n)
+    T = Core.Compiler.return_type(f, Tuple{eltype(arg)})
+    res = Vector{T}(undef, n)
     nt = Threads.nthreads()
     Threads.@threads for _ in 1:nt
         while true
@@ -236,7 +236,7 @@ function threadmap(f, arg)
             res[i] = f(arg[i])
         end
     end
-    if !isleaftype(T)
+    if !isconcretetype(T)
         return [v for v in res]
     end
     return res
@@ -302,9 +302,9 @@ end
 
 plot_hf(params, res) = plot_hf(params, collect(res))
 
-function plot_hf{T<:Tuple}(params, res::Vector{T})
+function plot_hf(params, res::Vector{T}) where {T<:Tuple}
     figure()
-    for i in 1:nfields(T)
+    for i in 1:fieldcount(T)
         hf = [r[i].a for r in res]
         hf_unc = [r[i].s for r in res]
         errorbar(params, hf, hf_unc, label="$i")

@@ -475,9 +475,9 @@ end
 Given a decay rate matrix `Γ`, compute the total decay rate for each initial states.
 The matrix element `Γ[j, i]` is the decay rate from state `i` to state `j`.
 """
-function Γ_to_rates{T}(Γ::AbstractMatrix{T})
+function Γ_to_rates(Γ::AbstractMatrix{T}) where T
     len1, len2 = size(Γ)
-    rates = Vector{T}(len2)
+    rates = Vector{T}(undef, len2)
     @inbounds for i in 1:len2
         s = zero(T)
         for j in 1:len1

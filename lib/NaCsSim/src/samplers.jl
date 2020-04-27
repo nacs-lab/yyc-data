@@ -5,9 +5,9 @@ module Samplers
 using Base.Cartesian
 import NaCsCalc: Trap
 
-@generated default_index{N,M}(::Val{N}, ::Val{M}=Val{0}()) = ntuple(i->M, N)
+@generated default_index(::Val{N}, ::Val{M}=Val{0}()) where {N,M} = ntuple(i->M, N)
 
-function sideband{T}(n::Int, η::T, nmax::Int, rng)
+function sideband(n::Int, η::T, nmax::Int, rng) where {T}
     # Estimate the range of final states with non-zero matrix elements.
     # By starting with the ones with high probability we can minimize the
     # average evaluation time.
@@ -190,7 +190,7 @@ function thermal(nbar, nmax, rng)
     end
 end
 
-function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T}, rng)
+function decay(rates::AbstractArray{T}, weights::AbstractArray{T}, rng) where {T}
     total = sum(weights)
     v = T(rand(rng)) * total
     nstates = length(rates)
@@ -208,8 +208,8 @@ function decay{T}(rates::AbstractArray{T}, weights::AbstractArray{T}, rng)
     return T(Inf), 1
 end
 
-decay{T<:AbstractFloat}(rate::T, rng) = -log(T(rand(rng))) / rate
-function select{T}(total::T, weights::Union{AbstractArray{T},Tuple{Vararg{T}}}, rng)
+decay(rate::T, rng) where {T<:AbstractFloat} = -log(T(rand(rng))) / rate
+function select(total::T, weights::Union{AbstractArray{T},Tuple{Vararg{T}}}, rng) where T
     v = T(rand(rng)) * total
     @inbounds for i in 1:length(weights)
         v -= weights[i]

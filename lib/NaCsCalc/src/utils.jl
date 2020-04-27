@@ -2,6 +2,8 @@
 
 module Utils
 
+using SpecialFunctions
+
 # LGPLv3 implementation from libstdc++
 
 function poly_laguerre_large_n(n::Integer, α, x::Tp) where Tp

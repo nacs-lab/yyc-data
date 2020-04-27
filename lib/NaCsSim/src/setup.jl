@@ -9,7 +9,7 @@ import FunctionWrappers: FunctionWrapper
 struct Sequence{AS,ES,IA,I,M}
     init_atom::IA
     init::I
-    pulses::Vector{FunctionWrapper{Bool,Tuple{AS,ES,MersenneTwister}}}
+    pulses::Vector{FunctionWrapper{Bool,Tuple{AS,ES,typeof(thread_rng())}}}
     measure::M
 end
 
@@ -45,7 +45,7 @@ end
 function (::Type{SeqBuilder{AS,ES}})(init_atom::IA, init::I,
                                      measure::M) where {AS,ES,IA,I,M}
     seq = Sequence{AS,ES,IA,I,M}(init_atom, init,
-                                 FunctionWrapper{Bool,Tuple{AS,ES,MersenneTwister}}[],
+                                 FunctionWrapper{Bool,Tuple{AS,ES,typeof(thread_rng())}}[],
                                  measure)
     return SeqBuilder(seq, Dict{Any,Any}(), Dict{Any,Any}())
 end
