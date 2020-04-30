@@ -38,19 +38,19 @@ const specs = [(484.00 .+ [-30; -4.0:0.8:4.0; 30], # 15 mW, 0.20 ms
                 265.00 .+ [-5; -1.0:0.2:1.0; 5], # 3 mW, 2.0 ms
                 ),
                ([0; [0.11, 0.16, 0.21, 0.26, 0.31, 0.36] .- 0.01], # 15 mW, 770.48347 MHz
-                [0], # 15 mW, 0 ms
+                [0.0], # 15 mW, 0 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.15 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.25 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.35 ms
                 ),
                ([0; [0.11, 0.21, 0.31, 0.41, 0.51] .- 0.01], # 15 mW, 770.48347 MHz
-                [0], # 15 mW, 0 ms
+                [0.0], # 15 mW, 0 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.15 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.25 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.35 ms
                 ),
                ([0; [0.11, 0.21, 0.31, 0.41, 0.51] .- 0.01], # 15 mW, 770.48347 MHz
-                [0], # 15 mW, 0 ms
+                [0.0], # 15 mW, 0 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.15 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.25 ms
                 483.47 .+ [-30; -3.5:0.7:3.5; 30], # 15 mW, 0.55 ms
@@ -102,13 +102,13 @@ function gen_data_all(datas, freqs, times, survival_index)
     return data_all, freq_all, time_all, survival_index_all
 end
 
-const data_all, freq_all, time_all, survival_index_all =
-    gen_data_all([data_nacs_00, data_nacs_14, data_nacs_19,
-                  data_nacs_24, data_nacs_34, data_nacs_54,
-                  data_nacs_t],
-                 [NaN, NaN, NaN, NaN, NaN, NaN, 483.47],
-                 [0, 0.14, 0.19, 0.24, 0.34, 0.54, NaN],
-                 [1, 1, 2, 1, 1, 1, 1])
+const data_fit = [NaCsData.map_params((i, v) -> (v, 0.0, 1), data_nacs_00);
+                  NaCsData.map_params((i, v) -> (v, 0.14, 1), data_nacs_14);
+                  NaCsData.map_params((i, v) -> (v, 0.19, 2), data_nacs_19);
+                  NaCsData.map_params((i, v) -> (v, 0.24, 1), data_nacs_24);
+                  NaCsData.map_params((i, v) -> (v, 0.34, 1), data_nacs_34);
+                  NaCsData.map_params((i, v) -> (v, 0.54, 1), data_nacs_54);
+                  NaCsData.map_params((i, v) -> (483.47, v, 1), data_nacs_t)]
 
 const prefix = joinpath(@__DIR__, "imgs", "fit_20200423_113115_raman_3322")
 
@@ -119,15 +119,14 @@ function get_model_param(p, idx)
     return (p0, p1, f0, Ω, Γ1, Γ2)
 end
 
-function model(i, p)
-    function wrapper(i)
-        t = time_all[i]
-        f = freq_all[i]
-        return model_2d(t, f, get_model_param(p, survival_index_all[i]))
+function model(xs, p)
+    function wrapper(x)
+        f, t, idx = x
+        return model_2d(t, f, get_model_param(p, idx))
     end
-    return wrapper.(i)
+    return wrapper.(xs)
 end
-fit = fit_survival(model, data_all, [0.1, 0.3, 0.3, 483.47, 2π * 1.5, 0, 2π / 0.2], plotx=false)
+fit = fit_survival(model, data_fit, [0.1, 0.3, 0.3, 483.47, 2π * 1.5, 0, 2π / 0.2], plotx=false)
 @show fit.uncs
 
 const plot_freq_lo = 483.47 - 35
