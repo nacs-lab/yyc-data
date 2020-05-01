@@ -3,9 +3,7 @@
 module Fitting
 
 using LsqFit
-if VERSION >= v"1.0.0"
-    using LinearAlgebra
-end
+using LinearAlgebra
 
 import NaCsCalc.Format: Unc, Sci
 using NaCsCalc.Utils: linspace
@@ -52,11 +50,7 @@ function fit_data(model, xs, ratios, uncs, p0;
         plotx = linspace(plot_lo, plot_hi, 10000)
     end
     if use_unc
-        @static if VERSION >= v"1.0"
-            fit = curve_fit(model, xs, ratios, uncs.^-2, p0)
-        else
-            fit = curve_fit(model, xs, ratios, uncs.^-(2/3), p0)
-        end
+        fit = curve_fit(model, xs, ratios, uncs.^-2, p0)
     else
         fit = curve_fit(model, xs, ratios, p0)
     end

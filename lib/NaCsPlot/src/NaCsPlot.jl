@@ -53,11 +53,7 @@ plot_survival_data(data, scale=1; yoffset=0, kws...) =
 function save(name; close=true)
     dir = dirname(name)
     if !isempty(dir)
-        if VERSION >= v"1.0.0"
-            mkpath(dir, mode=0o755)
-        else
-            mkpath(dir, 0o755)
-        end
+        mkpath(dir, mode=0o755)
     end
     metadata = Dict("Creator"=>nothing, "Producer"=>nothing, "CreationDate"=>nothing)
     savefig("$name.pdf"; bbox_inches="tight", transparent=true, metadata=metadata)

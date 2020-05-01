@@ -52,9 +52,7 @@ struct Unc{T<:AbstractFloat}
 end
 Unc(a::T, s::T, exp_type=Exp) where {T<:AbstractFloat} = Unc{T}(a, s, exp_type)
 Unc(a, b, exp_type=Exp) = Unc(promote(float(a), float(b))..., exp_type)
-if VERSION >= v"1.0"
-    Broadcast.broadcastable(u::Unc) = Ref(u)
-end
+Broadcast.broadcastable(u::Unc) = Ref(u)
 Base.:+(u::Unc) = u
 Base.:+(u::Unc, v) = Unc(u.a + v, u.s, u.exp_type)
 Base.:+(v, u::Unc) = u + v

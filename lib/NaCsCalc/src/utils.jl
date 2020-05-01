@@ -127,40 +127,15 @@ end
     end
 end
 
-if VERSION >= v"1.0"
-    linspace(a, b, n) = range(a, stop=b, length=n)
-end
+linspace(a, b, n) = range(a, stop=b, length=n)
 
-if VERSION >= v"1.0"
-    using Random
-end
+using Random
 
 const _interactive = Ref(true)
 
-if VERSION < v"1.3"
-    const ThreadRNG = MersenneTwister[]
-
-    @noinline function init_thread_rng()
-        # Allocate the random number generator on the thread's own heap lazily
-        # instead of the master thread heap to minimize memory conflict.
-        ThreadRNG[Threads.threadid()] = MersenneTwister(0)
-    end
-
-    @inline function thread_rng()
-        @inbounds begin
-            tid = Threads.threadid()
-            return isassigned(ThreadRNG, tid) ? ThreadRNG[tid] : init_thread_rng()
-        end
-    end
-else
-    thread_rng() = Random.GLOBAL_RNG
-end
+thread_rng() = Random.GLOBAL_RNG
 
 function __init__()
-    if VERSION < v"1.3"
-        nth = Threads.nthreads()
-        resize!(ThreadRNG, nth)
-    end
     interactive_str = get(ENV, "NACS_INTERACT", "true")
     if interactive_str == "false" || interactive_str == "0"
         _interactive[] = false
