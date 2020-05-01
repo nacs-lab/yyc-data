@@ -50,8 +50,8 @@ sideband(n1::Integer, n2::Integer, η) = sideband(n1, n2, float(η))
     resize!(Ωcache, tid)
     resize!(pcache, tid)
     for i in (old_len + 1):tid
-        Ωcache[i] = Utils.undef_array(Float64, 1024)
-        pcache[i] = Utils.undef_array(Float64, 1024)
+        Ωcache[i] = Vector{Float64}(undef, 1024)
+        pcache[i] = Vector{Float64}(undef, 1024)
     end
 end
 
@@ -77,8 +77,8 @@ end
         @gensym p0
         @gensym Ωlocal
         @gensym plocal
-        Ωcache = [Utils.undef_array(Float64, 1024)]
-        pcache = [Utils.undef_array(Float64, 1024)]
+        Ωcache = [Vector{Float64}(undef, 1024)]
+        pcache = [Vector{Float64}(undef, 1024)]
         setup = quote
             if tid < size($Ωcache, 1)
                 resize_caches_thread(tid, $Ωcache, $pcache)

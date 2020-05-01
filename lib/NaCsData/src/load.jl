@@ -1,7 +1,7 @@
 #!/usr/bin/julia -f
 
 using MAT
-import NaCsCalc.Utils: binomial_estimate, undef_array
+import NaCsCalc.Utils: binomial_estimate
 import NaCsCalc.Format: Unc
 using DataStructures
 using DelimitedFiles
@@ -132,7 +132,7 @@ function create_values(params, dict::Dict{<:Any,CountCombiner})
     @assert nparams > 0
     c0 = dict[params[1]].counts
     ncnts = length(c0)
-    counts = undef_array(Int, nparams, ncnts)
+    counts = Matrix{Int}(undef, nparams, ncnts)
     for i in 1:nparams
         c = dict[params[i]].counts
         for j in 1:ncnts
@@ -151,8 +151,8 @@ function SurvivalValues(vals::CountValues{N2}, z=1.0) where {N2}
     csize = size(counts)
     psize = ntuple(i->csize[i], N2 - 1)
     num_cnts = csize[N2]
-    ratios = undef_array(Float64, psize..., num_cnts - 1)
-    uncs = undef_array(Float64, psize..., num_cnts - 1)
+    ratios = Array{Float64}(undef, psize..., num_cnts - 1)
+    uncs = Array{Float64}(undef, psize..., num_cnts - 1)
     for I in CartesianIndices(psize)
         base = counts[I.I..., 1]
         for j in 1:(num_cnts - 1)
@@ -184,8 +184,8 @@ function SurvivalCombiner(vals::SurvivalValues1, i)
     ratios = vals.ratios
     uncs = vals.uncs
     ncnts = size(ratios, 2)
-    sums = undef_array(Float64, ncnts)
-    ws = undef_array(Float64, ncnts)
+    sums = Vector{Float64}(undef, ncnts)
+    ws = Vector{Float64}(undef, ncnts)
     for j in 1:ncnts
         w = 1 / uncs[i, j]^2
         ws[j] = w
@@ -210,8 +210,8 @@ function create_values(params, dict::Dict{<:Any,SurvivalCombiner})
     @assert nparams > 0
     s0 = dict[params[1]].sums
     ncnts = length(s0)
-    ratios = undef_array(Float64, nparams, ncnts)
-    uncs = undef_array(Float64, nparams, ncnts)
+    ratios = Matrix{Float64}(undef, nparams, ncnts)
+    uncs = Matrix{Float64}(undef, nparams, ncnts)
     for i in 1:nparams
         v = dict[params[i]]
         ss = v.sums
@@ -343,7 +343,7 @@ function load_matscan(fnames)
     end
     numimages = glob_numimages[]
     params = sort(collect(keys(data_sorter)))
-    data = undef_array(Int, numimages + 1, length(params))
+    data = Array{Int}(undef, numimages + 1, length(params))
     for i in 1:length(params)
         frame = data_sorter[params[i]]
         for j in 1:(numimages + 1)
@@ -373,8 +373,8 @@ function calc_survival(datas, z=1.0)
     end
     params = sort(collect(keys(data_dict)))
     len = length(params)
-    ratios = undef_array(Float64, len, num_cnts - 1)
-    uncs = undef_array(Float64, len, num_cnts - 1)
+    ratios = Matrix{Float64}(undef, len, num_cnts - 1)
+    uncs = Matrix{Float64}(undef, len, num_cnts - 1)
     for i in 1:len
         frame = data_dict[params[i]]
         base = frame[1]
