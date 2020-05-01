@@ -10,6 +10,9 @@ using PyPlot
 using PyCall
 
 function __init__()
+    if !interactive()
+        pygui(false)
+    end
     matplotlib["rcParams"][:update](Dict("svg.hashsalt" => 19680801))
     fontsize(20)
     ticksize(15)
