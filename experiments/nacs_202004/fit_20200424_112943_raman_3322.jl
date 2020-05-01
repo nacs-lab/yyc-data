@@ -34,7 +34,7 @@ const specs = [(484.00 .+ [-30; -4.0:0.8:4.0; 30], # 15 mW, 0.20 ms
                 265.00 .+ [-5; -1.0:0.2:1.0; 5], # 3 mW, 2.0 ms
                 ),
                ([0; [0.26, 0.51, 0.81, 1.01, 1.41] .* 1.5 .- 0.01], # 6 mW, 770.324501 MHz
-                [0], # 6 mW, 0 ms
+                [0.0], # 6 mW, 0 ms
                 324.501 .+ [-8; -1.25:0.25:1.25; 8], # 6 mW, 0.5 ms
                 324.501 .+ [-8; -1.25:0.25:1.25; 8], # 6 mW, 1.0 ms
                 324.501 .+ [-8; -1.25:0.25:1.25; 8], # 6 mW, 1.8 ms
@@ -57,40 +57,12 @@ const data_nacs_49 = datas_nacs[3][3] # Survival 1
 const data_nacs_99 = datas_nacs[3][4] # Survival 1
 const data_nacs_179 = datas_nacs[3][5] # Survival 1
 
-function gen_data_all(datas, freqs, times, survival_index)
-    local data_all
-    freq_all = Float64[]
-    time_all = Float64[]
-    survival_index_all = Int[]
-    for i in 1:length(datas)
-        data = datas[i]
-        freq = freqs[i]
-        time = times[i]
-        sidx = survival_index[i]
-        nd = size(data, 1)
-        if isnan(freq)
-            append!(freq_all, data.params)
-            append!(time_all, Iterators.repeated(time, nd))
-        else
-            append!(freq_all, Iterators.repeated(freq, nd))
-            append!(time_all, data.params)
-        end
-        append!(survival_index_all, Iterators.repeated(sidx, nd))
-        if @isdefined(data_all)
-            data_all = [data_all; NaCsData.map_params((i, v)->i + size(data_all, 1), data)]
-        else
-            data_all = NaCsData.map_params((i, v)->i, data)
-        end
-    end
-    return data_all, freq_all, time_all, survival_index_all
-end
-
-const data_all, freq_all, time_all, survival_index_all =
-    gen_data_all([data_nacs_00, data_nacs_49, data_nacs_79,
-                  data_nacs_99, data_nacs_179, data_nacs_t],
-                 [NaN, NaN, NaN, NaN, NaN, 324.501],
-                 [0, 0.49, 0.79, 0.99, 1.79, NaN],
-                 [1, 1, 2, 1, 1, 1])
+const data_fit = [NaCsData.map_params((i, v) -> (v, 0.0, 1), data_nacs_00);
+                  NaCsData.map_params((i, v) -> (v, 0.49, 1), data_nacs_49);
+                  NaCsData.map_params((i, v) -> (v, 0.79, 2), data_nacs_79);
+                  NaCsData.map_params((i, v) -> (v, 0.99, 1), data_nacs_99);
+                  NaCsData.map_params((i, v) -> (v, 1.79, 1), data_nacs_179);
+                  NaCsData.map_params((i, v) -> (324.501, v, 1), data_nacs_t)]
 
 const prefix = joinpath(@__DIR__, "imgs", "fit_20200424_112943_raman_3322")
 
@@ -101,15 +73,14 @@ function get_model_param(p, idx)
     return (p0, p1, f0, Ω, Γ1, Γ2)
 end
 
-function model(i, p)
-    function wrapper(i)
-        t = time_all[i]
-        f = freq_all[i]
-        return model_2d(t, f, get_model_param(p, survival_index_all[i]))
+function model(xs, p)
+    function wrapper(x)
+        f, t, idx = x
+        return model_2d(t, f, get_model_param(p, idx))
     end
-    return wrapper.(i)
+    return wrapper.(xs)
 end
-fit = fit_survival(model, data_all, [0.1, 0.3, 0.3, 324.501, 2π * 1.5, 0, 2π / 0.2], plotx=false)
+fit = fit_survival(model, data_fit, [0.1, 0.3, 0.3, 324.501, 2π * 1.5, 0, 2π / 0.2], plotx=false)
 @show fit.uncs
 
 const plot_freq_lo = 324.501 - 10

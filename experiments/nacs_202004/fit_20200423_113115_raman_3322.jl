@@ -74,34 +74,6 @@ const data_nacs_24 = [datas_nacs[3][4]; datas_nacs[4][4]; datas_nacs[5][4]] # Su
 const data_nacs_34 = [datas_nacs[3][5]; datas_nacs[4][5]] # Survival 1
 const data_nacs_54 = datas_nacs[5][5] # Survival 1
 
-function gen_data_all(datas, freqs, times, survival_index)
-    local data_all
-    freq_all = Float64[]
-    time_all = Float64[]
-    survival_index_all = Int[]
-    for i in 1:length(datas)
-        data = datas[i]
-        freq = freqs[i]
-        time = times[i]
-        sidx = survival_index[i]
-        nd = size(data, 1)
-        if isnan(freq)
-            append!(freq_all, data.params)
-            append!(time_all, Iterators.repeated(time, nd))
-        else
-            append!(freq_all, Iterators.repeated(freq, nd))
-            append!(time_all, data.params)
-        end
-        append!(survival_index_all, Iterators.repeated(sidx, nd))
-        if @isdefined(data_all)
-            data_all = [data_all; NaCsData.map_params((i, v)->i + size(data_all, 1), data)]
-        else
-            data_all = NaCsData.map_params((i, v)->i, data)
-        end
-    end
-    return data_all, freq_all, time_all, survival_index_all
-end
-
 const data_fit = [NaCsData.map_params((i, v) -> (v, 0.0, 1), data_nacs_00);
                   NaCsData.map_params((i, v) -> (v, 0.14, 1), data_nacs_14);
                   NaCsData.map_params((i, v) -> (v, 0.19, 2), data_nacs_19);
