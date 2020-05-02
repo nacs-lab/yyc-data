@@ -273,6 +273,10 @@ function _split_data(data, offset, dict, spec::Tuple)
     return map(s->_split_data(data, offset, dict, s), spec)
 end
 
+# Treat numbers as single element arrays
+_split_data(data, _offset, dict, spec::Number) =
+    _split_data(data, _offset, dict, [spec])
+
 function _split_data(data, _offset, dict, spec::AbstractArray{T}) where {T}
     nspec = length(spec)
     params = T[]
