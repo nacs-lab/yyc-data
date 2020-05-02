@@ -36,7 +36,7 @@ const specs = [(484.00 .+ [-30; -4.0:0.8:4.0; 30], # 15 mW, 0.20 ms
                 265.00 .+ [-5; -1.0:0.2:1.0; 5], # 3 mW, 2.0 ms
                 ),
                ([0; [0.06, 0.11, 0.16, 0.31, 0.46, 0.61] .* 20 .- 0.01], # 3 mW, 770.264907 MHz
-                [0.0], # 3 mW, 0 ms
+                [0], # 3 mW, 0 ms
                 264.907 .+ [-5; -0.75:0.15:0.75; 5], # 3 mW, 1.1 ms
                 264.907 .+ [-5; -0.75:0.15:0.75; 5], # 3 mW, 3.0 ms
                 264.907 .+ [-5; -0.75:0.15:0.75; 5], # 3 mW, 5.0 ms
@@ -79,10 +79,10 @@ const data_fit = [NaCsData.map_params((i, v) -> (1, v, 0.0, 1), data_nacs_00);
                   NaCsData.map_params((i, v) -> (1, v, 2.99, 1), data_nacs_299);
                   NaCsData.map_params((i, v) -> (1, v, 4.99, 1), data_nacs_499);
                   NaCsData.map_params((i, v) -> (1, 264.907, v, 1), data_nacs_t);
-                  NaCsData.map_params((i, v) -> (2, v, 0.0, 1), data_pa_na);
-                  NaCsData.map_params((i, v) -> (3, v, 0.0, 1), data_pa_cs);
-                  NaCsData.map_params((i, v) -> (4, v, 0.0, 1), data_pa_a);
-                  NaCsData.map_params((i, v) -> (5, v, 0.0, 1), data_pa_m)]
+                  NaCsData.map_params((i, v) -> (2, v), data_pa_na);
+                  NaCsData.map_params((i, v) -> (3, v), data_pa_cs);
+                  NaCsData.map_params((i, v) -> (4, v), data_pa_a);
+                  NaCsData.map_params((i, v) -> (5, v), data_pa_m)]
 
 const prefix = joinpath(@__DIR__, "imgs", "fit_20200425_100050_raman_3322_2")
 
