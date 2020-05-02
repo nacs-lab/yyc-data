@@ -57,9 +57,34 @@ else
     return 1
 end
 @inline Base.ndims(::SortedData{N,N2}) where {N,N2} = N2
+
+promote_param_type() = Union{}
+promote_param_type(v1::SortedData{N,N2,K} where {N,N2}, vs...) where K =
+    promote_type(K, promote_param_type(vs...))
+
 function Base.vcat(datas::SortedData1{K,Vs}...) where {K,Vs}
-    # TODO
     CT = combiner_type(Vs)
+    combiners = Dict{K,CT}()
+    params = K[]
+    for data in datas
+        ps = data.params
+        vals = data.values
+        nps = length(ps)
+        for i in 1:nps
+            p = ps[i]
+            if haskey(combiners, p)
+                combine(combiners[p], vals, i)
+            else
+                push!(params, p)
+                combiners[p] = CT(vals, i)
+            end
+        end
+    end
+    SortedData1{K,Vs}(params, create_values(params, combiners))
+end
+function Base.vcat(datas::(SortedData1{K,Vs} where K)...) where {Vs}
+    CT = combiner_type(Vs)
+    K = promote_param_type(datas...)
     combiners = Dict{K,CT}()
     params = K[]
     for data in datas
