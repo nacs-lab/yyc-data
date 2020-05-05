@@ -41,11 +41,11 @@ function process(data)
             pa = PAAmp[j]
             k = (i - 1) * length(PAAmp) + j
             c = counts[k]
-            assert(c > 6000)
+            @assert(c > 6000)
             res[k, 1] = pa
             res[k, 2] = dp
             res[k, 3] = sums[k] / c
-            assert(maxs[k] - mins[k] <= 0.48)
+            @assert(maxs[k] - mins[k] <= 0.48)
         end
     end
     return res
