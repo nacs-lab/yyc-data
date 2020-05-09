@@ -148,6 +148,26 @@ colorbar()
 tight_layout(pad=0.6)
 NaCsPlot.maybe_save("$(prefix)")
 
+figure()
+const plot_time = linspace(0, 0.25, 1000)
+NaCsPlot.plot_survival_data(data_nacs_t, fmt="C0.", label="770.761 MHz")
+plot(plot_time, model_2d.(plot_time, 761, (param_1,)), "C0")
+NaCsPlot.plot_survival_data(data_nacs_t2, fmt="C1.", label="770.76215 MHz")
+plot(plot_time, model_2d.(plot_time, 762.15, (param_3,)), "C1")
+title("288605 GHz, 15 mW")
+text(0.06, 0.14, ("\$f_{res}=$(uncs_1[3] / 1000 + 770)\$ MHz\n" *
+                  "\$\\mathbf{\\Omega_{Raman}=2\\pi\\times$(uncs_1[4] / 2π) kHz}\$\n" *
+                  "\$\\Gamma_{atom}=2\\pi\\times$(uncs_1[5] / 2π * 1000)\$ Hz\n" *
+                  "\$\\mathbf{\\Gamma_{molecule}=2\\pi\\times$(uncs_1[6] / 2π) kHz}\$\n"),
+     color="C0", fontsize="small")
+xlim([0, 0.26])
+legend(fontsize="x-small", loc="upper right")
+grid()
+xlabel("Raman time (ms)\${}_{\\mathrm{(with\\ 0.01\\ ms\\ offset)}}\$")
+ylabel("Two-body survival")
+NaCsPlot.maybe_save("$(prefix)_will")
+
+
 # figure()
 # param2 = copy(fit.param)
 # # p0r, p11, p12, p13, f0, Ω, Γ1, Γ2
