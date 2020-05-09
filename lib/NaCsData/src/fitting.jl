@@ -28,7 +28,7 @@ fit_data(model, x, y, p0; kws...) =
     fit_data(model, x, y, nothing, p0; kws...)
 
 function fit_data(model, xs, ratios, uncs, p0;
-                  plotx=nothing, plot_lo=nothing, plot_hi=nothing, plot_scale=1.1)
+                  plotx=nothing, plot_lo=nothing, plot_hi=nothing, plot_scale=1.1, kws...)
     use_unc = uncs !== nothing
     if plotx === nothing
         lo = minimum(xs)
@@ -50,9 +50,9 @@ function fit_data(model, xs, ratios, uncs, p0;
         plotx = linspace(plot_lo, plot_hi, 10000)
     end
     if use_unc
-        fit = curve_fit(model, xs, ratios, uncs.^-2, p0)
+        fit = curve_fit(model, xs, ratios, uncs.^-2, p0; kws...)
     else
-        fit = curve_fit(model, xs, ratios, p0)
+        fit = curve_fit(model, xs, ratios, p0; kws...)
     end
     param = fit.param
     unc = sqrt.(diag(estimate_covar(fit)))
