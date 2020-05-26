@@ -9,28 +9,35 @@ using NaCsCalc.Utils: interactive
 using PyPlot
 using PyCall
 
+const rcParams = PyDict{PyAny,PyAny,true}(PyNULL())
+
 function __init__()
     if !interactive()
         pygui(false)
     end
-    matplotlib["rcParams"][:update](Dict("svg.hashsalt" => 19680801))
+    copy!(PyObject(rcParams), matplotlib."rcParams")
+    rcParams["svg.hashsalt"] = 19680801
     fontsize(20)
     ticksize(15)
-    copy!(hist, PyPlot.matplotlib[:pyplot][:hist])
+    copy!(hist, PyPlot.matplotlib.pyplot.hist)
 end
 
 function nobold()
-    matplotlib["rcParams"][:update](Dict("font.weight" => "normal"))
+    rcParams["font.weight"] = "normal"
+    return
 end
 function bold()
-    matplotlib["rcParams"][:update](Dict("font.weight" => "bold"))
+    rcParams["font.weight"] = "bold"
+    return
 end
 function fontsize(s)
-    matplotlib["rcParams"][:update](Dict("font.size" => s))
+    rcParams["font.size"] = s
+    return
 end
 function ticksize(s)
-    matplotlib[:rc]("xtick", labelsize=s)
-    matplotlib[:rc]("ytick", labelsize=s)
+    matplotlib.rc("xtick", labelsize=s)
+    matplotlib.rc("ytick", labelsize=s)
+    return
 end
 
 const hist = PyCall.PyNULL()
