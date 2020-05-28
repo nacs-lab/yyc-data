@@ -799,9 +799,9 @@
 % See oscillation!!
 
 \begin{frame}[t]{Experiment}
-  % TODO: Spectrum, width fit
   % TODO: Time
   \begin{center}
+    \vspace{-1cm}
     \begin{tikzpicture}
       \begin{scope}[scale=0.6]
         \draw[->,line width=1.2] (0, 0) -- (0, 8);
@@ -813,7 +813,7 @@
         node[above, align=left] {{\visible<2->{\scriptsize $F_{Cs}=3,m_F=3$}}\\
           {\visible<2->{\scriptsize $F_{Na}=2,m_F=2$}}};
         \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5)
-        node[below right] {{\visible<3->{\small $E\approx-770\ MHz$ \footnote{Phys. Rev. Research 2, 023108 (2020)}}}};
+        node[below right] {{\visible<3->{\scriptsize $E\approx-770\ MHz$ \footnote{Phys. Rev. Research 2, 023108 (2020)}}}};
 
         \draw[line width=1.1,cyan!85!blue]
         plot[samples=200,domain=1:7,variable=\x]
@@ -839,10 +839,19 @@
 
           \draw[->,green!80!black,line width=2] (6.8, 2.7) -- (5.5, 5.25);
           \draw[->,green!80!black,line width=2] (5.45, 5.25) -- (4.165, 2.25)
-          node[midway, left, align=left] {{\visible<5->{$\approx1038\mathrm{nm}$}}\\
-            \ {\visible<5->{Tweezer}}};
+          node[midway, left, align=left] {{\visible<5->{\small $\approx1038\mathrm{nm}$}}\\
+            \ {\visible<5->{\small Tweezer}}};
         \end{scope}
       \end{scope}
+      \visible<6> {
+        \node[right] at (5.2, 4.2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
+      }
+      \visible<7-> {
+        \node[right] at (5.2, 4.2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+      }
+      \visible<8-> {
+        \node[right] at (5.2, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
