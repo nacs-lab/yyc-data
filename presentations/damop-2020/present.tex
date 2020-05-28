@@ -611,6 +611,44 @@
 % molecular state and we usually target the least bound molecular state
 % which is the most similar to the initial state.
 
+\begin{frame}{Raman transfer}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.9]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
+        \node[below] at (3.75, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=0.96:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+        \draw[black!40,dashed,line width=1] (1 - 0.75, -1.2 + 7.5) -- (5.25 - 0.75, -1.2 + 7.5);
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (3.5 - 0.75, -1.2 + 7.5);
+
+        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+        \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+        \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+        \draw[->,green!80!black,line width=0.8] (3.45 - 0.75, -1.2 + 7.5) -- (4.165, 2.25);
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 % Of course nothing is as simple as I show in the real system,
 % instead of a 3-state system, we have many more state that can cause
 % unwanted effect on the transfer.
@@ -628,6 +666,99 @@
 % % Advantage: large coupling to the atomic state. However, there are more
 % % and closer other states near the threshold meaning there isn't enough room
 % % to detune and reduce the scattering rate. This can be shown in our calculation.
+
+\begin{frame}{Raman transfer}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.66]
+        %% Extra states
+        \visible<2-3>{
+          \draw (1.0269 + 0.25, 2.5 + 0.1) -- (7.25, 2.5 + 0.1);
+          \draw (1.0269 + 0.25, 2.5 + 0.2) -- (7.25, 2.5 + 0.2)
+          node[right=0.3] {\small $2\omega=10-50\ \mathrm{kHz}$};
+          \draw (1.0269 + 0.25, 2.5 + 0.3) -- node[above] {$\vdots$} (7.25, 2.5 + 0.3);
+        }
+
+        \visible<4>{
+          \draw (1.2 + 0.25, -1 + 2.5) -- (2.65 + 0.25, -1 + 2.5);
+          \node[below] at (1.6 + 0.25, -0.7 + 2.5) {$\vdots$};
+        }
+
+        \visible<5->{
+          \draw (1.1102 - 0.75, -0.7720 + 7.5) -- node[above] {$\vdots$}
+          (6 - 0.75, -0.7720 + 7.5);
+          \draw (1.2 - 0.75, -1.4 + 7.5) -- (3.4 - 0.75, -1.4 + 7.5);
+          \node[below] at (1.85 - 0.75, -1.1 + 7.5) {$\vdots$};
+        }
+        \visible<6->{
+          \draw[snakearrow] (5 - 0.75, -0.7720 + 7.5) -- (6.5 - 0.75, -2 + 7.5);
+          \draw[snakearrow] (2.5 - 0.75, -1.4 + 7.5) -- (2.8 - 0.75, -3 + 7.5);
+        }
+
+        %% 3-states Raman
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
+        \node[below] at (3.75, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=0.96:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+        \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+        \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+
+        \draw[black!40,dashed,line width=1] (1 - 0.75, -1.2 + 7.5) -- (5.25 - 0.75, -1.2 + 7.5);
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- node[right] {$\Omega_{up}$}
+        (3.5 - 0.75, -1.2 + 7.5);
+        \draw[->,green!80!black,line width=0.8] (3.45 - 0.75, -1.2 + 7.5) --
+        node[left] {$\Omega_{down}$} (4.165, 2.25);
+      \end{scope}
+      \visible<2->{
+        \node[below right, text width=6.5cm, align=left] at (5, 6) {\begin{itemize}
+          \item<3-> No faster than $20-100\ \mu s$
+          \item<6-> Additional scattering.
+          \end{itemize}
+          % Extra {} around \visible that is aparently needed to make \node happy.
+          {\visible<7->{
+              \begin{center}
+                \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}
+              \end{center}
+              \begin{itemize}
+              \item Closely spaced
+              \item Stronger coupling ($\Omega_{up}$)
+              \item Easier to find
+              \end{itemize}
+            }}
+          {\visible<8->{
+              \begin{center}
+                \usebeamercolor[fg]{frametitle}{\textbf{Deeply states}}
+              \end{center}
+              \begin{itemize}
+              \item Sparsely spaced
+              \item Allow larger detuning
+              \item Lower scattering
+              \end{itemize}
+            }}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 % % Here you see the Raman Rabi frequency and the scattering rate calculated for
 % % Raman beam detuned from two different states.
 % % .....
@@ -635,10 +766,20 @@
 % % deeply bound state, we can detune more and win on the Raman Rabi frequency/scattering rate
 % % ratio.
 
-\begin{frame}{Raman transfer}
-  % TODO: Raman diagram
-  % TODO: extra states
-  % TODO: near threshold vs deeply bound
+\begin{frame}[t]{Raman transfer}
+  % TODO: near threshold vs deeply bound plot
+  \begin{center}
+    \begin{columns}
+      \column{5.5cm}
+      \begin{center}
+        \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}
+      \end{center}
+      \column{5.5cm}
+      \begin{center}
+        \usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}
+      \end{center}
+    \end{columns}
+  \end{center}
 \end{frame}
 
 %% State selection
