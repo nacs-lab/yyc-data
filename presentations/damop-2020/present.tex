@@ -799,7 +799,6 @@
 % See oscillation!!
 
 \begin{frame}[t]{Experiment}
-  % TODO: Time
   \begin{center}
     \vspace{-1cm}
     \begin{tikzpicture}
@@ -853,6 +852,7 @@
         \node[right] at (5.2, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
       }
     \end{tikzpicture}
+    \vspace{-1cm}
   \end{center}
 \end{frame}
 
@@ -866,10 +866,29 @@
 % so we'll be able to work on transfering to molecular ground state from FB molecule
 % as we are investigating the lifetime issue.
 
-\begin{frame}{Outlook}
-  % TODO: Tweak experiment
-  % TODO: Lifetime mystery
-  % TODO: Parallel work on FB molecule
+\begin{frame}[t]{Outlook}
+  \begin{center}
+    \vspace{-0.7cm}
+    \begin{tikzpicture}
+      \node[left, text width=5.5cm, align=left] at (0, 2) {\begin{itemize}
+        \item<1-> Molecule lifetime.
+        \item<2-> Improve signal contrast.
+        \item<3-> Feshbach molecule.\\
+          \vspace{0.3cm}
+          \small{arXiv:2003.07850}\\
+          \small{Poster Q01.00108}
+        \end{itemize}
+      };
+      \node[right] at (0.1, 2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      \visible<2-> {
+        \node[left] at (-0.1, -2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202005/imgs/fit_20200524_161707_raman_3322_damop_t.pdf}};
+      }
+      \visible<3-> {
+        % TODO: FB molecule
+        % \node[right] at (0.1, -2) {\includegraphics[width=5.5cm]{}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \begin{frame}{}
