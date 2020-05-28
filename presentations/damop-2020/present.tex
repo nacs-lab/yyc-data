@@ -798,10 +798,53 @@
 % Next we switched to scanning the time on resonance.
 % See oscillation!!
 
-\begin{frame}{Experiment}
-  % TODO: Raman diagram with state and numbers
+\begin{frame}[t]{Experiment}
   % TODO: Spectrum, width fit
   % TODO: Time
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.6]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
+        \node[below] at (3.75, -0.5) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5)
+        node[above, align=left] {{\visible<2->{\scriptsize $F_{Cs}=3,m_F=3$}}\\
+          {\visible<2->{\scriptsize $F_{Na}=2,m_F=2$}}};
+        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5)
+        node[below right] {{\visible<3->{\small $E\approx-770\ MHz$ \footnote{Phys. Rev. Research 2, 023108 (2020)}}}};
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.4 - 0.75, 5.6) -- (2.35 - 0.75, 5.6)
+        node[right=0.2] {{\visible<4->{\small $v=0$}}};
+
+        \draw[black!40,dashed,line width=1] (0.25, 5.25) -- (7.25, 5.25);
+
+        \begin{scope}[shift={(-1.8, 0)}]
+          \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+          \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+
+          \draw[->,green!80!black,line width=2] (6.8, 2.7) -- (5.5, 5.25);
+          \draw[->,green!80!black,line width=2] (5.45, 5.25) -- (4.165, 2.25)
+          node[midway, left, align=left] {{\visible<5->{$\approx1038\mathrm{nm}$}}\\
+            \ {\visible<5->{Tweezer}}};
+        \end{scope}
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 %% Next
