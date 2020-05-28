@@ -319,8 +319,45 @@
 % quantum simulation, quantum chemistry etc.
 
 \begin{frame}{}
-  % TODO: <molecule> + <tweezer>
-  % TODO: Applications
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above left, text width=4.5cm] at (0, 0.5) {\begin{block}{Molecules}
+          \begin{itemize}
+          \item Dipole moment
+          \item Rich internal states
+          \item $\cdots$
+          \end{itemize}
+        \end{block}};
+      \node[below left, text width=4.5cm] at (0, -0.5) {\begin{block}{Optical tweezers}
+          \begin{itemize}
+          \item Single site imaging
+          \item Single site addressing
+          \item Flexible geometry
+          \item $\cdots$
+          \end{itemize}
+        \end{block}};
+      \visible<2->{
+        \draw[decoration={brace, amplitude=10pt}, decorate, line width=2]
+        (0.4, 3) -- (0.4, -4);
+        \node[right, align=center] at (0.7, 2) {
+          \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
+          \includegraphics[width=3.6cm]{edm}\\
+          {\tiny Science 343, p. 269-272 (2014)}};
+        \node[right, align=center] at (4.5, 1.8) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
+          \includegraphics[width=2.3cm]{quantum_chemistry}\\
+          {\tiny Nature 464, 1324 (2010)}};
+        \node[right, align=center] at (1.0, -1.7) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Simulation}\\
+          \includegraphics[width=2.9cm]{quantum_simulation}\\
+          {\tiny Nat. Phys. 2, 341 (2006)}};
+        \node[right, align=center] at (4.2, -2.9) {
+          \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
+          \includegraphics[width=2.9cm]{quantum_computing}\\
+          {\tiny Phys. Rev. Lett. 97, 33003 (2006)}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 %% Molecule from atom
@@ -337,100 +374,117 @@
 % so that we can start turning them into molecules.
 
 \begin{frame}[t]{From atoms to molecules}
-  % TODO: Laser cooled atoms --coherent transfer-> molecules
   \vspace{-0.5cm}
   \begin{center}
     \begin{tikzpicture}[scale=0.7]
-      \mytweezer.drawCsTweezer(0, 0)
-      \mytweezer.drawNaTweezer(-1, 0)
-      \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
-      \mytweezer.drawNaAtom(-1.06, -0.09, 0.27)
-
-      \mytweezer.drawCsTweezer(0, -3.1)
-      \mytweezer.drawNaTweezer(-1, -3.1)
-      \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
-      \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
-
-      \mytweezer.drawCsTweezer(-1, -7.0)
-      \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
-      \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
-
-      \fill[white,temporal=<1>{opacity=0.82}{opacity=0}{opacity=0.5}]
-      (-1.5, 1.5) rectangle (0.5, -1.5);
-      \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
-      (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
-      \fill[white,temporal=<3>{opacity=0.82}{opacity=0}{opacity=0.5}]
-      (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
-
-      \visible<2->{
-        \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
-          \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
-          \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
-        \end{scope}
-      }
-
-      \visible<3->{
-        \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
-          \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
-          \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
-          plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
-        \end{scope}
-      }
       \visible<1>{
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
-        \node[below,align=center] at (6.5, -0.5)
-        {\includegraphics[width=5cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
-        \node[below,align=center] at (7, -7.5)
-        {Loading probability per site: 60\%\\
-          Post select on initial and final state.};
+        \shade[ball color=blue!90] (-0.8, -3.7) circle (0.45);
+        \shade[ball color=orange!90] (0.3, -3.3) circle (0.3);
+        \path (-0.25, -4.3) node[below, align=center] {\textbf{Ultracold atoms}\\\\
+          \small{(laser cooling and trapping)}};
+
+        \draw[blue, ->, line width=2] (1.1, -3.5) to [bend left=30]
+        node[above=0.2] {\textbf{Coherent transfer}} (8.2, -3.5);
+
+        \shade[ball color=blue!90] (9, -3.6) circle (0.45);
+        \shade[ball color=orange!90] (9.4, -3.4) circle (0.3);
+        \path (9.2, -4.3) node[below] {\textbf{Ultracold molecule}};
       }
-      \visible<2>{
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
-        \node[below] at (6.5, -1)
-        {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
-        Don't mention axis.
-        Explain the sideband spectrum more.
-        \only<2>{
-          \node[below,align=center] at (7, -7)
-          {Cs: 96\% ground state\footnote{Phys. Rev. X 9, 021039}\\
-            Na: 94\% ground state\footnote{Phys. Rev. A 97, 063423}};
+      \visible<2->{
+        \only<2->{
+          % drawing on different layer does not work with \visibile.
+          \mytweezer.drawCsTweezer(0, 0)
+          \mytweezer.drawNaTweezer(-1, 0)
+          \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
+          \mytweezer.drawNaAtom(-1.06, -0.09, 0.27)
+
+          \mytweezer.drawCsTweezer(0, -3.1)
+          \mytweezer.drawNaTweezer(-1, -3.1)
+          \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
+          \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
+
+          \mytweezer.drawCsTweezer(-1, -7.0)
+          \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
+          \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
         }
-      }
-      \visible<3>{
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
-        function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
-        function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
-        \mytweezer.drawNaAtom(6, -1.22, 0.15)
-        \mytweezer.drawCsAtom(9, -2.06, 0.11)
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
-        function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
-        function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
-        \mytweezer.drawNaAtom(6, -3.72, 0.15)
-        \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
+        \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
+        (-1.5, 1.5) rectangle (0.5, -1.5);
+        \fill[white,temporal=<3>{opacity=0.82}{opacity=0}{opacity=0.5}]
+        (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
+        \fill[white,temporal=<4>{opacity=0.82}{opacity=0}{opacity=0.5}]
+        (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
-        \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
-        \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
+        \visible<3->{
+          \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
+            \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+            \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
+          \end{scope}
+        }
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
-        \mytweezer.drawNaAtom(6, -8.55, 0.14)
-        \mytweezer.drawCsAtom(6, -9.56, 0.11)
+        \visible<4->{
+          \begin{scope}[alt=<4>{opacity=0.7}{opacity=0.35}]
+            \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+            \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+            plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
+          \end{scope}
+        }
+        \visible<2>{
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
+          \node[below,align=center] at (6.5, -0.5)
+          {\includegraphics[width=5cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
+          \node[below,align=center] at (7, -7.5)
+          {Loading probability per site: 60\%\\
+            Post select on initial and final state.};
+        }
+        \visible<3>{
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
+          \node[below] at (6.5, -1)
+          {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
+          Don't mention axis.
+          Explain the sideband spectrum more.
+          \only<3>{
+            \node[below,align=center] at (7, -7)
+            {Cs: 96\% ground state\footnote{Phys. Rev. X 9, 021039}\\
+              Na: 94\% ground state\footnote{Phys. Rev. A 97, 063423}};
+          }
+        }
+        \visible<4>{
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
+          \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+          function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+          function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
+          \mytweezer.drawNaAtom(6, -1.22, 0.15)
+          \mytweezer.drawCsAtom(9, -2.06, 0.11)
 
-        \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
-        \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
+          \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+          function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+          function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+          \mytweezer.drawNaAtom(6, -3.72, 0.15)
+          \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
+
+          \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
+          \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
+          \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
+
+          \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+          \mytweezer.drawNaAtom(6, -8.55, 0.14)
+          \mytweezer.drawCsAtom(6, -9.56, 0.11)
+
+          \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
+          \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
+        }
       }
     \end{tikzpicture}
     \vspace{-2cm}
