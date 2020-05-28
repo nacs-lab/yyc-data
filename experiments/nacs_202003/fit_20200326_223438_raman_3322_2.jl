@@ -257,4 +257,53 @@ ylabel("Two-body survival")
 tight_layout(pad=0.6)
 NaCsPlot.maybe_save("$(prefix)")
 
+function model_lorentzian(x, p)
+    p[1] .- p[2] ./ (1 .+ ((x .- p[3]) ./ (p[4] / 2)).^2)
+end
+fit_l10 = fit_survival(model_lorentzian, data_nacs_10, [0.35, 0.25, 594, 5])
+
+figure()
+NaCsPlot.plot_survival_data(data_nacs_10, fmt="C0.", label="0.10 ms")
+plot(fit_l10.plotx, fit_l10.ploty, "C0")
+legend(fontsize="x-small", loc="lower right")
+grid()
+xlabel("2-Photon Detuning (770XXX kHz)")
+ylabel("Two-body survival")
+NaCsPlot.maybe_save("$(prefix)_damop_f")
+
+figure()
+NaCsPlot.plot_survival_data(data_nacs_10, fmt="C0.", label="0.10 ms")
+plot(fit_l10.plotx, fit_l10.ploty, "C0")
+x₋ = fit_l10.param[3] - fit_l10.param[4] / 2
+x₊ = fit_l10.param[3] + fit_l10.param[4] / 2
+y_pm = (model_lorentzian(x₋, fit_l10.param) + model_lorentzian(x₊, fit_l10.param)) / 2
+ax = gca()
+ax.annotate("", (x₋ - 1, y_pm), xytext=(x₋ - 11, y_pm),
+            arrowprops=Dict(:color=>"C3"))
+ax.annotate("", (x₊ + 1, y_pm), xytext=(x₊ + 11, y_pm),
+            arrowprops=Dict(:color=>"C3"))
+text(573, 0.16, "\$\\mathbf{\\Gamma_{FWHM}=$(fit_l10.uncs[4]) kHz}\$",
+     fontsize=17, color="C3")
+legend(fontsize="x-small", loc="lower right")
+grid()
+xlabel("2-Photon Detuning (770XXX kHz)")
+ylabel("Two-body survival")
+NaCsPlot.maybe_save("$(prefix)_damop_f_text")
+
+figure()
+# const plot_time = linspace(0, 0.45, 1000)
+NaCsPlot.plot_survival_data(data_nacs_t, fmt="C0.", label="770.59429 MHz")
+plot(plot_time, model_2d.(plot_time, 594.29, (param_1,)), "C0")
+legend(fontsize="x-small", loc="upper right")
+# text(0.09, 0.12, ("\$f_{res}=$(uncs_1[3] / 1000 + 770)\$ MHz\n" *
+#                   "\$\\Omega_{Raman}=2\\pi\\times$(uncs_1[4] / 2π)\$ kHz\n" *
+#                   "\$\\Gamma_{atom}=2\\pi\\times$(uncs_1[5] / 2π * 1000)\$ Hz\n" *
+#                   "\$\\Gamma_{molecule}=2\\pi\\times$(uncs_1[6] / 2π)\$ kHz\n"),
+#      color="C0", fontsize="small")
+xlim([0, 0.46])
+grid()
+xlabel("Raman time (ms)")
+ylabel("Two-body survival")
+NaCsPlot.maybe_save("$(prefix)_damop_t")
+
 NaCsPlot.maybe_show()
