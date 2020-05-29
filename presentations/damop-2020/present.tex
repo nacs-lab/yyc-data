@@ -607,9 +607,19 @@
 % more sparsely spaced, we can now detune further to reduce the scattering
 % without worrying about hitting another state.
 
+% It may not be obvious if the deeply bound state offers enough coupling,
+% or if it reduces the scattering more than the reduction of the Raman coupling.
+% That's why we did a calculation:
+% % Here you see the Raman Rabi frequency and the scattering rate calculated for
+% % Raman beam detuned from two different states.
+% % .....
+% % Showing that even though at the same deuning the Raman Rabi frequecy is lower for the
+% % deeply bound state, we can detune more and win on the Raman Rabi frequency/scattering rate
+% % ratio.
+
 \begin{frame}[t]{Raman transfer}
   \begin{center}
-    \vspace{-0.7cm}
+    \vspace{-0.9cm}
     \begin{tikzpicture}
       \begin{scope}[scale=0.8]
         \draw[->,line width=1.2] (0, 0) -- (0, 8);
@@ -628,17 +638,33 @@
         ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
         \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
 
-        \visible<-2>{
+        \visible<-2,4>{
           \draw[red] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
           ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
-          \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
-          ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
         }
         \visible<3->{
           \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
           ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
+        }
+        \visible<-2>{
+          \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
+          ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
+        }
+        \visible<3>{
           \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
           ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+        }
+        \visible<4->{
+          \draw[blue, line width=1]
+          ({(1.1102 - 0.75) * 0.7 - 0.15}, -0.69 * 1.3 + 7.5 - 0.15) rectangle
+          ({(6.5 - 0.75) * 0.7 + 0.15}, -0.69 * 1.3 + 7.5 + 0.15);
+          \coordinate (ThresholdHighlight)
+          at ({(6.5 - 0.75) * 0.7 + 0.25}, -0.69 * 1.3 + 7.5 - 0.08);
+          \draw[blue, line width=1]
+          ({(1.4 - 0.75) * 0.7 - 0.15}, -1.8 * 1.3 + 7.5 - 0.15) rectangle
+          ({(2.5 - 0.75) * 0.7 + 0.15}, -1.8 * 1.3 + 7.5 + 0.15);
+          \coordinate (DeepHighlight)
+          at ({(2.5 - 0.75) * 0.7 + 0.25}, -1.8 * 1.3 + 7.5);
         }
 
         \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
@@ -654,19 +680,17 @@
           \draw[->,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
           -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
-        \visible<3->{
+        \visible<3>{
           \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
           -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
           \draw[->,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
           -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
       \end{scope}
-      \visible<2->{
-        \node[below, text width=6cm, align=center] at (8.13, 7.5)
+      \visible<2-3>{
+        \node[below, text width=6cm, align=center] at (8.13, 6.8)
         {
-          \begin{center}
-            \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}
-          \end{center}
+          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}
           \begin{itemize}
           \item Stronger coupling\\
             ($\Omega_{up}$ and $\Omega_{down}$)
@@ -675,12 +699,10 @@
           \end{itemize}
         };
       }
-      \visible<3->{
-        \node[below, text width=6cm, align=center] at (8.13, 4.1)
+      \visible<3>{
+        \node[below, text width=6cm, align=center] at (8.13, 2.7)
         {
-          \begin{center}
-            \usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}
-          \end{center}
+          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
           \begin{itemize}
           \item Weaker coupling
           \item Sparsely spaced
@@ -689,33 +711,21 @@
           \end{itemize}
         };
       }
+      \visible<4>{
+        \node[below, text width=6cm, align=center] (ThresholdPlot) at (8.13, 7.5)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}
+          \includegraphics[width=5.3cm]{imgs/raman_vh.pdf}
+        };
+        \node[below, text width=6cm, align=center] (DeepPlot) at (8.13, 3.2)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
+          \includegraphics[width=5.3cm]{imgs/raman_v0.pdf}
+        };
+        \draw[->, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
+        \draw[->, blue, line width=2] (DeepPlot) -- (DeepHighlight);
+      }
     \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-% % Here you see the Raman Rabi frequency and the scattering rate calculated for
-% % Raman beam detuned from two different states.
-% % .....
-% % Showing that even though at the same deuning the Raman Rabi frequecy is lower for the
-% % deeply bound state, we can detune more and win on the Raman Rabi frequency/scattering rate
-% % ratio.
-
-\begin{frame}[t]{Raman transfer}
-  \begin{center}
-    \begin{columns}
-      \column{5.9cm}
-      \begin{center}
-        \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}\\
-        \vspace{1cm}
-        \includegraphics[width=5.9cm]{imgs/raman_vh.pdf}
-      \end{center}
-      \column{5.9cm}
-      \begin{center}
-        \usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}\\
-        \vspace{1cm}
-        \includegraphics[width=5.9cm]{imgs/raman_v0.pdf}
-      \end{center}
-    \end{columns}
   \end{center}
 \end{frame}
 
