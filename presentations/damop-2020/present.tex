@@ -794,25 +794,28 @@
 % so we'll be able to work on transfering to molecular ground state from FB molecule
 % as we are investigating the lifetime issue.
 
-\begin{frame}[t]{Outlook}
+\begin{frame}[t]{Conclusion and Outlook}
   \begin{center}
-    \vspace{-0.7cm}
     \begin{tikzpicture}
-      \node[left, text width=5.5cm, align=left] at (0, 2) {\begin{itemize}
-        \item<1-> Molecule lifetime.
-        \item<2-> Improve signal contrast.
-        \item<3-> Feshbach molecule.\\
-          \vspace{0.3cm}
-          \small{arXiv:2003.07850}\\
-          \small{Poster Q01.00108}
-        \end{itemize}
+      \node[below, text width=5.7cm, align=center] at (-3, 4) {
+        \begin{block}{}
+          \begin{itemize}
+          \item<1-> Demonstrated formation of weakly-bound NaCs
+            molecules while maintaining quantum control.
+          \item<2-> Improve signal contrast.
+          \item<3-> Feshbach molecule.\\
+            \vspace{0.2cm}
+            \small{arXiv:2003.07850}
+          \end{itemize}
+        \end{block}
       };
-      \node[right] at (0.1, 2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
       \visible<2-> {
-        \node[left] at (-0.1, -2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202005/imgs/fit_20200524_161707_raman_3322_damop_t.pdf}};
+        \node[below] at (3, 3.4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202005/imgs/fit_20200524_161707_raman_3322_damop_t.pdf}};
       }
-      \visible<3-> {
-        \node[right] at (0.1, -2) {\includegraphics[width=5.5cm]{fb_molecules.pdf}};
+      \visible<4->{
+        \node[below, align=center] at (0, -1.2) {
+          \textbf{Poster Q01.00108}
+        };
       }
     \end{tikzpicture}
   \end{center}
