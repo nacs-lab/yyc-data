@@ -370,6 +370,67 @@
 \end{frame}
 
 %% Molecule from atom
+% At the highest level, there are two major approaches
+% that people use to make ultracold molecules.
+% 1. Direct cooling
+% % which include the CaF experiment from Harvard that has recently been able to load
+% % single CaF molecule in optical tweezer. (10.1126/science.aax1265)
+% 2. (which we use) is to assemble the molecule from ultracold atoms cooled using
+% % conventional methods.
+
+% Understandably, the challenge for the direct cooling is to achieve
+% temperature and in general quantum control comparable to what people can get
+% with atoms and the challenge for the assembly approach is to form the molecule
+% while maintaining the control we already have on the atom and map it onto the molecule.
+
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
+      \node[below, align=center] at (-3, 3.5) {
+        \includegraphics[width=6cm]{CaF_tweezer.png}\\
+        \vspace{0.5cm}
+        \scriptsize 10.1126/science.aax1265
+      };
+
+      \visible<2->{
+        \node at (3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Assembly}}};
+        \begin{scope}[shift={(1.6, 3.2)}, scale=0.5]
+          \shade[ball color=blue!90] (-0.8, 0.2) circle (0.45);
+          \shade[ball color=orange!90] (0.3, -0.2) circle (0.3);
+        \end{scope}
+        \node[align=center] (atom) at (3, 3.2) {\hspace{1cm}\textbf{Ultracold atoms}};
+        \begin{scope}[shift={(1.35, 1.5)}, scale=0.5]
+          \shade[ball color=blue!90] (-0.2, -0.1) circle (0.45);
+          \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
+        \end{scope}
+        \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
+        \draw[blue, ->, line width=2] (atom) --
+        node[right] {\small \textbf{Coherent transfer}} (molecule);
+      }
+
+      \visible<3->{
+        \node at (0, 0) {\usebeamercolor[fg]{frametitle}{\underline{\textbf{Challenges}}}};
+      }
+
+      \visible<3->{
+        \node[below, text width=4cm, align=left] at (-3, -0.8) {\begin{itemize}
+          \item Cooling
+          \item Quantum control
+          \end{itemize}};
+      }
+
+      \visible<4->{
+        \node[below, text width=4cm, align=left] at (3, -0.7) {\begin{itemize}
+          \item Creating molecules
+          \item Maintain coherence
+          \end{itemize}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+
 % Our approach for creating and trapping ultracold molecules,
 % as you'll hear for many of the other talks in this session,
 % is to start from ultracold atoms before coherently transfer them into a molecule.
