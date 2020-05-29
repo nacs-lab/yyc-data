@@ -594,146 +594,99 @@
 % molecular state and we usually target the least bound molecular state
 % which is the most similar to the initial state.
 
-\begin{frame}{Raman transfer}
+% Since one of the major challenges is the mismatch of the wavefunction size,
+% it makes sense to pick a molecular state that is as "big" as possible,
+% i.e. the molecular states that are closed to the threshold or even the first bound state.
+% Indeed, this is what all previous attempts use and this enable them to drive the Raman
+% transition with relative ease.
+% However, these states are very closely spaced, and in case of the excited state, this makes
+% it hard to detune and reduce the scattering, which ultimately limits the coherence,
+% as I metioned previously.
+% If we instead use an excited state that is more deeply bound. Even though
+% the Raman coupling is smaller due to a worse size mismatch, since the states are
+% more sparsely spaced, we can now detune further to reduce the scattering
+% without worrying about hitting another state.
+
+\begin{frame}[t]{Raman transfer}
   \begin{center}
+    \vspace{-0.7cm}
     \begin{tikzpicture}
-      \begin{scope}[scale=0.9]
+      \begin{scope}[scale=0.8]
         \draw[->,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
-        \node[below] at (3.75, -0.1) {Internuclear distance};
+        \draw[->,line width=1.2] (0, 0) -- (5.4, 0);
+        \node[below] at (2.7, -0.1) {Internuclear distance};
 
-        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+        \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
 
         \draw[line width=1.1,cyan!85!blue]
         plot[samples=200,domain=0.96:7,variable=\x]
-        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
 
         \draw[line width=1.1,red]
         plot[samples=200,domain=1:7.5,variable=\x]
-        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
-        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+        ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+        \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
 
-        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
-        \draw[black!40,dashed,line width=1] (1 - 0.75, -1.2 + 7.5) -- (5.25 - 0.75, -1.2 + 7.5);
-
-        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
-        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
-
-        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (3.5 - 0.75, -1.2 + 7.5);
-
-        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
-        \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
-        \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
-        \draw[->,green!80!black,line width=0.8] (3.45 - 0.75, -1.2 + 7.5) -- (4.165, 2.25);
-      \end{scope}
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-% Of course nothing is as simple as I show in the real system,
-% instead of a 3-state system, we have many more state that can cause
-% unwanted effect on the transfer.
-% 1. The initial states. We trap our atoms in optical tweezers and there
-% % are motional states that are trapping frequency away (~20 kHz).
-% % In simple term this means we can't go much faster than 1/omega.
-% 2. The final states. Other molecular states. Very far away. Not a problem as long as
-% % we obey the speed limit from the initial states.
-% 3. The intermediate state. Since we are detuned from the excited state, it doesn't really
-% % limit our Rabi frequency. OTOH, these state are electronically excited state and they decay.
-% % It's also what we are doing differently from previous approaches.
-% % The experiments I've mentioned previously have mainly focused on using an intermediate
-% % state that is closed to the dissociation threshold while we picked a deeply bound state
-% % as intermediate state for our transfer scheme.
-% % Advantage: large coupling to the atomic state. However, there are more
-% % and closer other states near the threshold meaning there isn't enough room
-% % to detune and reduce the scattering rate. This can be shown in our calculation.
-
-\begin{frame}{Raman transfer}
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{scope}[scale=0.66]
-        %% Extra states
-        \visible<2-3>{
-          \draw (1.0269 + 0.25, 2.5 + 0.1) -- (7.25, 2.5 + 0.1);
-          \draw (1.0269 + 0.25, 2.5 + 0.2) -- (7.25, 2.5 + 0.2)
-          node[right=0.3] {\small $2\omega=10-50\ \mathrm{kHz}$};
-          \draw (1.0269 + 0.25, 2.5 + 0.3) -- node[above] {$\vdots$} (7.25, 2.5 + 0.3);
+        \visible<-2>{
+          \draw[red] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
+          ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
+          \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
+          ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
+        }
+        \visible<3->{
+          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
+          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
         }
 
-        \visible<4>{
-          \draw (1.2 + 0.25, -1 + 2.5) -- (2.65 + 0.25, -1 + 2.5);
-          \node[below] at (1.6 + 0.25, -0.7 + 2.5) {$\vdots$};
+        \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
+
+        \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+        \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+        \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+        \visible<-2>{
+          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
+          \draw[->,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
-
-        \visible<5->{
-          \draw (1.1102 - 0.75, -0.7720 + 7.5) -- node[above] {$\vdots$}
-          (6 - 0.75, -0.7720 + 7.5);
-          \draw (1.2 - 0.75, -1.4 + 7.5) -- (3.4 - 0.75, -1.4 + 7.5);
-          \node[below] at (1.85 - 0.75, -1.1 + 7.5) {$\vdots$};
+        \visible<3->{
+          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          \draw[->,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
-        \visible<6->{
-          \draw[snakearrow] (5 - 0.75, -0.7720 + 7.5) -- (6.5 - 0.75, -2 + 7.5);
-          \draw[snakearrow] (2.5 - 0.75, -1.4 + 7.5) -- (2.8 - 0.75, -3 + 7.5);
-        }
-
-        %% 3-states Raman
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
-        \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
-        \node[below] at (3.75, -0.1) {Internuclear distance};
-
-        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
-        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
-
-        \draw[line width=1.1,cyan!85!blue]
-        plot[samples=200,domain=0.96:7,variable=\x]
-        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
-
-        \draw[line width=1.1,red]
-        plot[samples=200,domain=1:7.5,variable=\x]
-        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
-        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
-
-        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
-
-        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
-        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
-        \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
-        \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
-
-        \draw[black!40,dashed,line width=1] (1 - 0.75, -1.2 + 7.5) -- (5.25 - 0.75, -1.2 + 7.5);
-        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- node[right] {$\Omega_{up}$}
-        (3.5 - 0.75, -1.2 + 7.5);
-        \draw[->,green!80!black,line width=0.8] (3.45 - 0.75, -1.2 + 7.5) --
-        node[left] {$\Omega_{down}$} (4.165, 2.25);
       \end{scope}
       \visible<2->{
-        \node[below right, text width=6.5cm, align=left] at (5, 6) {\begin{itemize}
-          \item<3-> No faster than $20-100\ \mu s$
-          \item<6-> Additional scattering.
+        \node[below, text width=6cm, align=center] at (8.13, 7.5)
+        {
+          \begin{center}
+            \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}
+          \end{center}
+          \begin{itemize}
+          \item Stronger coupling\\
+            ($\Omega_{up}$ and $\Omega_{down}$)
+          \item Closely spaced
+          \item Fast scattering
           \end{itemize}
-          % Extra {} around \visible that is aparently needed to make \node happy.
-          {\visible<7->{
-              \begin{center}
-                \usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}
-              \end{center}
-              \begin{itemize}
-              \item Closely spaced
-              \item Stronger coupling ($\Omega_{up}$)
-              \item Easier to find
-              \end{itemize}
-            }}
-          {\visible<8->{
-              \begin{center}
-                \usebeamercolor[fg]{frametitle}{\textbf{Deeply states}}
-              \end{center}
-              \begin{itemize}
-              \item Sparsely spaced
-              \item Allow larger detuning
-              \item Lower scattering
-              \end{itemize}
-            }}
+        };
+      }
+      \visible<3->{
+        \node[below, text width=6cm, align=center] at (8.13, 4.1)
+        {
+          \begin{center}
+            \usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}
+          \end{center}
+          \begin{itemize}
+          \item Weaker coupling
+          \item Sparsely spaced
+          \item Allow larger detuning
+          \item Slower scattering
+          \end{itemize}
         };
       }
     \end{tikzpicture}
