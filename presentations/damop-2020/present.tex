@@ -729,17 +729,17 @@
   \end{center}
 \end{frame}
 
-%% State selection
-% So that's theory is all good, what about the experiment.
-% To be more particular. We use 33+22 initial state.
-% We found the bound state thanks to Jeremy's prediction based on our
-% interaction shift [ref] and FB rersonance [ref] measurement.
-% The excited state we use is the v=0 bound state for the c3sigma potential.
+%% Experiment
+% Based on the comparison, we selected the ground vibrational state
+% in the excited state (v=0), which we have already observed previously.
+% And for the ground molecular state, the binding energy was predicted as
+% ~770 MHz by Jeremy Hutson from Durham, based on our interaction shift
+% and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
 
 % Thanks to the prediction, it didn't take too long for us to find the resonance.
-% (Show Raman spectrum). It's ~1MHz from where the prediction was, which is pretty good.
-% More importantly though, this is taken with a (...) pulse time and we got a FWHM of
-% (...) which is what you'll expect from a Fourier limited linewidth.
+% (Show Raman spectrum) which was ~1MHz from the prediction.
+% More importantly though, this is taken with a 0.1 ms pulse time and we got a FWHM of
+% 8.4 kHz which is what you'll expect from a Fourier limited linewidth.
 % This suggest that we are at least very closed to the coherent regime where the
 % Raman Rabi frequency exceeds the scattering rate.
 % Next we switched to scanning the time on resonance.
@@ -747,58 +747,40 @@
 
 \begin{frame}[t]{Experiment}
   \begin{center}
-    \vspace{-1cm}
+    \vspace{-0.9cm}
     \begin{tikzpicture}
-      \begin{scope}[scale=0.6]
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
-        \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (7.5, 0);
-        \node[below] at (3.75, -0.5) {Internuclear distance};
-
-        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5)
-        node[above, align=left] {{\visible<2->{\scriptsize $F_{Cs}=3,m_F=3$}}\\
-          {\visible<2->{\scriptsize $F_{Na}=2,m_F=2$}}};
-        \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5)
-        node[below right] {{\visible<3->{\scriptsize $E\approx-770\ MHz$ \footnote{Phys. Rev. Research 2, 023108 (2020)}}}};
-
-        \draw[line width=1.1,cyan!85!blue]
-        plot[samples=200,domain=1:7,variable=\x]
-        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
-
-        \draw[line width=1.1,red]
-        plot[samples=200,domain=1:7.5,variable=\x]
-        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
-        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
-
-        \draw[red] (1.4 - 0.75, 5.6) -- (2.35 - 0.75, 5.6)
-        node[right=0.2] {{\visible<4->{\small $v=0$}}};
-
-        \draw[black!40,dashed,line width=1] (0.25, 5.25) -- (7.25, 5.25);
-
-        \begin{scope}[shift={(-1.8, 0)}]
-          \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
-          \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
-
-          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
-          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
-
-          \draw[->,green!80!black,line width=2] (6.8, 2.7) -- (5.5, 5.25);
-          \draw[->,green!80!black,line width=2] (5.45, 5.25) -- (4.165, 2.25)
-          node[midway, left, align=left] {{\visible<5->{\small $\approx1038\mathrm{nm}$}}\\
-            \ {\visible<5->{\small Tweezer}}};
-        \end{scope}
-      \end{scope}
-      \visible<6> {
-        \node[right] at (5.2, 4.2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
+      \visible<-4>{
+        \node[below, text width=5.5cm, align=center] at (-3, 3.2)
+        {
+          \begin{itemize}
+          \item $c^3\Sigma^+\ v=0$ excited state.
+          \item Ground binding energy predirected $\approx771 \mathrm{MHz}$\\
+            by Jeremy Hutson.
+          \end{itemize}
+        };
       }
-      \visible<7-> {
-        \node[right] at (5.2, 4.2) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+      \visible<2> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
       }
-      \visible<8-> {
-        \node[right] at (5.2, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      \visible<3-> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+      }
+      \visible<4-> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      }
+      \visible<5-> {
+        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
+        {
+          \begin{itemize}
+          \item Transferred $50\%$ of initial atom to molecule.
+          \item $>50\%$ of molecule in motional ground state.
+          \end{itemize}
+        };
+      }
+      \visible<6-> {
+        \node[below] at (-3.2, 0.5) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
       }
     \end{tikzpicture}
-    \vspace{-1cm}
   \end{center}
 \end{frame}
 
