@@ -335,7 +335,7 @@
       \node[right, align=center] at (4.2, -2.4) {
         \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
         \includegraphics[width=2.9cm]{quantum_computing}\\
-        {\tiny Phys. Rev. Lett. 97, 33003 (2006)}};
+        {\tiny PRL. 97, 33003 (2006)}};
       \visible<2->{
         \node at (10, 3.8) {\usebeamercolor[fg]{frametitle}{\textbf{Optical tweezers}}};
         \begin{scope}[shift={(8.5, 1.7)}, scale=0.8]
@@ -369,7 +369,7 @@
   \end{center}
 \end{frame}
 
-%% Molecule from atom
+%% Ultracold molecule
 % At the highest level, there are two major approaches
 % that people use to make ultracold molecules.
 % 1. Direct cooling
@@ -391,7 +391,7 @@
       \node[below, align=center] at (-3, 3.5) {
         \includegraphics[width=6cm]{CaF_tweezer.png}\\
         \vspace{0.5cm}
-        \scriptsize 10.1126/science.aax1265
+        \scriptsize Science 365, p. 1156-1158 (2019)
       };
 
       \visible<2->{
@@ -431,6 +431,7 @@
   \end{center}
 \end{frame}
 
+%% Molecule assembly
 % Using the assembly approach, we start our experiment by establishing the
 % quantum control on the atom.
 % This includes trapping, cooling, preparation of the internal states
@@ -488,6 +489,7 @@
   \end{center}
 \end{frame}
 
+%% Size mismatch
 % The size mismatch really necessitate a two step transfer process,
 % where we would first transfer from the atomic state to an intermediate molecular state
 % before using a second step to transfer to the final state and each of the steps
@@ -498,10 +500,10 @@
 % The "tranditional" choice of the intermediate state is a FB molecule.
 % Indeed, it also works for our system and we've recently created a single FB
 % molecule in the optical tweezer that is suitable for doing the next step transfer from.
-% Howver, this approach obviously rely on finding a good FB resonance so it is
+% However, this approach obviously rely on finding a good FB resonance so it is
 % not very general and it may also require large B field which may not be convinient/compatible.
 
-% What I am going to talk about today, however, is a different approach that uses only
+% What I am going to talk about today, OTOH, is a different approach that uses only
 % optical transitions to go from the atomic state to a weakly-bound molecular state.
 % By not relying on FB resonance, this approach is faster, does not require
 % a big coil, and most importantly, we hope this can be more generally apply to
@@ -566,9 +568,9 @@
         {
           {\usebeamercolor[fg]{frametitle}{Previous results}}\\
           \begin{itemize}
-          \item $\mathrm{Rb_2}$ {\scriptsize 10.1126/science.287.5455.1016}\\
-            \phantom{$\mathrm{Rb_2}$} {\scriptsize Phys. Rev. Lett. 93, 073002}
-          \item $\mathrm{Sr_2}$ % TODO: reference
+          \item $\mathrm{Rb_2}$ {\scriptsize Science 287, p. 1016-1019 (2000)}\\
+            \phantom{$\mathrm{Rb_2}$} {\scriptsize PRL. 93, 073002 (2004)}
+          \item $\mathrm{Sr_2}$ {\scriptsize PRL. 96, 203201 (2006)}
           \end{itemize}
         };
         \node[below, align=center] at (3.1, 4)
@@ -689,9 +691,10 @@
         }
       \end{scope}
       \visible<2-3>{
-        \node[below, text width=6cm, align=center] at (8.13, 6.8)
+        \node[below, text width=5.4cm, align=center] at (8.13, 6.8)
         {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}
+          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}\\
+          \vspace{0.2cm}
           \begin{itemize}
           \item Stronger coupling\\
             ($\Omega_{up}$ and $\Omega_{down}$)
@@ -701,9 +704,10 @@
         };
       }
       \visible<3>{
-        \node[below, text width=6cm, align=center] at (8.13, 2.7)
+        \node[below, text width=5.4cm, align=center] at (8.13, 2.7)
         {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
+          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}\\
+          \vspace{0.2cm}
           \begin{itemize}
           \item Weaker coupling
           \item Sparsely spaced
@@ -741,7 +745,7 @@
 % (Show Raman spectrum) which was ~1MHz from the prediction.
 % More importantly though, this is taken with a 0.1 ms pulse time and we got a FWHM of
 % 8.4 kHz which is what you'll expect from a Fourier limited linewidth.
-% This suggest that we are at least very closed to the coherent regime where the
+% This suggests that we are at least very closed to the coherent regime where the
 % Raman Rabi frequency exceeds the scattering rate.
 % Next we switched to scanning the time on resonance.
 % See oscillation!!
