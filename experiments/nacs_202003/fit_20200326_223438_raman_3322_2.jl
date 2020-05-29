@@ -313,7 +313,7 @@ xlim([0, 0.32])
 title("Molecule lifetime")
 grid()
 xlabel("Molecule Hold Time (ms)")
-ylabel("Two-body survival")
+ylabel("Molecule survival")
 NaCsPlot.maybe_save("$(prefix)_damop_m_t")
 
 NaCsPlot.maybe_show()
