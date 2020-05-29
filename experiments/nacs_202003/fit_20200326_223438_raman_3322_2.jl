@@ -291,15 +291,14 @@ ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)_damop_f_text")
 
 figure()
-# const plot_time = linspace(0, 0.45, 1000)
 NaCsPlot.plot_survival_data(data_nacs_t, fmt="C0.", label="770.59429 MHz")
 plot(plot_time, model_2d.(plot_time, 594.29, (param_1,)), "C0")
 legend(fontsize="x-small", loc="upper right")
-# text(0.09, 0.12, ("\$f_{res}=$(uncs_1[3] / 1000 + 770)\$ MHz\n" *
-#                   "\$\\Omega_{Raman}=2\\pi\\times$(uncs_1[4] / 2π)\$ kHz\n" *
-#                   "\$\\Gamma_{atom}=2\\pi\\times$(uncs_1[5] / 2π * 1000)\$ Hz\n" *
-#                   "\$\\Gamma_{molecule}=2\\pi\\times$(uncs_1[6] / 2π)\$ kHz\n"),
-#      color="C0", fontsize="small")
+annotate("Atom", (0, 0.32), xytext=(0.1, 0.34), arrowprops=Dict(:color=>"C3"), color="C3")
+annotate("Molecule", (0.147, 0.0344),
+         xytext=(0.08, 0.15), arrowprops=Dict(:color=>"C3"), color="C3")
+annotate("Atom", (0.26, 0.1),
+         xytext=(0.29, 0.17), arrowprops=Dict(:color=>"C3"), color="C3")
 xlim([0, 0.46])
 grid()
 xlabel("Raman time (ms)")
