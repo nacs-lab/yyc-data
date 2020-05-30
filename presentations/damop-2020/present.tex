@@ -369,7 +369,7 @@
   \end{center}
 \end{frame}
 
-%% Ultracold molecule
+%% Ultracold molecule in tweezers
 % At the highest level, there are two major approaches
 % that people use to make ultracold molecules.
 % 1. Direct cooling
@@ -384,7 +384,7 @@
 % while maintaining the control we already have on the atom and map it onto the molecule.
 % And in this talk I'll show you how we form the molecule coherently from atoms.
 
-\begin{frame}{}
+\begin{frame}{Ultracold molecule in tweezers}
   \begin{center}
     \begin{tikzpicture}
       \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
@@ -415,8 +415,8 @@
       }
 
       \visible<3->{
-        \node[below, text width=4cm, align=left] at (-3, -0.8) {\begin{itemize}
-          \item Cooling
+        \node[below, text width=5.5cm, align=left] at (-3, -0.8) {\begin{itemize}
+          \item Temperature in tweezer
           \item Quantum control
           \end{itemize}};
       }
@@ -448,11 +448,17 @@
       \node[below,align=center] at (1.75, 4)
       {\hspace{0.5cm}\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Loading}\\
         \includegraphics[width=3cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
-      \node[below,align=center] at (2.1, 0.3)
+      \node[above,align=center] at (2, 0.36)
+      {\usebeamercolor[fg]{frametitle}{\tiny{NJP. 19, 023007 (2017)}}};
+      \node[below,align=center] at (2.1, 0.28)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Cooling}\\
         \includegraphics[width=4.2cm]{spectrum_nolabel_az.pdf}};
       \node[below,align=center] at (5.25, 3.5)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Merging}};
+      \node[above,align=center] at (2.2, -3.3)
+      {\usebeamercolor[fg]{frametitle}{\tiny{PRA. 97, 063423 (2018)}}};
+      \node[above,align=center] at (5.4, -3.1)
+      {\usebeamercolor[fg]{frametitle}{\tiny{PRX. 9, 021039 (2019)}}};
       \begin{scope}[shift={(4.8, 4)}, xscale=-0.8, yscale=0.8]
         \mytweezer.drawCsTweezer(0, -3.1)
         \mytweezer.drawNaTweezer(-1, -3.1)
@@ -779,12 +785,10 @@
         \node[below, text width=5.5cm, align=center] at (-3, 3.4)
         {
           \begin{itemize}
-          \item Transferred $50\%$ of initial atom to molecule.
-          \item $>50\%$ of molecule in motional ground state.
+          \item Transferred $50\%$ of ground state atom to molecule.
+          \item<6-> $>50\%$ of molecule in motional ground state.
           \end{itemize}
         };
-      }
-      \visible<6-> {
         \node[below] at (-3.2, 0.5) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
       }
     \end{tikzpicture}
