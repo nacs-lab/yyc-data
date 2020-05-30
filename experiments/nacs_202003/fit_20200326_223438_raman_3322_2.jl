@@ -262,31 +262,35 @@ function model_lorentzian(x, p)
 end
 fit_l10 = fit_survival(model_lorentzian, data_nacs_10, [0.35, 0.25, 594, 5])
 
+const data_nacs_10_shift = NaCsData.map_params((i, v)->v - fit_l10.param[3], data_nacs_10)
+
 figure()
-NaCsPlot.plot_survival_data(data_nacs_10, fmt="C0.", label="0.10 ms")
-plot(fit_l10.plotx, fit_l10.ploty, "C0")
+NaCsPlot.plot_survival_data(data_nacs_10_shift, fmt="C0.", label="0.10 ms")
+plot(fit_l10.plotx .- fit_l10.param[3], fit_l10.ploty, "C0")
 legend(fontsize="x-small", loc="lower right")
+text(-24, 0.32, "\$f_{Raman}=$(770 + fit_l10.uncs[3] / 1000) \\mathrm{MHz}\$", color="C0", fontsize="small")
 grid()
-xlabel("2-Photon Detuning (770XXX kHz)")
+xlabel("Detuning from resonance (kHz)")
 ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)_damop_f")
 
 figure()
-NaCsPlot.plot_survival_data(data_nacs_10, fmt="C0.", label="0.10 ms")
-plot(fit_l10.plotx, fit_l10.ploty, "C0")
+NaCsPlot.plot_survival_data(data_nacs_10_shift, fmt="C0.", label="0.10 ms")
+plot(fit_l10.plotx .- fit_l10.param[3], fit_l10.ploty, "C0")
 x₋ = fit_l10.param[3] - fit_l10.param[4] / 2
 x₊ = fit_l10.param[3] + fit_l10.param[4] / 2
 y_pm = (model_lorentzian(x₋, fit_l10.param) + model_lorentzian(x₊, fit_l10.param)) / 2
 ax = gca()
-ax.annotate("", (x₋ - 1, y_pm), xytext=(x₋ - 11, y_pm),
+ax.annotate("", (-fit_l10.param[4] / 2 - 1, y_pm), xytext=(-fit_l10.param[4] / 2 - 11, y_pm),
             arrowprops=Dict(:color=>"C3"))
-ax.annotate("", (x₊ + 1, y_pm), xytext=(x₊ + 11, y_pm),
+ax.annotate("", (fit_l10.param[4] / 2 + 1, y_pm), xytext=(fit_l10.param[4] / 2 + 11, y_pm),
             arrowprops=Dict(:color=>"C3"))
-text(573, 0.16, "\$\\mathbf{\\Gamma_{FWHM}=$(fit_l10.uncs[4]) kHz}\$",
+text(-21, 0.16, "\$\\mathbf{\\Gamma_{FWHM}=$(fit_l10.uncs[4]) kHz}\$",
      fontsize=17, color="C3")
+text(-24, 0.32, "\$f_{Raman}=$(770 + fit_l10.uncs[3] / 1000) \\mathrm{MHz}\$", color="C0", fontsize="small")
 legend(fontsize="x-small", loc="lower right")
 grid()
-xlabel("2-Photon Detuning (770XXX kHz)")
+xlabel("Detuning from resonance (kHz)")
 ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)_damop_f_text")
 
