@@ -295,7 +295,8 @@
 
 
 %% Title
-% Creating NaCs in optical tweezers
+% I'm Yichao from the Ni lab at Harvard and today I'll tell you about our experiment on
+% creating single NaCs molecules in optical tweezers.
 
 {
   \usebackgroundtemplate{
@@ -312,9 +313,9 @@
 
 %% Motivation
 % Quantum control of molecules has been a long-standing goal in the field of AMO,
-% It is important for applications like (...).
-% In our experiment, we aim to achieve this by trapping the molecule in optical tweezers
-% in order to take advantage of the flexibility offered by optical tweezers.
+% It is critical in order to use molecules for applications like quantum ... .
+% The way we aim to achieve this in our experiment is by trapping the molecules
+% in optical tweezers, taking advantage of the flexibility offered by optical tweezers.
 
 \begin{frame}{}
   \begin{center}
@@ -370,19 +371,17 @@
 \end{frame}
 
 %% Ultracold molecule in tweezers
-% At the highest level, there are two major approaches
-% that people use to make ultracold molecules.
-% 1. Direct cooling
-% % which include the CaF experiment from Harvard that has recently been able to load
-% % single CaF molecule in optical tweezer. (10.1126/science.aax1265)
-% 2. (which we use) is to assemble the molecule from ultracold atoms cooled using
-% % conventional methods.
+% At the highest level, there are two major approaches on can make ultracold molecules in
+% optical tweezers.
 
-% Understandably, the challenge for the direct cooling is to achieve
-% temperature and in general quantum control comparable to what people can get
-% with atoms and the challenge for the assembly approach is to form the molecule
-% while maintaining the control we already have on the atom and map it onto the molecule.
-% And in this talk I'll show you how we form the molecule coherently from atoms.
+% First is direct cooling and this has been demonstrated last year in the Doyle group at Harvard.
+% The second approaoch, which is what we use, is to assemble the molecule from ultracold atoms.
+
+% Comparing the two, the challenge for the direct cooling is to achieve
+% temperature and quantum control comparable to what people can get
+% with atoms and the main challenge for the assembly approach is to form the molecule
+% while maintaining the control we already have on the atom in the process.
+% In this talk, I'll show you how we overcome these challenges.
 
 \begin{frame}{Ultracold molecule in tweezers}
   \begin{center}
@@ -435,12 +434,13 @@
 % Using the assembly approach, we start our experiment by establishing the
 % quantum control on the atom.
 % This includes trapping, cooling, preparation of the internal states
-% and merging the atom into a single trap which is the starting point for creating the molecule.
+% and finally merging the atom into a single trap
+% which is the starting point for creating the molecule.
 
 % At this stage, the two atoms are about as closed to each other as they can be
-% from the confinement, which is ~1000 Bohr radius. However, in order to make a molecule,
-% the two atoms have to be a few Bohr radius apart and this length scale difference poses the
-% biggest challange for creating molecules from atoms.
+% from the confinement. However, in the molecule we want to make,
+% the two atoms are still hundreds times closer.
+% This massive size mismatch is really the biggest challange for creating molecules coherently.
 
 \begin{frame}{}
   \begin{center}
@@ -498,29 +498,28 @@
 \end{frame}
 
 %% Size mismatch
-% The size mismatch really necessitate a two step transfer process,
-% where we would first transfer from the atomic state to an intermediate molecular state
-% before using a second step to transfer to the final state and each of the steps
-% now have a much reduced mismatch.
-% And today I'll mostly focus on the first step starting from the atomic state
+% ... which basically necessitate a two step transfer process.
+% The more loosely bound intermediate molecular state reduces
+% the size mismatch and will improve overall efficiency.
+% In today's talk, I'll mostly focus on the first step starting from the atomic state
 % (as you might have guessed from the title of my talk).
 
 % The "tranditional" choice of the intermediate state is a FB molecule.
-% Indeed, it also works for our system and we've recently created a single FB
+% Indeed, it also works for us and we've recently created a single FB
 % molecule in the optical tweezer that is suitable for doing the next step transfer from.
-% However, this approach obviously rely on finding a good FB resonance so it is
-% not very general and it may also require large B field which may not be convinient/compatible.
+% However, this approach obviously rely on finding a good FB resonance and usually
+% a large magentic field.
 
 % What I am going to talk about today, OTOH, is a different approach that uses only
-% optical transitions to go from the atomic state to a weakly-bound molecular state.
-% By not relying on FB resonance, this approach is faster, does not require
-% a big coil, and most importantly, we hope this can be more generally apply to
-% molecules that may not have an accessible/usable FB resonance.
+% optical transitions. By not relying on FB resonance, it is faster, more compact,
+% and most importantly, we hope it can be more generally apply to
+% molecules that may not have a suitable FB resonance.
 
-% It's worth pointing out that optical transfer has been previously done
-% including this atomic to molecular Raman resonance.
+% It's worth pointing out that optical transfer **has** been done previously
+% on many systems include this Rb2 Raman resonance and even a previous attempt from our lab.
 % However, it was either done incoherently, or it relies on narrow line transition
-% in Alkali earth atoms limiting the generality of the approach.
+% which limits the generality of the result.
+% So next I'll talk about how we overcome these limitations.
 
 \begin{frame}{}
   \begin{center}
@@ -607,33 +606,28 @@
 
 %% Raman scheme
 % The scheme we use is actually very simple.
-% After cooling the atoms into th motional ground state, we shine a pair of
-% lasers detuned from an excited state to drive a Raman transition into the
-% molecular state and we usually target the least bound molecular state
-% which is the most similar to the initial state.
+% We simply drive a Raman transition from the atomic state to the molecular
+% state, detuned from some excited molecular state.
 
 % Since one of the major challenges is the mismatch of the wavefunction size,
 % it makes sense to pick a molecular state that is as "big" as possible,
 % i.e. the molecular states that are closed to the threshold or even the first bound state.
-% Indeed, this is what all previous attempts use and this enable them to drive the Raman
-% transition with relative ease.
+% Indeed, this is what all previous attempts use which leads to a fairly strong Raman transition.
 % However, these states are very closely spaced, and in case of the excited state, this makes
 % it hard to detune and reduce the scattering, which ultimately limits the coherence,
 % as I metioned previously.
-% If we instead use an excited state that is more deeply bound. Even though
-% the Raman coupling is smaller due to a worse size mismatch, since the states are
-% more sparsely spaced, we can now detune further to reduce the scattering
+% If we instead use an excited state that is more deeply bound.
+% Even though the Raman coupling, we can now detune further to reduce the scattering
 % without worrying about hitting another state.
 
-% It may not be obvious if the deeply bound state offers enough coupling,
-% or if it reduces the scattering more than the reduction of the Raman coupling.
-% That's why we did a calculation:
-% % Here you see the Raman Rabi frequency and the scattering rate calculated for
-% % Raman beam detuned from two different states.
-% % .....
-% % Showing that even though at the same deuning the Raman Rabi frequecy is lower for the
-% % deeply bound state, we can detune more and win on the Raman Rabi frequency/scattering rate
-% % ratio.
+% It may not be obvious if the deeply bound state costs too much in the Raman coupling
+% compared to the scattering reduction. That's why we did a calculation to compare the two.
+
+% From the two plots for two different excited states,
+% you can easily see that the Rabi frequency to scattering ratio, shown in green
+% on the right side axis, never reaches higher than ~1.3 for the near threshold state
+% whereas for the deeply bound state we can get a ratio north of 50 when a larger
+% detuning is used.
 
 \begin{frame}[t]{Raman transfer}
   \begin{center}
@@ -754,17 +748,30 @@
 % Based on the comparison, we selected the ground vibrational state
 % in the excited state (v=0), which we have already observed previously.
 % And for the ground molecular state, the binding energy was predicted as
-% ~770 MHz by Jeremy Hutson from Durham, based on our interaction shift
+% ~771 MHz by Jeremy Hutson from Durham, based on our interaction shift
 % and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
 
 % Thanks to the prediction, it didn't take too long for us to find the resonance.
-% (Show Raman spectrum) which was ~1MHz from the prediction.
-% More importantly though, this is taken with a 0.1 ms pulse time and we got a FWHM of
-% 8.4 kHz which is what you'll expect from a Fourier limited linewidth.
-% This suggests that we are at least very closed to the coherent regime where the
-% Raman Rabi frequency exceeds the scattering rate.
-% Next we switched to scanning the time on resonance.
-% See oscillation!!
+% which was ~1MHz from the prediction.
+
+% More importantly and different from all previous spectrum though,
+% the 8.4 kHz FWHM is very closed to the Fourier limited linewidth
+% for the 0.1 ms pulse time we use, suggesting that we are very closed to the coherent regime.
+
+% So next we switched to scanning the time on resonance.
+% And long and behold we see a revival in our signal, which is the evidence that
+% we can drive the atoms to molecule and then back coherently.
+% This is the first time coherent optical transfer has been done
+% without using a narrow optical transition and we believe it can be applied to
+% many other systems.
+
+% The contrast is obviously not 100%, however, this actually correspond to
+% 50% of initial ground state atom being transfered into molecular state.
+% We believe the major contribitor to this contrast is the molecular lifetime
+% which we measured here to be much shorter than what we expect.
+
+% From the design of our transfer scheme, all molecules we made are in a single spin state
+% with 50% or even more of them in the ground motional state.
 
 \begin{frame}[t]{Experiment}
   \begin{center}
@@ -825,24 +832,24 @@
         {
           \begin{itemize}
           \item Transferred $50\%$ of ground state atom to molecule.
+          \item<6-> Single molecule spin state
           \item<6-> $>50\%$ of molecule in motional ground state.
           \end{itemize}
         };
-        \node[below] at (-3.2, 0.5) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
+        \node[below] at (-3.2, 0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
       }
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
-%% Next
-% We are currently working on, with obvious difficulty, improving our signal,
-% by improving the fidelity of our sequence and by tweaking transfer parameters.
-% It's also worth noting that the contrast isn' great, to put it mildly, much
-% worse than the prediction from the Raman Rabi frequency/scattering ratio from calculation.
-% Fortunately, as I mentioned earlier, our parallel effort for making FB molecule
+%% Conclusion and Outlook
+% To conclude, we've demonstrated formation of single weakly-bound NaCs molecules
+% while maintaining quantum control.
+% We are currently working on improving our signals and we've already been able to
+% get an oscillation with better contrast.
+% And as I mentioned earlier, our parallel effort for making FB molecule
 % also succeeded recently and is showing a decent lifetime of 4-5 ms,
-% so we'll be able to work on transfering to molecular ground state from FB molecule
-% as we are investigating the lifetime issue.
+% so we're working in parallel on the transfer to the final state at the moment.
 
 \begin{frame}[t]{Conclusion and Outlook}
   \begin{center}
