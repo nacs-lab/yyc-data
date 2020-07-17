@@ -490,11 +490,80 @@
 % Before that, let me just very quickly go through how Raman sideband cooling works
 % even though you probably know already.
 % So here is the motional levels of an atom in a harmonic potential, which approximate our
-% optical tweezer.
+% optical tweezer. These levels exists for all the ground HF states so here is it for a different
+% one. Now, we can drive between different ground HF states with a Raman transitions.
+% But due to the motional levels, in additional to driving a "carrier" Raman transition,
+% we can also drive "sideband" transitions that changes the motional state
+% in additional to the HF states.
+% Now, if we drive such a transition that removes a quanta of motional energy from the
+% atom, followed by an optical pumping step that removes the emtropy and
+% resets the HF state of the atom,
+% we would have overall reduced the motional energy of the atom, therefore cooling it.
 \begin{frame}{Raman sideband cooling}
 \end{frame}
 
+% Lamb-Dicke parameter
+% It is not too hard to see that whether this cooling cycle can work relies on the balance
+% between removing motional energy from the atom via the sideband transition,
+% and the heating done in the OP step. This ratio is determined by the so-called Lamb-Dicke
+% parameter, which is defined as the ratio between the harmonic oscillator length
+% and the Raman or OP wavelengths, and it is also proportional to the square root of the
+% recoil energy and the trapping frequency, which is exactly what we want.
+% Because of this, one would like a small LD parameter so that the heating is small
+% compared to the cooling. This is OK for Cs and also for Rb which was demostrated
+% in other groups before, but the light mass of Na as well as the short wavelength
+% of the D lines causes a much bigger LD parameter.
+% Together with a higher initial temperature for Na due to lack of good PGC,
+% we knew right off the bat that Na cooling will be hard.
+% But still, the LD parameter is smaller than one so we decided to give it a try
+% and it turns out that the difficulty with RSC for Na is more subtle then what one
+% might naively expect.
+
+% First of all, although the Lamb-Dicke parameter tells us that we should have
+% a net cooling per cycle on average, it does not capture the uncertainty of cooling process
+% as you can see in this plot, with a high Lamb-Dicke parameter, the atom might end up
+% in a wide varity of states and it is worse the high the initial state is.
+% Second, which is makes the first issue worse, is the variation of the coupling.
+% The sideband coupling for different motional states are different. This is not news
+% for people doing sideband cooling and in fact we leart from Till Roseband to take this
+% into account for our Cs RSC based on his old experience with RSC on ions right here at NIST.
+% However, what's new for Na is that our Lamb-Dicke parameter and initial tempereture is high
+% enough that we are experiencing coupling "dead zone"s.
+% If the atoms gets here, we would not be able to address them as efficiently
+% (and can't be easily fixed by changing the pulse times) and they also won't show up
+% in our detection making optimization very hard.
+
+% The solution we found to these problem turns out to be the large Lamb-Dicke parameter itself.
+% You see, the fact that a large Lamb-Dicke parameter cause more heating
+% and more spread out of states actually also means that the atoms has a strong coupling
+% to higher order sideband. Now if we use these higher order sideband to do the cooling
+% we can significantly increase the cooling to heating ratio, fixing the original concern
+% for RSC. It doesn't directly fix the spreading out problem but it does give us
+% more ways to deal with it.
+% Most importantly though, if we add higher order sideband to this plot for the coupling strength
+% we can see that the dead zone is completely gone. Depending on which states we want to cool,
+% we can now simply pick the sideband order where the coupling is the largest
+% and we'll be able to cool them down.
+
+% With the additional complexity of the higher orders, we switched to a computer simulation
+% to guide our search so that we don't have to interpret the signal for
+% many different sideband orders. We use it to test different experimental sequences
+% and come up with this sequence that always address two neighboring orders of sideband.
+% When we implemented it in the experiment after calibration all the parameters, this
+% is the result we got. We have very clear suppression of the cooling sideband
+% and this result suggests that we have a 94% ground state population for Na,
+% despite a high Lamb-Dicke parameter and initial temperature.
+\begin{frame}{}
+\end{frame}
+
 \section{Optical molecule creation}
+% So now we've overcame one of the last and biggest challenge we had
+% on preparing the initial state for the atom. I'll now talk about how we
+% make the molecules while maintaining this control.
+\begin{frame}{Outline}
+  \tableofcontents[currentsection]
+\end{frame}
+
 %% Size mismatch/optical transfer
 \begin{frame}{}
 \end{frame}
