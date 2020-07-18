@@ -362,19 +362,55 @@
 % Well, first of all, broadly speaking, you'll never know what you'll get unless you try it.
 % There are often pleasant supprises, even from the difficulties one face in the experiment,
 % as you'll see later.
-% And this really applies to many other things including some big discovery as well.
+% (And this really applies to many other things including some big discovery as well.)
 % More concretely, although some approaches have got closer to the goal then others,
 % no one have actually got there yet and there are still big challeges for all of them.
 % So the door is still open, and although I'm definately not going to claim we have the
 % best system in the world, I do believe we are bringing in new ideas and
 % new solutions for some of the issues in other systems.
 \begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[right, align=center] at (0.7, -1.7) {
+        \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
+        \includegraphics[width=3.2cm]{edm}\\
+        {\tiny Science 343, p. 269-272 (2014)}};
+      \node[right, align=center] at (4.5, -2.0) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
+        \includegraphics[width=2.0cm]{quantum_chemistry}\\
+        {\tiny Nature 464, 1324 (2010)}};
+      \fill[white,opacity=0.4] (8.0, -3.75) rectangle (0.7, -0.1);
+      \node[right, align=center] at (1.0, 1.9) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Simulation}\\
+        \includegraphics[width=2.9cm]{quantum_simulation}\\
+        {\tiny Nat. Phys. 2, 341 (2006)}};
+      \node[right, align=center] at (4.2, 2.0) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
+        \includegraphics[width=2.9cm]{quantum_computing}\\
+        {\tiny PRL. 97, 33003 (2006)}};
+      \visible<2->{
+        \node[above,text width=4.5cm] at (10, 1) {
+          \begin{itemize}
+          \item Full quantum control
+          \item Entanglement
+          \item $\cdots$
+          \end{itemize}
+        };
+      }
+      \visible<3->{
+        \node[below] at (10, -1.2) {
+          \usebeamercolor[fg]{frametitle}
+          {\large\textbf{\phantom{\only<3>{?}\only<4->{!}}New Approach\only<3>{?}\only<4->{!}}}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 %% System
-% Hopefully it make sense to you now that despite all the achievements in other
-% approaches, it is still interesting to study new systems, if it is different enough
-% properties from the existing one. So now let's look at our system.
+% Hopefully it make sense now that despite all the achievements in other approaches,
+% it is still interesting to study new systems, if it has new desired properties.
+% So now let's look at our system.
 
 % The two properties that I've emphasized on initially are full quantum control and
 % entanglement. And let's first talk about entanglement.
@@ -397,7 +433,7 @@
 % and rearranging.
 % So we would like to extend these capability from atoms to molecules and
 % you'll see later in my talk how we use this to achieve quantum control on our molcules.
-\begin{frame}{Molecules in tweezers}
+\begin{frame}{}
 \end{frame}
 
 %%
@@ -419,7 +455,52 @@
 % our challenge is to first obtaining the control on the atom, and the coherence creation of the
 % molecules. These two main challenges will be what I'm going to focus on
 % for the remainder of my talk.
-\begin{frame}{}
+% <6min>
+\begin{frame}{Ultracold molecule in tweezers}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
+      \node[below, align=center] at (-3, 3.5) {
+        \includegraphics[width=6cm]{CaF_tweezer.png}\\
+        \vspace{0.5cm}
+        \scriptsize Science 365, p. 1156-1158 (2019)
+      };
+
+      \visible<2->{
+        \node at (3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Assembly}}};
+        \begin{scope}[shift={(1.6, 3.2)}, scale=0.5]
+          \shade[ball color=blue!90] (-0.8, 0.2) circle (0.45);
+          \shade[ball color=orange!90] (0.3, -0.2) circle (0.3);
+        \end{scope}
+        \node[align=center] (atom) at (3, 3.2) {\hspace{1cm}\textbf{Ultracold atoms}};
+        \begin{scope}[shift={(1.35, 1.5)}, scale=0.5]
+          \shade[ball color=blue!90] (-0.2, -0.1) circle (0.45);
+          \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
+        \end{scope}
+        \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
+        \draw[blue, ->, line width=2] (atom) --
+        node[right] {\small \textbf{Coherent transfer}} (molecule);
+      }
+
+      \visible<3->{
+        \node at (0, 0) {\usebeamercolor[fg]{frametitle}{\underline{\textbf{Challenges}}}};
+      }
+
+      \visible<3->{
+        \node[below, text width=5.5cm, align=left] at (-3, -0.8) {\begin{itemize}
+          \item Temperature in tweezer
+          \item Quantum control
+          \end{itemize}};
+      }
+
+      \visible<4->{
+        \node[below, text width=4cm, align=left] at (3, -0.7) {\begin{itemize}
+          \item Creating molecules
+          \item Maintain coherence
+          \end{itemize}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 % So here's an outline for the rest of my talk.
@@ -466,6 +547,7 @@
 % It might not look too impressive compared to an ion experiment,
 % I know some of those are real neat, but it's already very clean compared to
 % some other neutral atom experiments that I've worked on before...
+% <10min>
 \begin{frame}{}
 \end{frame}
 
@@ -477,7 +559,7 @@
 \section{Atom state control}
 \subsection{Raman sideband cooling of Na atoms}
 \begin{frame}{Outline}
-  \tableofcontents[currentsection]
+  \tableofcontents[currentsection,currentsubsection]
 \end{frame}
 
 %% Raman sideband cooling
