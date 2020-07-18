@@ -434,9 +434,72 @@
 % So we would like to extend these capability from atoms to molecules and
 % you'll see later in my talk how we use this to achieve quantum control on our molcules.
 \begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \uncover<-8>{
+        \node[below,align=center] at (-3, 4) {
+          {\usebeamercolor[fg]{frametitle}{\large \textbf{Entanglement}}}\\
+          {\visible<2->{
+              \usebeamercolor[fg]{frametitle}{\footnotesize \textbf{i.e. interaction}}
+            }}
+        };
+      }
+      \visible<3->{
+        \node[below,align=center,text width=5.8cm] at (-3, 2.7) {{
+            {\uncover<-8>{\usebeamercolor[fg]{frametitle}{\textbf{Dipolar molecules}}}}
+            \visible<4-8>{
+              \begin{itemize}
+              \item Strong and tunable interaction\\
+                ($\approx kHz$ at $\approx\mu m$ distance)\\
+                \uncover<5->{
+                  \begin{itemize}
+                  \item Fast gate operations
+                  \item Long coherence time
+                  \end{itemize}
+                }
+              \item<6-> Rich internal structure\\
+                (Electronic, vibrational, rotational, hyperfine, etc.)
+              \end{itemize}
+            }
+          }};
+      }
+      \uncover<1,7-> {
+        \node[below,align=center] at (3, 4) {
+          \usebeamercolor[fg]{frametitle}{\textbf{Single particle control}}};
+      }
+      \visible<7->{
+        \node[below,align=center,text width=5.8cm] at (3, 3) {{
+            {\usebeamercolor[fg]{frametitle}{\textbf{Optical tweezers}}}
+            \visible<8->{
+              \begin{itemize}
+              \item Single site resolution
+              \item<9-> $\cdots$
+              \end{itemize}
+            }
+          }};
+      }
+      \visible<9->{
+        \node[align=center] at (-3.3, -1.5) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Loading}\\
+          \includegraphics[width=3.8cm]{deterministic-loading}\\
+          {\tiny Nat. Phys. 6, 951 (2010)}
+        };
+        \node[align=center] at (2.7, 0) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Cooling}\\
+          \includegraphics[width=3.5cm]{rsc-regal}\\
+          {\tiny PRX. 2, 041014 (2012)}
+        };
+        \node[align=center] at (2.4, -3.3) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Rearranging}\\
+          \includegraphics[width=5.7cm]{atom-array}\\
+          {\tiny Science 354, 1024 (2016)}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
-%%
+%% Molecules in tweezers
 % So since our goal is to create ultracold molecules, there are basically two approaches.
 % One approach is to first get molecule and then get ultracold, in another word, direct cooling
 % of hot molecules to ultracold temperature without destroying or otherwise loosing the molecule.
@@ -463,7 +526,7 @@
       \node[below, align=center] at (-3, 3.5) {
         \includegraphics[width=6cm]{CaF_tweezer.png}\\
         \vspace{0.5cm}
-        \scriptsize Science 365, p. 1156-1158 (2019)
+        \scriptsize Science 365, 1156 (2019)
       };
 
       \visible<2->{
