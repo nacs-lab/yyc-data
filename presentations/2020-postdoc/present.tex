@@ -1154,10 +1154,111 @@
   \end{center}
 \end{frame}
 
-%% Result
-% (filter coming)
-\begin{frame}{}
-  % TODO
+
+%% Experiment
+% Based on the comparison, we selected the ground vibrational state
+% in the excited state (v=0), which we have already observed previously.
+% And for the ground molecular state, the binding energy was predicted as
+% ~771 MHz by Jeremy Hutson from Durham, based on our interaction shift
+% and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
+
+% Thanks to the prediction, it didn't take too long for us to find the resonance.
+% which was ~1MHz from the prediction.
+
+% More importantly and different from all previous spectrum though,
+% the 8.4 kHz FWHM is very closed to the Fourier limited linewidth
+% for the 0.1 ms pulse time we use, suggesting that we are very closed to the coherent regime.
+
+% So next we switched to scanning the time on resonance.
+% And long and behold we see a revival in our signal, which is the evidence that
+% we can drive the atoms to molecule and then back coherently.
+% This is the first time coherent optical transfer has been done
+% without using a narrow optical transition and we believe it can be applied to
+% many other systems.
+
+% The contrast is obviously not 100%, however, this actually correspond to
+% 50% of initial ground state atom being transfered into molecular state.
+% We believe the major contribitor to this contrast is the molecular lifetime
+% which we measured here to be much shorter than what we expect.
+
+% From the design of our transfer scheme, all molecules we made are in a single spin state
+% with 50% or even more of them in the ground motional state.
+
+\begin{frame}[t]{Experiment}
+  \begin{center}
+    \vspace{-0.9cm}
+    \begin{tikzpicture}
+      \visible<-4>{
+        \begin{scope}[shift={(-5.5, -3.5)}, scale=0.8]
+          \draw[->,line width=1.2] (0, 0) -- (0, 8);
+          \node[above,rotate=90] at (0, 4) {Energy};
+          \draw[->,line width=1.2] (0, 0) -- (5.4, 0);
+          \node[below] at (2.7, -0.1) {Internuclear distance};
+
+          \draw[line width=1.1,cyan!85!blue]
+          plot[samples=200,domain=0.96:7,variable=\x]
+          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+
+          \draw[line width=1.1,red]
+          plot[samples=200,domain=1:7.5,variable=\x]
+          ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+          \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+
+          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) node[right=0.2] {\scriptsize $v=0$};
+          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+
+          \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
+          \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
+          \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
+
+          \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+          \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+          \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          \draw[->,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+
+          \draw[->,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
+          \draw[<-,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
+          -- (5.1 * 0.7, -0.28 * 1.3 + 2)
+          node[below, align=center] {\scriptsize $\approx771\mathrm{MHz}$\\
+            \scriptsize by Jeremy Hutson.};
+        \end{scope}
+      }
+      \visible<2> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
+      }
+      \visible<3-> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+      }
+      \visible<4-5> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      }
+      \visible<6-> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
+      }
+      \visible<5-> {
+        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
+        {
+          \begin{itemize}
+          \item Transferred \alt<-6>{$50\%$}{$65\%$} of ground state atom to molecule.
+          \item<8-> Single molecule spin state
+          \item<8-> $>50\%$ of molecule in motional ground state.
+          \end{itemize}
+        };
+      }
+      \visible<5-6> {
+        \node[below] at (-3.2, 0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
+      }
+      \visible<7-> {
+        \node[below] at (-3.2, 0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \section{Conclusion}
@@ -1174,6 +1275,7 @@
     \item Full quantum control of atoms in optical tweezers
     \item Coherent all-optical creation of single molecucle
     \item<2-> Improve molecule lifetime and signal contrast
+      % TODO: scaling, interaction/entanglement
     \item<3-> Feshbach molecule\\
       {\small $\left(\tau=4.7(7)\ \mathrm{ms}\right)$}
     \end{itemize}
@@ -1205,7 +1307,8 @@
 
         %% Theory
         \node[below,align=center] at (0, -7.1) {Theory};
-        \node[below,align=center] at (1.7, -6.6) {\includegraphics[height=1.5cm]{jeremy}};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.7, -6.6)
+        {\includegraphics[height=1.5cm]{jeremy}\\\scriptsize Jeremy Hutson};
       \end{tikzpicture}
     }
   \end{columns}
