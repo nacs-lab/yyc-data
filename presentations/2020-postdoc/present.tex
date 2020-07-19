@@ -1468,4 +1468,94 @@
   }
 \end{frame}
 
+% Raman transfer obviously need some information about the excited state
+% So that's what we set out to measure first. (i.e. PA spectroscopy)
+
+% We really have the most textbook system to do this measurement.
+% We only have two atoms
+% We know the initial state
+% We shine some light on it, which might create some excited state molecule that
+% falls down to some states that we can't see.
+% We know the final state
+
+% Full state info, improve signal-to-noise
+
+% We start with near threshold since the lines are denser/easier to see.
+% Single body - flat
+% Two body - peaks
+% Agreement with the theory/see new lines
+
+% Also found deeper lines afterwards with very similar signal so I'm not showing it here.
+
+% Now we know the excited states.
+% After measuring this line, we can use add another beam in order to find
+% the ground molecular state.
+% With one laser parked on the PA resonance, we can scan the frequency of the other.
+% When the difference between the two lasers match ... we can create a EIT and stops the
+% PA process ...
+
+% We scanned around the theoritical prediction between 200-300 MHz and indeed found the resonance.
+\begin{frame}[t]{\alt<-4>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
+  \vspace{-0.4cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[shift={(-4.3, -3.3)}, scale=0.7]
+        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+
+        \only<5->{
+          \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+          \draw[cyan!85!blue,<->] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
+          {\tiny $\delta$};
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+          \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
+        }
+      \end{scope}
+      \visible<2-4>{
+        \node[text width=5cm] at (4.2, -1) {
+          \begin{block}{Single Atom PA}
+            \begin{itemize}
+            \item Clean initial state
+            \item Narrow excitation laser
+            \item Final state detection
+            \end{itemize}
+          \end{block}
+        };
+      }
+      \visible<3>{
+        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow_1b}};
+      }
+      \visible<4>{
+        \node at (3, 3) {\includegraphics[width=8cm]{pa-shallow}};
+      }
+      \visible<6>{
+        \node at (4, 2.5) {\includegraphics[width=5cm]{eit.png}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \end{document}
