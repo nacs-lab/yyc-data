@@ -65,7 +65,9 @@ function save(name; close=true)
     metadata = Dict("Creator"=>nothing, "Producer"=>nothing, "CreationDate"=>nothing)
     savefig("$name.pdf"; bbox_inches="tight", transparent=true, metadata=metadata)
     savefig("$name.png"; bbox_inches="tight", transparent=true, metadata=metadata)
-    savefig("$name.svg"; bbox_inches="tight", transparent=true, metadata=metadata)
+    savefig("$name.svg"; bbox_inches="tight", transparent=true,
+            metadata=Dict("Creator"=>nothing, "Date"=>nothing,
+                          "Format"=>nothing, "Type"=>nothing))
     close && PyPlot.close()
     return
 end
