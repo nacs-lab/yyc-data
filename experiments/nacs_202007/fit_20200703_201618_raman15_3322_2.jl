@@ -193,4 +193,26 @@ colorbar()
 tight_layout(pad=0.6)
 NaCsPlot.maybe_save("$(prefix)")
 
+figure()
+NaCsPlot.plot_survival_data([data_nacs_00; data_nacs_t], fmt="C0.", label="769.919 MHz")
+plot(plot_time, model_2d.(plot_time, -81.0, (param_1,)), "C0")
+xlim([0, 0.26])
+ylim([0, ylim()[2]])
+legend(fontsize="x-small", loc="upper right")
+grid()
+xlabel("Raman time (ms)")
+ylabel("Two-body survival")
+NaCsPlot.maybe_save("$(prefix)_postdoc_t")
+
+figure()
+imshow(mol_2d, aspect="auto", interpolation="none", origin="lower",
+       extent=[img_time[1] - step(img_time) / 2, img_time[end] + step(img_time) / 2,
+               img_freq[1] - step(img_freq) / 2, img_freq[end] + step(img_freq) / 2])
+xlabel("Raman time (ms)")
+ylabel("2-Photon Detuning (770XXX kHz)")
+grid()
+colorbar()
+title("Molecule Population")
+NaCsPlot.maybe_save("$(prefix)_postdoc_2d_mol")
+
 NaCsPlot.maybe_show()
