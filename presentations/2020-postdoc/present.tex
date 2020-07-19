@@ -1326,4 +1326,88 @@
 
 %% Backup slides
 
+\begin{frame}{Single Atom in Tweezer}
+  \begin{columns}[t]
+    \column{5cm}
+    \begin{block}{}
+      \begin{itemize}
+      \item Previously done with Rb
+      \item<2-> Works for Cs
+      \item<3-> Doesn't work for Na
+      \end{itemize}
+    \end{block}
+    \column{6cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2> {
+          \node at (0, 0)
+          {\includegraphics[width=6cm]{cs-histogram}};
+        }
+        \visible<3> {
+          \node at (0, 0)
+          {\includegraphics[width=5cm]{na-noatom}};
+        }
+        \visible<4> {
+          \node[text width=6cm] at (0, 0) {
+            \begin{block}{Issues with Na}
+              \begin{itemize}
+              \item Low vapor pressure
+              \item Broad linewidth
+              \item Low mass
+              \item Small hyperfine structure
+              \end{itemize}
+            \end{block}
+          };
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Real Issue with Na: Light Shift}
+  \vspace{-1cm}
+  \begin{columns}
+    \column{5.7cm}
+    \begin{center}
+      \only<-3>{\includegraphics[width=5.5cm]{light-shift.png}}
+      \only<4->{
+        \begin{block}{Trap modulation}
+          Alternate between trap and resonant {\small (cooling and imaging)} light
+          at $2.5$\ MHz\\
+          {\small $f_{trap}=100\sim500$\ kHz}\\
+          {\small $\Gamma=2\pi\times 10$\ MHz}
+        \end{block}
+        \includegraphics[width=5cm]{switching.png}
+      }
+    \end{center}
+    \column{5.8cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2-4>{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{det-vs-photon-dc}};
+        }
+        \visible<3-5>{
+          \node[align=center, text width=5cm] at (0, -4.5) {
+            \begin{block}{}
+              \begin{itemize}
+              \item Low imaging signal
+              \item No cooling in tweezer
+              \end{itemize}
+            \end{block}
+          };
+        }
+        \visible<5->{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{det-vs-photon-ac}};
+        }
+        \visible<6->{
+          \node at (0, -4.5)
+          {\includegraphics[width=4cm]{../../experiments/nacs_atoms/imgs/single_viridis.png}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
 \end{document}
