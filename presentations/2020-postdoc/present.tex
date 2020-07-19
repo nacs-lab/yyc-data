@@ -1042,8 +1042,49 @@
 % * Atomic state preparation (internal and external, and how we overcome the challenge for Na)
 % * Molecular state transfer (coherence, maintaining control, all optical)
 % * Next step: transfer to ground state (could be from FB molecule).
-\begin{frame}{Conclusion}
-  % TODO
+\begin{frame}[t]{Conclusion and outlook}
+  \vspace{-0.5cm}
+  \begin{columns}
+    \column{6cm}
+    \begin{itemize}
+    \item Full quantum control of atoms in optical tweezers
+    \item Coherent all-optical creation of single molecucle
+    \item<2-> Improve molecule lifetime and signal contrast
+    \item<3-> Feshbach molecule\\
+      {\small $\left(\tau=4.7(7)\ \mathrm{ms}\right)$}
+    \end{itemize}
+    \column{5.8cm}
+    \visible<4->{
+      \begin{tikzpicture}
+        %% PI
+        \node[align=center] at (0, -0.8) {Experiment};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (2, 0)
+        {\includegraphics[height=1.5cm]{kangkuen}\\\scriptsize Kang-Kuen Ni};
+
+        %% Current member
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5, -2.2)
+        {\includegraphics[height=1.5cm]{kenneth}\\\scriptsize Kenneth\\\scriptsize Wang};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0, -2.2)
+        {\includegraphics[height=1.5cm]{jessie}\\\scriptsize Jessie\\\scriptsize Zhang};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.5, -2.2)
+        {\includegraphics[height=1.5cm]{lewis}\\\scriptsize Lewis\\\scriptsize Picard};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3.0, -2.2)
+        {\includegraphics[height=1.5cm]{will}\\\scriptsize William\\\scriptsize Cairncross};
+
+        %% Former member
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5 + 0.375, -4.4)
+        {\includegraphics[height=1.5cm]{lee}\\\scriptsize Lee Liu\\\tiny Postdoc @JILA};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0.75, -4.4)
+        {\includegraphics[height=1.5cm]{jon}\\\scriptsize Jonathan Hood\\\tiny Assnt Prof @Purdue};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3 - 0.375, -4.4)
+        {\includegraphics[height=1.5cm]{nick}\\\scriptsize Nick Hutzler\\\tiny Assnt Prof @Caltech};
+
+        %% Theory
+        \node[below,align=center] at (0, -7.1) {Theory};
+        \node[below,align=center] at (1.7, -6.6) {\includegraphics[height=1.5cm]{jeremy}};
+      \end{tikzpicture}
+    }
+  \end{columns}
 \end{frame}
 
 \begin{frame}{}
