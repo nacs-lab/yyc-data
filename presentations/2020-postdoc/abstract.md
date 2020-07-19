@@ -1,0 +1,3 @@
+Ultracold polar molecules have long-range, anisotropic, and tunable interactions providing a versatile platform for studying quantum many-body physics, quantum information, and quantum simulation.
+Optical tweezers allow us to trap atoms and molecules in flexible configurations and fully control their quantum states. I will present results on coherent optical creation of single NaCs molecules in optical tweezers with control of the internal and external quantum state.
+I'll discuss the method we use to create the molecule and demonstrate the control of the quantum states for the atoms and molecules in the optical tweezer.
