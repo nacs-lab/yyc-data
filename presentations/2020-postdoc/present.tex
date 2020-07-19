@@ -772,11 +772,8 @@
 % atom, followed by an optical pumping step that removes the emtropy and
 % resets the HF state of the atom,
 % we would have overall reduced the motional energy of the atom, therefore cooling it.
-\begin{frame}{Raman sideband cooling}
-  % TODO
-\end{frame}
 
-% Lamb-Dicke parameter
+%% Lamb-Dicke parameter
 % It is not too hard to see that whether this cooling cycle can work relies on the balance
 % between removing motional energy from the atom via the sideband transition,
 % and the heating done in the OP step. This ratio is determined by the so-called Lamb-Dicke
@@ -827,8 +824,177 @@
 % is the result we got. We have very clear suppression of the cooling sideband
 % and this result suggests that we have a 94% ground state population for Na,
 % despite a high Lamb-Dicke parameter and initial temperature.
-\begin{frame}{}
-  % TODO
+\begin{frame}{Raman sideband cooling}
+  \vspace{-0.5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<-6>{
+        \begin{scope}[scale=0.85]
+          % F2 trap
+          \draw[line width=1]
+          plot[domain={-0.8:0.8},smooth,variable=\x] ({\x}, {(\x)^2 * 3.75 - 1});
+          \foreach \y in {0.3,0.9,1.5} {
+            \draw[line width=0.8] ({-sqrt(\y / 3.75)}, \y - 1) -- ({sqrt(\y / 3.75)}, \y - 1);
+          }
+          \node[right,rotate=90] at (0, 1.5 - 1) {\LARGE $\cdots$};
+
+          \node[left] at (-0.4, 0.9 - 1) {$|2,2;n\rangle$};
+          \node[left] at (-0.3, 0.3 - 1) {$|2,2;n\!\!-\!\!1\rangle$};
+          \node[left, red!60!black] at (-1, 0.7) {$3^2S_{1/2}$};
+
+          % P3/2
+          \visible<2->{
+            \draw[line width=1] (-1, 4.3) -- (3.85, 4.3);
+            \node[left, red!60!black] at (-1, 4.1) {$3^2P_{3/2}$};
+          }
+          \visible<2-3,5->{
+            \draw[line width=1, densely dotted] (-1, 3.6) -- (3.85, 3.6);
+          }
+          \visible<2-3>{
+            \draw[<->, line width=0.7, >=stealth] (0.75, 3.6) -- (0.75, 4.3);
+            \node[right] at (0.75, 3.95) {$\Delta$};
+          }
+
+          % F2 Raman
+          \visible<2-3,5->{
+            \draw[<->, line width=0.7, >=stealth, orange] (0, 0.9 - 1) -- (0.72, 3.6);
+            \node[orange,above] at (0, 2.1) {$\Omega_{F2}$};
+          }
+
+          % % D2 transition
+          % \draw[<->, line width=0.7, >=stealth] (-1.5, 0.9) -- (-1.5, 3.8);
+          % \node[above, rotate=90] at (-1.5, 2.35) {$589$ nm};
+
+          % D2 decay
+          \visible<4->{
+            \draw[snakearrow, >=stealth, green!70!black] (-0.5, 4.3) -- (-0.5, 0.5);
+          }
+
+          % F1 trap
+          \draw[line width=1]
+          plot[domain={-0.8:0.8},smooth,variable=\x] ({\x + 2.05}, {(\x)^2 * 3.75 - 2.6});
+          \foreach \y in {0.3,0.9,1.5} {
+            \draw[line width=0.8] ({-sqrt(\y / 3.75) + 2.05}, \y - 2.6) -- ({sqrt(\y / 3.75) + 2.05}, \y - 2.6);
+          }
+          \node[right,rotate=90] at (2.05, 1.5 - 2.6) {\LARGE $\cdots$};
+          \node[right] at (2.05 + 0.5, 0.9 - 2.6) {$|1,1;n\rangle$};
+          \node[right] at (2.05 + 0.4, 0.3 - 2.6) {$|1,1;n\!\!-\!\!1\rangle$};
+
+          % Raman det
+          \visible<2-3>{
+            \draw[line width=0.8,densely dotted] (2.05, 0.9 - 2.6) -- (2.05 - 1, 0.9 - 2.6);
+            \draw[line width=0.8,densely dotted] ({sqrt(0.4 / 3.75) + 2.05}, 0.4 - 2.6) -- (2.05 - 1, 0.4 - 2.6);
+            \draw[<->, line width=0.7, >=stealth] (2.05 - 0.9, 0.9 - 2.6) -- (2.05 - 0.9, 0.4 - 2.6);
+            \node[right] at (2.05 - 0.96, 0.65 - 2.6) {$\delta$};
+          }
+
+          % F1 Raman
+          \visible<2-3,5->{
+            \node[red,right] at (2.15 - 0.65, 0.7) {$\Omega_{F1}$};
+          }
+          \visible<2-3>{
+            \draw[<->, line width=0.7, >=stealth, red] (2.05, 0.4 - 2.6) -- (0.78, 3.6);
+          }
+          \visible<5->{
+            \draw[<->, line width=0.7, >=stealth, red] (2.05, 0.3 - 2.6) -- (0.78, 3.6);
+          }
+
+          % Trap freq (F1)
+          \visible<1-3>{
+            \draw[<->, line width=0.7, >=stealth] (2.05 + 0.4, 0.9 - 2.6) -- (2.05 + 0.4, 1.5 - 2.6);
+            \node[left] at (2.05 + 0.46, 1.2 - 2.6) {$\omega$};
+          }
+
+          % P1/2
+          \visible<4->{
+            \node[below right, red!60!black] at (1.2, 2.98) {$3^2P_{1/2}$};
+            \draw[line width=1] (1.7, 2.85) -- (3.35, 2.85);
+          }
+
+          % OP
+          \visible<4->{
+            \draw[->, line width=0.7, >=stealth, blue] (3.15, 0.6) -- (3.15, 2.85);
+            \draw[->, line width=0.7, >=stealth, blue] (3.5, -1.5) -- (3.5, 4.3);
+            \node[right, blue] at (3.5, 1.5) {$\Gamma_{OP}$};
+          }
+        \end{scope}
+      }
+
+      \begin{scope}[shift={(6.6, 0)}, scale=1.2]
+        \visible<2-3>{
+          \foreach \y in {-1.2,0,1.2} {
+            \draw[line width=1,red]
+            plot[smooth,samples=100,domain={-0.6}:{0.6},variable=\f]
+            ({\f + \y}, {exp(-(\f)^2 * 100) * 1.6 * exp(-(\y+0.3)^2 / 5)});
+          }
+          \draw[->,>=stealth,line width=0.7] (-1.9, -0.03) -- (1.9, -0.03)
+          node[below] {$\delta$};
+          \node[below] at (0, -0.03) {Carrier};
+          \node[above,align=center,red!50!black,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (1.2, 1.03)
+          {\scriptsize Cooling\\\scriptsize sideband};
+          \node[above,align=center,blue!50!black,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.2, 1.37)
+          {\scriptsize Heating\\\scriptsize sideband};
+        }
+        \visible<3>{
+          \foreach \y in {-1.2,0,1.2} {
+            \draw[line width=1,blue]
+            plot[smooth,samples=100,domain={-0.6}:{0.6},variable=\f]
+            ({\f + \y}, {exp(-(\f)^2 * 100) * 2.5 * exp(-(\y+0.3)^2 * 1.3)});
+          }
+        }
+      \end{scope}
+
+      \visible<5->{
+        \node[text width=5.5cm,align=center] at (6.6, 4) {
+          \begin{block}{Lamb Dicke parameter}
+            \begin{center}
+              $ \eta\equiv k z_0=\dfrac{2\pi z_0}{\lambda}= \sqrt{\dfrac{\omega_{recoil}}{\omega_{trap}}} $
+            \end{center}
+          \end{block}
+        };
+      }
+      \visible<6->{
+        \node[below,text width=5.5cm,align=center] at (6.6, 2.5) {
+          {\large $ \eta_{Na}^{OP}=0.55 $}\\
+          {\visible<7->{
+              \begin{itemize}
+              \item Motional state branching
+              \item<9-> Coupling ``dead zone''
+              \end{itemize}
+            }}
+        };
+      }
+      \visible<10->{
+        \node[below,text width=5.5cm,align=center] at (6.6, 0.5) {
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Solution}}\\
+          Use higher order sidebands.
+        };
+      }
+      \visible<13-> {
+        \node[red] at (6.6, -2) {3D ground state: $93.5(7)\%$};
+      }
+      \visible<7>{
+        \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{imgs/op_branching_1.pdf}};
+      }
+      \visible<8-11>{
+        \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{imgs/op_branching.pdf}};
+      }
+      \visible<12->{
+        \node[below,align=center] at (0.5, 4.5) {
+          Axial sideband spectrum\\
+         \includegraphics[width=5.4cm]{spectrum_az}
+        };
+      }
+      \visible<9>{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_1.pdf}};
+      }
+      \visible<11->{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_all.pdf}};
+      }
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 % TODO?
@@ -1440,6 +1606,12 @@
       \end{tikzpicture}
     \end{center}
   \end{columns}
+\end{frame}
+
+\begin{frame}{Na Raman sideband cooling sequence}
+  \begin{center}
+    \includegraphics[10cm]{sequence};
+  \end{center}
 \end{frame}
 
 %% Another thing we can measure is the FB resonance
