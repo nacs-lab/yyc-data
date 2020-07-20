@@ -147,6 +147,13 @@
 }
 \makeatother
 
+\ifpdf
+% Ensure reproducible output
+\pdfinfoomitdate=1
+\pdfsuppressptexinfo=-1
+\pdftrailerid{}
+\fi
+
 % not mandatory, but I though it was better to set it blank
 \setbeamertemplate{headline}{}
 \def\beamer@entrycode{\vspace{-\headheight}}
