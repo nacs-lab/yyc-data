@@ -354,20 +354,17 @@
 % The long term goal of our experiment is to create a new system
 % for quantum computing and quantum simulation, as well as, in general,
 % adding new tools to the so-called AMO toolbox for potentially other applications.
-% These applications require our system to be fully controllable to single particle level
-% as well as allowing creating entanglement between the particles.
+% These require our system to be fully controllable to single particle level
+% as well as creating entanglement between the particles.
 
-% There are many good candidates, and even just in AMO there are
-% neutral atoms, ions, Rydbergs etc, so why are we adding yet another one to the list.
-% Well, first of all, broadly speaking, you'll never know what you'll get unless you try it.
-% There are often pleasant supprises, even from the difficulties one face in the experiment,
-% as you'll see later.
-% (And this really applies to many other things including some big discovery as well.)
-% More concretely, although some approaches have got closer to the goal then others,
+% There are already many good candidates or such a system, and even just in AMO there are
+% neutral atoms, ions, Rydberg atoms etc, so why are we adding yet another one to the list.
+% Well, first of all, broadly speaking, we'll never know how well a system work without trying it.
+% But more concretely, although some approaches have got closer to the goal then others,
 % no one have actually got there yet and there are still big challeges for all of them.
-% So the door is still open, and although I'm definately not going to claim we have the
-% best system in the world, I do believe we are bringing in new ideas and
-% new solutions for some of the issues in other systems.
+% Although I'm definately not going to claim we have the best system in the world,
+% I do believe we are bringing in new ideas and new solutions for some of
+% the issues in other approaches.
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -400,7 +397,7 @@
       \visible<3->{
         \node[below] at (10, -1.2) {
           \usebeamercolor[fg]{frametitle}
-          {\large\textbf{\phantom{\only<3>{?}\only<4->{!}}New Approach\only<3>{?}\only<4->{!}}}
+          {\large\textbf{New Approach?}}
         };
       }
     \end{tikzpicture}
@@ -408,30 +405,27 @@
 \end{frame}
 
 %% System
-% Hopefully it make sense now that despite all the achievements in other approaches,
-% it is still interesting to study new systems, if it has new desired properties.
 % So now let's look at our system.
 
 % The two properties that I've emphasized on initially are full quantum control and
 % entanglement. And let's first talk about entanglement.
-% Well, entangling different particles essentially means interaction.
+% Well, entangling different particles requires interaction.
 % And this is the main reason we chose dipole molecules.
 % Compared to neutral atoms, they have much stronger and longer range interactions,
 % roughly `kHz` about a micron apart. This might not seem like much compared to other strongly
-% interacting systems like ions and Rydberg atoms, the interacting molecular
-% states are long lived and easily tunable, which is useful for reducing coupling with
-% the enviroment and achieve long coherence time.
+% interacting systems like ions and Rydberg atoms, the interacting molecules are long lived
+% and the interaction between them are easily tunable,
+% which is useful for reducing coupling with the enviroment and achieving long coherence time.
 % Molecules also have a very rich internal state, which is the main reason for the tunability,
-% but it also give us a lot of freedom in selection our qubit states, for example.
+% but it also give us a lot of freedom in the selection our qubit states.
 
 % The other important property we are aiming for is full quantum control,
 % and for that our main tool is the optical tweezer.
 % Since the tweezer is generally form through a high-NA objective,
-% it very naturally gives us the resolution for single site detection and even manipulation
-% of the molecules. This technique has been developped in many other groups for atoms including
-% here in Cindy's lab, demostrating sideband cooling, near deterministic loading
-% and rearranging.
-% So we would like to extend these capability from atoms to molecules and
+% it very naturally gives us the resolution for single site detection and manipulation
+% of the molecules. This technique has been developped in many other groups for atoms,
+% demostrating sideband cooling, near deterministic loading and rearrangment.
+% In our experiment, we would like to extend these capability from atoms to molecules and
 % you'll see later in my talk how we use this to achieve quantum control on our molcules.
 \begin{frame}{}
   \begin{center}
@@ -503,15 +497,17 @@
 % So since our goal is to create ultracold molecules, there are basically two approaches.
 % One approach is to first get molecule and then get ultracold, in another word, direct cooling
 % of hot molecules to ultracold temperature without destroying or otherwise loosing the molecule.
-% This is a very hard problem because of the difficulties in laser cooling, but there
-% has been a lot of progress in this area, including an experiment here at JILA in Jun's group.
-% In fact, the Doyle group at Harvard have recently demostrated ultracold CaF molecules
+% This is a very hard problem even without optical tweezer because of the difficulties
+% in laser cooling, but there has been a lot of progress in this area,
+% including an experiment here at JILA in Jun's group.
+% In fact, the Doyle group at Harvard have recently demostrated trapping ultracold CaF molecules
 % in an array of optical tweezers, as you can see in this picture.
 
 % The other approach, which is what we use, is to get ultracold, and then get molecule.
 % In another word, we would cool and fully control whatever make up the molecule,
 % in our case atoms, before turning them into molecule coherently,
-% without heating them, and in general maintaining the control we had on them in this process.
+% without heating them, and in general maintaining
+% the control we had on the atoms in this process.
 
 % Comparing the two approaches, the main challenge currently for the direct cooling approach
 % is to cool and in general controlling the molecules in the tweezer. Whereas for us,
@@ -558,8 +554,8 @@
 
       \visible<4->{
         \node[below, text width=4cm, align=left] at (3, -0.7) {\begin{itemize}
-          \item Creating molecules
-          \item Maintain coherence
+          \item Control of atoms
+          \item Coherent creation of molecules
           \end{itemize}};
       }
     \end{tikzpicture}
@@ -568,7 +564,8 @@
 
 % So here's an outline for the rest of my talk.
 % I'll first give an overview of our experiment, both the procedure and the apparatus.
-% Then I'll discuss about one example of achieving full control on our atoms.
+% Then I'll discuss one example of achieving full control on our atoms.
+% I may talk about how we
 % And after that I'll talk about how we create the molecule while maintaining this
 % control, before giving my conclusion.
 \begin{frame}{Outline}
@@ -711,9 +708,12 @@
 % our experiment is relatively small and compact.
 % You can see in this picture our whole vacuum chamber with the optics surounding it
 % for cooling, detection, etc.
-% It might not look too impressive compared to an ion experiment,
+% Surrounding the camber we have our beam path for the MOT, shown here,
+% our tweezer and imaging beam paths, as well as many others around.
+
+% (It might not look too impressive compared to an ion experiment,
 % I know some of those are real neat, but it's already very clean compared to
-% some other neutral atom experiments that I've worked on before...
+% some other neutral atom experiments that I've worked on before...)
 % <10min>
 \begin{frame}{}
   \begin{center}
@@ -774,10 +774,14 @@
 % But due to the motional levels, in additional to driving a "carrier" Raman transition,
 % we can also drive "sideband" transitions that changes the motional state
 % in additional to the HF states.
-% Now, if we drive such a transition that removes a quanta of motional energy from the
-% atom, followed by an optical pumping step that removes the emtropy and
-% resets the HF state of the atom,
-% we would have overall reduced the motional energy of the atom, therefore cooling it.
+% If we drive the transition on the sideband, we can either add, or remove motional energy
+% from the atoms. In additional to being a tool to cool the atoms, since there are
+% fewer states for decreasing the energy than to increase the energy, this is also
+% a tool to measure the temperature of the atoms. As the temperature of the atoms
+% get lower, the cooling sideband will be more and more surpressed and
+% the assymetry between the two sideband can be used to infer the temperature of the atom.
+% Of course, after driving the sideband transition, we need to reset the internal state
+% of the atom and removes the entropy. This is done using an optical pumping step, shown here.
 
 %% Lamb-Dicke parameter
 % It is not too hard to see that whether this cooling cycle can work relies on the balance
@@ -793,22 +797,27 @@
 % Together with a higher initial temperature for Na due to lack of good PGC,
 % we knew right off the bat that Na cooling will be hard.
 % But still, the LD parameter is smaller than one so we decided to give it a try
-% and it turns out that the difficulty with RSC for Na is more subtle then what one
-% might naively expect.
+% and it turns out that the difficulty with RSC for Na is more subtle and
+% intersting then what one might naively expect.
+% <16min>
 
 % First of all, although the Lamb-Dicke parameter tells us that we should have
-% a net cooling per cycle on average, it does not capture the uncertainty of cooling process
-% as you can see in this plot, with a high Lamb-Dicke parameter, the atom might end up
-% in a wide varity of states and it is worse the high the initial state is.
+% a net cooling per cycle on average, it does not capture the uncertainty of cooling process.
+% As you can see in this plot, with a high Lamb-Dicke parameter, and for a hot initial state,
+% similar to what we have on average, the atom might end up in a wide varity of states,
+% which makes it much harder to control the motional state of the atom during cooling.
+% This effect is also state dependent and it gets worse the higher the initial state is.
 % Second, which is makes the first issue worse, is the variation of the coupling.
 % The sideband coupling for different motional states are different. This is not news
 % for people doing sideband cooling and in fact we leart from Till Roseband to take this
 % into account for our Cs RSC based on his old experience with RSC on ions right here at NIST.
 % However, what's new for Na is that our Lamb-Dicke parameter and initial tempereture is high
-% enough that we are experiencing coupling "dead zone"s.
-% If the atoms gets here, we would not be able to address them as efficiently
-% (and can't be easily fixed by changing the pulse times) and they also won't show up
-% in our detection making optimization very hard.
+% enough that our coupling strengh is not monotonic anymore.
+% In particular, we are experiencing coupling "dead zone"s.
+% And if the atoms gets here, they would get stuck since we would not be able to address them
+% as efficiently just by changing the pulse times.
+% They also won't show up in our detection scan to measure the temperature
+% making optimizing the cooling sequency using the experiment very challenging.
 
 % The solution we found to these problem turns out to be the large Lamb-Dicke parameter itself.
 % You see, the fact that a large Lamb-Dicke parameter cause more heating
@@ -830,6 +839,11 @@
 % is the result we got. We have very clear suppression of the cooling sideband
 % and this result suggests that we have a 94% ground state population for Na,
 % despite a high Lamb-Dicke parameter and initial temperature.
+
+% Applicable to more systems, even for direct cooling of molecules where
+% there may be similar challenges due to the the trapping force available and
+% high initial temperature.
+% <22min>
 \begin{frame}{Raman sideband cooling}
   \vspace{-0.5cm}
   \begin{center}
