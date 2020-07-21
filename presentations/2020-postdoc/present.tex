@@ -351,6 +351,8 @@
 }
 
 %% Goal
+% But before that, let's first talk about why we want to do this.
+
 % The long term goal of our experiment is to create a new system
 % for quantum computing and quantum simulation, as well as, in general,
 % adding new tools to the so-called AMO toolbox for potentially other applications.
@@ -371,7 +373,7 @@
       \node[right, align=center] at (0.7, -1.7) {
         \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
         \includegraphics[width=3.2cm]{edm}\\
-        {\tiny Science 343, p. 269-272 (2014)}};
+        {\tiny Science 343, 269 (2014)}};
       \node[right, align=center] at (4.5, -2.0) {
         \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
         \includegraphics[width=2.0cm]{quantum_chemistry}\\
@@ -565,9 +567,9 @@
 % So here's an outline for the rest of my talk.
 % I'll first give an overview of our experiment, both the procedure and the apparatus.
 % Then I'll discuss one example of achieving full control on our atoms.
-% I may talk about how we
-% And after that I'll talk about how we create the molecule while maintaining this
-% control, before giving my conclusion.
+% I may describe our measurement of the interaction between atoms as a preparation
+% for our molecule formation if time allows. And after that I'll talk about
+% how we create the molecule coherently, before giving my conclusion.
 \begin{frame}{Outline}
   \tableofcontents
 \end{frame}
@@ -594,7 +596,7 @@
 % Since we are making molecules from atoms inside the optical tweezer,
 % the obvious first step is to get the atoms in there.
 % We trap the atoms in their respective tweezers directly from the MOT as you can see
-% in this picture, with abouot 60% loading probability.
+% in this picture, with about 60% loading probability.
 
 % We then prepare the initial state, both internal and motional,
 % for the atoms using optical pumping and Raman sideband cooling to a single state
@@ -608,7 +610,7 @@
 % motional ground states that we cooled them into.
 
 % After the merge, the two atoms are now in the same trap and
-% we proceed to form the molecule from this state.
+% we proceed to measure their interaction and form the molecule from this state.
 \begin{frame}[t]{Experiment overview}
   \vspace{-0.5cm}
   \begin{center}
@@ -664,8 +666,8 @@
         {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
         \only<2>{
           \node[below,align=center] at (7, -7)
-          {Cs: 96\% ground state\footnote{Phys. Rev. X 9, 021039}\\
-            Na: 94\% ground state\footnote{Phys. Rev. A 97, 063423}};
+          {Cs: 96\% ground state\footnote{PRX 9, 021039}\\
+            Na: 94\% ground state\footnote{PRA 97, 063423}};
         }
       }
       \visible<3>{
@@ -716,17 +718,14 @@
 \end{frame}
 
 %% Lab pictures
-% In real world this experiment looks like this.
+% In real world this is what the experiment looks like.
 % Since we don't need to trap a lot of atoms and we also don't use any rediculously strong field,
-% our experiment is relatively small and compact.
-% You can see in this picture our whole vacuum chamber with the optics surounding it
-% for cooling, detection, etc.
+% our experiment is relatively small and compact compared to traditional bulk gas experiments.
+% You can see in this picture that our whole vacuum chamber is in this region.
+% From a different angle it is actually still possible to see our Na MOT glowing yellow in
+% the vacuum chamber like this.
 % Surrounding the camber we have our beam path for the MOT, shown here,
-% our tweezer and imaging beam paths, as well as many others around.
-
-% (It might not look too impressive compared to an ion experiment,
-% I know some of those are real neat, but it's already very clean compared to
-% some other neutral atom experiments that I've worked on before...)
+% and our tweezer and imaging beam paths, as well as many others around.
 % <10min>
 \begin{frame}{}
   \begin{center}
@@ -760,9 +759,10 @@
 \end{frame}
 
 %% Atom control
-% So next I'll talk about our state control of the atom.
-% Of course, even for atoms, there are many degrees of freedoms to control
-% and I don't have time to talk about every single one of them.
+% So that's a rough overview of our experiment and
+% next I'll talk about our state control of the atom.
+% Of course, even for atoms, there are many degrees of freedoms to control and
+% I don't have time to talk about every single one of them.
 % So instead, I'm just going to focus on how we use Raman sideband cooling to cool Na atoms.
 \section{Atom state control}
 \subsection{Raman sideband cooling of Na atoms}
@@ -774,25 +774,29 @@
 % I imagine most people here are very familiar with Raman sideband cooling.
 % In fact, I feel like it is used so common in ion experiments that people stops
 % talking about it. So I believe I don't have to talk too much about how it works in general.
-% Instead, I'll focus on the difference in our experiment and the new challenges we face.
-% And I'll talk about how we overcome these challenges and open up this tool to
-% ours and other future experiments where Raman sideband cooling were previously thought
+% Instead, I'll focus on the difference in our experiment and the new challenges we face,
+% compared to a more traditional sideband cooling sequence.
+% I'll talk about how we overcome these challenges and open up this tool to ours and
+% other future experiments where Raman sideband cooling were previously thought
 % to be very hard or impossible.
 
 % Before that, let me just very quickly go through how Raman sideband cooling works
 % even though you probably know already.
 % So here is the motional levels of an atom in a harmonic potential, which approximate our
-% optical tweezer. These levels exists for all the ground HF states so here is it for a different
+% optical tweezer. These levels exist for all the ground HF states so here is it for a different
 % one. Now, we can drive between different ground HF states with a Raman transitions.
 % But due to the motional levels, in additional to driving a "carrier" Raman transition,
-% we can also drive "sideband" transitions that changes the motional state
-% in additional to the HF states.
-% If we drive the transition on the sideband, we can either add, or remove motional energy
-% from the atoms. In additional to being a tool to cool the atoms, since there are
-% fewer states for decreasing the energy than to increase the energy, this is also
-% a tool to measure the temperature of the atoms. As the temperature of the atoms
-% get lower, the cooling sideband will be more and more surpressed and
-% the assymetry between the two sideband can be used to infer the temperature of the atom.
+% at the normal resonance frequency, we can detune from it to drive "sideband" transitions
+% that changes the motional state in additional to the HF states.
+% When we drive the transition on the sideband, we can either add, or remove motional energy
+% from the atoms. Not only is this a tool to cool the atoms,
+% but it is actually also a tool to measure the temperature of the atoms.
+% Since there are fewer states for decreasing the energy than to increase the energy,
+% there's a difference between the heating and cooling sidieband.
+% And as the temperature of the atoms get lower and lower,
+% the cooling sideband will be more and more surpressed and
+% the assymetry between the two sideband can be used to infer the temperature of the atom,
+% so-called, sideband thermometry.
 % Of course, after driving the sideband transition, we need to reset the internal state
 % of the atom and removes the entropy. This is done using an optical pumping step, shown here.
 
@@ -817,10 +821,11 @@
 % First of all, although the Lamb-Dicke parameter tells us that we should have
 % a net cooling per cycle on average, it does not capture the uncertainty of cooling process.
 % As you can see in this plot, with a high Lamb-Dicke parameter, and for a hot initial state,
-% similar to what we have on average, the atom might end up in a wide varity of states,
+% similar to what we have on average, the atom might end up in a wide varity of states after OP,
 % which makes it much harder to control the motional state of the atom during cooling.
 % This effect is also state dependent and it gets worse the higher the initial state is.
-% Second, which is makes the first issue worse, is the variation of the coupling.
+% Second, which is makes the first issue worse,
+% is the variation of the coupling for the Raman transition.
 % The sideband coupling for different motional states are different. This is not news
 % for people doing sideband cooling and in fact we leart from Till Roseband to take this
 % into account for our Cs RSC based on his old experience with RSC on ions right here at NIST.
@@ -847,7 +852,7 @@
 % With the additional complexity of the higher orders, we switched to a computer simulation
 % to guide our search so that we don't have to interpret the signal for
 % many different sideband orders. We use it to test different experimental sequences
-% and come up with this sequence that always address two neighboring orders of sideband.
+% and come up with a working sequence that addresses alternating orders of sidebands.
 % When we implemented it in the experiment after calibration all the parameters, this
 % is the result we got. We have very clear suppression of the cooling sideband
 % and this result suggests that we have a 94% ground state population for Na,
@@ -1022,6 +1027,9 @@
       }
       \visible<9-10>{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_1.pdf}};
+        \draw[->,line width=1.8,>=stealth,red] (0.8, -1.0) -> (0.0, -1.8);
+        \draw[->,line width=1.8,>=stealth,red] (1.4, -1.0) -> (2.8, -1.8);
+        \node[red,above] at (1.1, -0.95) {Dead zone};
       }
       \visible<11->{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_all.pdf}};
@@ -1032,6 +1040,12 @@
 
 \def\enableinteraction{}
 
+%%
+% After preparing the quantum state for the atoms and before we can form the molecule,
+% we need to have a better understanding of the interaction between the atoms
+% and the states involved.
+% It turns out that our tweezer is actually also a very good platform for such measurement.
+
 \ifdefined\enableinteraction
 \section{Atom-atom interaction}
 \begin{frame}{Outline}
@@ -1039,11 +1053,11 @@
 \end{frame}
 
 % One measurement we can do is the scattering length
-%% between Na and Cs since it captures many aspects of the atom-atom interaction
-%% * Binding energy
-%% * Molecular potential
-%% * Feshbach resonance
-%% * Molecule formation
+% between Na and Cs since it captures many aspects of the atom-atom interaction
+% * Binding energy
+% * Molecular potential
+% * Feshbach resonance
+% * Molecule formation
 \begin{frame}{Scattering length $a$}
   \begin{columns}
     \column{4.5cm}
@@ -1082,22 +1096,70 @@
   \end{columns}
 \end{frame}
 
-%% We measure the scattering length using interaction shift.
-%% When we successfully loaded two atoms in the tweezer,
-%% their energy levels will be shifted due to the interaction.
-%% This shift depends on the spin state of the atom and we can measure this difference
-%% by driving a Raman or microwave transition between HF states.
-%% As shown.... by comparing the spectrum with and without another atom...
-%% This way of measuring the scattering length is similar to the experiement done
-%% in optical lattice on Mott insulator but the anisotropy causes some difference as shown in.
+% We measure the scattering length using interaction shift and it works like this.
+% If we successfully loaded two atoms in the tweezer,
+% their energy levels will be shifted due to the interaction.
+% Now of course this cannot be directly compared to the single atom case as showned here
+% since we can't really drive a transition between one atom and two atoms in the tweezer.
+% So instead, we rely on the fact that this interaction is in general state dependent.
+% If we drive the atoms from one spin combinantion to a different one,
+% say with a Raman transition or a microwave, we should be able to see a shift in the
+% resonance frequency, corresponding to the difference of the interaction between
+% the initial and final spin states.
+% This way of measuring the scattering length is similar to the experiement done
+% in optical lattice in a MOT insulator phase but the anisotropy of the trap
+% causes some difference as I'll shown shortly.
 
-% Interaction shift data
-%% One peak on the right, lowering energy -> attractive interaction.
-%% Another peak on the left...
-%% Significant state mixing due to low axial trapping frequency
-%% Theory model
-%% 33+22 -> 33+11
+% So we did the measurement. Here's the resonance when only Cs atom is loaded in the trap.
+% Now when we added the Na atom, instead of seeing one peak, we saw three peaks instead.
+% Well, the center one is easy, our state preparation isn't perfect and in this case
+% only 60-70% of the atoms are in the ground state and the hot atoms has lower density
+% and much lower shift. We were very confused by the other two peaks though.
+% Not only do we have more than one interaction shifted peaks,
+% it seems that they don't even agree on the sign of the interaction.
 
+% So we were puzzled by our data for a while, until we realized that the interaction shift
+% that we've observed here is actually very similar to the axial trapping frequency.
+% This means that the interaction will be strong enough to mix motional states and
+% we can't simply treat it as pertubation anymore.
+% In order to accurately calculate this, we have to go back to the full Hamiltonian shown here
+% which has the term for Na, Cs and their interaction and we'll approximate the interaction
+% by a contact potential that is proportional to the scattering length.
+% This is not a easy problem to solve of course,
+% but fortuately, solution to this already exist if we have only one moving particle
+% instead of two. In another word, if we do the following transformation,
+% and change the coordinate from the Na and Cs to center of mass and relative motion,
+% we'll get a center of mass part, as a simple harmonic oscillator,
+% a relative part, which is the part where there's existing solution,
+% and a mixing part caused by the difference in the Na and Cs trapping frequency.
+% Since we know the solution to the first two terms already, the only part
+% that we need to do is the mixing term which is much more well behaved compared to the
+% contact interaction and it can be solved fairly easily.
+% The energy levels solved from this, plotted as a function of the scattering
+% length looks like this. Each spin state, with its specific scattering length
+% corresponds to a vertical slice on this plot and driving transitions between them
+% corresponds to moving horizontally.
+% Different curves corresponds to atoms in a different motional states,
+% which may be center of mass or relative motion excitation or a mixture of the two.
+
+% It is now much easier to understand our signal.
+% It turns out that in this case, our initial state has a very small scattering length
+% and our final state has a large and negative one.
+% The peak on the right seems is actually the "normal" interaction shifted signal
+% where the atoms remained in the motional ground state of the system after the transition.
+% The signal on the left actually corresponds to the atoms acquring some motional energy
+% in additional to the interaction energy, which puts it on the wrong side of the shift.
+
+% We've also measured the shift for other spin state combinations and this explanation
+% works out as well. Here I'm showing a case where the normal signal and the one
+% with motional excitation appears on the same side instead of two different sides.
+
+% Combining this with some of our other measurement,
+% we can now fit the data using the non-perturbative model and calculate the scattering length
+% for all the other spin state combinations.
+% In particular, I want to point out that the 3,3+2,2 combination has a very strong interaction,
+% which enhances the coupling from this state to the molecular state and that's what we
+% use to form the molecule, as you'll see in the next part.
 \begin{frame}{Interaction shift}
   \vspace{-0.8cm}
   \begin{tikzpicture}
@@ -1106,16 +1168,17 @@
     \visible<1>{
       \node at (-2.8, 0.7) {\includegraphics[width=6cm]{shift_raman_1.pdf}};
     }
-    \visible<2-3>{
+    \visible<2-4>{
       \node at (-2.8, 0.7) {\includegraphics[width=6cm]{shift_raman.pdf}};
     }
     % Data 1
-    \visible<3-6>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4_0.pdf}};}
-    \visible<7>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4.pdf}};}
-    \visible<8->{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs3.pdf}};}
+    \visible<3>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4_0s.pdf}};}
+    \visible<4-7>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4_0.pdf}};}
+    \visible<8>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4.pdf}};}
+    \visible<9->{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs3.pdf}};}
 
     % Equations
-    \visible<4-5>{
+    \visible<5-6>{
       \node[below right,align=left] at (-4.9, 3.8)
       {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{m_{1}\omega_{1,i}^2x_{1,i}^2}{2}+\frac{p_{1,i}^2}{2m_{1}})\ +\!\sum_{i=x,y,z}(\frac{m_{2}\omega_{2,i}^2x_{2,i}^2}{2}+\frac{p_{2,i}^2}{2m_{2}})+V_{int}(\vec r_1-\vec r_2)$};
       \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
@@ -1125,7 +1188,7 @@
       \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
       (3.05,3) -- node[below=10pt] {\small Interaction} (4.55,3);
     }
-    \visible<5>{
+    \visible<6>{
       \node[above right,align=left] at (-5.8, -2.3)
       {
         \textcolor{blue!60!black}{To center of mass}\\
@@ -1139,7 +1202,7 @@
             P_i=&\ p_{1,i}+p_{2,i}&p_{R,i}=&\ \frac{m_2p_{1,i}-m_1p_{2,i}}{m_1+m_2}
           \end{aligned}$}};
     }
-    \visible<5->{
+    \visible<6->{
       \node[above right,align=left] at (-6, -4.5)
       {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{M\Omega_{i}^2X_{i}^2}{2}+\frac{P_{i}^2}{2M})\ +\!\sum_{i=x,y,z}(\frac{\mu\omega_{R,i}^2x_{R,i}^2}{2}+\frac{p_{R,i}^2}{2\mu})+V_{int}(\vec r_R)\ +\!\sum_{i=x,y,z}\mu(\omega_{1,i}^2 - \omega_{2,i}^2)X_ix_{R,i}$};
       \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
@@ -1149,16 +1212,16 @@
       \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
       (3,-3.5) -- node[above=10pt] {\small Mixing} (5.9,-3.5);
     }
-    \visible<6>{
+    \visible<7>{
       \node at (-2.6, 0.5) {\includegraphics[width=6cm]{shift_theory.pdf}};
     }
-    \visible<7>{
+    \visible<8>{
       \node at (-2.6, 0.5) {\includegraphics[width=6cm]{shift_theory42_32.pdf}};
     }
-    \visible<8->{
+    \visible<9->{
       \node at (-2.6, 0.5) {\includegraphics[width=6cm]{shift_theory32_31.pdf}};
     }
-    \visible<9->{
+    \visible<10->{
       \fill[white,opacity=0.95] (-6, -4.5) rectangle (6, 3.5);
       \node[align=center] at (0, 2.1)
       {Combined with binding energy measurement on Na(2,2) Cs(4,4)\\
@@ -1171,32 +1234,30 @@
           Na(1,1) Cs(3,3)&13.19\\\hline
         \end{tabular}};
     }
-    \visible<10->{
-      \draw[->, line width=1, color=red!50!black] (0.8, 1.45) -- (-2, 0.5)
-      node[below] {Enhanced coupling to molecular state?};
-    }
     \visible<11->{
-      \node at (1.3, -2) {\includegraphics[width=5cm]{../../experiments/nacs_201904/imgs/data_20190521_lifetime_cmp_lin.pdf}};
+      \draw[->, line width=1, color=red!50!black] (0.8, 1.45) -- (-0.8, 0.5)
+      node[below] {Enhanced coupling to molecular state!};
     }
   \end{tikzpicture}
 \end{frame}
 \fi
 
 \section{Optical molecule creation}
-% So now we've overcame one of the last and biggest challenge we had
-% on preparing the initial state for the atom. I'll now talk about how we
-% make the molecules while maintaining this control.
+% So now we've prepared the states of the atoms and
+% we've measured the properties of their interaction.
+% I'll now talk about how we make the molecules while maintaining the quantum control.
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
 
 %% Size mismatch/optical transfer
-% So here's a summary of our control of the atom.
+% So just to remind you, here's a summary of our control of the atom.
 % After we merge the two atoms into the same tweezer,
-% the two atoms are about as closed to each other as they can be
-% from the confinement. However, in the molecule we want to make,
-% the two atoms are still hundreds times closer.
-% This massive size mismatch is really the biggest challange for creating molecules coherently.
+% the two atoms are about as closed to each other as they can be from the confinement.
+% Nevertheless, comparing to the molecule we want to make,
+% it is still a few hundred times bigger.
+% This massive size mismatch is really the biggest challange for anyone
+% who want to create molecules coherently from atoms. ...
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -1254,10 +1315,9 @@
 
 %% Size mismatch
 % ... which basically necessitate a two step transfer process.
-% The more loosely bound intermediate molecular state reduces
-% the size mismatch and will improve overall efficiency.
-% In today's talk, I'll mostly focus on the first step starting from the atomic state
-% (as you might have guessed from the title of my talk).
+% The more loosely bound molecular state in the middle reduces
+% the size mismatch for each steps and will improve overall transfer efficiency.
+% And the transfer to this intermediate state is what I'll focus on in this part of the talk.
 
 % The "tranditional" choice of the intermediate state is a FB molecule.
 % Indeed, it also works for us and we've recently created a single FB
@@ -1265,17 +1325,22 @@
 % However, this approach obviously rely on finding a good FB resonance and usually
 % a large magentic field.
 
-% What I am going to talk about today, OTOH, is a different approach that uses only
-% optical transitions. By not relying on FB resonance, it is faster, more compact,
-% and most importantly, we hope it can be more generally apply to
-% molecules that may not have a suitable FB resonance.
+% What I am going to mainly talk about today, OTOH, is a different approach that uses only
+% optical transitions, **which we use in a different experimental setup from the one
+% we created FB molecules in**. By not relying on FB resonance, it is faster,
+% more compact in setup, and most importantly,
+% we hope it can be more generally apply to molecules that may not have a suitable FB resonance.
+
+%%% Make sure mentioning FB molecule vs optical transfer are two different setups.
 
 % It's worth pointing out that optical transfer **has** been done previously
-% on many systems include this Rb2 Raman resonance and even a previous attempt from our lab.
-% However, it was either done incoherently, or it relies on narrow line transition
-% which limits the generality of the result.
-% So next I'll talk about how we overcome these limitations.
+% on many systems include this Rb2 Raman resonance as well as Sr2,
+% and even a previous attempt from our lab. However, it was either done incoherently,
+% limited by scattering, or, in the case of Sr2, it relies on narrow line optical transition
+% which works very well but limits the generality of the result.
+% So next I'll focus on how we overcome these limitations.
 
+%%% Make sure mentioning FB molecule vs optical transfer are two different setups.
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -1334,7 +1399,7 @@
         {
           {\usebeamercolor[fg]{frametitle}{Previous results}}\\
           {\footnotesize $\mathrm{Rb_2}$}
-          {\tiny \usebeamercolor[fg]{frametitle}{Science 287, p. 1016-1019 (2000)}}\\
+          {\tiny \usebeamercolor[fg]{frametitle}{Science 287, 1016 (2000)}}\\
           \phantom{{\footnotesize $\mathrm{Rb_2}$}}
           {\tiny \usebeamercolor[fg]{frametitle}{PRL. 93, 073002 (2004)}}\\
           \includegraphics[width=3.5cm]{Rb2_raman.png}\\
@@ -1361,29 +1426,28 @@
 
 %% Raman scheme
 % The scheme we use is actually very simple.
-% We simply drive a Raman transition from the atomic state to the molecular
-% state, detuned from some excited molecular state.
+% We simply drive a Raman transition from the atomic state to the molecular state,
+% detuned from some excited molecular state.
 
 % Since one of the major challenges is the mismatch of the wavefunction size,
-% it makes sense to pick a molecular state that is as "big" as possible,
-% i.e. the molecular states that are closed to the threshold or even the first bound state.
+% it makes sense to pick molecular states that are as "big" as possible,
+% in another word, ones that are closed to the threshold or even the first bound state.
 % Indeed, this is what all previous attempts use which leads to a fairly strong Raman transition.
-% However, these states are very closely spaced, and in case of the excited state, this makes
-% it hard to detune and reduce the scattering, which ultimately limits the coherence,
-% as I metioned previously.
+% But these states are also very closely spaced, and in case of the excited state, this makes
+% it very hard to detune from a resonance and reduce the scattering,
+% which ultimately limits the coherence, as I metioned previously.
 % If we instead use an excited state that is more deeply bound.
-% Even though the Raman coupling, we can now detune further to reduce the scattering
+% Even though the Raman coupling is reduced, we can now detune further to reduce the scattering
 % without worrying about hitting another state.
 
-% It may not be obvious if the deeply bound state costs too much in the Raman coupling
-% compared to the scattering reduction. That's why we did a calculation to compare the two.
+% It is certainly not obvious if the deeply bound state costs too much in the Raman coupling
+% compared to the scattering reduction. And that's why we did a calculation to compare the two.
 
 % From the two plots for two different excited states,
 % you can easily see that the Rabi frequency to scattering ratio, shown in green
-% on the right side axis, never reaches higher than ~1.3 for the near threshold state
-% whereas for the deeply bound state we can get a ratio north of 50 when a larger
+% on the right side axis, never reaches higher than ~1.3 for the near threshold state,
+% whereas for the deeply bound state, shown below, we can get a ratio north of 50 when a larger
 % detuning is used.
-
 \begin{frame}[t]{Raman transfer}
   \begin{center}
     \vspace{-0.9cm}
@@ -1501,33 +1565,44 @@
 
 
 %% Experiment
-% Based on the comparison, we selected the ground vibrational state
-% in the excited state (v=0), which we have already observed previously.
+% Based on the comparison, we selected the ground vibrational state in the excited state (v=0),
+% which we have already observed previously.
 % And for the ground molecular state, the binding energy was predicted as
 % ~771 MHz by Jeremy Hutson from Durham, based on our interaction shift
 % and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
 
-% Thanks to the prediction, it didn't take too long for us to find the resonance.
-% which was ~1MHz from the prediction.
+% Thanks to the prediction, it didn't take too long for us to find the resonance,
+% which was only 1-2MHz from the prediction.
 
-% More importantly and different from all previous spectrum though,
-% the 8.4 kHz FWHM is very closed to the Fourier limited linewidth
+% But what's more important, and different from all previous spectrum,
+% is the FWHM of 8.4 kHz. It is very closed to the Fourier limited linewidth
 % for the 0.1 ms pulse time we use, suggesting that we are very closed to the coherent regime.
 
-% So next we switched to scanning the time on resonance.
+% So next, naturally, we switched to scanning the time on resonance.
 % And long and behold we see a revival in our signal, which is the evidence that
 % we can drive the atoms to molecule and then back coherently.
 % This is the first time coherent optical transfer has been done
 % without using a narrow optical transition and we believe it can be applied to
 % many other systems.
 
-% The contrast is obviously not 100%, however, this actually correspond to
-% 50% of initial ground state atom being transfered into molecular state.
+% The contrast is obviously not 100%, but, this actually correspond to
+% 50% of initial ground state atom, here, being transfered into the molecular state.
 % We believe the major contribitor to this contrast is the molecular lifetime
 % which we measured here to be much shorter than what we expect.
 
 % From the design of our transfer scheme, all molecules we made are in a single spin state
 % with 50% or even more of them in the ground motional state.
+
+% We have since improved our signal by changing the single photon detuning for the Raman beam
+% and you can see the contrast of the Rabi oscillation is much better.
+% We can also plot the molecule transfer efficiency as a function of the detuning and time
+% and you can see here that the transfer maxes out at about 63%.
+
+% We are still investigating in the sources of the shorter lifetime and one particular
+% source that we are corrently testing is our Raman beam.
+% It turns out that the diode laser we use has a broad spectra background noise
+% in additional to the very narrow frequency peak. This broad background has a high chance
+% of causing scattering on other excited molecular state and we are working on filtering it out.
 
 \begin{frame}[t]{Experiment}
   \begin{center}
@@ -1580,30 +1655,30 @@
       \visible<3-> {
         \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
       }
-      \visible<4-5> {
+      \visible<4-6> {
         \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
       }
-      \visible<6-> {
+      \visible<7-> {
         \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
       }
       \visible<5-> {
         \node[below, text width=5.5cm, align=center] at (-3, 3.4)
         {
           \begin{itemize}
-          \item Transferred \alt<-6>{$50\%$}{$65\%$} of ground state atom to molecule.
-          \item<6-> Improving signal
-          \item<9-> Single molecule spin state
-          \item<9-> $>50\%$ of molecule in motional ground state.
+          \item Transferred \alt<-7>{$50\%$}{$63\%$} of ground state atom to molecule.
+          \item<6-> Single molecule spin state
+          \item<6-> $>50\%$ of molecule in motional ground state.
+          \item<7-> Improving signal
           \end{itemize}
         };
       }
-      \visible<5-6> {
+      \visible<5-7> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
       }
-      \visible<7> {
+      \visible<8> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
       }
-      \visible<8-> {
+      \visible<9-> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{Timebase1038_20200702_094907.png}};
       }
     \end{tikzpicture}
@@ -1623,13 +1698,13 @@
     \begin{itemize}
     \item Full quantum control of atoms in optical tweezers
     \item Coherent all-optical creation of single molecucle
-    \item<2-> Improve molecule lifetime and signal contrast
-      % TODO: scaling, interaction/entanglement
-    \item<3-> Feshbach molecule\\
+    \item<2-> Working towards fully controlled, strongly interacting tweezer array
+    \item<3-> Improve molecule lifetime and signal contrast
+    \item<4-> Feshbach molecule\\
       {\small $\left(\tau=4.7(7)\ \mathrm{ms}\right)$}
     \end{itemize}
     \column{5.8cm}
-    \visible<4->{
+    \visible<5->{
       \begin{tikzpicture}
         %% PI
         \node[align=center] at (0, -0.8) {Experiment};
