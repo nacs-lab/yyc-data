@@ -1,0 +1,108 @@
+\documentclass[border=0pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,
+  fadings
+}
+\tikzfading[name=fade img right,left color=transparent!100, right color=transparent!0]
+\tikzfading[name=fade img left,right color=transparent!100, left color=transparent!0]
+\usepackage{graphicx}
+\begin{document}
+\begin{tikzpicture}[scale=0.9]
+  % 0.0 - 1.6 axial (1.6)
+  % 1.6 - 1.9 OP (0.3)
+  % 1.9 - 2.5 radial 2 (0.6)
+  % 2.5 - 2.8 OP (0.3)
+  % 2.8 - 4.4 axial (1.6)
+  % 4.4 - 4.7 OP (0.3)
+  % 4.7 - 5.3 radial 3 (0.6)
+  % 5.3 - 5.6 OP (0.3)
+  % 5.6 - 7.2 axial (1.6)
+  % 7.2 - 7.5 OP (0.3)
+  % 7.5 - 8.1 radial 2 (0.6)
+  % 8.1 - 8.4 OP (0.3)
+  % 8.4 - 10.0 axial (1.6)
+  % 10.0 - 10.3 OP (0.3)
+  % 10.3 - 10.9 radial 3 (0.6)
+  % 10.9 - 11.2 OP (0.3)
+
+  \begin{scope}
+    \clip (4.6, -2.1) rectangle (17.8, 2.0);
+    %% Pulse mark
+    \foreach \i in {0,...,7} {
+      \draw[gray!20, line width=2] (2.8*\i, 1.5) -- (2.8*\i, -2.0);
+      \draw[gray!20, line width=2] (2.8*\i+1.9, 1.5) -- (2.8*\i+1.9, -2.0);
+    }
+
+    %% Tweezer
+    % \draw[line width=1.5,purple] (0, 2.4) -- (22.4, 2.4);
+    % \foreach \i in {0,...,99} {
+    %   \filldraw[line width=1,purple] (\i*22.4/100, 2.4) rectangle (\i*22.4/100+0.06, 3.5);
+    % }
+
+    %% Axial
+    \foreach \i in {0,...,7} {
+      \fill[blue!30]
+      plot[draw,samples=200,domain={2.8*\i}:{2.8*\i+1.6},variable=\x] ({\x}, {sin((\x-2.8*\i) * 112.5)^4})
+      -- cycle;
+      \draw[line width=1,blue] plot[domain={2.8*\i}:{2.8*\i+1.6},variable=\x]
+      ({\x}, {sin((\x-2.8*\i) * 112.5)^4}) -- (2.8*\i + 2.8, 0);
+    }
+    \path[blue] (2.8*2+0.8, 1) node[above,align=center] {\textit{Axial $z$}};
+    \foreach \i in {0,...,3} {
+      \path (5.6*\i + 0.8, -0.15) node[below,blue,align=center] {\textbf{$m$-th}\\\textbf{order}};
+      \path (5.6*\i + 3.6, -0.15) node[below,blue,align=center] {\textbf{$(\!m-1\!)$-th}\\\textbf{order}};
+    }
+
+    %% Radial 2
+    \foreach \i in {0,...,3} {
+      \fill[red!30]
+      plot[draw,samples=200,domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4})
+      -- cycle;
+      \draw[line width=1,red] (5.6*\i, 0) -- plot[domain={5.6*\i+1.9}:{5.6*\i+2.5},variable=\x]
+      ({\x}, {1.5*sin((\x-5.6*\i-1.9) * 300)^4}) -- (5.6*\i+5.6, 0);
+    }
+    \path[red] (5.6*1+2.2, 1.5) node[above,align=center] {\textit{Radial $x$}};
+    \path[red] (5.6*1+2.1, 0.05) node[below,align=center] {\textbf{pulse $1$}};
+    \path[red] (5.6*2+2.1, 0.05) node[below,align=center] {\textbf{pulse $2$}};
+
+    %% Radial 3
+    \foreach \i in {0,...,3} {
+      \fill[black!30]
+      plot[draw,samples=200,domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x] ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4})
+      -- cycle;
+      \draw[line width=1,black] (5.6*\i, 0) -- plot[domain={5.6*\i+4.7}:{5.6*\i+5.3},variable=\x]
+      ({\x}, {1.5*sin((\x-5.6*\i-4.7) * 300)^4}) -- (5.6*\i+5.6, 0);
+    }
+    \path[black] (5.6*1+5.0, 1.5) node[above,align=center] {\textit{Radial $y$}};
+    \path[black] (5.6*1+5.2, 0.05) node[below,align=center] {\textbf{pulse $1$}};
+    \path[black] (5.6*2+5.2, 0.05) node[below,align=center] {\textbf{pulse $2$}};
+
+    %% OP
+    \foreach \i in {0,...,7} {
+      \filldraw[fill=orange!30,draw=orange,line width=1.2]
+      (2.8*\i+1.58, -2) rectangle (2.8*\i+1.91, -1);
+      \filldraw[fill=orange!30,draw=orange,line width=1.2]
+      (2.8*\i+2.48, -2) rectangle (2.8*\i+2.81, -1);
+    }
+    \draw[line width=2,orange] (0,-2) -- (22.4,-2);
+  \end{scope}
+
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 1.6);
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 1.6);
+  \fill[white,path fading=fade img right] (16.8, -2.2) rectangle (17.81, 1.6);
+
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 1.6);
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 1.6);
+  \fill[white,path fading=fade img left] (5.6, -2.2) rectangle (4.59, 1.6);
+
+  % \path (5.0, 2.3) node[left,purple,align=center] {\textbf{Tweezer}};
+  \node[above,align=center] at (5.7, 1.7) {\large \textbf{Raman}};
+  \node[below,orange,align=center] at (5.7, -2.4)
+  {\large \textbf{Optical}\\\large \textbf{pumping}};
+  \draw[line width=2,orange,->,>=stealth] (5.6,-2) -- (17.8,-2) node[right, below] {\scalebox{2}{$t$}};
+
+  %% Cycle mark
+  \draw[decoration={brace,mirror,raise=3pt, amplitude=10pt},decorate,line width=2]
+  (5.6,-2) -- node[below=15pt] {\scalebox{1.5}{One cooling cycle}} (16.8,-2);
+\end{tikzpicture}
+\end{document}

@@ -539,7 +539,7 @@
           \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
         \end{scope}
         \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
-        \draw[blue, ->, line width=2] (atom) --
+        \draw[blue,->,line width=2,>=stealth] (atom) --
         node[right] {\small \textbf{Coherent transfer}} (molecule);
       }
 
@@ -587,7 +587,7 @@
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large NaCs molecule}}\\
       \begin{itemize}
       \item Bi-alkali
-      \item Large dipole moment: $4.6 \mathrm{D}$
+      \item Large dipole moment: $4.6\ \mathrm{D}$
       \end{itemize}
     \end{center}
   \end{columns}
@@ -645,8 +645,8 @@
 
       \visible<3->{
         \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
-          \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
-          \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
         \end{scope}
       }
@@ -999,40 +999,49 @@
           {\visible<7->{
               \begin{itemize}
               \item Motional state branching
-              \item<9-> Coupling ``dead zone''
+              \item<10-> Coupling ``dead zone''
               \end{itemize}
             }}
         };
       }
-      \visible<10->{
+      \visible<11->{
         \node[below,text width=5.5cm,align=center] at (6.6, 0.5) {
           {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Solution}}\\
-          Use higher order sidebands.
+          \begin{itemize}
+          \item Use higher order sidebands.
+          \item<13-> Simulation-guided optimization.
+          \end{itemize}
         };
       }
-      \visible<13-> {
-        \node[red] at (6.6, -2) {3D ground state: $93.5(7)\%$};
+      \visible<15-> {
+        \node[red] at (6.6, -2.5) {3D ground state: $93.5(7)\%$};
       }
       \visible<7>{
         \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{imgs/op_branching_1.pdf}};
       }
-      \visible<8-11>{
+      \visible<8-12>{
         \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{imgs/op_branching.pdf}};
       }
-      \visible<12->{
-        \node[below,align=center] at (0.5, 4.5) {
-          Axial sideband spectrum\\
-         \includegraphics[width=5.4cm]{spectrum_az}
-        };
+      \visible<13->{
+        \node[below] at (0.5, 3.7) {\includegraphics[width=6.5cm]{sequence}};
       }
-      \visible<9-10>{
+      \visible<9-11>{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_1.pdf}};
+      }
+      \visible<10-11>{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_1.pdf}};
         \draw[->,line width=1.8,>=stealth,red] (0.8, -1.0) -> (0.0, -1.8);
         \draw[->,line width=1.8,>=stealth,red] (1.4, -1.0) -> (2.8, -1.8);
         \node[red,above] at (1.1, -0.95) {Dead zone};
       }
-      \visible<11->{
+      \visible<12-13>{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{raman_rabi_all.pdf}};
+      }
+      \visible<14->{
+        \node[below,align=center] at (0.5, 0.5) {
+          Axial sideband spectrum\\
+         \includegraphics[width=5.4cm]{spectrum_az}
+        };
       }
     \end{tikzpicture}
   \end{center}
@@ -1064,16 +1073,16 @@
     \begin{itemize}
     \item<2-> Binding energy
     \item<3-> Molecular potential
-    \item<4-> Feshbach resonance
-    \item<5-> Molecule formation\\
+    \item<4-> Molecule formation
+    \item<5-> Feshbach resonance\\
       $\vdots$
     \end{itemize}
     \column{6.5cm}
     \begin{tikzpicture}
       \begin{scope}[scale=0.65]
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
         \node[below] at (4, -0.5) {Internuclear distance};
 
         \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
@@ -1089,7 +1098,7 @@
         \mytweezer.drawNaAtom(2.08, 2.15, 0.12)
         \mytweezer.drawCsAtom(2.25, 2.15, 0.10)
 
-        \draw[->, cyan!50!blue, line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
+        \draw[->,>=stealth,cyan!50!blue,line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
         arc (270:90:0.2) -- ++(2.5, 0);
       \end{scope}
     \end{tikzpicture}
@@ -1235,7 +1244,7 @@
         \end{tabular}};
     }
     \visible<11->{
-      \draw[->, line width=1, color=red!50!black] (0.8, 1.45) -- (-0.8, 0.5)
+      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-0.8, 0.5)
       node[below] {Enhanced coupling to molecular state!};
     }
   \end{tikzpicture}
@@ -1286,8 +1295,8 @@
         \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
 
         \begin{scope}[opacity=0.7]
-          \draw[->,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
-          \draw[->,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
         \end{scope}
       \end{scope}
@@ -1297,14 +1306,14 @@
           \draw[line width=2,orange!90!black]
           plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {exp(-(\x)^2 * 1.3) - 0.988});
           \draw[line width=0.8] (0 - 0.8, -0.988) -- (0 + 0.8, -0.988);
-          \draw[<->,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
+          \draw[<->,>=stealth,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
           \path (0, 0.3) node[above] {$1000a_0$};
           \path (0, -1.8) node[below] {\textbf{Atom}};
         \end{scope}
         \begin{scope}[shift={(9.5, -1.5)}, scale=0.8]
           \shade[ball color=blue!90] (0, 0) circle (0.45);
           \shade[ball color=orange!90] (0.4, 0.2) circle (0.3);
-          \draw[<->,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
+          \draw[<->,>=stealth,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
           \path (-0.05, 0.6) node[rotate=26.565,above=2pt] {$4a_0$};
           \path (0, -1) node[below] {\textbf{Molecule}};
         \end{scope}
@@ -1350,21 +1359,21 @@
           \draw[line width=2,orange!90!black]
           plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {exp(-(\x)^2 * 1.3) - 0.988});
           \draw[line width=0.8] (0 - 0.8, -0.988) -- (0 + 0.8, -0.988);
-          \draw[<->,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
+          \draw[<->,>=stealth,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
           \path (0, 0.3) node[above] {$1000a_0$};
           \path (0, -1.8) node[below] {\small \textbf{Atom}};
         \end{scope}
         \begin{scope}[shift={(-2.2, 3)}, scale=0.6]
           \shade[ball color=blue!90] (-0.4, -0.1) circle (0.55);
           \shade[ball color=orange!90] (0.4, 0.3) circle (0.4);
-          \draw[<->,line width=1] (-1.05, 0.4) -- (0.55, 1.2);
+          \draw[<->,>=stealth,line width=1] (-1.05, 0.4) -- (0.55, 1.2);
           \path (-0.25, 0.8) node[rotate=26.565,above=2pt] {$\approx 20\!-\!200a_0$};
           \path (0, -1.2) node[below,align=center] {\small \textbf{Weakly-Bound}\\\small \textbf{Molecule}};
         \end{scope}
         \begin{scope}[shift={(0, 3)}, scale=0.6]
           \shade[ball color=blue!90] (0, 0) circle (0.45);
           \shade[ball color=orange!90] (0.4, 0.2) circle (0.3);
-          \draw[<->,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
+          \draw[<->,>=stealth,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
           \path (-0.05, 0.6) node[rotate=26.565,above=2pt] {$4a_0$};
           \path (0, -1) node[below] {\small \textbf{Molecule}};
         \end{scope}
@@ -1453,9 +1462,9 @@
     \vspace{-0.9cm}
     \begin{tikzpicture}
       \begin{scope}[scale=0.8]
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (5.4, 0);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
         \node[below] at (2.7, -0.1) {Internuclear distance};
 
         \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
@@ -1506,15 +1515,15 @@
         \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
 
         \visible<-2>{
-          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
           -- node[right] {$\Omega_{up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
-          \draw[->,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
           -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
         \visible<3>{
-          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
           -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
-          \draw[->,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
           -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
       \end{scope}
@@ -1556,8 +1565,8 @@
           {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
           \includegraphics[width=5.4cm]{imgs/raman_v0.pdf}
         };
-        \draw[->, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
-        \draw[->, blue, line width=2] (DeepPlot) -- (DeepHighlight);
+        \draw[->,>=stealth, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
+        \draw[->,>=stealth, blue, line width=2] (DeepPlot) -- (DeepHighlight);
       }
     \end{tikzpicture}
   \end{center}
@@ -1608,11 +1617,11 @@
   \begin{center}
     \vspace{-0.9cm}
     \begin{tikzpicture}
-      \visible<-4>{
+      \visible<-5>{
         \begin{scope}[shift={(-5.5, -3.5)}, scale=0.8]
-          \draw[->,line width=1.2] (0, 0) -- (0, 8);
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
           \node[above,rotate=90] at (0, 4) {Energy};
-          \draw[->,line width=1.2] (0, 0) -- (5.4, 0);
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
           \node[below] at (2.7, -0.1) {Internuclear distance};
 
           \draw[line width=1.1,cyan!85!blue]
@@ -1637,48 +1646,70 @@
           \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
           \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
 
-          \draw[->,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          \node[right,align=center,cyan,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (6.8 * 0.7 + 0.3, 2.55)
+          {\scriptsize Na(2,2)\\\scriptsize Cs(3,3)};
+
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
           -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
-          \draw[->,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
           -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
 
-          \draw[->,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
-          \draw[<-,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
+          \visible<2->{
+            \node[above,align=center,
+            execute at begin node=\setlength{\baselineskip}{9pt}] at (3.8, 4.8)
+            {\footnotesize Tweezer\\\footnotesize +Raman};
+            \draw[->,>=stealth,line width=1,dotted,blue!50!orange] (3.8, 4.8) -- (2.6, 4.1);
+            \draw[->,>=stealth,line width=1,dotted,green!80!black] (3.8, 4.8) -- (1.87, 4.1);
+          }
+
+          \draw[->,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
+          \draw[<-,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
           -- (5.1 * 0.7, -0.28 * 1.3 + 2)
           node[below, align=center] {\scriptsize $\approx771\mathrm{MHz}$\\
             \scriptsize by Jeremy Hutson.};
         \end{scope}
       }
-      \visible<2> {
+      \visible<3> {
         \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
       }
-      \visible<3-> {
+      \visible<4-> {
         \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
       }
-      \visible<4-6> {
-        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
-      }
-      \visible<7-> {
-        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
-      }
-      \visible<5-> {
-        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
-        {
-          \begin{itemize}
-          \item Transferred \alt<-7>{$50\%$}{$63\%$} of ground state atom to molecule.
-          \item<6-> Single molecule spin state
-          \item<6-> $>50\%$ of molecule in motional ground state.
-          \item<7-> Improving signal
-          \end{itemize}
+      \visible<2-4> {
+        \node[below,text width=5.2cm,align=center] at (2.6, -0.5) {
+          \begin{block}{Tweezer as Raman beam}
+            \begin{itemize}
+            \item Higher Raman Rabi frequency
+            \item Lower scattering from other sources
+            \end{itemize}
+          \end{block}
         };
       }
       \visible<5-7> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
+      }
+      \visible<8-> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
+      }
+      \visible<6-> {
+        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
+        {
+          \begin{itemize}
+          \item Transferred \alt<-8>{$50\%$}{$63\%$} of ground state atom to molecule.
+          \item<7-> Single molecule spin state
+          \item<7-> $>50\%$ of molecule in motional ground state.
+          \item<8-> Improving signal
+          \end{itemize}
+        };
+      }
+      \visible<6-8> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
       }
-      \visible<8> {
+      \visible<9> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
       }
-      \visible<9-> {
+      \visible<10-> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{Timebase1038_20200702_094907.png}};
       }
     \end{tikzpicture}
@@ -1694,14 +1725,17 @@
 \begin{frame}[t]{Conclusion and outlook}
   \vspace{-0.5cm}
   \begin{columns}
-    \column{6cm}
+    \column{6.25cm}
     \begin{itemize}
-    \item Full quantum control of atoms in optical tweezers
-    \item<2-> Coherent all-optical creation of single molecucle
-    \item<3-> Working towards fully controlled, strongly interacting tweezer array
+    \item New system for quantum computing and quantum simulation
+      using ultracold molecules in tweezers
+    \item<2-> Full quantum control of atoms in optical tweezers
+    \item<3-> Measured interaction between single atoms
+    \item<4-> Coherent all-optical creation of single molecucle
+    \item<5-> Working towards fully controlled, strongly interacting tweezer array
     \end{itemize}
-    \column{5.8cm}
-    \visible<4->{
+    \column{5.7cm}
+    \visible<6->{
       \begin{tikzpicture}
         %% PI
         \node[align=center] at (0, -0.8) {Experiment};
@@ -1859,12 +1893,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Na Raman sideband cooling sequence}
-  \begin{center}
-    \includegraphics[width=11cm]{sequence}
-  \end{center}
-\end{frame}
-
 %% Another thing we can measure is the FB resonance
 % Better prediction than before.
 \begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
@@ -1923,9 +1951,9 @@
   \begin{center}
     \begin{tikzpicture}
       \begin{scope}[shift={(-4.3, -3.3)}, scale=0.7]
-        \draw[->,line width=1.2] (0, 0) -- (0, 8);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,line width=1.2] (0, 0) -- (8, 0);
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
         \node[below] at (4, -0.1) {Internuclear distance};
 
         \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
@@ -1946,15 +1974,15 @@
         \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
         \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
 
-        \draw[->,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+        \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
 
         \only<5->{
           \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
-          \draw[cyan!85!blue,<->] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
+          \draw[cyan!85!blue,<->,>=stealth] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
           {\tiny $\delta$};
           \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
           \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
-          \draw[->,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
+          \draw[->,>=stealth,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
         }
       \end{scope}
       \visible<2-4>{
