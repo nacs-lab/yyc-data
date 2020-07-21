@@ -205,7 +205,7 @@ ylabel("Two-body survival")
 NaCsPlot.maybe_save("$(prefix)_postdoc_t")
 
 figure()
-imshow(mol_2d, aspect="auto", interpolation="none", origin="lower",
+imshow(mol_2d ./ param_1[2], aspect="auto", interpolation="none", origin="lower",
        extent=[img_time[1] - step(img_time) / 2, img_time[end] + step(img_time) / 2,
                img_freq[1] - step(img_freq) / 2, img_freq[end] + step(img_freq) / 2])
 xlabel("Raman time (ms)")
