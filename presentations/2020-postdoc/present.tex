@@ -16,6 +16,7 @@
 \usepackage{esint}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{transparent}
 \usepackage{xkeyval}
 \usepackage{xargs}
 \usepackage{xcolor}
@@ -520,27 +521,34 @@
 \begin{frame}{Ultracold molecule in tweezers}
   \begin{center}
     \begin{tikzpicture}
-      \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
-      \node[below, align=center] at (-3, 3.5) {
+      \uncover<-3>{
+        \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
+      }
+      \node[below, align=center] (CaFnode) at (-3, 3.5) {
         \includegraphics[width=6cm]{CaF_tweezer.png}\\
         \vspace{0.5cm}
         \scriptsize Science 365, 1156 (2019)
       };
+      \visible<4->{
+        \fill[white,opacity=0.9] (CaFnode.north west) rectangle (CaFnode.south east);
+      }
 
       \visible<2->{
-        \node at (3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Assembly}}};
-        \begin{scope}[shift={(1.6, 3.2)}, scale=0.5]
-          \shade[ball color=blue!90] (-0.8, 0.2) circle (0.45);
-          \shade[ball color=orange!90] (0.3, -0.2) circle (0.3);
-        \end{scope}
-        \node[align=center] (atom) at (3, 3.2) {\hspace{1cm}\textbf{Ultracold atoms}};
-        \begin{scope}[shift={(1.35, 1.5)}, scale=0.5]
-          \shade[ball color=blue!90] (-0.2, -0.1) circle (0.45);
-          \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
-        \end{scope}
-        \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
-        \draw[blue,->,line width=2,>=stealth] (atom) --
-        node[right] {\small \textbf{Coherent transfer}} (molecule);
+        \uncover<2,4->{
+          \node at (3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Assembly}}};
+          \begin{scope}[shift={(1.6, 3.2)}, scale=0.5]
+            \shade[ball color=blue!90] (-0.8, 0.2) circle (0.45);
+            \shade[ball color=orange!90] (0.3, -0.2) circle (0.3);
+          \end{scope}
+          \node[align=center] (atom) at (3, 3.2) {\hspace{1cm}\textbf{Ultracold atoms}};
+          \begin{scope}[shift={(1.35, 1.5)}, scale=0.5]
+            \shade[ball color=blue!90] (-0.2, -0.1) circle (0.45);
+            \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
+          \end{scope}
+          \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
+          \draw[blue,->,line width=2,>=stealth] (atom) --
+          node[right] {\small \textbf{Coherent transfer}} (molecule);
+        }
       }
 
       \visible<3->{
@@ -548,10 +556,12 @@
       }
 
       \visible<3->{
-        \node[below, text width=5.5cm, align=left] at (-3, -0.8) {\begin{itemize}
-          \item Temperature in tweezer
-          \item Quantum control
-          \end{itemize}};
+        \uncover<3>{
+          \node[below, text width=5.5cm, align=left] at (-3, -0.8) {\begin{itemize}
+            \item Temperature in tweezer
+            \item Quantum control
+            \end{itemize}};
+        }
       }
 
       \visible<4->{
@@ -586,7 +596,7 @@
     \begin{center}
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large NaCs molecule}}\\
       \begin{itemize}
-      \item Bi-alkali
+      \item Bi-alkali (easy to control)
       \item Large dipole moment: $4.6\ \mathrm{D}$
       \end{itemize}
     \end{center}
@@ -666,8 +676,8 @@
         {\includegraphics[width=6cm]{spectrum_nolabel_az.pdf}};
         \only<2>{
           \node[below,align=center] at (7, -7)
-          {Cs: 96\% ground state\footnote{PRX 9, 021039}\\
-            Na: 94\% ground state\footnote{PRA 97, 063423}};
+          {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
+            Na: 94\% ground state\footnote{\textbf{Y. Yu} et al. PRA 97, 063423 (2018)}};
         }
       }
       \visible<3>{
@@ -705,12 +715,8 @@
         \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
       }
       \visible<4>{
-        \node[above,align=center] at (7.5, -3.5)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\large Interaction}\\
-          \includegraphics[width=5.1cm]{na2cs4}};
-        \node[below,align=center] at (7.5, -3.5)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\large Molecule formation}\\
-          \includegraphics[width=5.1cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
+        \node[align=center] at (8, -3.5) {\includegraphics[width=4cm]{science_cover}\\
+          {\tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al., Science 360, 6391 (2018)}};
       }
     \end{tikzpicture}
     \vspace{-2cm}
@@ -1047,6 +1053,8 @@
   \end{center}
 \end{frame}
 
+\section{Molecule creation}
+
 \def\enableinteraction{}
 
 %%
@@ -1056,7 +1064,7 @@
 % It turns out that our tweezer is actually also a very good platform for such measurement.
 
 \ifdefined\enableinteraction
-\section{Atom-atom interaction}
+\subsection{Atom-atom interaction}
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
@@ -1181,10 +1189,16 @@
       \node at (-2.8, 0.7) {\includegraphics[width=6cm]{shift_raman.pdf}};
     }
     % Data 1
-    \visible<3>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4_0s.pdf}};}
-    \visible<4-7>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4_0.pdf}};}
-    \visible<8>{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs4.pdf}};}
-    \visible<9->{\node at (3.2, 0) {\includegraphics[width=5cm]{na2cs3.pdf}};}
+    \visible<3->{
+      \draw[->,>=stealth,line width=1,red!50!black]
+      (3.4, 1.4) -- node[above] {\small Repulsive} ++(-1.8, 0);
+      \draw[->,>=stealth,line width=1,green!50!black]
+      (3.53, 1.4) -- node[above=0.07cm] {\small Attractive} ++(1.8, 0);
+    }
+    \visible<3>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{na2cs4_0s.pdf}};}
+    \visible<4-7>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{na2cs4_0.pdf}};}
+    \visible<8>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{na2cs4.pdf}};}
+    \visible<9->{\node at (3.2, -0.4) {\includegraphics[width=5cm]{na2cs3.pdf}};}
 
     % Equations
     \visible<5-6>{
@@ -1244,14 +1258,22 @@
         \end{tabular}};
     }
     \visible<11->{
-      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-0.8, 0.5)
+      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.5, 0.5)
       node[below] {Enhanced coupling to molecular state!};
+      \node[below] at (-3, 0) {\includegraphics[width=5cm]{imgs/wavefunction.pdf}};
+    }
+    \visible<12->{
+      \node[below] at (3, -0.8) {\includegraphics[width=5cm]{na2cs4.pdf}};
+    }
+    \visible<13->{
+      \node[below,blue] (GroundStateText) at (4, 0) {Ground state only};
+      \draw[->,>=stealth,blue,line width=2] (GroundStateText) -- (4.05, -1.8);
     }
   \end{tikzpicture}
 \end{frame}
 \fi
 
-\section{Optical molecule creation}
+\subsection{Coherent optical transfer}
 % So now we've prepared the states of the atoms and
 % we've measured the properties of their interaction.
 % I'll now talk about how we make the molecules while maintaining the quantum control.
@@ -1281,9 +1303,9 @@
       \node[below,align=center] at (5.25, 3.5)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Merging}};
       \node[above,align=center] at (2.2, -3.3)
-      {\usebeamercolor[fg]{frametitle}{\tiny{PRA. 97, 063423 (2018)}}};
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRA. 97, 063423 (2018)}}};
       \node[above,align=center] at (5.4, -3.1)
-      {\usebeamercolor[fg]{frametitle}{\tiny{PRX. 9, 021039 (2019)}}};
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}};
       \begin{scope}[shift={(4.8, 4)}, xscale=-0.8, yscale=0.8]
         \mytweezer.drawCsTweezer(0, -3.1)
         \mytweezer.drawNaTweezer(-1, -3.1)
@@ -1415,7 +1437,7 @@
           {\footnotesize $\mathrm{Sr_2}$}
           {\usebeamercolor[fg]{frametitle}{\tiny PRL. 109, 115302 (2012)}}\\
           {\footnotesize $\mathrm{NaCs}$}
-          {\usebeamercolor[fg]{frametitle}{\tiny PRX. 9, 021039 (2019)}}\\
+          {\usebeamercolor[fg]{frametitle}{\tiny \textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}\\
           \includegraphics[width=3.5cm]{old_raman_transfer.pdf}
         };
       }
@@ -1686,30 +1708,24 @@
           \end{block}
         };
       }
-      \visible<5-7> {
-        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_t.pdf}};
-      }
-      \visible<8-> {
+      \visible<5-> {
         \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
       }
       \visible<6-> {
         \node[below, text width=5.5cm, align=center] at (-3, 3.4)
         {
           \begin{itemize}
-          \item Transferred \alt<-8>{$50\%$}{$63\%$} of ground state atom to molecule.
+          \item Transferred $63\%$ of ground state atom to molecule.
           \item<7-> Single molecule spin state
           \item<7-> $>50\%$ of molecule in motional ground state.
           \item<8-> Improving signal
           \end{itemize}
         };
       }
-      \visible<6-8> {
-        \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202003/imgs/fit_20200326_005204_raman_3322_2_damop_m_t.pdf}};
-      }
-      \visible<9> {
+      \visible<6-7> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{../../experiments/nacs_202007/imgs/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
       }
-      \visible<10-> {
+      \visible<8-> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{Timebase1038_20200702_094907.png}};
       }
     \end{tikzpicture}
@@ -1727,8 +1743,7 @@
   \begin{columns}
     \column{6.25cm}
     \begin{itemize}
-    \item New system for quantum computing and quantum simulation
-      using ultracold molecules in tweezers
+    \item New quatum platform based on ultracold molecules in tweezers
     \item<2-> Full quantum control of atoms in optical tweezers
     \item<3-> Measured interaction between single atoms
     \item<4-> Coherent all-optical creation of single molecucle
