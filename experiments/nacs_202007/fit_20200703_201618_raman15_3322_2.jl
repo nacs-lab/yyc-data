@@ -199,6 +199,11 @@ plot(plot_time, model_2d.(plot_time, -81.0, (param_1,)), "C0")
 xlim([0, 0.26])
 ylim([0, ylim()[2]])
 legend(fontsize="x-small", loc="upper right")
+annotate("Atom", (0.01, 0.385), xytext=(0.06, 0.34), arrowprops=Dict(:color=>"C3"), color="C3")
+annotate("Molecule", (0.082, 0.019),
+         xytext=(0.057, 0.15), arrowprops=Dict(:color=>"C3"), color="C3")
+annotate("Atom", (0.154, 0.148),
+         xytext=(0.16, 0.23), arrowprops=Dict(:color=>"C3"), color="C3")
 grid()
 xlabel("Raman time (ms)")
 ylabel("Two-body survival")
