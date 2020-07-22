@@ -207,9 +207,10 @@ NaCsPlot.maybe_save("$(prefix)_postdoc_t")
 figure()
 imshow(mol_2d ./ param_1[2], aspect="auto", interpolation="none", origin="lower",
        extent=[img_time[1] - step(img_time) / 2, img_time[end] + step(img_time) / 2,
-               img_freq[1] - step(img_freq) / 2, img_freq[end] + step(img_freq) / 2])
+               img_freq[1] - param_1[3] - step(img_freq) / 2,
+               img_freq[end] - param_1[3] + step(img_freq) / 2])
 xlabel("Raman time (ms)")
-ylabel("2-Photon Detuning (770XXX kHz)")
+ylabel("Detuning from resonance (kHz)")
 grid()
 colorbar()
 title("Molecule Population")
