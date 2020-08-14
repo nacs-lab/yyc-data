@@ -86,7 +86,7 @@ legend(fontsize="x-small", loc="lower right")
 grid()
 xlabel("2-Photon Detuning (770XXX kHz)")
 ylabel("Two-body survival")
-title("288625 GHz, 6 mW")
+title("288503 GHz, 6 mW")
 
 subplot(1, 2, 2)
 const plot_time = linspace(0, 2.3, 1000)
