@@ -70,9 +70,9 @@ const data_fit = [NaCsData.map_params((i, v) -> (1, 490.131, v, 1), data_nacs_00
                   NaCsData.map_params((i, v) -> (2, v, 0.0, 2), data_pa_na);
                   NaCsData.map_params((i, v) -> (3, v, 0.0, 3), data_pa_cs);
                   NaCsData.map_params((i, v) -> (4, v, 0.0, 4), data_pa_a);
-                  NaCsData.map_params((i, v) -> (5, v, 0.0, 5), data_pa_m)
-                  NaCsData.map_params((i, v) -> (3, v, 0.0, 6), data_pa_cs);
-                  NaCsData.map_params((i, v) -> (4, v, 0.0, 7), data_pa_a);]
+                  NaCsData.map_params((i, v) -> (5, v, 0.0, 5), data_pa_m);
+                  NaCsData.map_params((i, v) -> (3, v, 0.0, 6), data_pa_cs2);
+                  NaCsData.map_params((i, v) -> (4, v, 0.0, 7), data_pa_a2);]
 
 const prefix = joinpath(@__DIR__, "imgs", "fit_20200809_202331_raman15_3322_2")
 
