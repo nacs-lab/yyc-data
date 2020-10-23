@@ -7,6 +7,7 @@ function process_args()
     images = false
     counts = false
     i = 0
+    maxnum = 0
     while i < length(ARGS)
         i += 1
         arg = ARGS[i]
@@ -22,6 +23,10 @@ function process_args()
         end
         if arg == "--images"
             images = true
+        elseif arg == "--maxnum"
+            i += 1
+            maxnum = parse(Int, ARGS[i])
+            @assert maxnum >= 0
         elseif arg == "--counts"
             counts = true
         else
@@ -39,7 +44,7 @@ function process_args()
     if isdir(oname)
         oname = joinpath(oname, basename(iname))
     end
-    return (iname=iname, oname=oname, images=images, counts=counts)
+    return (iname=iname, oname=oname, images=images, counts=counts, maxnum=maxnum)
 end
 
 function compute_counts(scan)
@@ -116,6 +121,16 @@ matopen(opts.iname) do mf
     clear_char!(sg)
     if eltype(sa) == Bool
         sa = UInt8.(sa)
+    end
+
+    nseq = size(pl, 2)
+    if opts.maxnum > 0 && opts.maxnum < nseq
+        pl = pl[1:opts.maxnum]
+        sa = sa[:, :, 1:opts.maxnum]
+        if opts.images || opts.counts
+            nimgs::Int = scan["NumImages"]
+            scan["Images"] = [:, :, 1:(opts.maxnum * nimgs)]
+        end
     end
 
     matopen(opts.oname, "w") do out
