@@ -125,7 +125,7 @@ matopen(opts.iname) do mf
 
     nseq = size(pl, 2)
     if opts.maxnum > 0 && opts.maxnum < nseq
-        pl = pl[1:opts.maxnum]
+        pl = pl[:, 1:opts.maxnum]
         sa = sa[:, :, 1:opts.maxnum]
         if opts.images || opts.counts
             nimgs::Int = scan["NumImages"]
