@@ -76,34 +76,35 @@ function generate_fits_trails(fs::AbstractArray, f0, fwhm, pmin, pmax,
     return vs, v_uncs, us, u_uncs
 end
 
-# freqs = [-100, -80, -60, -40, -20, 0.0, 20, 40, 100]
-# freqs = [-1000, -60, -45, -30, -15, 0, 15, 30, 1000]
-freqs = [-1000, -60, -45, -30, -15, 0, 15, 30, 1000] .+ 7
-trails = [50, 100, 200, 300, 500, 700, 1000]
-res = generate_fits_trails(freqs, -15, 30, 0.5, 0.8, trails, 1000)
+const prefix = joinpath(@__DIR__, "imgs", "sim")
 
+trails = [50, 100, 200, 300, 500, 700, 1000]
+
+figure()
+freqs = [-1000, -60, -45, -30, -15, 0, 15, 30, 1000] .+ 7
+res = generate_fits_trails(freqs, -15, 30, 0.5, 0.8, trails, 1000)
 errorbar(trails, res[1], res[2], label="Value")
 errorbar(trails .+ 2, res[3], res[4], label="Uncertainty")
 xlabel("Trails")
 grid()
-tight_layout()
-show()
+NaCsPlot.maybe_save("$(prefix)_good15_7")
 
+figure()
+freqs = [-1000, -60, -45, -30, -15, 0, 15, 30, 1000]
+res = generate_fits_trails(freqs, -15, 30, 0.5, 0.8, trails, 1000)
+errorbar(trails, res[1], res[2], label="Value")
+errorbar(trails .+ 2, res[3], res[4], label="Uncertainty")
+xlabel("Trails")
+grid()
+NaCsPlot.maybe_save("$(prefix)_good15")
 
-# data = generate_data(freqs, 15, 30, 0.5, 0.75, 200)
-# # @show data
-# errorbar(freqs, data[1], data[2], fmt="o")
-# fit = fit_data(model, freqs, data[1], data[2], [15, 30, 0.5, 0.75])
-# @show fit.uncs
-# data = generate_data(freqs, 15, 30, 0.5, 0.75, 200)
-# # @show data
-# errorbar(freqs, data[1], data[2], fmt="o")
-# fit = fit_data(model, freqs, data[1], data[2], [15, 30, 0.5, 0.75])
-# @show fit.uncs
-# data = generate_data(freqs, 15, 30, 0.5, 0.75, 200)
-# # @show data
-# errorbar(freqs, data[1], data[2], fmt="o")
-# fit = fit_data(model, freqs, data[1], data[2], [15, 30, 0.5, 0.75])
-# @show fit.uncs
-# grid()
-# show()
+figure()
+freqs = [-100, -80, -60, -40, -20, 0.0, 20, 40, 100]
+res = generate_fits_trails(freqs, -15, 30, 0.5, 0.8, trails, 1000)
+errorbar(trails, res[1], res[2], label="Value")
+errorbar(trails .+ 2, res[3], res[4], label="Uncertainty")
+xlabel("Trails")
+grid()
+NaCsPlot.maybe_save("$(prefix)_bad")
+
+NaCsPlot.maybe_show()
