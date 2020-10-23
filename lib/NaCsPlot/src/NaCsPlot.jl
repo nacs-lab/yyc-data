@@ -57,24 +57,24 @@ plot_loading_data(data, scale=1; yoffset=0, kws...) =
 plot_survival_data(data, scale=1; yoffset=0, kws...) =
     plot_data(data, 2, scale; yoffset=yoffset, kws...)
 
-function save(name; close=true)
+function save(name; close=true, transparent=true)
     dir = dirname(name)
     if !isempty(dir)
         mkpath(dir, mode=0o755)
     end
     metadata = Dict("Creator"=>nothing, "Producer"=>nothing, "CreationDate"=>nothing)
-    savefig("$name.pdf"; bbox_inches="tight", transparent=true, metadata=metadata)
-    savefig("$name.png"; bbox_inches="tight", transparent=true, metadata=metadata)
-    savefig("$name.svg"; bbox_inches="tight", transparent=true,
+    savefig("$name.pdf"; bbox_inches="tight", transparent=transparent, metadata=metadata)
+    savefig("$name.png"; bbox_inches="tight", transparent=transparent, metadata=metadata)
+    savefig("$name.svg"; bbox_inches="tight", transparent=transparent,
             metadata=Dict("Creator"=>nothing, "Date"=>nothing,
                           "Format"=>nothing, "Type"=>nothing))
     close && PyPlot.close()
     return
 end
 
-function maybe_save(name)
+function maybe_save(name; transparent=true)
     if !interactive()
-        save(name)
+        save(name, transparent=transparent)
     end
 end
 
