@@ -3,65 +3,30 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc.Format: Unc, Sci
+using NaCsCalc
 using NaCsCalc.Utils: interactive
 using NaCsData
+using NaCsData.Fitting: fit_data, fit_survival
 using NaCsPlot
 using PyPlot
 using DataStructures
 using LsqFit
+using MAT
+
+# 15mW, 111(11) MHz, 203(41) MHz
+# 15mW, 1107(61) MHz, 220(29) MHz
+# 10mW, 98.7(62) MHz, 167(32) MHz
+# 5mW, 63.9(32) MHz, 50(15) MHz
+# 5mW, 64.4(50) MHz, 64(22) MHz
+# 1mW, 38.6(19) MHz, 27.3(97) MHz
+
+# Γ = 13.9(11) MHz/mW * tweezer_power
 
 const pwrs = [15, 10, 5, 1]
-const freqs = [111, 99, 64.0, 38.6]
-const freqs_s = [9, 11, 4.9, 4.6]
-const Γs = [213, 166, 54, 27]
-const Γs_s = [41, 57, 21, 23]
-
-fit_data(model, x, y, p0; kws...) =
-    fit_data(model, x, y, nothing, p0; kws...)
-
-function fit_data(model, params, ratios, uncs, p0;
-                  plotx=nothing, plot_lo=nothing, plot_hi=nothing, plot_scale=1.1)
-    use_unc = uncs !== nothing
-    if plotx === nothing
-        lo = minimum(params)
-        hi = maximum(params)
-        span = hi - lo
-        mid = (hi + lo) / 2
-        if plot_lo === nothing
-            plot_lo = mid - span * plot_scale / 2
-            if plot_lo * lo <= 0
-                plot_lo = 0
-            end
-        end
-        if plot_hi === nothing
-            plot_hi = mid + span * plot_scale / 2
-            if plot_hi * hi <= 0
-                plot_hi = 0
-            end
-        end
-        plotx = linspace(plot_lo, plot_hi, 10000)
-    end
-    if use_unc
-        fit = curve_fit(model, params, ratios, uncs.^-(2/3), p0)
-    else
-        fit = curve_fit(model, params, ratios, p0)
-    end
-    param = fit.param
-    unc = estimate_errors(fit)
-    return (param=param, unc=unc,
-            uncs=Unc.(param, unc, Sci),
-            plotx=plotx, ploty=model.(plotx, (fit.param,)))
-end
-
-function fit_survival(model, data, p0; use_unc=true, kws...)
-    if use_unc
-        params, ratios, uncs = NaCsData.get_values(data)
-        return fit_data(model, params, ratios[:, 2], uncs[:, 2], p0; kws...)
-    else
-        params, ratios, uncs = NaCsData.get_values(data, 0.0)
-        return fit_data(model, params, ratios[:, 2], p0; kws...)
-    end
-end
+const freqs = [110.8, 98.7, 64.0, 38.6]
+const freqs_s = [5.3, 6.2, 2.6, 1.9]
+const Γs = [214, 167, 54, 27.3]
+const Γs_s = [23, 32, 12, 9.7]
 
 model_lin0(x, p) = x .* p[1]
 model_lin1(x, p) = x .* p[1] .+ p[2]
