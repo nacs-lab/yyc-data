@@ -3,12 +3,15 @@
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
 import NaCsCalc.Format: Unc, Sci
+using NaCsCalc
 using NaCsCalc.Utils: interactive
 using NaCsData
+using NaCsData.Fitting: fit_data, fit_survival
 using NaCsPlot
 using PyPlot
 using DataStructures
 using LsqFit
+using LinearAlgebra
 
 const freqs10 = [4.0 1.0 103.630 0.05
                  4.0 1.0 105.700 0.05
@@ -61,12 +64,20 @@ const M1 = ce[:, 1] * ce[:, 1]'
 const M2 = ce[:, 2] * ce[:, 2]'
 const M3 = ce[:, 3] * ce[:, 3]'
 
+# function elevels(power, B, ps)
+#     M = M1 .* -(ps[2] + ps[3]) .+ M2 .* ps[2] .+ M3 .* ps[3]
+#     μB = B * ps[7]
+#     M[1, 1] += ps[1] + power * ps[4]
+#     M[2, 2] += ps[1] + power * ps[5] + μB
+#     M[3, 3] += ps[1] + power * ps[6] + μB * 2
+#     return eigvals(M)
+# end
 function elevels(power, B, ps)
     M = M1 .* -(ps[2] + ps[3]) .+ M2 .* ps[2] .+ M3 .* ps[3]
-    μB = B * ps[7]
-    M[1, 1] += ps[1] + power * ps[4]
-    M[2, 2] += ps[1] + power * ps[5] + μB
-    M[3, 3] += ps[1] + power * ps[6] + μB * 2
+    # μB = B * ps[7]
+    M[1, 1] += ps[1] + power * ps[4] + B * ps[7]
+    M[2, 2] += ps[1] + power * ps[5] + B * ps[8]
+    M[3, 3] += ps[1] + power * ps[6] + B * ps[9]
     return eigvals(M)
 end
 
@@ -83,11 +94,10 @@ function model(x, ps)
     end
     return Es
 end
-fit = curve_fit(model, 1:size(freqs, 1), freqs[:, 3], [99.2, 0.0, 1.26,
-                                                       1.15, 0.52, 0.14,
-                                                       4.16])
-uncs = Unc.(fit.param, estimate_errors(fit))
-@show uncs
+fit = fit_data(model, 1:size(freqs, 1), freqs[:, 3], [99.2, 0.0, 1.26,
+                                                      1.15, 0.52, 0.14,
+                                                      0, 4.16, 8.32], plotx=false)
+@show fit.uncs
 @show elevels(0, 0, fit.param)
 
 function eval_model_power(powers, B, ps)
