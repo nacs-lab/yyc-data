@@ -2,11 +2,15 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
+import NaCsCalc.Format: Unc, Sci
+using NaCsCalc
 using NaCsCalc.Utils: interactive
 using NaCsData
+using NaCsData.Fitting: fit_data, fit_survival
 using NaCsPlot
 using PyPlot
 using DataStructures
+using DelimitedFiles
 
 const iname_a = joinpath(@__DIR__, "data", "data_20180815_000658.mat")
 const params_a, logicals_a = NaCsData.load_striped_mat(iname_a)
@@ -65,7 +69,7 @@ data_na_n0 = split_na_c[:na]
 data_nacs_na_n0 = split_nacs_na_c[:na]
 
 const plt_data_dir = joinpath(@__DIR__, "plot_data")
-mkpath(plt_data_dir, 0o755)
+mkpath(plt_data_dir, mode=0o755)
 const plt_data_prefix = joinpath(plt_data_dir, "data_20180815_interaction_shift4")
 
 write_datacsv(fname, data) = open("$(fname).csv", "w") do io
