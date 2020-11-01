@@ -12,61 +12,46 @@ using PyPlot
 using DataStructures
 using DelimitedFiles
 
-const iname_a = joinpath(@__DIR__, "data", "data_20180815_000658.mat")
-const params_a, logicals_a = NaCsData.load_striped_mat(iname_a)
-const iname_b = joinpath(@__DIR__, "data", "data_20180815_091610.mat")
-const params_b, logicals_b = NaCsData.load_striped_mat(iname_b)
-const iname_c = joinpath(@__DIR__, "data", "data_20180815_231138.mat")
-const params_c, logicals_c = NaCsData.load_striped_mat(iname_c)
+const inames = ["data_20180815_000658.mat",
+                "data_20180815_091610.mat",
+                "data_20180815_231138.mat"]
+const datas = [NaCsData.load_striped_mat(joinpath(@__DIR__, "data", iname)) for iname in inames]
+const maxcnts = [typemax(Int),
+                 typemax(Int),
+                 typemax(Int)]
+const specs = [
+    OrderedDict(
+        :n0=>7 .+ linspace(-40, 40, 81),
+        :n1=>7 .+ linspace(-40, 40, 81),
+    ),
+    OrderedDict(
+        :n0=>7 .+ linspace(-60.0, 10.0, 81),
+        :n1=>7 .+ linspace(-60.0, 10.0, 81),
+    ),
+    OrderedDict(
+        :cs=>linspace(-80.0, 80.0, 161),
+        :na=>linspace(-80.0, 80.0, 161),
+    ),
+]
 
-data_cs_a = NaCsData.select_count(params_a, logicals_a,
-                                  NaCsData.select_single((-1, 2), (4,)))
-data_nacs_a = NaCsData.select_count(params_a, logicals_a,
-                                    NaCsData.select_single((1, 2), (4,)))
-data_cs_b = NaCsData.select_count(params_b, logicals_b,
-                                  NaCsData.select_single((-1, 2), (4,)))
-data_nacs_b = NaCsData.select_count(params_b, logicals_b,
-                                    NaCsData.select_single((1, 2), (4,)))
-data_cs_c = NaCsData.select_count(params_c, logicals_c,
-                                  NaCsData.select_single((-1, 2), (4,)))
-data_nacs_cs_c = NaCsData.select_count(params_c, logicals_c,
-                                       NaCsData.select_single((1, 2), (4,)))
-data_na_c = NaCsData.select_count(params_c, logicals_c,
-                                  NaCsData.select_single((1, -2), (3,)))
-data_nacs_na_c = NaCsData.select_count(params_c, logicals_c,
-                                       NaCsData.select_single((1, 2), (3,)))
+select_datas(datas, selector, maxcnts, specs) =
+    [NaCsData.split_data(NaCsData.select_count(data..., selector, maxcnt), spec)
+     for (data, maxcnt, spec) in zip(datas, maxcnts, specs)]
 
-const spec_a = OrderedDict(
-    :n0=>7 .+ linspace(-40, 40, 81),
-    :n1=>7 .+ linspace(-40, 40, 81),
-)
-const spec_b = OrderedDict(
-    :n0=>7 .+ linspace(-60.0, 10.0, 81),
-    :n1=>7 .+ linspace(-60.0, 10.0, 81),
-)
-const spec_c = OrderedDict(
-    :cs=>linspace(-80.0, 80.0, 161),
-    :na=>linspace(-80.0, 80.0, 161),
-)
-
-const split_cs_a = NaCsData.split_data(data_cs_a, spec_a)
-const split_nacs_a = NaCsData.split_data(data_nacs_a, spec_a)
-const split_cs_b = NaCsData.split_data(data_cs_b, spec_b)
-const split_nacs_b = NaCsData.split_data(data_nacs_b, spec_b)
-const split_cs_c = NaCsData.split_data(data_cs_c, spec_c)
-const split_nacs_cs_c = NaCsData.split_data(data_nacs_cs_c, spec_c)
-const split_na_c = NaCsData.split_data(data_na_c, spec_c)
-const split_nacs_na_c = NaCsData.split_data(data_nacs_na_c, spec_c)
+const datas_nacs_cs = select_datas(datas, NaCsData.select_single((1, 2), (4,)), maxcnts, specs)
+const datas_cs = select_datas(datas, NaCsData.select_single((-1, 2), (4,)), maxcnts, specs)
+const datas_nacs_na = select_datas(datas, NaCsData.select_single((1, 2), (3,)), maxcnts, specs)
+const datas_na = select_datas(datas, NaCsData.select_single((1, -2), (3,)), maxcnts, specs)
 
 const prefix = joinpath(@__DIR__, "imgs", "data_20180815_interaction_shift4")
 
-data_cs_n0 = [split_cs_a[:n0]; split_cs_b[:n0]; split_cs_c[:cs]]
-data_cs_n1 = [split_cs_a[:n1]; split_cs_b[:n1]]
-data_nacs_cs_n0 = [split_nacs_a[:n0]; split_nacs_b[:n0]; split_nacs_cs_c[:cs]]
-data_nacs_cs_n1 = [split_nacs_a[:n1]; split_nacs_b[:n1]]
+data_cs_n0 = [datas_cs[1][:n0]; datas_cs[2][:n0]; datas_cs[3][:cs]]
+data_cs_n1 = [datas_cs[1][:n1]; datas_cs[2][:n1]]
+data_nacs_cs_n0 = [datas_nacs_cs[1][:n0]; datas_nacs_cs[2][:n0]; datas_nacs_cs[3][:cs]]
+data_nacs_cs_n1 = [datas_nacs_cs[1][:n1]; datas_nacs_cs[2][:n1]]
 
-data_na_n0 = split_na_c[:na]
-data_nacs_na_n0 = split_nacs_na_c[:na]
+data_na_n0 = datas_na[3][:na]
+data_nacs_na_n0 = datas_nacs_na[3][:na]
 
 const plt_data_dir = joinpath(@__DIR__, "plot_data")
 mkpath(plt_data_dir, mode=0o755)
