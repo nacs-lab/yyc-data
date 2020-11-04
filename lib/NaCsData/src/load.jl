@@ -47,6 +47,18 @@ SortedData1{K,Vs} = SortedData{1,2,K,Vs}
     end
 end
 
+function Base.sort!(data::SortedData{1}; kws...)
+    perm = sortperm(data.params; kws...)
+    permute!(data.params, perm)
+    permute!(data.values, perm)
+    return data
+end
+
+function Base.filter(f, data::SortedData{1})
+    idxs = findall(f, data.params)
+    return data[idxs]
+end
+
 @inline Base.size(data::SortedData) = size(data.params)..., depth(data.values)
 @inline Base.lastindex(data::SortedData) = lastindex(data.params)
 @inline Base.size(data::SortedData{N}, dim) where {N} = if dim <= N
@@ -131,6 +143,10 @@ CountData(params::AbstractArray{T,N}, counts::AbstractArray{T2,N2}) where {N,N2,
 @inline _maybe_countvalues(v::Number) = v
 @inline _maybe_countvalues(v::AbstractArray{T,N}) where {T,N} = CountValues{N}(v)
 @inline Base.getindex(vals::CountValues, args...) = _maybe_countvalues(vals.counts[args...])
+function Base.permute!(vals::CountValues{2}, perm::AbstractVector)
+    vals.counts .= vals.counts[perm, :]
+    return vals
+end
 
 function load_count_csv(fname)
     data = readdlm(fname, ',', Float64, skipstart=1)
@@ -197,6 +213,11 @@ end
     return _maybe_survivalvalues(vals.ratios[args...], vals.uncs[args...])
 end
 @inline depth(vals::SurvivalValues{N2}) where {N2} = size(vals.ratios, N2)
+function Base.permute!(vals::SurvivalValues{2}, perm::AbstractVector)
+    vals.ratios .= vals.ratios[perm, :]
+    vals.uncs .= vals.uncs[perm, :]
+    return vals
+end
 
 # TODO
 const SurvivalValues1 = SurvivalValues{2}
