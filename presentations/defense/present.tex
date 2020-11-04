@@ -1,0 +1,2031 @@
+\documentclass{beamer}
+\mode<presentation>{
+  \usetheme{Boadilla}
+  \usefonttheme[onlylarge]{structurebold}
+  \usefonttheme[stillsansseriflarge]{serif}
+  \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+  % \setbeamertemplate{navigation symbols}{}
+  \setbeamercovered{transparent}
+}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{esint}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{transparent}
+\usepackage{xkeyval}
+\usepackage{xargs}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{multimedia}
+\usepackage{bm}
+\usepackage{siunitx}
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes,
+  arrows.meta
+}
+\usepgfmodule{oo}
+
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\mode<handout>{
+  \usepackage{pgfpages}
+  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+  \setbeamercolor{background canvas}{bg=black!10}
+}
+
+\newcommand\pgfmathsinandcos[3]{%
+  \pgfmathsetmacro#1{sin(#3)}%
+  \pgfmathsetmacro#2{cos(#3)}%
+}
+\newcommand\LongitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % azimuth
+  \tikzset{#1/.estyle={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
+}
+\newcommand\LatitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % latitude
+  \pgfmathsetmacro\yshift{\cosEl*\sint}
+  \tikzset{#1/.estyle={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
+}
+\newcommand\DrawLongitudeCircle[2][1]{
+  \LongitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1);
+  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1);
+}
+\newcommand\DrawLatitudeCircleArrow[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane,decoration={markings, mark=at position 0.6 with {\arrow{<}}},postaction={decorate},line width=.6mm] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed,line width=.6mm] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\DrawLatitudeCircle[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\coil[1]{
+  {\rh * cos(\t * pi r)}, {\apart * (2 * #1 + \t) + \rv * sin(\t * pi r)}
+}
+\makeatletter
+\define@key{DrawFromCenter}{style}[{->}]{
+  \tikzset{DrawFromCenterPlane/.style={#1}}
+}
+\define@key{DrawFromCenter}{r}[1]{
+  \def\@R{#1}
+}
+\define@key{DrawFromCenter}{center}[(0, 0)]{
+  \def\@Center{#1}
+}
+\define@key{DrawFromCenter}{theta}[0]{
+  \def\@Theta{#1}
+}
+\define@key{DrawFromCenter}{phi}[0]{
+  \def\@Phi{#1}
+}
+\presetkeys{DrawFromCenter}{style, r, center, theta, phi}{}
+\newcommand*\DrawFromCenter[1][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY);
+  }
+}
+\newcommand*\DrawFromCenterText[2][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY) node {#2};
+  }
+}
+\makeatother
+
+% not mandatory, but I though it was better to set it blank
+\setbeamertemplate{headline}{}
+\def\beamer@entrycode{\vspace{-\headheight}}
+
+\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.2cm,
+  post length=0.2cm, snake, amplitude=.4mm,
+  segment length=2mm},thick, ->]
+
+%% document-wide tikz options and styles
+
+\tikzset{%
+  % >=latex, % option for nice arrows
+  inner sep=0pt,%
+  outer sep=2pt,%
+  mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
+    fill=black,circle}%
+}
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, very thick,
+    text width=8em,
+    minimum height=2.5em,
+    text centered},
+}
+
+\tikzset{onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
+    % \pgfkeysalso doesn't change the path
+  }}
+
+\makeatletter
+\newbox\@backgroundblock
+\newenvironment{backgroundblock}[2]{%
+  \global\setbox\@backgroundblock=\vbox\bgroup%
+  \unvbox\@backgroundblock%
+  \vbox to0pt\bgroup\vskip#2\hbox to0pt\bgroup\hskip#1\relax%
+}{\egroup\egroup\egroup}
+\addtobeamertemplate{background}{\box\@backgroundblock}{}
+\makeatother
+
+\ifpdf
+% Ensure reproducible output
+\pdfinfoomitdate=1
+\pdfsuppressptexinfo=-1
+\pdftrailerid{}
+\hypersetup{
+  pdfcreator={},
+  pdfproducer={}
+}
+\fi
+
+\title{Coherent Association of Single Molecules from Single Atoms}
+\date{}
+\author{Yichao Yu}
+\institute{Ni Group/Harvard}
+
+%%% Outline
+
+%% Goal
+% New system and tool for quantum computing and quantum simulation
+% Requires quantum system that is
+% * Fully controllable
+% * Allow entanglement
+% * Scalable (to tens or hundreds)
+
+%% System
+% Many other systems in AMO
+% Each approaches all have their advantages and disadvantages.
+% These are the properties that we exploid and the reasons that we pick our system.
+% Just like other systems they have their difficulties and that'll be the main focus of my talk.
+
+% Molecules
+% * Dipole intraction
+% %% Strong, tunable, helps with achieving fast interaction
+% %% while maintaining long coherence time.
+% * Rich internal states (e.g. qubit state selection)
+
+% Tweezers
+% * Single site detection
+% * Single site manipulation
+
+% Two approaches (Cooling molecules vs forming molecules)
+% (given our goal of combining optical tweezer with ultracold molecules)
+% * Cooling molecules (show CaF picture)
+% %% Difficulty on achieving lower temperature
+% * Assembly (....)
+% %% Difficulty on forming the molecule
+% %% Allow us to use more existing technologies
+% %% Transfer of coherent control
+
+% Designed by taking advantage of the new techniques that are developed over the past decades
+
+%% Experiment design
+
+% * MOT
+% * Tweezer trapping (metion switching) (Na + Cs single atom picture)
+% * RSC in tweezer (extremely common in ion traps, also realized for atoms in tweezers before)
+% * Merging
+% * Forming molecules
+
+%% Lab pictures
+
+%% Atom preparation
+% (since our goal is to transfer atom coherence to molecule coherence)
+% RSC, common in ion trap, but needs tweak to work for us.
+% Cs RSC, following ion trap procedure (advice from Till Roseband to sweep the pulse time)
+% Na RSC, not as simple.
+% High L-D parameter, high initial temperature
+% The real challenge in the coupling dead zone.
+% Needs higher order sideband.
+% Simulation guided sequence.
+
+%% Molecule formation
+
+% Two step transfer scheme
+
+% Interaction shift?
+
+% Raman transition
+% (DAMOP talk)
+
+% Conclusion
+% * Experiment aiming to create flexible array of ultracold molecules for applications like ...
+% * Atomic state preparation (internal and external, and how we overcome the challenge for Na)
+% * Molecular state transfer (coherence, maintaining control, all optical)
+% * Next step: transfer to ground state (could be from FB molecule).
+
+\begin{document}
+
+\pgfdeclarelayer{tweezer}
+\pgfsetlayers{tweezer,main}
+\pgfooclass{tweezer}{
+  \method tweezer() {
+  }
+  \method drawTweezer(#1,#2,#3) {
+    \begin{pgfonlayer}{tweezer}
+      \shade[shading=radial,path fading=glow fading,shift={(#1,#2)},rotate=90,yscale=1,
+      fill opacity=0.9,inner color=#3]
+      plot[draw,samples=200,domain=-1.5:1.5] function {sqrt(0.01 + x**2 / 5)}
+      -- plot[draw,samples=200,domain=1.5:-1.5] function {-sqrt(0.01 + x**2 / 5)};
+    \end{pgfonlayer}
+  }
+  \method drawAtom(#1,#2,#3,#4) {
+    \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
+  }
+  \method drawNaAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,orange);
+  }
+  \method drawCsAtom(#1,#2,#3) {
+    \pgfoothis.drawAtom(#1,#2,#3,blue);
+  }
+  \method drawNaTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,orange!35!black!30);
+  }
+  \method drawCsTweezer(#1,#2) {
+    \pgfoothis.drawTweezer(#1,#2,blue!30!black!30);
+  }
+  \method up(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2+0.06,0.12);
+    \pgfoothis.drawCsAtom(#1,#2-0.06,0.16);
+  }
+  \method down(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2+0.06,0.16);
+    \pgfoothis.drawNaAtom(#1,#2-0.06,0.12);
+  }
+  \method naTrap(#1,#2) {
+    \pgfoothis.drawNaTweezer(#1,#2);
+    \pgfoothis.drawNaAtom(#1,#2,0.12);
+  }
+  \method csTrap(#1,#2) {
+    \pgfoothis.drawCsTweezer(#1,#2);
+    \pgfoothis.drawCsAtom(#1,#2,0.16);
+  }
+}
+\pgfoonew \mytweezer=new tweezer()
+
+%% Title
+% I'm Yichao from the Ni lab at Harvard and today I'll tell you about our experiment on
+% creating single NaCs molecules in optical tweezers.
+{
+  \usebackgroundtemplate{
+    \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{figures/front_bg.png}}
+  }
+  \setbeamercolor{title}{fg=white}
+  \setbeamercolor{author}{fg=white}
+  \setbeamercolor{institute}{fg=white}
+  \setbeamercolor{date}{fg=white}
+  \begin{frame}{}
+    \titlepage
+  \end{frame}
+}
+
+%% Goal
+% But before that, let's first talk about why we want to do this.
+
+% The long term goal of our experiment is to create a new system
+% for quantum computing and quantum simulation, as well as, in general,
+% adding new tools to the so-called AMO toolbox for potentially other applications.
+% These require our system to be fully controllable to single particle level
+% as well as creating entanglement between the particles.
+
+% There are already many good candidates or such a system, and even just in AMO there are
+% neutral atoms, ions, Rydberg atoms etc, so why are we adding yet another one to the list.
+% Well, first of all, broadly speaking, we'll never know how well a system work without trying it.
+% But more concretely, although some approaches have got closer to the goal then others,
+% no one have actually got there yet and there are still big challeges for all of them.
+% Although I'm definately not going to claim we have the best system in the world,
+% I do believe we are bringing in new ideas and new solutions for some of
+% the issues in other approaches.
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[right, align=center] at (0.7, -1.7) {
+        \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
+        \includegraphics[width=3.2cm]{figures/edm}\\
+        {\tiny Science 343, 269 (2014)}};
+      \node[right, align=center] at (4.5, -2.0) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
+        \includegraphics[width=2.0cm]{figures/quantum_chemistry}\\
+        {\tiny Nature 464, 1324 (2010)}};
+      \fill[white,opacity=0.4] (8.0, -3.75) rectangle (0.7, -0.1);
+      \node[right, align=center] at (1.0, 1.9) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Simulation}\\
+        \includegraphics[width=2.9cm]{figures/quantum_simulation}\\
+        {\tiny Nat. Phys. 2, 341 (2006)}};
+      \node[right, align=center] at (4.2, 2.0) {
+        \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
+        \includegraphics[width=2.9cm]{figures/quantum_computing}\\
+        {\tiny PRL. 97, 33003 (2006)}};
+      \visible<2->{
+        \node[above,text width=4.5cm] at (10, 1) {
+          \begin{itemize}
+          \item Full quantum control
+          \item Entanglement
+          \item $\cdots$
+          \end{itemize}
+        };
+      }
+      \visible<3->{
+        \node[below] at (10, -1.2) {
+          \usebeamercolor[fg]{frametitle}
+          {\large\textbf{New Approach?}}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% System
+% So now let's look at our system.
+
+% The two properties that I've emphasized on initially are full quantum control and
+% entanglement. And let's first talk about entanglement.
+% Well, entangling different particles requires interaction.
+% And this is the main reason we chose dipole molecules.
+% Compared to neutral atoms, they have much stronger and longer range interactions,
+% roughly `kHz` about a micron apart. This might not seem like much compared to other strongly
+% interacting systems like ions and Rydberg atoms, the interacting molecules are long lived
+% and the interaction between them are easily tunable,
+% which is useful for reducing coupling with the enviroment and achieving long coherence time.
+% Molecules also have a very rich internal state, which is the main reason for the tunability,
+% but it also give us a lot of freedom in the selection our qubit states.
+
+% The other important property we are aiming for is full quantum control,
+% and for that our main tool is the optical tweezer.
+% Since the tweezer is generally form through a high-NA objective,
+% it very naturally gives us the resolution for single site detection and manipulation
+% of the molecules. This technique has been developped in many other groups for atoms,
+% demostrating sideband cooling, near deterministic loading and rearrangment.
+% In our experiment, we would like to extend these capability from atoms to molecules and
+% you'll see later in my talk how we use this to achieve quantum control on our molcules.
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \uncover<-8>{
+        \node[below,align=center] at (-3, 4) {
+          {\usebeamercolor[fg]{frametitle}{\large \textbf{Entanglement}}}\\
+          {\visible<2->{
+              \usebeamercolor[fg]{frametitle}{\footnotesize \textbf{i.e. interaction}}
+            }}
+        };
+      }
+      \visible<3->{
+        \node[below,align=center,text width=5.8cm] at (-3, 2.7) {{
+            {\uncover<-8>{\usebeamercolor[fg]{frametitle}{\textbf{Dipolar molecules}}}}
+            \visible<4-8>{
+              \begin{itemize}
+              \item Strong and tunable interaction\\
+                ($\approx kHz$ at $\approx\mu m$ distance)\\
+                \uncover<5->{
+                  \begin{itemize}
+                  \item Fast gate operations
+                  \item Long coherence time
+                  \end{itemize}
+                }
+              \item<6-> Rich internal structure\\
+                (Electronic, vibrational, rotational, hyperfine, etc.)
+              \end{itemize}
+            }
+          }};
+      }
+      \uncover<1,7-> {
+        \node[below,align=center] at (3, 4) {
+          \usebeamercolor[fg]{frametitle}{\textbf{Single particle control}}};
+      }
+      \visible<7->{
+        \node[below,align=center,text width=5.8cm] at (3, 3) {{
+            {\usebeamercolor[fg]{frametitle}{\textbf{Optical tweezers}}}
+            \visible<8->{
+              \begin{itemize}
+              \item Single site resolution
+              \item<9-> $\cdots$
+              \end{itemize}
+            }
+          }};
+      }
+      \visible<9->{
+        \node[align=center] at (-3.3, -1.5) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Loading}\\
+          \includegraphics[width=3.8cm]{figures/deterministic-loading}\\
+          {\tiny Nat. Phys. 6, 951 (2010)}
+        };
+        \node[align=center] at (2.7, 0) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Cooling}\\
+          \includegraphics[width=3.5cm]{figures/rsc-regal}\\
+          {\tiny PRX. 2, 041014 (2012)}
+        };
+        \node[align=center] at (2.4, -3.3) {
+          \usebeamercolor[fg]{frametitle}{\footnotesize Rearranging}\\
+          \includegraphics[width=5.7cm]{figures/atom-array}\\
+          {\tiny Science 354, 1024 (2016)}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Molecules in tweezers
+% So since our goal is to create ultracold molecules, there are basically two approaches.
+% One approach is to first get molecule and then get ultracold, in another word, direct cooling
+% of hot molecules to ultracold temperature without destroying or otherwise loosing the molecule.
+% This is a very hard problem even without optical tweezer because of the difficulties
+% in laser cooling, but there has been a lot of progress in this area,
+% including an experiment here at JILA in Jun's group.
+% In fact, the Doyle group at Harvard have recently demostrated trapping ultracold CaF molecules
+% in an array of optical tweezers, as you can see in this picture.
+
+% The other approach, which is what we use, is to get ultracold, and then get molecule.
+% In another word, we would cool and fully control whatever make up the molecule,
+% in our case atoms, before turning them into molecule coherently,
+% without heating them, and in general maintaining
+% the control we had on the atoms in this process.
+
+% Comparing the two approaches, the main challenge currently for the direct cooling approach
+% is to cool and in general controlling the molecules in the tweezer. Whereas for us,
+% our challenge is to first obtaining the control on the atom, and the coherence creation of the
+% molecules. These two main challenges will be what I'm going to focus on
+% for the remainder of my talk.
+% <6min>
+\begin{frame}{Ultracold molecule in tweezers}
+  \begin{center}
+    \begin{tikzpicture}
+      \uncover<-3>{
+        \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
+      }
+      \node[below, align=center] (CaFnode) at (-3, 3.5) {
+        \includegraphics[width=6cm]{figures/CaF_tweezer.png}\\
+        \vspace{0.5cm}
+        \scriptsize Science 365, 1156 (2019)
+      };
+      \visible<4->{
+        \fill[white,opacity=0.9] (CaFnode.north west) rectangle (CaFnode.south east);
+      }
+
+      \visible<2->{
+        \uncover<2,4->{
+          \node at (3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Assembly}}};
+          \begin{scope}[shift={(1.6, 3.2)}, scale=0.5]
+            \shade[ball color=blue!90] (-0.8, 0.2) circle (0.45);
+            \shade[ball color=orange!90] (0.3, -0.2) circle (0.3);
+          \end{scope}
+          \node[align=center] (atom) at (3, 3.2) {\hspace{1cm}\textbf{Ultracold atoms}};
+          \begin{scope}[shift={(1.35, 1.5)}, scale=0.5]
+            \shade[ball color=blue!90] (-0.2, -0.1) circle (0.45);
+            \shade[ball color=orange!90] (0.2, 0.1) circle (0.3);
+          \end{scope}
+          \node[align=center] (molecule) at (3, 1.5) {\hspace{1cm}\textbf{Ultracold molecule}};
+          \draw[blue,->,line width=2,>=stealth] (atom) --
+          node[right] {\small \textbf{Coherent transfer}} (molecule);
+        }
+      }
+
+      \visible<3->{
+        \node at (0, 0) {\usebeamercolor[fg]{frametitle}{\underline{\textbf{Challenges}}}};
+      }
+
+      \visible<3->{
+        \uncover<3>{
+          \node[below, text width=5.5cm, align=left] at (-3, -0.8) {\begin{itemize}
+            \item Temperature in tweezer
+            \item Quantum control
+            \end{itemize}};
+        }
+      }
+
+      \visible<4->{
+        \node[below, text width=4cm, align=left] at (3, -0.7) {\begin{itemize}
+          \item Control of atoms
+          \item Coherent creation of molecules
+          \end{itemize}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% So here's an outline for the rest of my talk.
+% I'll first give an overview of our experiment, both the procedure and the apparatus.
+% Then I'll discuss one example of achieving full control on our atoms.
+% I may describe our measurement of the interaction between atoms as a preparation
+% for our molecule formation if time allows. And after that I'll talk about
+% how we create the molecule coherently, before giving my conclusion.
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Experiment overview}
+% So first the experiment.
+% The molecules we make is NaCs, chosen because
+% a) the alkali atoms are relatively easy to cool and control, and
+% b) this molecule has a fairly strong dipole moment of 4.6 debye among the bi-alkalis.
+\begin{frame}[t]{Experiment overview}
+  \begin{columns}
+    \column{5.8cm}
+    \column{5.8cm}
+    \begin{center}
+      {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large NaCs molecule}}\\
+      \begin{itemize}
+      \item Bi-alkali (easy to control)
+      \item Large dipole moment: $4.6\ \mathrm{D}$
+      \end{itemize}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+% Since we are making molecules from atoms inside the optical tweezer,
+% the obvious first step is to get the atoms in there.
+% We trap the atoms in their respective tweezers directly from the MOT as you can see
+% in this picture, with about 60% loading probability.
+
+% We then prepare the initial state, both internal and motional,
+% for the atoms using optical pumping and Raman sideband cooling to a single state
+% with a fairly high fidelity, which I'll talk about later.
+
+% At this point the atoms are still in their own tweezers,
+% which isn't very helpful for making a single molecule.
+% So the natural next step is to move one of the tweezers and
+% merge the two atoms into the same tweezer.
+% We do this in a way that minimize the heating to the two atoms so they remain in their
+% motional ground states that we cooled them into.
+
+% After the merge, the two atoms are now in the same trap and
+% we proceed to measure their interaction and form the molecule from this state.
+\begin{frame}[t]{Experiment overview}
+  \vspace{-0.5cm}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.7]
+      \mytweezer.drawCsTweezer(0, 0)
+      \mytweezer.drawNaTweezer(-1, 0)
+      \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
+      \mytweezer.drawNaAtom(-1.06, -0.09, 0.27)
+
+      \mytweezer.drawCsTweezer(0, -3.1)
+      \mytweezer.drawNaTweezer(-1, -3.1)
+      \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
+      \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
+
+      \mytweezer.drawCsTweezer(-1, -7.0)
+      \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
+      \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
+
+      \fill[white,temporal=<1>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5) rectangle (0.5, -1.5);
+      \fill[white,temporal=<2>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 3.1) rectangle (0.5, -1.5 - 3.1);
+      \fill[white,temporal=<3-4>{opacity=0.82}{opacity=0}{opacity=0.5}]
+      (-1.5, 1.5 - 7.0) rectangle (-0.5, -1.5 - 7.0);
+
+      \visible<2->{
+        \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
+          \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+          \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
+        \end{scope}
+      }
+
+      \visible<3->{
+        \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
+          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
+        \end{scope}
+      }
+      \visible<1>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
+        \node[below,align=center] at (6.5, -0.5)
+        {\includegraphics[width=5cm]{figures/single_viridis.png}};
+        \node[below,align=center] at (7, -7.5)
+        {Loading probability per site: 60\%\\
+          Post select on initial and final state.};
+      }
+      \visible<2>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
+        \node[below] at (6.5, -1)
+        {\includegraphics[width=6cm]{figures/spectrum_nolabel_az.pdf}};
+        \only<2>{
+          \node[below,align=center] at (7, -7)
+          {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
+            Na: 94\% ground state\footnote{\textbf{Y. Yu} et al. PRA 97, 063423 (2018)}};
+        }
+      }
+      \visible<3>{
+        \node[above,align=center] at (7, 0)
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
+        \mytweezer.drawNaAtom(6, -1.22, 0.15)
+        \mytweezer.drawCsAtom(9, -2.06, 0.11)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+        \mytweezer.drawNaAtom(6, -3.72, 0.15)
+        \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
+        \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
+        \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
+
+        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+        \mytweezer.drawNaAtom(6, -8.55, 0.14)
+        \mytweezer.drawCsAtom(6, -9.56, 0.11)
+
+        \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
+        \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
+      }
+      \visible<4>{
+        \node[align=center] at (8, -3.5) {\includegraphics[width=4cm]{figures/science_cover}\\
+          {\tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al., Science 360, 6391 (2018)}};
+      }
+    \end{tikzpicture}
+    \vspace{-2cm}
+  \end{center}
+\end{frame}
+
+%% Lab pictures
+% In real world this is what the experiment looks like.
+% Since we don't need to trap a lot of atoms and we also don't use any rediculously strong field,
+% our experiment is relatively small and compact compared to traditional bulk gas experiments.
+% You can see in this picture that our whole vacuum chamber is in this region.
+% From a different angle it is actually still possible to see our Na MOT glowing yellow in
+% the vacuum chamber like this.
+% Surrounding the camber we have our beam path for the MOT, shown here,
+% and our tweezer and imaging beam paths, as well as many others around.
+% <10min>
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<1>{
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber}};
+      }
+      \visible<2-3>{
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber_center}};
+      }
+      \visible<4>{
+        \node at (-3, 3.5) {\usebeamercolor[fg]{frametitle}{\textbf{MOT beam path}}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber_mot}};
+      }
+      \visible<5>{
+        \node at (-3, 3.5) {\usebeamercolor[fg]{frametitle}{\textbf{Tweezer beam path}}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber_tweezer}};
+      }
+      \visible<3> {
+        \draw[white, line width=2] (-3.1, -0.2) ellipse (0.25 and 0.4);
+        \draw[white, line width=1.5] (-3.15, 0.2) -- (-0.5, 1.65);
+        \draw[white, line width=1.5] (-3.15, -0.6) -- (-0.5, -1.65);
+        \draw[white, line width=3] (-0.5, 1.65) rectangle (4.5, -1.65);
+        \node at (2, 0) {\includegraphics[width=5cm]{figures/na_mot}};
+        \fill[black, opacity = 0.3, even odd rule]
+        (-0.5, 1.65) rectangle (4.5, -1.65) (1.9, 0.35) circle (0.3);
+        \node[below, white] at (1.9, -0.1) {\textbf{\small Na MOT}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Atom control
+% So that's a rough overview of our experiment and
+% next I'll talk about our state control of the atom.
+% Of course, even for atoms, there are many degrees of freedoms to control and
+% I don't have time to talk about every single one of them.
+% So instead, I'm just going to focus on how we use Raman sideband cooling to cool Na atoms.
+\section{Atom state control}
+\subsection{Raman sideband cooling of Na atoms}
+\begin{frame}{Outline}
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+%% Raman sideband cooling
+% I imagine most people here are very familiar with Raman sideband cooling.
+% In fact, I feel like it is used so common in ion experiments that people stops
+% talking about it. So I believe I don't have to talk too much about how it works in general.
+% Instead, I'll focus on the difference in our experiment and the new challenges we face,
+% compared to a more traditional sideband cooling sequence.
+% I'll talk about how we overcome these challenges and open up this tool to ours and
+% other future experiments where Raman sideband cooling were previously thought
+% to be very hard or impossible.
+
+% Before that, let me just very quickly go through how Raman sideband cooling works
+% even though you probably know already.
+% So here is the motional levels of an atom in a harmonic potential, which approximate our
+% optical tweezer. These levels exist for all the ground HF states so here is it for a different
+% one. Now, we can drive between different ground HF states with a Raman transitions.
+% But due to the motional levels, in additional to driving a "carrier" Raman transition,
+% at the normal resonance frequency, we can detune from it to drive "sideband" transitions
+% that changes the motional state in additional to the HF states.
+% When we drive the transition on the sideband, we can either add, or remove motional energy
+% from the atoms. Not only is this a tool to cool the atoms,
+% but it is actually also a tool to measure the temperature of the atoms.
+% Since there are fewer states for decreasing the energy than to increase the energy,
+% there's a difference between the heating and cooling sidieband.
+% And as the temperature of the atoms get lower and lower,
+% the cooling sideband will be more and more surpressed and
+% the assymetry between the two sideband can be used to infer the temperature of the atom,
+% so-called, sideband thermometry.
+% Of course, after driving the sideband transition, we need to reset the internal state
+% of the atom and removes the entropy. This is done using an optical pumping step, shown here.
+
+%% Lamb-Dicke parameter
+% It is not too hard to see that whether this cooling cycle can work relies on the balance
+% between removing motional energy from the atom via the sideband transition,
+% and the heating done in the OP step. This ratio is determined by the so-called Lamb-Dicke
+% parameter, which is defined as the ratio between the harmonic oscillator length
+% and the Raman or OP wavelengths, and it is also proportional to the square root of the
+% recoil energy and the trapping frequency, which is exactly what we want.
+% Because of this, one would like a small LD parameter so that the heating is small
+% compared to the cooling. This is OK for Cs and also for Rb which was demostrated
+% in other groups before, but the light mass of Na as well as the short wavelength
+% of the D lines causes a much bigger LD parameter.
+% Together with a higher initial temperature for Na due to lack of good PGC,
+% we knew right off the bat that Na cooling will be hard.
+% But still, the LD parameter is smaller than one so we decided to give it a try
+% and it turns out that the difficulty with RSC for Na is more subtle and
+% intersting then what one might naively expect.
+% <16min>
+
+% First of all, although the Lamb-Dicke parameter tells us that we should have
+% a net cooling per cycle on average, it does not capture the uncertainty of cooling process.
+% As you can see in this plot, with a high Lamb-Dicke parameter, and for a hot initial state,
+% similar to what we have on average, the atom might end up in a wide varity of states after OP,
+% which makes it much harder to control the motional state of the atom during cooling.
+% This effect is also state dependent and it gets worse the higher the initial state is.
+% Second, which is makes the first issue worse,
+% is the variation of the coupling for the Raman transition.
+% The sideband coupling for different motional states are different. This is not news
+% for people doing sideband cooling and in fact we leart from Till Roseband to take this
+% into account for our Cs RSC based on his old experience with RSC on ions right here at NIST.
+% However, what's new for Na is that our Lamb-Dicke parameter and initial tempereture is high
+% enough that our coupling strengh is not monotonic anymore.
+% In particular, we are experiencing coupling "dead zone"s.
+% And if the atoms gets here, they would get stuck since we would not be able to address them
+% as efficiently just by changing the pulse times.
+% They also won't show up in our detection scan to measure the temperature
+% making optimizing the cooling sequency using the experiment very challenging.
+
+% The solution we found to these problem turns out to be the large Lamb-Dicke parameter itself.
+% You see, the fact that a large Lamb-Dicke parameter cause more heating
+% and more spread out of states actually also means that the atoms has a strong coupling
+% to higher order sideband. Now if we use these higher order sideband to do the cooling
+% we can significantly increase the cooling to heating ratio, fixing the original concern
+% for RSC. It doesn't directly fix the spreading out problem but it does give us
+% more ways to deal with it.
+% Most importantly though, if we add higher order sideband to this plot for the coupling strength
+% we can see that the dead zone is completely gone. Depending on which states we want to cool,
+% we can now simply pick the sideband order where the coupling is the largest
+% and we'll be able to cool them down.
+
+% With the additional complexity of the higher orders, we switched to a computer simulation
+% to guide our search so that we don't have to interpret the signal for
+% many different sideband orders. We use it to test different experimental sequences
+% and come up with a working sequence that addresses alternating orders of sidebands.
+% When we implemented it in the experiment after calibration all the parameters, this
+% is the result we got. We have very clear suppression of the cooling sideband
+% and this result suggests that we have a 94% ground state population for Na,
+% despite a high Lamb-Dicke parameter and initial temperature.
+
+% Applicable to more systems, even for direct cooling of molecules where
+% there may be similar challenges due to the the trapping force available and
+% high initial temperature.
+% <22min>
+\begin{frame}{Raman sideband cooling}
+  \vspace{-0.5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<-6>{
+        \begin{scope}[scale=0.85]
+          % F2 trap
+          \draw[line width=1]
+          plot[domain={-0.8:0.8},smooth,variable=\x] ({\x}, {(\x)^2 * 3.75 - 1});
+          \foreach \y in {0.3,0.9,1.5} {
+            \draw[line width=0.8] ({-sqrt(\y / 3.75)}, \y - 1) -- ({sqrt(\y / 3.75)}, \y - 1);
+          }
+          \node[right,rotate=90] at (0, 1.5 - 1) {\LARGE $\cdots$};
+
+          \node[left] at (-0.4, 0.9 - 1) {$|2,2;n\rangle$};
+          \node[left] at (-0.3, 0.3 - 1) {$|2,2;n\!\!-\!\!1\rangle$};
+          \node[left, red!60!black] at (-1, 0.7) {$3^2S_{1/2}$};
+
+          % P3/2
+          \visible<2->{
+            \draw[line width=1] (-1, 4.3) -- (3.85, 4.3);
+            \node[left, red!60!black] at (-1, 4.1) {$3^2P_{3/2}$};
+          }
+          \visible<2-3,5->{
+            \draw[line width=1, densely dotted] (-1, 3.6) -- (3.85, 3.6);
+          }
+          \visible<2-3>{
+            \draw[<->, line width=0.7, >=stealth] (0.75, 3.6) -- (0.75, 4.3);
+            \node[right] at (0.75, 3.95) {$\Delta$};
+          }
+
+          % F2 Raman
+          \visible<2-3,5->{
+            \draw[<->, line width=0.7, >=stealth, orange] (0, 0.9 - 1) -- (0.72, 3.6);
+            \node[orange,above] at (0, 2.1) {$\Omega_{F2}$};
+          }
+
+          % % D2 transition
+          % \draw[<->, line width=0.7, >=stealth] (-1.5, 0.9) -- (-1.5, 3.8);
+          % \node[above, rotate=90] at (-1.5, 2.35) {$589$ nm};
+
+          % D2 decay
+          \visible<4->{
+            \draw[snakearrow, >=stealth, green!70!black] (-0.5, 4.3) -- (-0.5, 0.5);
+          }
+
+          % F1 trap
+          \draw[line width=1]
+          plot[domain={-0.8:0.8},smooth,variable=\x] ({\x + 2.05}, {(\x)^2 * 3.75 - 2.6});
+          \foreach \y in {0.3,0.9,1.5} {
+            \draw[line width=0.8] ({-sqrt(\y / 3.75) + 2.05}, \y - 2.6) -- ({sqrt(\y / 3.75) + 2.05}, \y - 2.6);
+          }
+          \node[right,rotate=90] at (2.05, 1.5 - 2.6) {\LARGE $\cdots$};
+          \node[right] at (2.05 + 0.5, 0.9 - 2.6) {$|1,1;n\rangle$};
+          \node[right] at (2.05 + 0.4, 0.3 - 2.6) {$|1,1;n\!\!-\!\!1\rangle$};
+
+          % Raman det
+          \visible<2-3>{
+            \draw[line width=0.8,densely dotted] (2.05, 0.9 - 2.6) -- (2.05 - 1, 0.9 - 2.6);
+            \draw[line width=0.8,densely dotted] ({sqrt(0.4 / 3.75) + 2.05}, 0.4 - 2.6) -- (2.05 - 1, 0.4 - 2.6);
+            \draw[<->, line width=0.7, >=stealth] (2.05 - 0.9, 0.9 - 2.6) -- (2.05 - 0.9, 0.4 - 2.6);
+            \node[right] at (2.05 - 0.96, 0.65 - 2.6) {$\delta$};
+          }
+
+          % F1 Raman
+          \visible<2-3,5->{
+            \node[red,right] at (2.15 - 0.65, 0.7) {$\Omega_{F1}$};
+          }
+          \visible<2-3>{
+            \draw[<->, line width=0.7, >=stealth, red] (2.05, 0.4 - 2.6) -- (0.78, 3.6);
+          }
+          \visible<5->{
+            \draw[<->, line width=0.7, >=stealth, red] (2.05, 0.3 - 2.6) -- (0.78, 3.6);
+          }
+
+          % Trap freq (F1)
+          \visible<1-3>{
+            \draw[<->, line width=0.7, >=stealth] (2.05 + 0.4, 0.9 - 2.6) -- (2.05 + 0.4, 1.5 - 2.6);
+            \node[left] at (2.05 + 0.46, 1.2 - 2.6) {$\omega$};
+          }
+
+          % P1/2
+          \visible<4->{
+            \node[below right, red!60!black] at (1.2, 2.98) {$3^2P_{1/2}$};
+            \draw[line width=1] (1.7, 2.85) -- (3.35, 2.85);
+          }
+
+          % OP
+          \visible<4->{
+            \draw[->, line width=0.7, >=stealth, blue] (3.15, 0.6) -- (3.15, 2.85);
+            \draw[->, line width=0.7, >=stealth, blue] (3.5, -1.5) -- (3.5, 4.3);
+            \node[right, blue] at (3.5, 1.5) {$\Gamma_{OP}$};
+          }
+        \end{scope}
+      }
+
+      \begin{scope}[shift={(6.6, 0)}, scale=1.2]
+        \visible<2-3>{
+          \foreach \y in {-1.2,0,1.2} {
+            \draw[line width=1,red]
+            plot[smooth,samples=100,domain={-0.6}:{0.6},variable=\f]
+            ({\f + \y}, {exp(-(\f)^2 * 100) * 1.6 * exp(-(\y+0.3)^2 / 5)});
+          }
+          \draw[->,>=stealth,line width=0.7] (-1.9, -0.03) -- (1.9, -0.03)
+          node[below] {$\delta$};
+          \node[below] at (0, -0.03) {Carrier};
+          \node[above,align=center,red!50!black,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (1.2, 1.03)
+          {\scriptsize Cooling\\\scriptsize sideband};
+          \node[above,align=center,blue!50!black,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.2, 1.37)
+          {\scriptsize Heating\\\scriptsize sideband};
+        }
+        \visible<3>{
+          \foreach \y in {-1.2,0,1.2} {
+            \draw[line width=1,blue]
+            plot[smooth,samples=100,domain={-0.6}:{0.6},variable=\f]
+            ({\f + \y}, {exp(-(\f)^2 * 100) * 2.5 * exp(-(\y+0.3)^2 * 1.3)});
+          }
+        }
+      \end{scope}
+
+      \visible<5->{
+        \node[text width=5.5cm,align=center] at (6.6, 4) {
+          \begin{block}{Lamb Dicke parameter}
+            \begin{center}
+              $ \eta\equiv k z_0=\dfrac{2\pi z_0}{\lambda}= \sqrt{\dfrac{\omega_{recoil}}{\omega_{trap}}} $
+            \end{center}
+          \end{block}
+        };
+      }
+      \visible<6->{
+        \node[below,text width=5.5cm,align=center] at (6.6, 2.5) {
+          {\large $ \eta_{Na}^{OP}=0.55 $}\\
+          {\visible<7->{
+              \begin{itemize}
+              \item Motional state branching
+              \item<10-> Coupling ``dead zone''
+              \end{itemize}
+            }}
+        };
+      }
+      \visible<11->{
+        \node[below,text width=5.5cm,align=center] at (6.6, 0.5) {
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Solution}}\\
+          \begin{itemize}
+          \item Use higher order sidebands.
+          \item<13-> Simulation-guided optimization.
+          \end{itemize}
+        };
+      }
+      \visible<15-> {
+        \node[red] at (6.6, -2.5) {3D ground state: $93.5(7)\%$};
+      }
+      \visible<7>{
+        \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{figures/op_branching_1.pdf}};
+      }
+      \visible<8-12>{
+        \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{figures/op_branching.pdf}};
+      }
+      \visible<13->{
+        \node[below] at (0.5, 3.7) {\includegraphics[width=6.5cm]{figures/sequence}};
+      }
+      \visible<9-11>{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{figures/raman_rabi_1.pdf}};
+      }
+      \visible<10-11>{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{figures/raman_rabi_1.pdf}};
+        \draw[->,line width=1.8,>=stealth,red] (0.8, -1.0) -> (0.0, -1.8);
+        \draw[->,line width=1.8,>=stealth,red] (1.4, -1.0) -> (2.8, -1.8);
+        \node[red,above] at (1.1, -0.95) {Dead zone};
+      }
+      \visible<12-13>{
+        \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{figures/raman_rabi_all.pdf}};
+      }
+      \visible<14->{
+        \node[below,align=center] at (0.5, 0.5) {
+          Axial sideband spectrum\\
+         \includegraphics[width=5.4cm]{figures/spectrum_az}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Molecule creation}
+
+\def\enableinteraction{}
+
+%%
+% After preparing the quantum state for the atoms and before we can form the molecule,
+% we need to have a better understanding of the interaction between the atoms
+% and the states involved.
+% It turns out that our tweezer is actually also a very good platform for such measurement.
+
+\ifdefined\enableinteraction
+\subsection{Atom-atom interaction}
+\begin{frame}{Outline}
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+% One measurement we can do is the scattering length
+% between Na and Cs since it captures many aspects of the atom-atom interaction
+% * Binding energy
+% * Molecular potential
+% * Feshbach resonance
+% * Molecule formation
+\begin{frame}{Scattering length $a$}
+  \begin{columns}
+    \column{4.5cm}
+    \begin{itemize}
+    \item<2-> Binding energy
+    \item<3-> Molecular potential
+    \item<4-> Molecule formation
+    \item<5-> Feshbach resonance\\
+      $\vdots$
+    \end{itemize}
+    \column{6.5cm}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.65]
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.5) {Internuclear distance};
+
+        \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
+        \draw (1.0793 - 0.25, -0.4631 + 2.5) -- (4.5 - 0.25, -0.4631 + 2.5);
+
+        \draw[line width=1.1]
+        plot[samples=200,domain=0.8:7,variable=\x]
+        ({\x - 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+
+        \mytweezer.drawNaAtom(5.55, 2.7, 0.12)
+        \mytweezer.drawCsAtom(6.05, 2.7, 0.10)
+
+        \mytweezer.drawNaAtom(2.08, 2.15, 0.12)
+        \mytweezer.drawCsAtom(2.25, 2.15, 0.10)
+
+        \draw[->,>=stealth,cyan!50!blue,line width=0.8] (5.4, 2.7) -- ++(-3.5, 0)
+        arc (270:90:0.2) -- ++(2.5, 0);
+      \end{scope}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% We measure the scattering length using interaction shift and it works like this.
+% If we successfully loaded two atoms in the tweezer,
+% their energy levels will be shifted due to the interaction.
+% Now of course this cannot be directly compared to the single atom case as showned here
+% since we can't really drive a transition between one atom and two atoms in the tweezer.
+% So instead, we rely on the fact that this interaction is in general state dependent.
+% If we drive the atoms from one spin combinantion to a different one,
+% say with a Raman transition or a microwave, we should be able to see a shift in the
+% resonance frequency, corresponding to the difference of the interaction between
+% the initial and final spin states.
+% This way of measuring the scattering length is similar to the experiement done
+% in optical lattice in a MOT insulator phase but the anisotropy of the trap
+% causes some difference as I'll shown shortly.
+
+% So we did the measurement. Here's the resonance when only Cs atom is loaded in the trap.
+% Now when we added the Na atom, instead of seeing one peak, we saw three peaks instead.
+% Well, the center one is easy, our state preparation isn't perfect and in this case
+% only 60-70% of the atoms are in the ground state and the hot atoms has lower density
+% and much lower shift. We were very confused by the other two peaks though.
+% Not only do we have more than one interaction shifted peaks,
+% it seems that they don't even agree on the sign of the interaction.
+
+% So we were puzzled by our data for a while, until we realized that the interaction shift
+% that we've observed here is actually very similar to the axial trapping frequency.
+% This means that the interaction will be strong enough to mix motional states and
+% we can't simply treat it as pertubation anymore.
+% In order to accurately calculate this, we have to go back to the full Hamiltonian shown here
+% which has the term for Na, Cs and their interaction and we'll approximate the interaction
+% by a contact potential that is proportional to the scattering length.
+% This is not a easy problem to solve of course,
+% but fortuately, solution to this already exist if we have only one moving particle
+% instead of two. In another word, if we do the following transformation,
+% and change the coordinate from the Na and Cs to center of mass and relative motion,
+% we'll get a center of mass part, as a simple harmonic oscillator,
+% a relative part, which is the part where there's existing solution,
+% and a mixing part caused by the difference in the Na and Cs trapping frequency.
+% Since we know the solution to the first two terms already, the only part
+% that we need to do is the mixing term which is much more well behaved compared to the
+% contact interaction and it can be solved fairly easily.
+% The energy levels solved from this, plotted as a function of the scattering
+% length looks like this. Each spin state, with its specific scattering length
+% corresponds to a vertical slice on this plot and driving transitions between them
+% corresponds to moving horizontally.
+% Different curves corresponds to atoms in a different motional states,
+% which may be center of mass or relative motion excitation or a mixture of the two.
+
+% It is now much easier to understand our signal.
+% It turns out that in this case, our initial state has a very small scattering length
+% and our final state has a large and negative one.
+% The peak on the right seems is actually the "normal" interaction shifted signal
+% where the atoms remained in the motional ground state of the system after the transition.
+% The signal on the left actually corresponds to the atoms acquring some motional energy
+% in additional to the interaction energy, which puts it on the wrong side of the shift.
+
+% We've also measured the shift for other spin state combinations and this explanation
+% works out as well. Here I'm showing a case where the normal signal and the one
+% with motional excitation appears on the same side instead of two different sides.
+
+% Combining this with some of our other measurement,
+% we can now fit the data using the non-perturbative model and calculate the scattering length
+% for all the other spin state combinations.
+% In particular, I want to point out that the 3,3+2,2 combination has a very strong interaction,
+% which enhances the coupling from this state to the molecular state and that's what we
+% use to form the molecule, as you'll see in the next part.
+\begin{frame}{Interaction shift}
+  \vspace{-0.8cm}
+  \begin{tikzpicture}
+    \draw[white,opacity=0] (-6, -4.5) rectangle (6, 4.5);
+    % Raman sequence
+    \visible<1>{
+      \node at (-2.8, 0.7) {\includegraphics[width=6cm]{figures/shift_raman_1.pdf}};
+    }
+    \visible<2-4>{
+      \node at (-2.8, 0.7) {\includegraphics[width=6cm]{figures/shift_raman.pdf}};
+    }
+    % Data 1
+    \visible<3->{
+      \draw[->,>=stealth,line width=1,red!50!black]
+      (3.4, 1.4) -- node[above] {\small Repulsive} ++(-1.8, 0);
+      \draw[->,>=stealth,line width=1,green!50!black]
+      (3.53, 1.4) -- node[above=0.07cm] {\small Attractive} ++(1.8, 0);
+    }
+    \visible<3>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4_0s.pdf}};}
+    \visible<4-7>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4_0.pdf}};}
+    \visible<8>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4.pdf}};}
+    \visible<9->{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs3.pdf}};}
+
+    % Equations
+    \visible<5-6>{
+      \node[below right,align=left] at (-4.9, 3.8)
+      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{m_{1}\omega_{1,i}^2x_{1,i}^2}{2}+\frac{p_{1,i}^2}{2m_{1}})\ +\!\sum_{i=x,y,z}(\frac{m_{2}\omega_{2,i}^2x_{2,i}^2}{2}+\frac{p_{2,i}^2}{2m_{2}})+V_{int}(\vec r_1-\vec r_2)$};
+      \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
+      (-4.15,2.8) -- node[below=10pt] {\small Na} (-1.15,2.8);
+      \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
+      (-0.5,2.8) -- node[below=10pt] {\small Cs} (2.5,2.8);
+      \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
+      (3.05,3) -- node[below=10pt] {\small Interaction} (4.55,3);
+    }
+    \visible<6>{
+      \node[above right,align=left] at (-5.8, -2.3)
+      {
+        \textcolor{blue!60!black}{To center of mass}\\
+        \textcolor{blue!60!black}{and relative coordinates}\\
+        \\
+        {\tiny
+          $\begin{aligned}
+            M=&\ m_1+m_2&\mu=&\ \frac{m_1m_2}{m_1+m_2}\\
+            \Omega_i^2=&\ \frac{m_1\omega_{1,i}^2+m_2\omega_{2,i}^2}{m_1+m_2}&\omega_{R,i}^2=&\ \frac{m_2\omega_{1,i}^2+m_1\omega_{2,i}^2}{m_1+m_2}\\
+            X_i=&\ \frac{m_1x_{1,i}+m_2x_{2,i}}{m_1+m_2}&x_{R,i}=&\ x_{1,i}-x_{2,i}\\
+            P_i=&\ p_{1,i}+p_{2,i}&p_{R,i}=&\ \frac{m_2p_{1,i}-m_1p_{2,i}}{m_1+m_2}
+          \end{aligned}$}};
+    }
+    \visible<6->{
+      \node[above right,align=left] at (-6, -4.5)
+      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{M\Omega_{i}^2X_{i}^2}{2}+\frac{P_{i}^2}{2M})\ +\!\sum_{i=x,y,z}(\frac{\mu\omega_{R,i}^2x_{R,i}^2}{2}+\frac{p_{R,i}^2}{2\mu})+V_{int}(\vec r_R)\ +\!\sum_{i=x,y,z}\mu(\omega_{1,i}^2 - \omega_{2,i}^2)X_ix_{R,i}$};
+      \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
+      (-5.25,-3.5) -- node[above=10pt] {\small Center of mass} (-2.5,-3.5);
+      \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
+      (-1.9,-3.5) -- node[above=10pt] {\small Relative} (2.4,-3.5);
+      \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
+      (3,-3.5) -- node[above=10pt] {\small Mixing} (5.9,-3.5);
+    }
+    \visible<7>{
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory.pdf}};
+    }
+    \visible<8>{
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory42_32.pdf}};
+    }
+    \visible<9->{
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory32_31.pdf}};
+    }
+    \visible<10->{
+      \fill[white,opacity=0.95] (-6, -4.5) rectangle (6, 3.5);
+      \node[align=center] at (0, 2.1)
+      {Combined with binding energy measurement on Na(2,2) Cs(4,4)\\
+        \\
+        \begin{tabular}{|c|c|}
+          \hline
+          Spin state ($F,m_F$)&Scattering length (a.u.)\\\hline
+          Na(2,2) Cs(4,4)&30.36\\\hline
+          Na(2,2) Cs(3,3)&-693.8\\\hline
+          Na(1,1) Cs(3,3)&13.19\\\hline
+        \end{tabular}};
+    }
+    \visible<11->{
+      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.5, 0.5)
+      node[below] {Enhanced coupling to molecular state!};
+      \node[below] at (-3, 0) {\includegraphics[width=5cm]{figures/wavefunction.pdf}};
+    }
+    \visible<12->{
+      \node[below] at (3, -0.8) {\includegraphics[width=5cm]{figures/na2cs4.pdf}};
+    }
+    \visible<13->{
+      \node[below,blue] (GroundStateText) at (4, 0) {Ground state only};
+      \draw[->,>=stealth,blue,line width=2] (GroundStateText) -- (4.05, -1.8);
+    }
+  \end{tikzpicture}
+\end{frame}
+\fi
+
+\subsection{Coherent optical transfer}
+% So now we've prepared the states of the atoms and
+% we've measured the properties of their interaction.
+% I'll now talk about how we make the molecules while maintaining the quantum control.
+\begin{frame}{Outline}
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+%% Size mismatch/optical transfer
+% So just to remind you, here's a summary of our control of the atom.
+% After we merge the two atoms into the same tweezer,
+% the two atoms are about as closed to each other as they can be from the confinement.
+% Nevertheless, comparing to the molecule we want to make,
+% it is still a few hundred times bigger.
+% This massive size mismatch is really the biggest challange for anyone
+% who want to create molecules coherently from atoms. ...
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[below,align=center] at (1.75, 4)
+      {\hspace{0.5cm}\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Loading}\\
+        \includegraphics[width=3cm]{figures/single_viridis.png}};
+      \node[above,align=center] at (2, 0.36)
+      {\usebeamercolor[fg]{frametitle}{\tiny{NJP. 19, 023007 (2017)}}};
+      \node[below,align=center] at (2.1, 0.28)
+      {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Cooling}\\
+        \includegraphics[width=4.2cm]{figures/spectrum_nolabel_az.pdf}};
+      \node[below,align=center] at (5.25, 3.5)
+      {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Merging}};
+      \node[above,align=center] at (2.2, -3.3)
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRA. 97, 063423 (2018)}}};
+      \node[above,align=center] at (5.4, -3.1)
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}};
+      \begin{scope}[shift={(4.8, 4)}, xscale=-0.8, yscale=0.8]
+        \mytweezer.drawCsTweezer(0, -3.1)
+        \mytweezer.drawNaTweezer(-1, -3.1)
+        \mytweezer.drawCsAtom(0.0, -3.1, 0.12)
+        \mytweezer.drawNaAtom(-1.0, -3.1, 0.16)
+
+        \mytweezer.drawCsTweezer(-1, -7.0)
+        \mytweezer.drawNaAtom(-1.05, -6.87, 0.16)
+        \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
+
+        \begin{scope}[opacity=0.7]
+          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
+          plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
+        \end{scope}
+      \end{scope}
+      \visible<2->{
+        \begin{scope}[shift={(9.5, 2.5)}, scale=0.8]
+          \draw[line width=1] plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {(\x)^2 * 0.8 - 1.5});
+          \draw[line width=2,orange!90!black]
+          plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {exp(-(\x)^2 * 1.3) - 0.988});
+          \draw[line width=0.8] (0 - 0.8, -0.988) -- (0 + 0.8, -0.988);
+          \draw[<->,>=stealth,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
+          \path (0, 0.3) node[above] {$1000a_0$};
+          \path (0, -1.8) node[below] {\textbf{Atom}};
+        \end{scope}
+        \begin{scope}[shift={(9.5, -1.5)}, scale=0.8]
+          \shade[ball color=blue!90] (0, 0) circle (0.45);
+          \shade[ball color=orange!90] (0.4, 0.2) circle (0.3);
+          \draw[<->,>=stealth,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
+          \path (-0.05, 0.6) node[rotate=26.565,above=2pt] {$4a_0$};
+          \path (0, -1) node[below] {\textbf{Molecule}};
+        \end{scope}
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Size mismatch
+% ... which basically necessitate a two step transfer process.
+% The more loosely bound molecular state in the middle reduces
+% the size mismatch for each steps and will improve overall transfer efficiency.
+% And the transfer to this intermediate state is what I'll focus on in this part of the talk.
+
+% The "tranditional" choice of the intermediate state is a FB molecule.
+% Indeed, it also works for us and we've recently created a single FB
+% molecule in the optical tweezer that is suitable for doing the next step transfer from.
+% However, this approach obviously rely on finding a good FB resonance and usually
+% a large magentic field.
+
+% What I am going to mainly talk about today, OTOH, is a different approach that uses only
+% optical transitions, **which we use in a different experimental setup from the one
+% we created FB molecules in**. By not relying on FB resonance, it is faster,
+% more compact in setup, and most importantly,
+% we hope it can be more generally apply to molecules that may not have a suitable FB resonance.
+
+%%% Make sure mentioning FB molecule vs optical transfer are two different setups.
+
+% It's worth pointing out that optical transfer **has** been done previously
+% on many systems include this Rb2 Raman resonance as well as Sr2,
+% and even a previous attempt from our lab. However, it was either done incoherently,
+% limited by scattering, or, in the case of Sr2, it relies on narrow line optical transition
+% which works very well but limits the generality of the result.
+% So next I'll focus on how we overcome these limitations.
+
+%%% Make sure mentioning FB molecule vs optical transfer are two different setups.
+\begin{frame}{}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[shift={(-1, 0)}, scale=0.9]
+        \begin{scope}[shift={(-5, 3)}, scale=0.6]
+          \draw[line width=1] plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {(\x)^2 * 0.8 - 1.5});
+          \draw[line width=2,orange!90!black]
+          plot[samples=200,domain=-2:2,variable=\x] ({\x + 0}, {exp(-(\x)^2 * 1.3) - 0.988});
+          \draw[line width=0.8] (0 - 0.8, -0.988) -- (0 + 0.8, -0.988);
+          \draw[<->,>=stealth,line width=1] (0 - 1, 0.3) -- (0 + 1, 0.3);
+          \path (0, 0.3) node[above] {$1000a_0$};
+          \path (0, -1.8) node[below] {\small \textbf{Atom}};
+        \end{scope}
+        \begin{scope}[shift={(-2.2, 3)}, scale=0.6]
+          \shade[ball color=blue!90] (-0.4, -0.1) circle (0.55);
+          \shade[ball color=orange!90] (0.4, 0.3) circle (0.4);
+          \draw[<->,>=stealth,line width=1] (-1.05, 0.4) -- (0.55, 1.2);
+          \path (-0.25, 0.8) node[rotate=26.565,above=2pt] {$\approx 20\!-\!200a_0$};
+          \path (0, -1.2) node[below,align=center] {\small \textbf{Weakly-Bound}\\\small \textbf{Molecule}};
+        \end{scope}
+        \begin{scope}[shift={(0, 3)}, scale=0.6]
+          \shade[ball color=blue!90] (0, 0) circle (0.45);
+          \shade[ball color=orange!90] (0.4, 0.2) circle (0.3);
+          \draw[<->,>=stealth,line width=1] (-0.45, 0.4) -- (0.35, 0.8);
+          \path (-0.05, 0.6) node[rotate=26.565,above=2pt] {$4a_0$};
+          \path (0, -1) node[below] {\small \textbf{Molecule}};
+        \end{scope}
+        \visible<2->{
+          \draw[line width=1, red] (-6.4, 4.35) rectangle (-0.9, 1.35);
+        }
+      \end{scope}
+      \visible<3-4>{
+        \node at (-3, 0.8) {\usebeamercolor[fg]{frametitle}{\textbf{Feshbach molecule}}};
+        \node[below, align=center] at (-3.2, 0.4)
+        {\includegraphics[width=6cm]{figures/fb_molecules.pdf}\\
+          \small{PRL. 124, 253401 (2020)}};
+        \visible<4->{
+          \node[below, text width=6cm, align=left] at (3, -0.3) {\begin{itemize}
+            \item Requires Feshbach resonance
+            \item Usually large magnetic field
+            \end{itemize}
+          };
+        }
+      }
+      \visible<5->{
+        \node[below, text width=6cm, align=center] at (-3.3, 1)
+        {{\usebeamercolor[fg]{frametitle}{\textbf{Optical transfer}}}\\
+          \begin{itemize}
+          \item More general
+          \item Faster
+          \end{itemize}
+        };
+      }
+      \visible<6->{
+        \node[below, text width=6cm, align=left] at (3.1, 4)
+        {
+          {\usebeamercolor[fg]{frametitle}{Previous results}}\\
+          {\footnotesize $\mathrm{Rb_2}$}
+          {\tiny \usebeamercolor[fg]{frametitle}{Science 287, 1016 (2000)}}\\
+          \phantom{{\footnotesize $\mathrm{Rb_2}$}}
+          {\tiny \usebeamercolor[fg]{frametitle}{PRL. 93, 073002 (2004)}}\\
+          \includegraphics[width=3.5cm]{figures/Rb2_raman.png}\\
+          {\footnotesize $\mathrm{Sr_2}$}
+          {\usebeamercolor[fg]{frametitle}{\tiny PRL. 109, 115302 (2012)}}\\
+          {\footnotesize $\mathrm{NaCs}$}
+          {\usebeamercolor[fg]{frametitle}{\tiny \textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}\\
+          \includegraphics[width=3.5cm]{figures/old_raman_transfer.pdf}
+        };
+      }
+      \visible<7->{
+        \node[below, text width=6cm, align=center] at (-3.3, -1.3)
+        {
+          {\usebeamercolor[fg]{frametitle}{Limitations so far}}\\
+          \begin{itemize}
+          \item Incoherent due to scattering
+          \item Rely on narrow line optical transition
+          \end{itemize}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%% Raman scheme
+% The scheme we use is actually very simple.
+% We simply drive a Raman transition from the atomic state to the molecular state,
+% detuned from some excited molecular state.
+
+% Since one of the major challenges is the mismatch of the wavefunction size,
+% it makes sense to pick molecular states that are as "big" as possible,
+% in another word, ones that are closed to the threshold or even the first bound state.
+% Indeed, this is what all previous attempts use which leads to a fairly strong Raman transition.
+% But these states are also very closely spaced, and in case of the excited state, this makes
+% it very hard to detune from a resonance and reduce the scattering,
+% which ultimately limits the coherence, as I metioned previously.
+% If we instead use an excited state that is more deeply bound.
+% Even though the Raman coupling is reduced, we can now detune further to reduce the scattering
+% without worrying about hitting another state.
+
+% It is certainly not obvious if the deeply bound state costs too much in the Raman coupling
+% compared to the scattering reduction. And that's why we did a calculation to compare the two.
+
+% From the two plots for two different excited states,
+% you can easily see that the Rabi frequency to scattering ratio, shown in green
+% on the right side axis, never reaches higher than ~1.3 for the near threshold state,
+% whereas for the deeply bound state, shown below, we can get a ratio north of 50 when a larger
+% detuning is used.
+\begin{frame}[t]{Raman transfer}
+  \begin{center}
+    \vspace{-0.9cm}
+    \begin{tikzpicture}
+      \begin{scope}[scale=0.8]
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
+        \node[below] at (2.7, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=0.96:7,variable=\x]
+        ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+        \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+
+        \visible<-2,4>{
+          \draw[red] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
+          ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
+        }
+        \visible<3->{
+          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
+        }
+        \visible<-2>{
+          \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
+          ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
+        }
+        \visible<3>{
+          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+        }
+        \visible<4->{
+          \draw[blue, line width=1]
+          ({(1.1102 - 0.75) * 0.7 - 0.15}, -0.69 * 1.3 + 7.5 - 0.15) rectangle
+          ({(6.5 - 0.75) * 0.7 + 0.15}, -0.69 * 1.3 + 7.5 + 0.15);
+          \coordinate (ThresholdHighlight)
+          at ({(6.5 - 0.75) * 0.7 + 0.25}, -0.69 * 1.3 + 7.5 - 0.08);
+          \draw[blue, line width=1]
+          ({(1.4 - 0.75) * 0.7 - 0.15}, -1.8 * 1.3 + 7.5 - 0.15) rectangle
+          ({(2.5 - 0.75) * 0.7 + 0.15}, -1.8 * 1.3 + 7.5 + 0.15);
+          \coordinate (DeepHighlight)
+          at ({(2.5 - 0.75) * 0.7 + 0.25}, -1.8 * 1.3 + 7.5);
+        }
+
+        \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
+
+        \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+        \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+        \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+        \visible<-2>{
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+        }
+        \visible<3>{
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+        }
+      \end{scope}
+      \visible<2-3>{
+        \node[below, text width=5.4cm, align=center] at (8.13, 6.8)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}\\
+          \vspace{0.2cm}
+          \begin{itemize}
+          \item Stronger coupling\\
+            ($\Omega_{up}$ and $\Omega_{down}$)
+          \item Closely spaced
+          \item Fast scattering
+          \end{itemize}
+        };
+      }
+      \visible<3>{
+        \node[below, text width=5.4cm, align=center] at (8.13, 2.7)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}\\
+          \vspace{0.2cm}
+          \begin{itemize}
+          \item Weaker coupling
+          \item Sparsely spaced
+          \item Allow larger detuning
+          \item Slower scattering
+          \end{itemize}
+          {\tiny \usebeamercolor[fg]{frametitle}{arXiv:1701.03121(2017)}}
+        };
+      }
+      \visible<4>{
+        \node[below, text width=5.4cm, align=center] (ThresholdPlot) at (8.13, 7.5)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}
+          \includegraphics[width=5.4cm]{figures/raman_vh.pdf}
+        };
+        \node[below, text width=5.4cm, align=center] (DeepPlot) at (8.13, 3.2)
+        {
+          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
+          \includegraphics[width=5.4cm]{figures/raman_v0.pdf}
+        };
+        \draw[->,>=stealth, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
+        \draw[->,>=stealth, blue, line width=2] (DeepPlot) -- (DeepHighlight);
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+
+%% Experiment
+% Based on the comparison, we selected the ground vibrational state in the excited state (v=0),
+% which we have already observed previously.
+% And for the ground molecular state, the binding energy was predicted as
+% ~771 MHz by Jeremy Hutson from Durham, based on our interaction shift
+% and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
+
+% Thanks to the prediction, it didn't take too long for us to find the resonance,
+% which was only 1-2MHz from the prediction.
+
+% But what's more important, and different from all previous spectrum,
+% is the FWHM of 8.4 kHz. It is very closed to the Fourier limited linewidth
+% for the 0.1 ms pulse time we use, suggesting that we are very closed to the coherent regime.
+
+% So next, naturally, we switched to scanning the time on resonance.
+% And long and behold we see a revival in our signal, which is the evidence that
+% we can drive the atoms to molecule and then back coherently.
+% This is the first time coherent optical transfer has been done
+% without using a narrow optical transition and we believe it can be applied to
+% many other systems.
+
+% The contrast is obviously not 100%, but, this actually correspond to
+% 50% of initial ground state atom, here, being transfered into the molecular state.
+% We believe the major contribitor to this contrast is the molecular lifetime
+% which we measured here to be much shorter than what we expect.
+
+% From the design of our transfer scheme, all molecules we made are in a single spin state
+% with 50% or even more of them in the ground motional state.
+
+% We have since improved our signal by changing the single photon detuning for the Raman beam
+% and you can see the contrast of the Rabi oscillation is much better.
+% We can also plot the molecule transfer efficiency as a function of the detuning and time
+% and you can see here that the transfer maxes out at about 63%.
+
+% We are still investigating in the sources of the shorter lifetime and one particular
+% source that we are corrently testing is our Raman beam.
+% It turns out that the diode laser we use has a broad spectra background noise
+% in additional to the very narrow frequency peak. This broad background has a high chance
+% of causing scattering on other excited molecular state and we are working on filtering it out.
+
+\begin{frame}[t]{Experiment}
+  \begin{center}
+    \vspace{-0.9cm}
+    \begin{tikzpicture}
+      \visible<-5>{
+        \begin{scope}[shift={(-5.5, -3.5)}, scale=0.8]
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+          \node[above,rotate=90] at (0, 4) {Energy};
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
+          \node[below] at (2.7, -0.1) {Internuclear distance};
+
+          \draw[line width=1.1,cyan!85!blue]
+          plot[samples=200,domain=0.96:7,variable=\x]
+          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+
+          \draw[line width=1.1,red]
+          plot[samples=200,domain=1:7.5,variable=\x]
+          ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+          \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+
+          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) node[right=0.2] {\scriptsize $v=0$};
+          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+
+          \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
+          \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
+          \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
+
+          \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+          \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+          \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+          \node[right,align=center,cyan,
+          execute at begin node=\setlength{\baselineskip}{7pt}] at (6.8 * 0.7 + 0.3, 2.55)
+          {\scriptsize Na(2,2)\\\scriptsize Cs(3,3)};
+
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+
+          \visible<2->{
+            \node[above,align=center,
+            execute at begin node=\setlength{\baselineskip}{9pt}] at (3.8, 4.8)
+            {\footnotesize Tweezer\\\footnotesize +Raman};
+            \draw[->,>=stealth,line width=1,dotted,blue!50!orange] (3.8, 4.8) -- (2.6, 4.1);
+            \draw[->,>=stealth,line width=1,dotted,green!80!black] (3.8, 4.8) -- (1.87, 4.1);
+          }
+
+          \draw[->,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
+          \draw[<-,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
+          -- (5.1 * 0.7, -0.28 * 1.3 + 2)
+          node[below, align=center] {\scriptsize $\approx771\mathrm{MHz}$\\
+            \scriptsize by Jeremy Hutson.};
+        \end{scope}
+      }
+      \visible<3> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{figures/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
+      }
+      \visible<4-> {
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{figures/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+      }
+      \visible<2-4> {
+        \node[below,text width=5.2cm,align=center] at (2.6, -0.5) {
+          \begin{block}{Tweezer as Raman beam}
+            \begin{itemize}
+            \item Higher Raman Rabi frequency
+            \item Lower scattering from other sources
+            \end{itemize}
+          \end{block}
+        };
+      }
+      \visible<5-> {
+        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{figures/fit_20200703_201618_raman15_3322_2_postdoc_t.pdf}};
+      }
+      \visible<6-> {
+        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
+        {
+          \begin{itemize}
+          \item Transferred $63\%$ of ground state atom to molecule.
+          \item<7-> Single molecule spin state
+          \item<7-> $>50\%$ of molecule in motional ground state.
+          \item<8-> Improving signal
+          \end{itemize}
+        };
+      }
+      \visible<6-7> {
+        \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{figures/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
+      }
+      \visible<8-> {
+        \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{figures/Timebase1038_20200702_094907.png}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Conclusion}
+%% Conclusion
+% * Experiment aiming to create flexible array of ultracold molecules for applications like ...
+% * Atomic state preparation (internal and external, and how we overcome the challenge for Na)
+% * Molecular state transfer (coherence, maintaining control, all optical)
+% * Next step: transfer to ground state (could be from FB molecule).
+\begin{frame}[t]{Conclusion and outlook}
+  \vspace{-0.5cm}
+  \begin{columns}
+    \column{6.25cm}
+    \begin{itemize}
+    \item New quatum platform based on ultracold molecules in tweezers
+    \item<2-> Full quantum control of atoms in optical tweezers
+    \item<3-> Measured interaction between single atoms
+    \item<4-> Coherent all-optical creation of single molecucle
+    \item<5-> Working towards fully controlled, strongly interacting tweezer array
+    \end{itemize}
+    \column{5.7cm}
+    \visible<6->{
+      \begin{tikzpicture}
+        %% PI
+        \node[align=center] at (0, -0.8) {Experiment};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (2, 0)
+        {\includegraphics[height=1.5cm]{figures/kangkuen}\\\scriptsize Kang-Kuen Ni};
+
+        %% Current member
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5, -2.2)
+        {\includegraphics[height=1.5cm]{figures/kenneth}\\\scriptsize Kenneth\\\scriptsize Wang};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0, -2.2)
+        {\includegraphics[height=1.5cm]{figures/jessie}\\\scriptsize Jessie\\\scriptsize Zhang};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.5, -2.2)
+        {\includegraphics[height=1.5cm]{figures/lewis}\\\scriptsize Lewis\\\scriptsize Picard};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3.0, -2.2)
+        {\includegraphics[height=1.5cm]{figures/will}\\\scriptsize William\\\scriptsize Cairncross};
+
+        %% Former member
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5 + 0.375, -4.4)
+        {\includegraphics[height=1.5cm]{figures/lee}\\\scriptsize Lee Liu\\\tiny Postdoc @JILA};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0.75, -4.4)
+        {\includegraphics[height=1.5cm]{figures/jon}\\\scriptsize Jonathan Hood\\\tiny Assnt Prof @Purdue};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3 - 0.375, -4.4)
+        {\includegraphics[height=1.5cm]{figures/nick}\\\scriptsize Nick Hutzler\\\tiny Assnt Prof @Caltech};
+
+        %% Theory
+        \node[below,align=center] at (0, -7.1) {Theory};
+        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.7, -6.6)
+        {\includegraphics[height=1.5cm]{figures/jeremy}\\\scriptsize Jeremy Hutson};
+      \end{tikzpicture}
+    }
+  \end{columns}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+%% Backup slides
+
+% Our experiment starts with trapped atoms in tweezers.
+% People have demonstrated before us.
+% It sounds simple but turns out to be anything but.
+
+% Well, Cs is fine.
+% Got without too much effort.
+% But Na is not.
+% A few properties.
+% * Low vapor pressure (fewer atoms to load from)
+% * Broad linewidth (higher Doppler temperature)
+% * Low mass (move faster and higher recoil velocity/energy)
+% * Small HF structure (6 line width, worse PG cooling)
+
+% Fine just need deeper trap but run into the real issue
+% * Light shift
+% In order to load, need cooling in the tweezer
+% However, since we need such a deep trap, light shift turns off the cooling
+% Got stuck in an awkward situation where a shallow trap can keep the cooling work but
+% can't hold the atom while a deeper trap can hold the atom but the atom doesn't want to come in.
+
+% Tried a bunch of ways (turn trap around atom, two wavelengths to cancel the trap)
+% before Nick came up with a genius/crazy idea that people have used on large ODT.
+
+% See laser cooling relies on scattering that happens at a rate of tens of MHz
+% OTOH, the tweezer is only needed for trap motion that happens ~ few hundred kHz.
+% Means that if we switch the tweezer on and off. .....
+
+% Tried on Cs
+% Essentially made a magic trap.
+
+% Then tried on Na, it worked.
+% Na live atom.
+\begin{frame}{Single Atom in Tweezer}
+  \begin{columns}[t]
+    \column{5cm}
+    \begin{block}{}
+      \begin{itemize}
+      \item Previously done with Rb
+      \item<2-> Works for Cs
+      \item<3-> Doesn't work for Na
+      \end{itemize}
+    \end{block}
+    \column{6cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2> {
+          \node at (0, 0)
+          {\includegraphics[width=6cm]{figures/cs-histogram}};
+        }
+        \visible<3> {
+          \node at (0, 0)
+          {\includegraphics[width=5cm]{figures/na-noatom}};
+        }
+        \visible<4> {
+          \node[text width=6cm] at (0, 0) {
+            \begin{block}{Issues with Na}
+              \begin{itemize}
+              \item Low vapor pressure
+              \item Broad linewidth
+              \item Low mass
+              \item Small hyperfine structure
+              \end{itemize}
+            \end{block}
+          };
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Real Issue with Na: Light Shift}
+  \vspace{-1cm}
+  \begin{columns}
+    \column{5.7cm}
+    \begin{center}
+      \only<-3>{\includegraphics[width=5.5cm]{figures/light-shift.png}}
+      \only<4->{
+        \begin{block}{Trap modulation}
+          Alternate between trap and resonant {\small (cooling and imaging)} light
+          at $2.5$\ MHz\\
+          {\small $f_{trap}=100\sim500$\ kHz}\\
+          {\small $\Gamma=2\pi\times 10$\ MHz}
+        \end{block}
+        \includegraphics[width=5cm]{figures/switching.png}
+      }
+    \end{center}
+    \column{5.8cm}
+    \begin{center}
+      \begin{tikzpicture}
+        \visible<2-4>{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{figures/det-vs-photon-dc2}};
+        }
+        \visible<3-5>{
+          \node[align=center, text width=5cm] at (0, -4.5) {
+            \begin{block}{}
+              \begin{itemize}
+              \item Low imaging signal
+              \item No cooling in tweezer
+              \end{itemize}
+            \end{block}
+          };
+        }
+        \visible<5->{
+          \node[align=center] at (0, 0) {Cs single atom imaging\\
+            \includegraphics[width=5.5cm]{figures/det-vs-photon-ac}};
+        }
+        \visible<6->{
+          \node at (0, -4.5)
+          {\includegraphics[width=4cm]{figures/single_viridis.png}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{columns}
+\end{frame}
+
+%% Another thing we can measure is the FB resonance
+% Better prediction than before.
+\begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
+  \only<1>{
+    \begin{center}
+      \includegraphics[height=7cm]{figures/chamber1_5.jpg}
+    \end{center}
+  }
+  \only<2->{
+    \begin{center}
+      \includegraphics[width=10cm]{figures/fb.pdf}\\
+      \vspace{0.5cm}
+    \end{center}
+  }
+  \only<3->{
+    \begin{center}
+      \begin{tabular}{|c|p{1.9cm}|p{1.9cm}|}
+        \hline
+        &$s$-wave&$p$-wave\\\hline
+        Predicted {\tiny (based on interaction shift)\footnote{In collaboration with Bo Gao}}&$663$ G&$799$ G\\\hline
+        Measured&$652(3)$ G&$791.2(2)$ G\\\hline
+      \end{tabular}
+    \end{center}
+  }
+\end{frame}
+
+% Raman transfer obviously need some information about the excited state
+% So that's what we set out to measure first. (i.e. PA spectroscopy)
+
+% We really have the most textbook system to do this measurement.
+% We only have two atoms
+% We know the initial state
+% We shine some light on it, which might create some excited state molecule that
+% falls down to some states that we can't see.
+% We know the final state
+
+% Full state info, improve signal-to-noise
+
+% We start with near threshold since the lines are denser/easier to see.
+% Single body - flat
+% Two body - peaks
+% Agreement with the theory/see new lines
+
+% Also found deeper lines afterwards with very similar signal so I'm not showing it here.
+
+% Now we know the excited states.
+% After measuring this line, we can use add another beam in order to find
+% the ground molecular state.
+% With one laser parked on the PA resonance, we can scan the frequency of the other.
+% When the difference between the two lasers match ... we can create a EIT and stops the
+% PA process ...
+
+% We scanned around the theoritical prediction between 200-300 MHz and indeed found the resonance.
+\begin{frame}[t]{\alt<-4>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
+  \vspace{-0.4cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}[shift={(-4.3, -3.3)}, scale=0.7]
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+        \node[above,rotate=90] at (0, 4) {Energy};
+        \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
+        \node[below] at (4, -0.1) {Internuclear distance};
+
+        \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
+
+        \draw[line width=1.1,cyan!85!blue]
+        plot[samples=200,domain=1:7,variable=\x]
+        ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
+        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+
+        \draw[line width=1.1,red]
+        plot[samples=200,domain=1:7.5,variable=\x]
+        ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
+        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+
+        \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
+        \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
+
+        \mytweezer.drawNaAtom(6.55, 2.6, 0.12)
+        \mytweezer.drawCsAtom(7.05, 2.6, 0.10)
+
+        \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8, 2.7) -- (4.5 - 0.75, -0.85 + 7.5);
+
+        \only<5->{
+          \draw[cyan!85!blue] (1.0793 + 0.25, -0.4631 + 2.5) -- (4.5 + 0.25, -0.4631 + 2.5);
+          \draw[cyan!85!blue,<->,>=stealth] (3.5, 2.5) -- ++(0, -0.4631) node[midway, left]
+          {\tiny $\delta$};
+          \mytweezer.drawNaAtom(4.08, 2.15, 0.12)
+          \mytweezer.drawCsAtom(4.25, 2.15, 0.10)
+          \draw[->,>=stealth,green!80!black,line width=0.8] (4.165, 2.25) -- (4.45 - 0.75, -0.85 + 7.5);
+        }
+      \end{scope}
+      \visible<2-4>{
+        \node[text width=5cm] at (4.2, -1) {
+          \begin{block}{Single Atom PA}
+            \begin{itemize}
+            \item Clean initial state
+            \item Narrow excitation laser
+            \item Final state detection
+            \end{itemize}
+          \end{block}
+        };
+      }
+      \visible<3>{
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa-shallow_1b}};
+      }
+      \visible<4>{
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa-shallow}};
+      }
+      \visible<6>{
+        \node at (4, 2.5) {\includegraphics[width=5cm]{figures/eit.png}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\end{document}
