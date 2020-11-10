@@ -7,10 +7,11 @@ using NaCsData
 using NaCsPlot
 using MAT
 using PyPlot
+using Statistics
 
-NaCsPlot.fontsize(30)
-NaCsPlot.ticksize(25)
-NaCsPlot.bold()
+# NaCsPlot.fontsize(30)
+# NaCsPlot.ticksize(25)
+# NaCsPlot.bold()
 
 const iname = joinpath(@__DIR__, "data", "data_20161019_171310.mat")
 
@@ -28,8 +29,8 @@ figure()
 implot = imshow(imgs[11:31, 11:31, 1695], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("gray")
-xlabel("x(\$\\mu m\$)")
-ylabel("y(\$\\mu m\$)")
+xlabel("x(\$\\mathrm{\\mu m}\$)")
+ylabel("y(\$\\mathrm{\\mu m}\$)")
 annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
@@ -44,8 +45,8 @@ figure()
 implot = imshow(imgs[11:31, 11:31, 1695], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("viridis")
-xlabel("x(\$\\mu m\$)")
-ylabel("y(\$\\mu m\$)")
+xlabel("x(\$\\mathrm{\\mu m}\$)")
+ylabel("y(\$\\mathrm{\\mu m}\$)")
 annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
@@ -57,11 +58,11 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
 NaCsPlot.maybe_save("$(prefix)/single_viridis")
 
 figure()
-implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="nearest",
+implot = imshow(mean(imgs, dims=3)[11:31, 11:31, 1], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("gray")
-xlabel("x(\$\\mu m\$)")
-ylabel("y(\$\\mu m\$)")
+xlabel("x(\$\\mathrm{\\mu m}\$)")
+ylabel("y(\$\\mathrm{\\mu m}\$)")
 annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
@@ -73,11 +74,11 @@ annotate("Cs", xy=(2, 0.5), xytext=(2.5, -4),
 NaCsPlot.maybe_save("$(prefix)/avg_gray")
 
 figure()
-implot = imshow(mean(imgs, 3)[11:31, 11:31, 1], interpolation="nearest",
+implot = imshow(mean(imgs, dims=3)[11:31, 11:31, 1], interpolation="nearest",
                 extent=[-5, 5, -5, 5])
 implot[:set_cmap]("viridis")
-xlabel("x(\$\\mu m\$)")
-ylabel("y(\$\\mu m\$)")
+xlabel("x(\$\\mathrm{\\mu m}\$)")
+ylabel("y(\$\\mathrm{\\mu m}\$)")
 annotate("Na", xy=(-0.5, 0), xytext=(-3.5, 3.5),
          arrowprops=Dict("facecolor"=>"white", "shrink"=>0.1,
                          "width"=>15, "headwidth"=>25, "headlength"=>25),
