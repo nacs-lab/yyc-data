@@ -2,14 +2,16 @@
 
 push!(LOAD_PATH, joinpath(@__DIR__, "../../lib"))
 
-using NaCsCalc.Utils: interactive
+using NaCsCalc
 using NaCsData
 using NaCsPlot
+using NaCsCalc.Atomic: all_scatter_D, all_scatter_bothD
+using NaCsCalc.Format: Unc, Sci
+using NaCsCalc.Utils: interactive
+using NaCsData.Fitting: fit_data, fit_survival
 using PyPlot
 using DataStructures
 using LsqFit
-import NaCsCalc.Format: Unc, Sci
-using NaCsCalc.Atomic: all_scatter_D, all_scatter_bothD
 
 const δcs_f3 = -45.7e9 + 9.192631770e9
 const δcs_f4 = -45.7e9
@@ -53,7 +55,7 @@ const rates_na_f2_counterop = all_scatter_D(true, 3, (0.1, 0.0, 0.9), rhif_na_f2
 
 function rates_to_A(rates)
     nx, ny = size(rates)
-    A = Matrix{Float64}(nx, ny)
+    A = Matrix{Float64}(undef, nx, ny)
     @inbounds for i in 1:nx
         s = 0.0
         for j in 1:ny
@@ -143,10 +145,8 @@ function fit_and_plot_op(rates, data, τlifetime; p0=nothing, rates0=nothing, kw
                  gen_fit_model2(rates0, rates, t_prescale, τlifetime, p0.a))
         pinit = [1.0]
     end
-    fit = curve_fit(model, ts, ratios, pinit)
-    plot_ts = linspace(0, tmax, 1000)
-    ys = model(plot_ts, fit.param)
-    plot(plot_ts, ys, color="C0")
+    fit = fit_data(model, ts, ratios, uncs, pinit; plotx=linspace(0, tmax, 1000))
+    plot(fit.plotx, fit.ploty, color="C0")
     errorbar(ts, ratios, uncs; fmt="C0.", kws...)
     grid()
     ylim(0, ylim()[2])
@@ -154,11 +154,11 @@ function fit_and_plot_op(rates, data, τlifetime; p0=nothing, rates0=nothing, kw
     xlabel("\$t (ms)\$")
     if p0 === nothing
         tscale, nrm = fit.param
-        tscale_s, nrm_s = estimate_errors(fit)
+        tscale_s, nrm_s = fit.unc
         nrm_u = Unc(nrm, nrm_s)
     else
         tscale, = fit.param
-        tscale_s, = estimate_errors(fit)
+        tscale_s, = fit.unc
         nrm_u = p0
     end
     tscale *= t_prescale
@@ -171,28 +171,6 @@ function fit_and_plot_op(rates, data, τlifetime; p0=nothing, rates0=nothing, kw
             tscale=Unc(tscale, tscale_s),
             τ_lof=Unc(τ_lof_real, τ_lof_real_s),
             τ_hif=Unc(τ_hif_real, τ_hif_real_s))
-end
-
-function fit_survival(model, data, p0; plotx=nothing, use_unc=false, plot_scale=1.1)
-    if use_unc
-        params, ratios, uncs = NaCsData.get_values(data)
-    else
-        params, ratios, uncs = NaCsData.get_values(data, 0.0)
-    end
-    if plotx === nothing
-        lo = minimum(params)
-        hi = maximum(params)
-        span = hi - lo
-        mid = (hi + lo) / 2
-        plotx = linspace(mid - span * plot_scale / 2, mid + span * plot_scale / 2, 10000)
-    end
-    if use_unc
-        fit = curve_fit(model, params, ratios[:, 2], 1 ./ uncs[:, 2].^2, p0)
-    else
-        fit = curve_fit(model, params, ratios[:, 2], p0)
-    end
-    return (param=fit.param, unc=estimate_errors(fit),
-            plotx=plotx, ploty=model.(plotx, (fit.param,)))
 end
 
 lifetime_model(x, p) = p[1] .* exp.(.-x ./ p[2])
