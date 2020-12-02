@@ -214,7 +214,7 @@
 
 \newcommand{\todo}[1]{}
 
-\title{Coherent Association of Single Molecules from Single Atoms}
+\title[Coherent Creation of Single Molecules]{Coherent Creation of Single Molecules from Single Atoms}
 \date{}
 \author{Yichao Yu}
 \institute{Ni Group/Harvard}
@@ -342,8 +342,8 @@
 \pgfoonew \mytweezer=new tweezer()
 
 %% Title
-% I'm Yichao from the Ni lab at Harvard and today I'll tell you about our experiment on
-% creating single NaCs molecules in optical tweezers from atoms.
+% I'm Yichao from the Ni lab and today I'll tell you about our experiment
+% on creating single NaCs molecules in optical tweezers from atoms.
 {
   \usebackgroundtemplate{
     \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{figures/front_bg.png}}
@@ -358,28 +358,69 @@
 }
 
 %% Goal
-% But before going into details, let's first talk about why we want to do this.
+% But before going into the details, let's first talk about why we want to do this.
 
-% The long term goal of our experiment is to create a new quantum platform,
-% mostly targetting applications like quantum computing and quantum simulation, but also to,
-% in general, add new tools to the so-called AMO toolbox for potentially other applications
-% like quantum chemistry or precision measurement etc.
-% These require our system to be fully controllable to single particle level
-% as well as creating entanglement between the particles.
-% __(1:00)__
+% One of the most popular paradigms in AMO,
+% that is atomic, molecular and optical physics,
+% is to take very simple and well understood systems,
+% apply really high degree of control based on our understanding of it,
+% in order to realize and study very complex dynamics
+% or other interesting process that emerges from these systems.
+% As probably the most well known examples in this field,
+% using the simplest atoms in the world other than Hydrogen, i.e. Alkali atoms,
+% by taking advantage of the interactions between these simple atoms,
+% people were able to realize whole new quantum phases of matter,
+% so-called Bose-Einstein condensate (or BEC),
+% and even using them to simulate solid state systems
+% by putting them in a lattice structure
+% to further our understanding of some of the mysteries there
+% such as high temperature superconductors
+% that you have probably heard of one way or another.
+% __()__
 
-% There are already many good candidates for such a system, and even just in AMO there are ions,
-% neutral atoms, Rydberg atoms etc, so why are we adding yet another one to the list.
-% Well, first of all, broadly speaking, one have to try out new systems in order to see
-% how well they works compared to the existing ones.
-% But more concretely, although some approaches have got closer to the goal then others,
-% there are still big challeges for all of them.
-% Although I'm definitely not going to claim we have the best system in the world,
-% at least not for all applications and not yet,
-% I do believe we are bringing in new solutions for some of the issues in other approaches
-% and some of our new ideas have even been applied to other systems.
-% And today, I’ll talk about some of these ideas.
-% __(2:00)__
+% But of course we aren't satisfied with only the simplest system,
+% we want more, and there's good reason for that.
+% You see, the atomic systems, built with, well, neutral atoms, are, well, too simple.
+% And what I meant is that they have relatively simple internal structures
+% and they are like loners most of the time
+% and really don't want to interact with other atoms.
+% As you might imagine by making an analogy with social interactions,
+% it's hard to convince these atoms to behave collectively
+% and have interesting dynamics within the group.
+% As I previously shown, not impossible, just difficult.
+% What we really want is a system that is simple enough to control
+% but also complex enough to do interesting stuff.
+% So let's make a simple checklist for an ideal system shall we?
+% __()__
+
+% * First, as I said, it must have strong interaction, preferably a long range one.
+% * Next, also mentioned before, they should have a rich internal structures.
+% % These allows more interesting dynamics to occure
+% % and will also be our knobs to tune the systems.
+% * We would also like it to have long coherence time,
+% % at least compared to the speed of the interaction,
+% % so that we can do things with it before it dies.
+% * And finally, we don't want to give up on our control on it.
+% % If we couldn't prepare the system and ask it to do what we want it to do,
+% % it's easy to see why this would makes it kinda hard
+% % to use the system to do anything useful.
+% __()__
+
+% I have to say that of course we didn't come up with this list
+% and we are not the only one that explore new options.
+% In fact neutral atom isn't even the first system people used.
+% There are many other choices of systems for example like ions and Rydberg atoms.
+% Nevertheless, I believe it is still worth investigating in new systems like what we do,
+% because first all of the existing systems still have their limitations
+% and although I'll not claim that we fixed all those issues
+% and have the best system in the world, at least not yet,
+% we did fix some of the shortcoming of other experiment
+% which I'll breifly talk about later.
+% In the mean time, in general,
+% we are also bringing in new solutions and tools to the field
+% and in fact some of the techniques that we developped
+% should be and are being applied to other systems.
+% __()__
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -422,32 +463,41 @@
 %% System
 % So now let's look at our system selection.
 
-% The two properties that I've emphasized on initially are entanglement and full quantum control.
-% So let's first talk about entanglement.
-% Well, entangling different particles requires interaction.
-% And this is the main reason we chose dipole molecules.
+% I've shown this checklist with a few requirements,
+% but really the most important ones are the strong interaction and full control.
+% Well, the requirement of strong interaction is the main reason we chose dipole molecules.
 % Compared to neutral atoms, they have much stronger and longer range interactions,
 % roughly `kHz` about a micron apart which allows faster entanglement or gate operations.
-% This might not seem like much compared to other strongly interacting systems
-% like ions and Rydberg atoms, the interacting molecules are long lived
+% And while this might not seem like much
+% compared to other strongly interacting systems I mentioned earlier
+% like ions and Rydberg atoms,
+% the molecules are different because they are long lived
 % and the interaction between them are easily tunable.
-% Both of these properties are very useful for reducing coupling with the enviroment
-% and achieving long coherence time.
-% Molecules also have a very rich internal state,
+% These somewhat unique combination of properties are very useful
+% for reducing coupling with the enviroment and achieving long coherence time,
+% which as you can see is part of my checklist.
+% As a bonus, molecules also have a very rich internal state,
 % which is the main reason for the tunability of interaction,
-% and it also give us a lot of flexibility, for example in the selection our qubit states.
-% __(3:20)__
+% and it also give us the flexibility I mentioned earlier,
+% for example in the selection our qubit states.
+% __()__
 
-% The other important property we are aiming for is full quantum control,
+% The one item left now is full quantum control,
 % and for that our main tool is the optical tweezer.
-% Since the tweezer is generally form through a high-NA objective,
-% it very naturally gives us the resolution for single site detection and manipulation
-% of the molecules. This technique has been developped in many other groups for atoms
-% including Lukin group at Harvard. People have demostrated sideband cooling,
-% near deterministic loading and even rearrangment of the tweezers.
-% In our experiment, we would like to extend these capabilities from atoms to molecules and
-% you'll see later in my talk how we use this to achieve quantum control on our molcules.
-% __(4:30)__
+% This is created by focusing a light beam to a really small spot
+% such that the intensity of the light is strong enough to trap a single particle,
+% like, well, a tweezer.
+% Since it is form by focusing light onto a small spot,
+% the optics to do so very naturally gives us the resolution to see that spot
+% and to detect and manipulate the single molecule within that small spot,
+% hense giving us the full control we need.
+% This technique has been developed in many other groups for atoms
+% including Lukin group here at Harvard.
+% People have demostrated sideband cooling, near deterministic loading
+% and even flexible rearrangment of the tweezers.
+% In our experiment, we would like to extend these capabilities from atoms to molecules
+% and you'll see later in my talk how we use this to achieve quantum control on our molcules.
+% __()__
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -515,28 +565,34 @@
 \end{frame}
 
 %% Molecules in tweezers
-% So since our goal is to create ultracold molecules, there are basically two ways to do this.
-% One approach is to first get molecule and then get ultracold, in another word, direct cooling
-% of hot molecules to ultracold temperature without destroying or otherwise loosing the molecule.
+% So since our goal is to create ultracold molecules,
+% there are basically two ways to do this.
+% One approach is to first get molecule and then get ultracold,
+% in another word, direct cooling of hot molecules to ultracold temperature
+% without destroying or otherwise loosing the molecule in that process.
 % This is a very hard problem even without loading into optical tweezer
-% because of the difficulties in laser cooling, but there has been a lot of progress in this area.
-% In fact, the Doyle group at Harvard have demostrated last year trapping ultracold CaF molecules
+% because of the difficulties in laser cooling,
+% but there has been a lot of progress in this area.
+% In fact, the Doyle group at Harvard have demostrated last year
+% (actually almost two years ago) trapping ultracold CaF molecules
 % in an array of optical tweezers, as you can see in this picture.
-% __(5:20)__
+% __()__
 
-% The other approach, which is what we use, is to get ultracold, and then get molecule.
+% The other approach, which is what we use,
+% is to get ultracold, and then get molecule.
 % In another word, we would cool and fully control whatever make up the molecule,
 % in our case atoms, before turning them into molecule coherently,
-% without heating them, and in general maintaining
-% the control we had on the atoms in this process.
-% __(5:50)__
+% without heating them, and in general maintaining the control we had
+% on the atoms in this process.
+% __()__
 
-% Comparing the two approaches, the main challenge currently for the direct cooling approach
-% is to cool and in general controlling the molecules in the tweezer. Whereas for us,
-% what we have to do is to first establish the control on the atoms
+% Comparing the two approaches,
+% the main challenge currently for the direct cooling approach
+% is to cool and in general controlling the molecules in the tweezer.
+% Whereas for us, what we have to do is to first establish the control on the atoms
 % and then create our molecule from the atoms coherently.
-% These will be what I'm going to focus on for the remainder of my talk
-% __(6:20)__
+% These two points will be what I'm going to focus on for the remainder of my talk
+% __()__
 \begin{frame}{Ultracold molecule in tweezers}
   \begin{center}
     \begin{tikzpicture}
@@ -597,22 +653,23 @@
 % So here's an outline for the rest of my talk.
 % I'll first give an overview of our experiment, both the procedure and the apparatus.
 % Then I'll discuss one example of achieving full control on our atoms.
-% I'll then describe our measurement of the interaction between atoms as a preparation
-% for our molecule formation. And after that I'll talk about
-% how we create the molecules coherently, before giving my conclusion.
-% __(7:00)__
+% After that I'll describe our measurement of the interaction between atoms
+% both to demostrate what control we have
+% and as a preparation for our molecule formation.
+% And finally I'll talk about how we create the molecules coherently,
+% before giving my conclusion.
+% __()__
 \begin{frame}{Outline}
   \tableofcontents
 \end{frame}
 
 \section{Experiment overview}
 %% Experiment overview
-% So first the experiment.
-% The molecules we make is NaCs, chosen because
-% a) it is a bi-alkali molecule and the alkali atoms are relatively easy to cool and control, and
-% b) this molecule has a fairly strong dipole moment of 4.6 debye among the bi-alkalis
-% and even diatomic molecules in general.
-% __(7:50)__
+% So first the experiment. The molecules we make is NaCs, chosen because
+% a) it is a bi-alkali molecule and the alkali atoms are relatively easy to cool and control,
+% and b) this molecule has a fairly strong dipole moment of 4.6 debye
+% among the bi-alkalis and even among many other diatomic molecules in general.
+% __()__
 \begin{frame}[t]{Experiment overview}
   \begin{columns}
     \column{5.8cm}
@@ -630,30 +687,35 @@
 % Since we are making molecules from atoms inside the optical tweezer,
 % the obvious first step is to get the atoms in there.
 % This has been done previously for Rb in other group.
-% Doing this for Cs was relatively straightforward
-% but getting this working for Na requires eliminating the light shift from the tweezer
-% by switching it on and off. After figuring that out,
-% we can now trap the atoms in their respective tweezers directly from the MOT as you can see
-% in this picture, with about 60% loading probability.
-% __(8:40)__
+% And while doing this for Cs was relatively straightforward,
+% getting this working for Na had some difficulties related to the light shift of the tweezer
+% that we have to overcome by switching the tweezer on and off
+% as detailed in this paper that I'm not going to talk too much about.
+% After figuring that out, we can now trap the atoms
+% in their respective tweezers directly from the MOT
+% as you can see in this picture, with about 60% loading probability.
+% __()__
 
-% We then prepare the initial state, both internal and motional,
-% for the atoms using optical pumping and Raman sideband cooling to a single quantum state
-% with a fairly high fidelity. And I'll talk about how we do this for Na in more detail later.
-% __(9:00)__
+% We then prepare the initial state, both internal and motional, for the atoms
+% using optical pumping and Raman sideband cooling to a single quantum state
+% with a fairly high fidelity.
+% And I'll talk about how we do this for Na in more detail later.
+% __()__
 
 % At this point the atoms are still in their own tweezers,
-% which isn't very helpful for making a single molecule, due to the distance between them.
-% So the natural next step is to move one of the tweezers and
-% merge the two atoms into the same tweezer.
-% We do this in a way that minimize the heating to the two atoms so they remain in their
-% motional ground states that we cooled them into.
+% which isn't very helpful for making a single molecule,
+% since they are so far apart and can't see or feel each other.
+% So the natural next step is to move one of the tweezers
+% and merge the two atoms into the same tweezer.
+% We do this in a way that minimize the heating to the two atoms
+% so they remain in their motional ground states that we cooled them into.
 
-% After the merge, the two atoms are now in the same trap and
-% we proceed to measure their interaction and form the molecule from this state.
+% After the merge, the two atoms are now in the same trap
+% and we proceed to measure their interaction and form the molecule from this state.
 % Here you see the cover for one of our first results on making molecules,
-% and it also shows what our vacuum chamber looks like on its own.
-% __(9:50)__
+% and it also shows what our vacuum chamber
+% within which all of atoms and molecules resides.
+% __()__
 \begin{frame}[t]{Experiment overview}
   \vspace{-0.5cm}
   \begin{center}
@@ -757,20 +819,20 @@
 \end{frame}
 
 %% Lab pictures
-% ... which is a nice segway to talk about our apparatus especially
-% since in real world, with things around the camber, this is what the experiment looks like
-% and you can't easily see the glass cell anymore.
+% ... which is a nice segway to talk about our apparatus
+% especially since in real world, with things around the chamber,
+% this is what the experiment looks like and you can't easily see the glass cell anymore.
 % Since we don't need to trap a lot of atoms and we also don't use any strong field,
 % our experiment is relatively small and compact,
-% at least compared to traditional bulk gas experiments,
-% although maybe not very impressive compared to an ion one.
+% at least compared to traditional bulk gas experiments.
 % You can see in this picture that our whole vacuum chamber is in this region
 % sourrounded by the magnetic field coil.
-% From a different angle it is actually still possible to see our Na MOT glowing yellow
-% in the vacuum chamber like this.
+% From a different angle it is actually still possible to see our Na MOT
+% glowing yellow in the vacuum chamber like this
+% and it still get me excited every time years after seeing it.
 % Surrounding the camber we have our beam path for the MOT, shown here,
-% and our tweezer and imaging beam paths, as well as many others around.
-% __(11:00)__
+% and our tweezer and imaging beam paths, here, as well as many others around.
+% __()__
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -805,11 +867,11 @@
 %% Atom control
 % So that's a rough overview of our experiment.
 % And next I'll talk about how we achieve full quantum control of our atoms,
-% which is necessary before we can do anything coherent about molecules.
-% Of course, even for atoms, there are many degrees of freedoms to control and
-% I don't have time to talk about every single one of them.
+% which, if you recall, is necessary before we can do anything coherent about molecules.
+% Of course, even for atoms, there are many degrees of freedoms to control
+% and I don't have time to talk about every single one of them.
 % So instead, I'm just going to focus on how we use Raman sideband cooling to cool Na atoms.
-% __(11:30)__
+% __()__
 \section{Atom state control}
 \subsection{Raman sideband cooling of Na atoms}
 \begin{frame}{Outline}
@@ -817,116 +879,133 @@
 \end{frame}
 
 %% Raman sideband cooling
-% I imagine most people here are very familiar with Raman sideband cooling
-% since it was basically invented for ion.
-% In fact, I feel like it is used so common in ion experiments these days that people stops
-% mentioning it some times.
-% So I believe I don't have to talk too much about how to use it in general.
-% Also in fact, the whole idea of full control of single particle was pioneered in ions
-% so I'm really not going convince anyone here how nice and important
-% single particle control is more then they already are. So I'm not.
-% Instead, I'll focus on the differences in our experiment and the new challenges we face,
-% compared to a more traditional sideband cooling experiment.
-% I'll talk about how we overcome these challenges and open up this tool to ours and
-% other future experiments where Raman sideband cooling were previously thought
-% to be very hard or impossible. Hopefully some of what I say will be interesting for you too.
-% __(12:40)__
+% So Raman sideband cooling is a technique for cooling particles,
+% for example ion/atom/molecules etc., that is trapped in some potential.
+% I imagine a lot of people here know about how it works
+% since it's used or is considered to be used in quite a few experiment in CUA.
+% So I'm going to focus more on the differences
+% and unique challenges we faced in our experiment.
+% I'll talk about how we overcome these challenges
+% and open up this tool to ours and other systems
+% and it will hopefully be interesting for people
+% who already know about Raman sideband cooling.
+% Nevertheless, let me give a short description of how it works
+% so that we can be on the same page when I talk about the difficulties we faced.
+% __()__
 
-% But before that, just to make the logic complete,
-% let me just very quickly go through how Raman sideband cooling works
-% even though you probably know already.
-% So here is the motional levels of an atom in a harmonic potential for two HF states,
+% So to start here is the motional levels of an atom in a harmonic potential,
 % which approximate our optical tweezer.
-% **(Mention Cs state notation)**
-% Now, we can drive between different ground HF states with a Raman transitions
-% and due to the motional levels, we can drive on the sideband of these transitions
-% and change the motional state of the atoms.
-% Not only is this a tool to cool the atoms,
-% but it is actually also a tool to measure the temperature of the atoms
-% based on the assymmetry between the cooling and heating sidebands,
-% where the cooling sideband will be strongly surppressed as the atom gets cooled down.
-% Of course, after driving the sideband transition,
-% we need to reset the internal state of the atom and removes the entropy.
-% This is done using an optical pumping step, shown here.
-% __(14:00)__
+% These discrete levels exist for all the ground HF states as shown here.
+% Now, we can drive between different ground HF states, say, with a Raman transitions,
+% but due to the motional level,
+% in additional to driving a "carrier" Raman transition
+% at the normal resonance frequency like this,
+% with enough resolution, we can detune from it to drive "sideband" transitions
+% that changes the motional state in additional to the HF states.
+% When we drive the transition on the sideband,
+% we can either add, or remove motional energy from the atoms
+% therefore either heat or cool the trapped atom.
+% Moreover, not only is this useful for cooling the atoms,
+% but it is actually also a tool to measure the temperature of the atoms.
+% Since there are fewer states for decreasing the energy than to increase the energy,
+% there's a difference between the heating and cooling sidieband.
+% And as the temperature of the atoms get lower and lower,
+% the cooling sideband will be more and more surpressed
+% and the assymetry between the two sideband can be used
+% to infer the temperature of the atom, so-called, sideband thermometry.
+% Of course, this sideband only remove a very limited amount of energy from the atoms
+% and we have to go back to the original HF state to restart the process.
+% This is done using an optical pumping step, shown here,
+% which is also the step that removes the entropy, if that's your preferred picture.
+% __()__
 
 %% Lamb-Dicke parameter
-% It is easy to see that whether this cooling cycle can work relies on the balance
-% between removing motional energy from the atom via the sideband transition,
-% and the recoil heating done in the OP step.
+% It should not be hard to see that whether this cooling cycle can work
+% relies on the balance between removing motional energy from the atom
+% via the "well-controlled" sideband transition,
+% and the heating done in the somewhat "less-controlled" OP step.
 % This ratio is determined by the so-called Lamb-Dicke parameter,
 % which is defined as the ratio between the harmonic oscillator length
-% and the Raman or OP wavelengths, and it is also proportional to the square root of the
-% ratio between the recoil energy and the trapping frequency, which is exactly what we want.
-% Because of this, one would like a small LD parameter so that the heating is small
-% compared to the cooling, which of course isn't a problem for ions
-% but isn't as easy to achieve for neutral atoms.
-% __(15:00)__
-
-% OK, so that's almost everything we have in common with sideband cooling on ions
-% and hopefully the next part will be slighly more interesting to people here.
+% and the Raman or OP wavelengths,
+% and it is also proportional to the square root of the heating to cooling ratio
+% that we care about.
+% Because of this, one would like a small LD parameter,
+% so that the heating is small compared to the cooling,
+% which isn't exactly trivial to achieve for neutral atoms.
+% __()__
 
 % Of course, even for atoms in tweezers we are not the first group that did this,
-% this has been done on Rb in tweezers including Cindy's experiment at JILA
-% and Misha's experiment at Harvard and also for us on Cs.
-% However the light mass of Na as well as the short wavelength of the D lines
+% this has been done on Rb in tweezers including Misha's experiment at Harvard
+% and also for us on Cs.
+% However, if you look at what goes into it, the light mass of Na
+% as well as the short wavelength of the transition
 % causes a much bigger LD parameter, about 0.55 for Na.
-% Together with a higher initial temperature for Na due to lack of good PGC,
+% Together with a higher initial temperature for Na due to lack
+% or at least difficulty of good PGC,
 % we knew right off the bat that Na cooling will be hard.
-% But still, the LD parameter is smaller than one meaning we should have net cooling
-% and we decided to give it a try.
-% Well it turns out that the difficulty with RSC for Na is actually quite a bit more subtle
-% and intersting then what one might naively expect.
-% __(16:20)__
+% But still, the LD parameter is smaller than 0.7
+% meaning we should have net cooling so we decided to give it a try.
+% Well it turns out that the difficulty with RSC for Na
+% is actually quite a bit more subtle and intersting then what one might naively expect.
+% __()__
 
-% First of all, although the Lamb-Dicke parameter tells us that we should have
-% a net cooling per cycle on average, it does not capture the uncertainty of cooling process.
-% As you can see in this plot, with a high Lamb-Dicke parameter, and for a hot initial state,
-% similar to what we have on average for Na,
+% First of all, although the Lamb-Dicke parameter tells us that
+% we should have a net cooling per cycle on average,
+% it does not capture the uncertainty of cooling process.
+% As you can see in this plot, with a high Lamb-Dicke parameter,
+% and for a hot initial state, similar to what we have on average for Na,
 % the atom might end up in a wide varity of motional states after OP,
 % which makes it much harder to control the motional state of the atom during cooling.
 % This effect is also state dependent and it gets worse the higher the initial state is.
-% __(17:10)__
+% __()__
 
 % Second, which actually makes the first issue worse,
 % is the variation of the coupling for the Raman transition.
 % The sideband coupling for different motional states are different.
-% This is not news for people doing sideband cooling and in fact we leart from Till to take this
-% into account for our Cs RSC based on his old experience with RSC on ions at NIST.
-% However, what's new for Na is that our Lamb-Dicke parameter and initial tempereture is high
-% enough that our coupling strengh is not monotonic in motional level anymore
+% This is not news for people doing sideband cooling
+% and in fact we leart from Till to take this into account for our Cs RSC
+% based on his old experience with RSC on ions at NIST.
+% However, what's new for Na is that our Lamb-Dicke parameter
+% and initial tempereture is high enough
+% that our coupling strengh is not monotonic in motional level anymore
 % as you can see in this plot.
 % What's more, we are experiencing coupling "dead zone"s.
-% And if the atoms gets here, they would get stuck since we would not be able to address them
-% as efficiently just by changing the pulse times,
+% And if the atoms gets here, they would get stuck
+% since we would not be able to address them as efficiently just by changing the pulse times,
 % as what people normally do.
 % They also won't show up in our detection scan to measure the temperature
 % making optimizing the cooling sequency using the experiment very challenging.
-% __(18:40)__
+% __()__
 
-% The solution we found to these problems turns out to be the large Lamb-Dicke parameter itself.
+% The solution we found to these problems
+% turns out to be the large Lamb-Dicke parameter itself.
 % You see, the fact that a large Lamb-Dicke parameter causes more heating
-% and more spread out of states actually also means that the atoms have a strong coupling
-% to higher order sidebands. Now if we use these higher order sideband to do the cooling
-% we can significantly increase the cooling to heating ratio, fixing the original concern
-% for large heating. It doesn't directly fix the motional state spreading out problem
+% and more spread out of states actually also means that
+% the atoms have a strong coupling to higher order sidebands.
+% Now if we use these higher order sideband to do the cooling
+% we can significantly increase the cooling to heating ratio,
+% fixing the original concern for large heating.
+% It doesn't directly fix the motional state spreading out problem
 % but the more efficient cooling pulse certainly helps a lot.
-% __(19:40)__
+% __()__
 
-% Most importantly though, if we add higher order sideband to this plot for the coupling strength
-% we can see that the dead zone is completely gone. Depending on which states we want to cool,
-% we can now simply pick the sideband order where the coupling is the largest
-% and we'll be able to cool them down.
-% Just as important, if you squint a bit you can just make out a smoothly varying profile
-% of all the coupling strengths, which means that if we choose the right order for all the states,
-% the coupling strength won’t be varying too much
-% and we don’t even need to vary our pulse time as much.
-% __(20:30)__
+% Most importantly though,
+% if we add higher order sideband to this plot for the coupling strength
+% we can see that the dead zone is completely gone.
+% Depending on which states we want to cool,
+% we can now simply pick the sideband order
+% where the coupling is the largest and we'll be able to cool them down.
+% Just as important, if you squint a bit
+% you can just make out a smoothly varying profile of all the coupling strengths,
+% which means that if we choose the right order for all the states,
+% the coupling strength won't be varying too much
+% and we don't even need to vary our pulse time as much.
+% __()__
 
 % With the additional complexity of the higher order sidebands,
-% we switched to a computer simulation
-% to guide our search so that we don't have to interpret the signal for
-% many different sideband orders with oscillatory strength.
+% we switched to a computer simulation to guide our search
+% so that we don't have to interpret the signal for many different sideband orders
+% with oscillatory strength.
 % We use it to test different experimental sequences
 % and come up with a working sequence like this.
 % The three different colors of Raman pulses correspond to different axis.
@@ -937,19 +1016,22 @@
 % However, the unique feature of our sequence is that
 % we are now also cycling between two different orders of sidebands at the same time
 % as you can see from the labels here.
-% Simulation shows that doing this allow us to avoid having any atoms getting stuck
-% in the dead zone and we would gradually decrease the pair of sideband orders we address
+% Simulation shows that doing this allow us to avoid
+% having any atoms getting stuck in the dead zone
+% and we would gradually decrease the pair of sideband orders we address
 % until we reach the last order.
 % When we implemented it in the experiment after calibration all the parameters,
-% this is the result we got. We have very clear suppression of the cooling sidebands
-% and this result, combining with similar measurements for the two radial axis,
+% this is the result we got.
+% We have very clear suppression of the cooling sidebands and this result,
+% combining with similar measurements for the two radial axis,
 % suggests that we have a 94% ground state population for Na,
 % despite a high Lamb-Dicke parameter and initial temperature.
 
 % We believe the technique we developed here is applicable to more systems,
-% even for direct cooling of molecules where there may be similar challenges
-% due to the the trapping force available and high initial temperature.
-% __(23:20)__
+% even for direct cooling of molecules
+% where there may be similar challenges due to the the trapping force available
+% and high initial temperature.
+% __()__
 \begin{frame}{Raman sideband cooling}
   \todo{
     Expand on RSC
@@ -1144,14 +1226,16 @@
 \def\enableinteraction{}
 
 %% Atom-atom interaction
-% After preparing the quantum state for the atoms and before we can form the molecule,
+% So now we have achieved full quantum control on our atoms,
+% the next thing we would like is to transfer this control onto the molecules.
+% But before that,
 % we need to have a better understanding of the interaction between the atoms.
 % The interaction will give us information about the molecular state we want to form
-% and how to get there, and it will actually also help us to better prepare our atoms
-% to form the molecules as you'll see later.
+% and how to get there,
+% and it will actually also help us to better prepare our atoms to form the molecules
+% as you'll see later.
 % It turns out that our tweezer is actually also a very good platform for such measurement.
-% __(24:00)__
-
+% __()__
 \ifdefined\enableinteraction
 \subsection{Atom-atom interaction}
 \begin{frame}{Outline}
@@ -1159,10 +1243,10 @@
 \end{frame}
 
 %% Scattering length
-% The important property that we are interested in here is basically
-% the scattering length between Na and Cs.
-% This is a number that describes the short range interaction between two particles
-% at ultracold temperature.
+% The important property that we are interested in here
+% is basically the scattering length between Na and Cs.
+% This is a number that describes the short range interaction
+% between two particles at ultracold temperature.
 % The specific properties that are related to the scattering length
 % which we are interested in includes,
 % * Binding energy of the least bound state,
@@ -1170,8 +1254,8 @@
 % * Molecular potential which ultimately give rise to the bound states,
 % * Both of these help us understand the molecule better for our molecule creation,
 % * As well as refining predictions for FB resonances
-% % which we have another experiment working on it.
-% __(25:00)__
+% % % which we have another experiment working on it.
+% __()__
 \begin{frame}{Scattering length $a$}
   \begin{columns}
     \column{4.5cm}
@@ -1219,38 +1303,45 @@
 % since we can't really drive a transition between one atom and two atoms in the tweezer.
 % So instead, we rely on the fact that this interaction is in general state dependent.
 % If we drive the atoms from one spin combinantion to a different one,
-% say with a Raman transition or a microwave, we should be able to see a shift in the
-% resonance frequency, corresponding to the difference of the interaction between
-% the initial and final spin states.
-% This way of measuring the scattering length is similar to the experiement done
-% in optical lattice in a MOTT insulator phase but the anisotropy of the trap
-% causes some difference which you’ll see shortly.
-% __(26:30)__
+% say with a Raman transition or a microwave,
+% we should be able to see a shift in the resonance frequency,
+% corresponding to the difference of the interaction between the initial and final spin states.
+% This way of measuring the scattering length
+% is similar to the experiement done in optical lattice in a MOTT insulator phase
+% but the anisotropy of the trap causes some difference which you'll see shortly.
+% __()__
 
 % So we did the measurement. Here's the resonance when only Cs atom is loaded in the trap.
 % Compared to this, if we measured an interaction shifted peak on the right,
-% it would suggest that the final state has a lower energy or a more attractive interaction
-% than the initial state, whereas a peak on the left would mean a more repulsive final state.
-% __(27:00)__
+% it would suggest that the final state has a lower energy
+% or a more attractive interaction than the initial state,
+% whereas a peak on the left would mean a more repulsive final state.
+% __()__
 
 % Now when we added the Na atom, instead of seeing one peak, we saw three peaks instead.
-% Well, the center one is easy, our state preparation isn't perfect and in this case
-% only 60-70% of the atoms are in the ground state and the hot atoms has lower density
-% and much lower shift so it appears closer to the bare resonance.
+% Well, the center one is easy, our state preparation isn't perfect
+% and in this case only 60-70% of the atoms are in the ground state
+% and the hot atoms has lower density and much lower shift
+% so it appears closer to the bare resonance.
 % We were very confused by the other two peaks though.
 % Not only do we have more than one interaction shifted peaks,
 % it seems that they don't even agree on the sign of the interaction.
-% __(28:00)__
+% __()__
 
-% So we were puzzled by our data for a while, until we realized that the interaction shift
-% that we've observed here is actually very similar to the axial trapping frequency.
-% This means that the interaction will be strong enough to mix motional states and
-% we can't simply treat it as pertubation anymore.
-% In order to accurately calculate this, we have to go back to the full Hamiltonian shown here
-% which has the term for Na, Cs and their interaction and we'll approximate the interaction
-% by a contact potential that is proportional to the scattering length.
-% This is not a easy problem to solve of course and it actually helps
-% to do a coordinate transformation. If we apply this transformation,
+% So we were puzzled by our data for a while,
+% until we realized that the interaction shift that we've observed here
+% is actually very similar to the axial trapping frequency.
+% This means that the interaction will be strong enough to mix motional states
+% and we can't simply treat it as pertubation anymore.
+% In order to accurately calculate this,
+% we have to go back to the full Hamiltonian shown here
+% which has the term for Na, Cs and their interaction
+% and we'll approximate the interaction by a contact potential
+% that is proportional to the scattering length.
+% (I promise this is the only slide with lots of equations by the way.)
+% This is not a easy problem to solve of course
+% and it actually helps to do a coordinate transformation.
+% If we apply this transformation,
 % which is actually the same as what one would learn in freshman classical mechanics,
 % we can go from the Na and Cs coordinate to center of mass and relative coordinate.
 % This is a more natural coordinate for discribing interaction,
@@ -1258,21 +1349,21 @@
 % with a center of mass part, as a simple harmonic oscillator,
 % a relative part, which is the an harominic oscillator plus the interactionn,
 % and a mixing part caused by the difference in the Na and Cs trapping frequency.
-% __(29:50)__
+% __()__
 
 % The solution the first part is very easy and it turns out that the second part,
-% harminic oscillator with contact interaction,
-% is also important enough that people have worked out analytic solutions for it as well,
+% harminic oscillator with contact interaction, is also important enough
+% that people have worked out analytic solutions for it as well,
 % the only part that we need to do is the mixing term which is much more well behaved
 % compared to the contact interaction and it can be solved numerically fairly easily.
 % So we did it and the energy levels solved from this,
 % plotted as a function of the scattering length looks like this.
 % Each spin state, with its specific scattering length
-% corresponds to a vertical slice on this plot and driving transitions between them
-% corresponds to moving horizontally.
+% corresponds to a vertical slice on this plot
+% and driving transitions between them corresponds to moving horizontally.
 % Different curves corresponds to atoms in a different motional states,
 % which may be center of mass or relative motion excitation or a mixture of the two.
-% __(31:20)__
+% __()__
 
 % It is now much easier to understand our signal.
 % It turns out that in this case, our initial state has a very small scattering length
@@ -1280,26 +1371,29 @@
 % The peak on the right seems to be actually the "normal" interaction shifted signal
 % where the atoms remained in the motional ground state of the system after the transition.
 % The signal on the left actually corresponds to the atoms acquring some motional energy
-% in additional to the interaction energy, which puts it on the wrong side of the unshifted peak.
-% __(32:10)__
+% in additional to the interaction energy,
+% which puts it on the wrong side of the unshifted peak.
+% __()__
 
-% We've also measured the shift for other spin state combinations and this explanation
-% works out as good. Here I'm showing a case where the normal signal and the one
-% with motional excitation appears on the same side instead of two different sides.
-% __(32:30)__
+% We've also measured the shift for other spin state combinations
+% and this explanation works out just as good.
+% Here I'm showing a case where the normal signal
+% and the one with motional excitation appears on the same side
+% instead of two different sides.
+% __()__
 
 % Combining this with some of our other measurements,
-% we can now fit the data using the non-perturbative model and calculate the scattering length
-% for all the other spin state combinations.
-% __(32:50)__
+% we can now fit the data using the non-perturbative model
+% and calculate the scattering length for all the other spin state combinations.
+% __()__
 
-% Of course we did this measurement not just to show
-% how nice it is to use optical tweezer to trap atoms.
-% We did this measurement in order to help us make the molecules.
+% Of course we did this measurement not just to how nice it is
+% to use optical tweezer to trap atoms,
+% we did this measurement also to help us making the molecules.
 % The numbers shown here are used, as I said earlier,
 % to help us find some of the bound states and FB resonance.
 
-% And I want to point out that the 3,3+2,2 combination has a very strong interaction.
+% And I also want to point out that the 3,3+2,2 combination has a very strong interaction.
 % This suggests that the atomic wavefunction is strongly affected by the molecular potential
 % which should enhance the coupling from this state to the molecular state.
 % Indeed, if we look at the radial wavefunction for these HF states,
@@ -1307,7 +1401,7 @@
 % at short distance closer to and inside the molecular potential,
 % making it the most "molecule like" atomic state.
 % For this reason, we select this state to form our molecule as you'll see in the next part.
-% __(33:50)__
+% __()__
 
 % Another advantage for selecting this state is that
 % this actually also help us preparing the atomic state itself.
@@ -1319,7 +1413,7 @@
 % This allow us to reduce the background of our signal
 % and to be able to work even when our cooling isn't perfect,
 % which improves the robustness and signal to noise of our experiment.
-% __(34:50)__
+% __()__
 \begin{frame}{Interaction shift}
   \vspace{-0.8cm}
   \begin{tikzpicture}
@@ -1421,7 +1515,7 @@
 % So now we've prepared the states of the atoms and
 % we've measured the properties of their interaction.
 % I'll now talk about how we make the molecules while maintaining the quantum control.
-% __(35:10)__
+% __()__
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
@@ -1433,9 +1527,9 @@
 % the two atoms are about as closed to each other as they can be from the confinement.
 % Nevertheless, comparing to the molecule we want to make,
 % it is still a few hundred times bigger.
-% This massive size mismatch is really the biggest challange for anyone
-% who want to create molecules coherently from atoms. ...
-% __(35:50)__
+% This massive size mismatch is really the biggest challange
+% for anyone who want to create molecules coherently from atoms. ...
+% __()__
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -1493,36 +1587,40 @@
 
 %% Two step transfer
 % ... which basically necessitate a two step transfer process.
-% The more loosely bound molecular state in the middle reduces
-% the size mismatch for each steps and will improve overall transfer efficiency.
+% The more loosely bound molecular state in the middle
+% reduces the size mismatch for each steps
+% and will improve overall transfer efficiency.
 % And the transfer to this intermediate state is what I'll focus on in this part of the talk.
-% __(36:20)__
+% __()__
 
 % The "tranditional" choice of the intermediate state is a FB molecule.
-% Indeed, it also works for us and
-% **using a different apparatus which includes a big magnetic field oil,
-% different from the one I’ve shown you a picture of,**
+% Indeed, it also works for us and **using a different apparatus
+% which includes a big magnetic field coil,
+% different from the one I've shown you a picture of,**
 % we've recently created a single FB molecule in the optical tweezer
-% that is suitable for doing the next step transfer from.
-% However, this approach obviously rely on finding a good FB resonance and usually
-% a large magentic field.
-% __(37:00)__
+% and even the next step transfer to the rovibraonic ground state.
+% However, this approach obviously rely on finding a good FB resonance
+% and usually a large magentic field.
+% __()__
 
-% What I am going to mainly talk about today, OTOH, is a different approach that uses only
-% optical transitions. By not relying on FB resonance, it is faster,
-% more compact in setup, and most importantly,
-% we hope it can be more generally apply to molecules that may not have a suitable FB resonance.
-% __(37:30)__
+% What I am going to mainly talk about today, OTOH,
+% is a different approach that uses only optical transitions.
+% By not relying on FB resonance, it is faster, more compact in setup,
+% and most importantly, we hope it can be more generally apply to molecules
+% that may not have a suitable FB resonance
+% and only require laser cooling on the atoms themselves.
+% __()__
 
 % **Make sure mentioning FB molecule vs optical transfer are two different setups**
 
 % It's worth pointing out that optical transfer **has** been done previously
 % on many systems include this Rb2 Raman resonance as well as Sr2,
-% and even a previous attempt from our lab. However, it was either done incoherently,
-% limited by scattering, or, in the case of Sr2, it relies on narrow line optical transition
+% and even a previous attempt from our lab.
+% However, it was either done incoherently, limited by scattering,
+% or, in the case of Sr2, it relies on narrow line optical transition
 % which works very well but limits the generality of the result.
 % So next I'll focus on how we overcome these limitations.
-% __(38:20)__
+% __()__
 
 % **Make sure mentioning FB molecule vs optical transfer are two different setups**
 \begin{frame}{}
@@ -1616,30 +1714,33 @@
 % Since one of the major challenges is the mismatch of the wavefunction sizes,
 % it makes sense to pick molecular states that are as "big" as possible,
 % in another word, ones that are closed to the threshold or even the first bound state.
-% Indeed, this is what all previous attempts use which leads to a fairly strong Raman transition.
-% But these states are also very closely spaced, and in case of the excited state, this makes
-% it very hard to detune from a resonance and reduce the scattering,
+% Indeed, this is what all previous attempts use
+% which leads to a fairly strong Raman transition.
+% But these states are also very closely spaced, and in case of the excited state,
+% this makes it very hard to detune from a resonance and reduce the scattering,
 % which ultimately limits the coherence, as I metioned previously.
 % If we instead use an excited state that is more deeply bound.
-% Even though the Raman coupling is reduced, we can now detune further to reduce the scattering
+% Even though the Raman coupling is reduced,
+% we can now detune further to reduce the scattering
 % without worrying about hitting another state.
-% __(39:40)__
+% __()__
 
-% It is certainly not obvious if the deeply bound state costs too much in the Raman coupling
-% compared to the scattering reduction. And that's why we did a calculation to compare the two.
+% It is certainly not obvious if the deeply bound state costs too much
+% in the Raman coupling compared to the scattering reduction.
+% And that's why we did a calculation to compare the two.
 
 % From the two plots for two different excited states,
 % you can easily see that the Raman Rabi frequency is indeed much higher
-% for the near threshold state,
-% compared to the deeply bound intermediate state at the same detuning.
+% for the near threshold state, compared to the deeply bound intermediate state
+% at the same detuning.
 % However, the scattering rate for the near threshold state stops going down very quickly
-% due to the effects from other states whereas the scattering rate for the deeply bound states
-% goes down much more.
-% All in all, the Rabi frequency to scattering ratio, shown in green on the right side axis,
-% never reaches higher than ~1.3 for the near threshold state,
-% whereas for the deeply bound state,
+% due to the effects from other states
+% whereas the scattering rate for the deeply bound states goes down much more.
+% All in all, the Rabi frequency to scattering ratio,
+% shown in green on the right side axis, never reaches higher than ~1.3
+% for the near threshold state, whereas for the deeply bound state,
 % we can get a ratio north of 50 when a larger detuning is used.
-% __(41:00)__
+% __()__
 \begin{frame}[t]{Raman transfer}
   \begin{center}
     \vspace{-0.9cm}
@@ -1763,61 +1864,134 @@
 % We weren't able to get a positive result from this initial state,
 % including the resonance I showed on a previous slide.
 % That's why we decided to change to the initial state with the biggest scattering length
-% as measured in the interaction shift measurement I’ve just talked about
+% as measured in the interaction shift measurement I've just talked about
 % to increase the coupling and used our interaction shift measurement
 % to improve our state preparation.
 % And for the corresponding ground molecular state,
 % the binding energy was predicted as ~771 MHz by Jeremy Hutson from Durham,
 % based on our interaction shift and FB measurement. (Phys. Rev. Research 2, 023108 (2020))
-% __(42:10)__
+% __()__
 
 % Another trick that we use is that,
 % instead of adding another pair of beams to drive the Raman transition,
 % we simply reuse our tweezer beam for that.
-% We added AOMs to our tweezer beam path so that we can add a second frequency
-% to our tweezer with controllable detuning.
+% We added AOMs to our tweezer beam path so that
+% we can add a second frequency to our tweezer with controllable detuning.
 % This allow us to take advantage of the high intensity of the tweezer
 % to achieve a high Raman Rabi frequency so that we can do the transfer faster
 % and beats other noise sources like magnetic field fluctuations.
 % This also minimizes the number of beams we shine on the atom
 % and reduce the total scattering rate from them.
-% __(43:10)__
+% __()__
 
 % Thanks to the prediction, it didn't take too long for us to find the resonance,
 % which was only 1-2MHz from the prediction.
 
 % But what's more important, and different from all previous spectrum,
-% is the FWHM of 8.4 kHz. It is very closed to the Fourier limited linewidth
-% for the 0.1 ms pulse time we use, suggesting that we are very closed to the coherent regime.
-% __(43:40)__
+% is the FWHM of 7.6 kHz.
+% It is very closed to the Fourier limited linewidth for the 0.12 ms pulse time we use,
+% suggesting that we are very closed to the coherent regime.
+% __()__
 
 % So next, naturally, we switched to scanning the time on resonance.
-% And long and behold we see a revival in our signal, which is the evidence that
-% we can drive the atoms to molecule and then back coherently.
-% Show here is one of the typical Rabi flopping we get.
+% And long and behold we see a revival in our signal,
+% which is the evidence that we can drive the atoms to molecule and then back coherently.
+% Shown here is one of the typical Rabi flopping we get.
 % This is the first time coherent optical transfer has been done
-% without using a narrow optical transition and we believe it can be applied to
-% many other systems.
-% __(44:20)__
+% without using a narrow optical transition
+% and we believe it can be applied to many other systems.
+% __()__
 
-% The contrast is obviously not 100%, but, this actually correspond to
-% more than 60% of initial ground state atom, here, being transfered into the molecular state.
+% The contrast is obviously not 100%,
+% but this actually correspond to more than 60% of initial ground state atom,
+% here, being transfered into the molecular state.
 % You can also see it in this plot of the molecule population
 % as a function of the time and detuning calculated based on the experiment results.
-% We believe the major contribitor to this contrast is the molecular lifetime
-% which we measured here to be much shorter than what we expect.
-
-% From the design of our transfer scheme, all molecules we made are in a single spin state
+% From the design of our transfer scheme,
+% all molecules we made are in a single spin state
 % with 50% or even more of them in the ground motional state.
-% __(45:20)__
+% __()__
 
-% We are still investigating in the sources of the shorter lifetime and
-% one particular source that we are corrently testing is our Raman beam.
-% It turns out that the diode laser we use has a broad spectra background noise
-% in additional to the very narrow frequency peak.
-% This broad background has a high chance of causing scattering on other excited molecular state
-% and we are working on filtering it out.
-% __(46:00)__
+% We did a lot of investigation on the difference between the theory prediction
+% and the experimental observation.
+% We saw relatively good agreement in the parameters that affects the coherent transfer
+% but we saw significant scattering rate that originate from sources
+% that were not accounted for.
+% This shortens the molecular lifetime which we measured here
+% to be about 10 times shorter than what we expect.
+% I'll save you from all the measurements that we did,
+% but to summarize we have identified two different sources of extra scattering.
+% __()__
+
+% The first one is from the laser, which is, in fact, already mostly taken care of
+% in the data above as I'll explain shortly.
+% So it turns out that in additional to the desired frequency,
+% the diode laser we use to generate the tweezer and Raman beams
+% also has a very broad band spectrum due to amplified spontaneous emission or ASE.
+% This is something that we knew exists and everyone else also said so
+% but it was surprisingly hard for us to find quantitative information about it.
+% Furtunately, we found a very sensitive optical spectrum analyser,
+% thanks to the Doyle group and, as I heard, Yicheng who rescued it from a trash dump.
+% And it allows us to actually see this in action.
+% So here you see what we got from the laser directly,
+% the band here is the desired frequency,
+% but in additional to that we also saw this broad spectral feature
+% that spans tens of nanometers and can couple resonantly to many excited states
+% and cause significant scattering.
+% Furtunately, since this is a well known phenomina,
+% it's actually not hard to find a solution for it.
+% It turns out that people makes these 3D bragg grating to with GHz's bandwidth
+% and is a perfect solution for the ASE.
+% We got one from Ondax/Coherent with a line width of 30 GHz
+% and as you can see in this spectrum after the filter,
+% the ASE is basically completely gone.
+% We can observe the effect on the Raman transition on this plot.
+% On the x axis here I'm plotting the Raman Rabi frequency
+% and the y axis the scattering rate we measured.
+% The bottom right corner corresponds to higher Rabi frequency
+% and low scattering which is good
+% and the top left corner corresponds to bad transfer efficiency.
+% We can see here a few points that corresponds to different tweezer powers,
+% and we can clearly see that with an ASE filter added to clean up the laser,
+% the points are closer to the bottom right and the transition efficiency is improved.
+% But this is actually not the end of it.
+% We added this filter basically right after our laser
+% but we were told by the Lukin group that the fiber can cause a very similar effect as well.
+% So we added a second ASE filter after the fiber and this is what we saw.
+% For various reasons we were only able to take one point in this configuration
+% and it's not completely tuned up, but you can clearly see that
+% it is better than any of the previously measured points.
+% This green point is actually the condition where we took the data that I showed you earlier
+% so most of the noise should be removed already.
+% However, there are still a few improvements we can do on that setup
+% to ensure that we have eliminated the technical noises as my as possible.
+% __()__
+
+% The second noise source is a dissociative two-photon scattering process.
+% So the source I just talked about is mostly what we called background scattering
+% and is insensitive to the tweezer frequency.
+% On the other hand, we can also plot the tweezer frequency **dependent** part
+% of the scattering after measuring it at a few different frequencies as shown here.
+% We can see that this scattering fits fairly well with the tweezer power squared
+% which is evidence that this can be a two photon scattering process
+% and in fact it could account for almost all the scattering we saw
+% after adding the two ASE filters within the error bar.
+% I'll not go into too much deatails here
+% but we believe a likely source of this scattering process is a Raman process
+% that couples the molecular state to the motionally excited state of atoms
+% in a different spin state.
+% Currently we can only do a rough esitmate for this process
+% and the resulting rate agrees with what we saw in the experiment
+% to about a factor of 3 to 4 which proofs that it is indeed a good candidate
+% depending on the value of a few parameters that we can't exactly determine yet.
+% __()__
+
+% Combining these two sources, we believe we have accounted for
+% the majority of the scattering that we saw
+% and both of these can be reduced either via technical improvements
+% or by changing the state selections
+% so we believe the transfer efficiency can be improved in the future significantly.
+% __()__
 \begin{frame}[t]{Experiment}
   \todo{
     Show one ASE filter data
@@ -1932,9 +2106,10 @@
 % and use it to measure the interaction between atoms.
 % After that, we’ve coherently created a single molecule in the tweezer
 % using only optical transitions while maintaining the control we had on the atoms.
-% We are working towards creating an array of ground vibrational state molecules
-% which will have strong dipole interaction.
-% __(47:10)__
+% We believe the efficiency can be further improved
+% and we have already demostrated creation of rovibronic ground state molecule
+% starting from FB molecule.
+% __()__
 \begin{frame}[t]{Conclusion and outlook}
   \vspace{-0.5cm}
   \begin{columns}
