@@ -615,16 +615,16 @@
 % and then create our molecule from the atoms coherently.
 % These two points will be what I'm going to focus on for the remainder of my talk
 % __()__
-\begin{frame}{Ultracold molecule in tweezers}
+\begin{frame}{Ultracold molecules in tweezers}
   \begin{center}
     \begin{tikzpicture}
       \uncover<-3>{
         \node at (-3, 4) {\usebeamercolor[fg]{frametitle}{\textbf{Direct cooling}}};
       }
       \node[below, align=center] (CaFnode) at (-3, 3.5) {
-        \includegraphics[width=6cm]{figures/CaF_tweezer.png}\\
+        \includegraphics[width=6cm]{figures/introduction_caf_tweezer.png}\\
         \vspace{0.5cm}
-        \scriptsize Science 365, 1156 (2019)
+        {\tiny Science 365, 1156 (2019)}
       };
       \visible<4->{
         \fill[white,opacity=0.9] (CaFnode.north west) rectangle (CaFnode.south east);
@@ -781,7 +781,7 @@
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
         \node[below,align=center] at (6.5, -0.5)
-        {\includegraphics[width=5cm]{figures/single_viridis.png}};
+        {\includegraphics[width=5cm]{figures/overview_single_atom.png}};
         \node[below,align=center] at (7, -7.5)
         {Loading probability per site: 60\%\\
           Post select on initial and final state.};
@@ -790,7 +790,7 @@
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
         \node[below] at (6.5, -1)
-        {\includegraphics[width=6cm]{figures/spectrum_nolabel_az.pdf}};
+        {\includegraphics[width=6cm]{figures/rsc_spectrum_az.pdf}};
         \only<2>{
           \node[below,align=center] at (7, -7)
           {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
@@ -832,7 +832,8 @@
         \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
       }
       \visible<4>{
-        \node[align=center] at (8, -3.5) {\includegraphics[width=4cm]{figures/science_cover}\\
+        \node[align=center] at (8, -3.5)
+        {\includegraphics[width=4cm]{figures/overview_science_cover}\\
           {\tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al., Science 360, 6391 (2018)}};
       }
     \end{tikzpicture}
@@ -859,7 +860,7 @@
   \begin{center}
     \begin{tikzpicture}
       \visible<1>{
-        \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber}};
       }
       \visible<2-3>{
         \node at (-3, 0) {\includegraphics[width=9cm]{figures/chamber_center}};
@@ -1557,12 +1558,12 @@
     \begin{tikzpicture}
       \node[below,align=center] at (1.75, 4)
       {\hspace{0.5cm}\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Loading}\\
-        \includegraphics[width=3cm]{figures/single_viridis.png}};
+        \includegraphics[width=3cm]{figures/overview_single_atom.png}};
       \node[above,align=center] at (2, 0.36)
       {\usebeamercolor[fg]{frametitle}{\tiny{NJP. 19, 023007 (2017)}}};
       \node[below,align=center] at (2.1, 0.28)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Cooling}\\
-        \includegraphics[width=4.2cm]{figures/spectrum_nolabel_az.pdf}};
+        \includegraphics[width=4.2cm]{figures/rsc_spectrum_az.pdf}};
       \node[below,align=center] at (5.25, 3.5)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Merging}};
       \node[above,align=center] at (2.2, -3.3)
@@ -2301,7 +2302,7 @@
         }
         \visible<6->{
           \node at (0, -4.5)
-          {\includegraphics[width=4cm]{figures/single_viridis.png}};
+          {\includegraphics[width=4cm]{figures/overview_single_atom.png}};
         }
       \end{tikzpicture}
     \end{center}
