@@ -23,8 +23,11 @@
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{multimedia}
-\usepackage{bm}
-\usepackage{siunitx}
+% \usepackage{bm}
+% \usepackage{siunitx}
+\usepackage{enumitem}
+\usepackage{stmaryrd}
+\setlist[itemize]{label=\textbullet}
 \usetikzlibrary{
   arrows,
   calc,
@@ -152,8 +155,11 @@
 \setbeamertemplate{headline}{}
 \def\beamer@entrycode{\vspace{-\headheight}}
 
-\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.2cm,
-  post length=0.2cm, snake, amplitude=.4mm,
+\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.1cm,
+  post length=0.1cm, snake, amplitude=.4mm,
+  segment length=2mm},thick, ->]
+\tikzstyle{fullsnakearrow} = [decorate, decoration={pre length=0cm,
+  post length=0.09cm, snake, amplitude=.4mm,
   segment length=2mm},thick, ->]
 
 %% document-wide tikz options and styles
@@ -346,7 +352,8 @@
 % on creating single NaCs molecules in optical tweezers from atoms.
 {
   \usebackgroundtemplate{
-    \makebox[\paperwidth][c]{\centering\includegraphics[width=\paperwidth]{figures/front_bg.png}}
+    \makebox[\paperwidth][c]{\centering
+      \includegraphics[width=\paperwidth]{figures/title_background.png}}
   }
   \setbeamercolor{title}{fg=white}
   \setbeamercolor{author}{fg=white}
@@ -380,7 +387,7 @@
 
 % But of course we aren't satisfied with only the simplest system,
 % we want more, and there's good reason for that.
-% You see, the atomic systems, built with, well, neutral atoms, are, well, too simple.
+% You see, the neutral atomic systems, are, well, too simple.
 % And what I meant is that they have relatively simple internal structures
 % and they are like loners most of the time
 % and really don't want to interact with other atoms.
@@ -424,37 +431,59 @@
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
-      \node[right, align=center] at (0.7, -1.7) {
-        \usebeamercolor[fg]{frametitle}{\small Precision Measurement}\\
-        \includegraphics[width=3.2cm]{figures/edm}\\
-        {\tiny Science 343, 269 (2014)}};
-      \node[right, align=center] at (4.5, -2.0) {
-        \usebeamercolor[fg]{frametitle}{\small Quantum Chemistry}\\
-        \includegraphics[width=2.0cm]{figures/quantum_chemistry}\\
-        {\tiny Nature 464, 1324 (2010)}};
-      \fill[white,opacity=0.4] (8.0, -3.75) rectangle (0.7, -0.1);
-      \node[right, align=center] at (1.0, 1.9) {
-        \usebeamercolor[fg]{frametitle}{\small Quantum Simulation}\\
-        \includegraphics[width=2.9cm]{figures/quantum_simulation}\\
-        {\tiny Nat. Phys. 2, 341 (2006)}};
-      \node[right, align=center] at (4.2, 2.0) {
-        \usebeamercolor[fg]{frametitle}{\small Quantum Computing}\\
-        \includegraphics[width=2.9cm]{figures/quantum_computing}\\
-        {\tiny PRL. 97, 33003 (2006)}};
+      \begin{scope}[shift={(-1.5, 2)}]
+        \node at (0, 0) {Simple System};
+        \mytweezer.drawCsAtom(-0.7, -0.8, 0.15)
+        \mytweezer.drawCsAtom(0.6, -0.9, 0.15)
+        \mytweezer.drawNaAtom(-0.1, -0.7, 0.21)
+      \end{scope}
+
+      \begin{scope}[shift={(1.4, 2)}]
+        \node at (0, 0) {Full Control};
+        \mytweezer.drawCsAtom(-0.4, -1, 0.15)
+        \draw[fullsnakearrow,>=stealth,red]
+        (-0.4 - 0.9, -1 + 0.6) -- (-0.4 - 0.09, -1 + 0.06);
+        \mytweezer.drawNaAtom(0.5, -0.8, 0.21)
+        \draw[->,>=latex,green!70!black,thick] (-0.1, -0.35) -- ++(1.3, 0);
+        \draw[->,>=latex,green!70!black,thick] (-0.1, -0.65) -- ++(1.3, 0);
+        \draw[->,>=latex,green!70!black,thick] (-0.1, -0.95) -- ++(1.3, 0);
+        \draw[->,>=latex,green!70!black,thick] (-0.1, -1.25) -- ++(1.3, 0);
+      \end{scope}
+      \draw[decoration={brace,mirror,raise=3pt, amplitude=10pt},decorate,line width=2]
+      (-2.5, 0.7) -- node[below=0.5] {Complex Dynamic} (2.5, 0.6);
       \visible<2->{
-        \node[above,text width=4.5cm] at (10, 1) {
-          \begin{itemize}
-          \item Full quantum control
-          \item Entanglement
-          \item $\cdots$
+        \node[below,align=center] at (-1.4, -0.5) {
+          \includegraphics[width=2.7cm]{figures/introduction_atom_bec_interference.png}\\
+          {\tiny Ketterle et al.}};
+        \node[below,align=center] at (1.4, -0.5) {
+          \includegraphics[width=2.7cm]{figures/introduction_lithium_microscope.png}\\
+          {\tiny Greiner et al.}};
+      }
+      \visible<3->{
+        \node[below,align=center,text width=5cm] at (0, -4) {
+          \begin{itemize}[label={\textcolor{red}{$\times$}}]
+          \item Simple internal structure
+          \item Weak interaction
           \end{itemize}
         };
       }
-      \visible<3->{
-        \node[below] at (10, -1.2) {
-          \usebeamercolor[fg]{frametitle}
-          {\large\textbf{New Approach?}}
+      \visible<4->{
+        \node[below,align=center,text width=5cm] at (6, 2.2) {
+          \begin{itemize}[label=$\boxempty$]
+          \item Strong interaction
+          \item Rich internal structure
+          \item Long coherence time
+          \item Fully controllable
+          \end{itemize}
         };
+      }
+      \visible<5->{
+        \node[below,align=center] at (6.2, -1) {
+          \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
+          Ions {\tiny (Monroe et al.)}};
+        \node[below,align=center] at (6.2, -2.8) {
+          \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
+          Rydberg Atoms {\tiny (Lukin et al.)}};
       }
     \end{tikzpicture}
   \end{center}
@@ -1214,7 +1243,7 @@
       \visible<14->{
         \node[below,align=center] at (0.5, 0.5) {
           Axial sideband spectrum\\
-         \includegraphics[width=5.4cm]{figures/spectrum_az}
+          \includegraphics[width=5.4cm]{figures/spectrum_az}
         };
       }
     \end{tikzpicture}
