@@ -62,6 +62,18 @@
   \shade [shading=glow2] (0,0) circle (1);
 \end{tikzfadingfrompicture}
 
+\definecolor{atomorange}{rgb}{1.0,0.483,0.0}
+\definecolor{pyplotc0}{rgb}{0.122,0.467,0.706}
+\definecolor{pyplotc1}{rgb}{1.000,0.498,0.055}
+\definecolor{pyplotc2}{rgb}{0.173,0.627,0.173}
+\definecolor{pyplotc3}{rgb}{0.839,0.153,0.157}
+\definecolor{pyplotc4}{rgb}{0.580,0.404,0.741}
+\definecolor{pyplotc5}{rgb}{0.549,0.337,0.294}
+\definecolor{pyplotc6}{rgb}{0.890,0.467,0.761}
+\definecolor{pyplotc7}{rgb}{0.498,0.498,0.498}
+\definecolor{pyplotc8}{rgb}{0.737,0.741,0.133}
+\definecolor{pyplotc9}{rgb}{0.090,0.745,0.812}
+
 \mode<handout>{
   \usepackage{pgfpages}
   \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
@@ -315,7 +327,7 @@
     \fill [#4,path fading=glow2 fading] (#1,#2) circle (#3);
   }
   \method drawNaAtom(#1,#2,#3) {
-    \pgfoothis.drawAtom(#1,#2,#3,orange);
+    \pgfoothis.drawAtom(#1,#2,#3,atomorange);
   }
   \method drawCsAtom(#1,#2,#3) {
     \pgfoothis.drawAtom(#1,#2,#3,blue);
@@ -765,14 +777,14 @@
 
       \visible<2->{
         \begin{scope}[alt=<2>{opacity=0.7}{opacity=0.35}]
-          \draw[orange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
+          \draw[atomorange,dotted,line width=1.2] (-1, -0.4) -- (-1, -2.9);
           \draw[blue,dotted,line width=1.2] (0, -0.15) -- (0, -2.9);
         \end{scope}
       }
 
       \visible<3->{
         \begin{scope}[alt=<3>{opacity=0.7}{opacity=0.35}]
-          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,atomorange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
           \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
         \end{scope}
@@ -800,28 +812,28 @@
       \visible<3>{
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
         function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
         \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
         function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
         \mytweezer.drawNaAtom(6, -1.22, 0.15)
         \mytweezer.drawCsAtom(9, -2.06, 0.11)
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
         function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
         \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
         function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
         \mytweezer.drawNaAtom(6, -3.72, 0.15)
         \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
         \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
         \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
         \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
 
-        \draw[orange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
         \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
         function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
@@ -1656,7 +1668,7 @@
         \mytweezer.drawCsAtom(-0.95, -7.13, 0.12)
 
         \begin{scope}[opacity=0.7]
-          \draw[->,>=stealth,orange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
+          \draw[->,>=stealth,atomorange,line width=1.2] (-1, -3.3) -- (-1, -6.7);
           \draw[->,>=stealth,blue,domain=-3.3:-6.7,smooth,variable=\y,line width=1.2]
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
         \end{scope}
@@ -1755,7 +1767,7 @@
       \visible<3-4>{
         \node at (-3, 0.8) {\usebeamercolor[fg]{frametitle}{\textbf{Feshbach molecule}}};
         \node[below, align=center] at (-3.2, 0.4)
-        {\includegraphics[width=6cm]{figures/fb_molecules.pdf}\\
+        {\includegraphics[width=6cm]{figures/raman_transfer_fb_molecules.pdf}\\
           \small{PRL. 124, 253401 (2020)}};
         \visible<4->{
           \node[below, text width=6cm, align=left] at (3, -0.3) {\begin{itemize}
@@ -1782,12 +1794,12 @@
           {\tiny \usebeamercolor[fg]{frametitle}{Science 287, 1016 (2000)}}\\
           \phantom{{\footnotesize $\mathrm{Rb_2}$}}
           {\tiny \usebeamercolor[fg]{frametitle}{PRL. 93, 073002 (2004)}}\\
-          \includegraphics[width=3.5cm]{figures/Rb2_raman.png}\\
+          \includegraphics[width=3.5cm]{figures/raman_transfer_rb2.png}\\
           {\footnotesize $\mathrm{Sr_2}$}
           {\usebeamercolor[fg]{frametitle}{\tiny PRL. 109, 115302 (2012)}}\\
           {\footnotesize $\mathrm{NaCs}$}
           {\usebeamercolor[fg]{frametitle}{\tiny \textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}\\
-          \includegraphics[width=3.5cm]{figures/old_raman_transfer.pdf}
+          \includegraphics[width=3.5cm]{figures/raman_transfer_old.pdf}
         };
       }
       \visible<7->{
@@ -1855,17 +1867,17 @@
         plot[samples=200,domain=0.96:7,variable=\x]
         ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
 
-        \draw[line width=1.1,red]
+        \draw[line width=1.1,pyplotc5]
         plot[samples=200,domain=1:7.5,variable=\x]
         ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
-        \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+        \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
 
         \visible<-2,4>{
-          \draw[red] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
+          \draw[pyplotc5] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
           ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
         }
         \visible<3->{
-          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
           ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
         }
         \visible<-2>{
@@ -1877,12 +1889,12 @@
           ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
         }
         \visible<4->{
-          \draw[blue, line width=1]
+          \draw[pyplotc1, line width=1]
           ({(1.1102 - 0.75) * 0.7 - 0.15}, -0.69 * 1.3 + 7.5 - 0.15) rectangle
           ({(6.5 - 0.75) * 0.7 + 0.15}, -0.69 * 1.3 + 7.5 + 0.15);
           \coordinate (ThresholdHighlight)
           at ({(6.5 - 0.75) * 0.7 + 0.25}, -0.69 * 1.3 + 7.5 - 0.08);
-          \draw[blue, line width=1]
+          \draw[pyplotc0, line width=1]
           ({(1.4 - 0.75) * 0.7 - 0.15}, -1.8 * 1.3 + 7.5 - 0.15) rectangle
           ({(2.5 - 0.75) * 0.7 + 0.15}, -1.8 * 1.3 + 7.5 + 0.15);
           \coordinate (DeepHighlight)
@@ -1898,15 +1910,15 @@
 
         \visible<-2>{
           \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
+          -- node[right] {$\Omega_{\rm up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
           \draw[->,>=stealth,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
         \visible<3>{
           \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          -- node[right] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
           \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
         }
       \end{scope}
       \visible<2-3>{
@@ -1916,7 +1928,7 @@
           \vspace{0.2cm}
           \begin{itemize}
           \item Stronger coupling\\
-            ($\Omega_{up}$ and $\Omega_{down}$)
+            ($\Omega_{\rm up}$ and $\Omega_{\rm down}$)
           \item Closely spaced
           \item Fast scattering
           \end{itemize}
@@ -1939,16 +1951,14 @@
       \visible<4>{
         \node[below, text width=5.4cm, align=center] (ThresholdPlot) at (8.13, 7.5)
         {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}
-          \includegraphics[width=5.4cm]{figures/raman_vh.pdf}
+          \includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_omega.pdf}
         };
         \node[below, text width=5.4cm, align=center] (DeepPlot) at (8.13, 3.2)
         {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}
-          \includegraphics[width=5.4cm]{figures/raman_v0.pdf}
+          \includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_ratio.pdf}
         };
-        \draw[->,>=stealth, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
-        \draw[->,>=stealth, blue, line width=2] (DeepPlot) -- (DeepHighlight);
+        % \draw[->,>=stealth, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
+        % \draw[->,>=stealth, blue, line width=2] (DeepPlot) -- (DeepHighlight);
       }
     \end{tikzpicture}
   \end{center}
@@ -2091,15 +2101,6 @@
 % so we believe the transfer efficiency can be improved in the future significantly.
 % __()__
 \begin{frame}[t]{Experiment}
-  \todo{
-    Show one ASE filter data
-    Talk about two possible reasons
-    Show Laser spectrum
-    Show Gamma vs Omega plot showing effect of ASE filter
-    (mention that there's something I didn't say for the previous data
-    since it's actually taken with one ASE filter)
-    Show data that suggests power square scaling of molecular scattering rate.
-  }
   \begin{center}
     \vspace{-0.9cm}
     \begin{tikzpicture}
@@ -2114,12 +2115,12 @@
           plot[samples=200,domain=0.96:7,variable=\x]
           ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
 
-          \draw[line width=1.1,red]
+          \draw[line width=1.1,pyplotc5]
           plot[samples=200,domain=1:7.5,variable=\x]
           ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
-          \node[above right,red] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+          \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
 
-          \draw[red] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+          \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
           ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) node[right=0.2] {\scriptsize $v=0$};
           \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
           ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
@@ -2137,9 +2138,9 @@
           {\scriptsize Na(2,2)\\\scriptsize Cs(3,3)};
 
           \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          -- node[right] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
           \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
 
           \visible<2->{
             \node[above,align=center,
@@ -2157,10 +2158,12 @@
         \end{scope}
       }
       \visible<3> {
-        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{figures/fit_20200326_005204_raman_3322_2_damop_f.pdf}};
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
+            figures/raman_transfer_spectrum.pdf}};
       }
       \visible<4-> {
-        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{figures/fit_20200326_005204_raman_3322_2_damop_f_text.pdf}};
+        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
+            figures/raman_transfer_spectrum_text.pdf}};
       }
       \visible<2-4> {
         \node[below,text width=5.2cm,align=center] at (2.6, -0.5) {
@@ -2173,7 +2176,8 @@
         };
       }
       \visible<5-> {
-        \node[below] at (2.6, -0.5) {\includegraphics[width=5.5cm]{figures/molecule_raman_rabi_annotate.pdf}};
+        \node[below] at (2.6, -0.3) {\includegraphics[width=5.5cm]{
+            figures/raman_transfer_rabi_annotate.pdf}};
       }
       \visible<6-> {
         \node[below, text width=5.5cm, align=center] at (-3, 3.4)
@@ -2181,16 +2185,19 @@
           \begin{itemize}
           \item Transferred $63\%$ of ground state atom to molecule.
           \item<7-> Single molecule spin state
-          \item<7-> $>50\%$ of molecule in motional ground state.
-          \item<8-> Improving signal
+          \item<7-> $>\!50\%$ of molecule\\
+            in motional ground state.
+          \item<8-> Limited by molecule lifetime
           \end{itemize}
         };
       }
       \visible<6-7> {
-        \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{figures/fit_20200703_201618_raman15_3322_2_postdoc_2d_mol.pdf}};
+        \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{
+            figures/raman_transfer_2d_mol.pdf}};
       }
       \visible<8-> {
-        \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{figures/Timebase1038_20200702_094907.png}};
+        \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{
+            figures/raman_transfer_fit_two_ase_mol_time.pdf}};
       }
     \end{tikzpicture}
   \end{center}
