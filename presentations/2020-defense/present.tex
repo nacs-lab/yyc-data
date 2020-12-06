@@ -1246,8 +1246,6 @@
 
 \section{Molecule creation}
 
-\def\enableinteraction{}
-
 %% Atom-atom interaction
 % So now we have achieved full quantum control on our atoms,
 % the next thing we would like is to transfer this control onto the molecules.
@@ -1259,7 +1257,6 @@
 % as you'll see later.
 % It turns out that our tweezer is actually also a very good platform for such measurement.
 % __()__
-\ifdefined\enableinteraction
 \subsection{Atom-atom interaction}
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
@@ -1442,23 +1439,97 @@
   \begin{tikzpicture}
     \draw[white,opacity=0] (-6, -4.5) rectangle (6, 4.5);
     % Raman sequence
-    \visible<1>{
-      \node at (-2.8, 0.7) {\includegraphics[width=6cm]{figures/shift_raman_1.pdf}};
-    }
-    \visible<2-4>{
-      \node at (-2.8, 0.7) {\includegraphics[width=6cm]{figures/shift_raman.pdf}};
+    \visible<-4>{
+      \begin{scope}[shift={(-3, 0)}]
+        \begin{scope}[shift={(-1.79, 0.78)}]
+          \draw[dashed,gray,line width=0.8] (0.35, {0.35^2 * 3.5}) -- (3.4, {0.35^2 * 3.5})
+          coordinate (Upper Energy 1);
+          \draw[line width=1.5] plot[domain={-0.65:0.65},smooth,variable=\x]
+          ({\x}, {(\x)^2 * 3.5});
+          \draw[line width=0.8] (-0.35, {0.35^2 * 3.5}) -- (0.35, {0.35^2 * 3.5});
+          \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+          (0, {0.35^2 * 3.5 - 0.25}) -- (0, {0.35^2 * 3.5 + 0.3});
+          \coordinate (Upper Atom 1) at (0, {0.35^2 * 3.5});
+          \mytweezer.drawCsAtom(0, {0.35^2 * 3.5}, 0.14)
+          \node[above] at (0, 1.48) {\small Single Atom};
+        \end{scope}
+        \begin{scope}[shift={(0.4, 1.35)}]
+          \draw[dashed,gray,line width=0.8] (0.35, {0.35^2 * 3.5}) -- (1.21, {0.35^2 * 3.5})
+          coordinate (Upper Energy 2);
+          \draw[line width=1.5] plot[domain={-0.65:0.65},smooth,variable=\x]
+          ({\x}, {(\x)^2 * 3.5});
+          \draw[line width=0.8] (-0.35, {0.35^2 * 3.5}) -- (0.35, {0.35^2 * 3.5});
+          \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+          (-0.14, {0.35^2 * 3.5 - 0.25}) -- (-0.14, {0.35^2 * 3.5 + 0.3});
+          \coordinate (Upper Atom 2) at (-0.14, {0.35^2 * 3.5});
+          \mytweezer.drawCsAtom(-0.14, {0.35^2 * 3.5}, 0.14)
+          \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+          (0.16, {0.35^2 * 3.5 - 0.25}) -- (0.16, {0.35^2 * 3.5 + 0.3});
+          \mytweezer.drawNaAtom(0.16, {0.35^2 * 3.5}, 0.18)
+          \node[above] at (0, 1.48) {\small Two Atoms};
+        \end{scope}
+        \path (Upper Energy 1) -- node[right] {$V_{\rm int}$} (Upper Energy 2);
+        \draw[latex-latex,line width=0.8] ($(Upper Energy 1) - (0.2, 0)$)
+        -- ($(Upper Energy 2) - (0.2, 0)$);
+
+        \visible<2->{
+          \begin{scope}[shift={(-0.99, -1)}]
+            \draw[dashed,gray,line width=0.8] (0.35, {0.35^2 * 3.5}) -- (3.5, {0.35^2 * 3.5})
+            coordinate (Lower Energy 1);
+            \draw[line width=1.5] plot[domain={-0.65:0.65},smooth,variable=\x]
+            ({\x}, {(\x)^2 * 3.5});
+            \draw[line width=0.8] (-0.35, {0.35^2 * 3.5}) -- (0.35, {0.35^2 * 3.5});
+            \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+            (0, {0.35^2 * 3.5 + 0.25}) -- (0, {0.35^2 * 3.5 - 0.3});
+            \coordinate (Lower Atom 1) at (0, {0.35^2 * 3.5});
+            \mytweezer.drawCsAtom(0, {0.35^2 * 3.5}, 0.14)
+          \end{scope}
+          \begin{scope}[shift={(1.5, -1.5)}]
+            \draw[dashed,gray,line width=0.8] (0.35, {0.35^2 * 3.5}) -- (1.01, {0.35^2 * 3.5})
+            coordinate (Lower Energy 2);
+            \draw[line width=1.5] plot[domain={-0.65:0.65},smooth,variable=\x]
+            ({\x}, {(\x)^2 * 3.5});
+            \draw[line width=0.8] (-0.35, {0.35^2 * 3.5}) -- (0.35, {0.35^2 * 3.5});
+            \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+            (-0.14, {0.35^2 * 3.5 + 0.25}) -- (-0.14, {0.35^2 * 3.5 - 0.3});
+            \coordinate (Lower Atom 2) at (-0.14, {0.35^2 * 3.5});
+            \mytweezer.drawCsAtom(-0.14, {0.35^2 * 3.5}, 0.14)
+            \draw[line width=0.8,-{Latex[length=1.2mm,width=1.2mm]}]
+            (0.16, {0.35^2 * 3.5 - 0.25}) -- (0.16, {0.35^2 * 3.5 + 0.3});
+            \mytweezer.drawNaAtom(0.16, {0.35^2 * 3.5}, 0.18)
+          \end{scope}
+          \path (Lower Energy 1) -- node[right] {$V_{\rm int}^*$} (Lower Energy 2);
+          \draw[latex-latex,line width=0.8] ($(Lower Energy 1) - (0.2, 0)$)
+          -- ($(Lower Energy 2) - (0.2, 0)$);
+
+          \draw[latex-latex,red,line width=0.9,shorten <=0.12cm,shorten >=0.12cm]
+          (Upper Atom 1) -- (Lower Atom 1);
+          \draw[latex-latex,red,line width=0.9,shorten <=0.12cm,shorten >=0.12cm]
+          (Upper Atom 2) -- node[right] {\Large $\Omega_{\rm Raman}$} (Lower Atom 2);
+        }
+      \end{scope}
     }
     % Data 1
-    \visible<3->{
+    \visible<3-8>{
       \draw[->,>=stealth,line width=1,red!50!black]
-      (3.4, 1.4) -- node[above] {\small Repulsive} ++(-1.8, 0);
+      (3.63, 1.4) -- node[above] {\small Repulsive} ++(1.8, 0);
       \draw[->,>=stealth,line width=1,green!50!black]
-      (3.53, 1.4) -- node[above=0.07cm] {\small Attractive} ++(1.8, 0);
+      (3.5, 1.4) -- node[above=0.07cm] {\small Attractive} ++(-1.8, 0);
     }
-    \visible<3>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4_0s.pdf}};}
-    \visible<4-7>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4_0.pdf}};}
-    \visible<8>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs4.pdf}};}
-    \visible<9->{\node at (3.2, -0.4) {\includegraphics[width=5cm]{figures/na2cs3.pdf}};}
+    \visible<3>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{
+          figures/interaction_shift_spectrum_42_32_cs.pdf}};}
+    \visible<4-7>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{
+          figures/interaction_shift_spectrum_42_32_nostate.pdf}};}
+    \visible<8>{\node at (3.2, -0.4) {\includegraphics[width=5cm]{
+          figures/interaction_shift_spectrum_42_32.pdf}};}
+    \visible<9->{
+      \node at (3.2, -0.4) {\includegraphics[width=5cm]{
+          figures/interaction_shift_spectrum_32_31.pdf}};
+      \draw[->,>=stealth,line width=1,red!50!black]
+      (3.13, 1.4) -- node[above] {\small Repulsive} ++(1.8, 0);
+      \draw[->,>=stealth,line width=1,green!50!black]
+      (3.0, 1.4) -- node[above=0.07cm] {\small Attractive} ++(-1.5, 0);
+    }
 
     % Equations
     \visible<5-6>{
@@ -1496,13 +1567,16 @@
       (3,-3.5) -- node[above=10pt] {\small Mixing} (5.9,-3.5);
     }
     \visible<7>{
-      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory.pdf}};
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{
+          figures/interaction_shift_energies.pdf}};
     }
     \visible<8>{
-      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory42_32.pdf}};
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{
+          figures/interaction_shift_energies_42_32.pdf}};
     }
     \visible<9->{
-      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{figures/shift_theory32_31.pdf}};
+      \node at (-2.6, 0.5) {\includegraphics[width=6cm]{
+          figures/interaction_shift_energies_32_31.pdf}};
     }
     \visible<10->{
       \fill[white,opacity=0.95] (-6, -4.5) rectangle (6, 3.5);
@@ -1518,20 +1592,21 @@
         \end{tabular}};
     }
     \visible<11->{
-      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.5, 0.5)
+      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.5, 0.3)
       node[below] {Enhanced coupling to molecular state!};
-      \node[below] at (-3, 0) {\includegraphics[width=5cm]{figures/wavefunction.pdf}};
+      \node[below] at (-3, -0.3) {\includegraphics[width=5.5cm]{
+          figures/interaction_shift_atomic_wavefunction.pdf}};
     }
     \visible<12->{
-      \node[below] at (3, -0.8) {\includegraphics[width=5cm]{figures/na2cs4.pdf}};
+      \node[below] at (3, -0.8) {\includegraphics[width=5cm]{
+          figures/interaction_shift_spectrum_42_32.pdf}};
     }
     \visible<13->{
-      \node[below,blue] (GroundStateText) at (4, 0) {Ground state only};
-      \draw[->,>=stealth,blue,line width=2] (GroundStateText) -- (4.05, -1.8);
+      \node[below,blue] (GroundStateText) at (3.0, -0.3) {Ground State Only};
+      \draw[->,>=stealth,blue,line width=2] (GroundStateText) -- (2.6, -2.0);
     }
   \end{tikzpicture}
 \end{frame}
-\fi
 
 \subsection{Coherent optical transfer}
 %% Optical molecule creation
