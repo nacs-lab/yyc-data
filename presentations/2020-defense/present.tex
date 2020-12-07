@@ -2224,45 +2224,86 @@
     \item<2-> Full quantum control of atoms in optical tweezers
     \item<3-> Measured interaction between single atoms
     \item<4-> Coherent all-optical creation of single molecucle
-    \item<5-> Working towards fully controlled, strongly interacting tweezer array
+    \item<5-> Rovibronic ground state
     \end{itemize}
     \column{5.7cm}
-    \visible<6->{
-      \begin{tikzpicture}
-        %% PI
-        \node[align=center] at (0, -0.8) {Experiment};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (2, 0)
-        {\includegraphics[height=1.5cm]{figures/kangkuen}\\\scriptsize Kang-Kuen Ni};
-
-        %% Current member
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5, -2.2)
-        {\includegraphics[height=1.5cm]{figures/kenneth}\\\scriptsize Kenneth\\\scriptsize Wang};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0, -2.2)
-        {\includegraphics[height=1.5cm]{figures/jessie}\\\scriptsize Jessie\\\scriptsize Zhang};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.5, -2.2)
-        {\includegraphics[height=1.5cm]{figures/lewis}\\\scriptsize Lewis\\\scriptsize Picard};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3.0, -2.2)
-        {\includegraphics[height=1.5cm]{figures/will}\\\scriptsize William\\\scriptsize Cairncross};
-
-        %% Former member
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (-1.5 + 0.375, -4.4)
-        {\includegraphics[height=1.5cm]{figures/lee}\\\scriptsize Lee Liu\\\tiny Postdoc @JILA};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (0.75, -4.4)
-        {\includegraphics[height=1.5cm]{figures/jon}\\\scriptsize Jonathan Hood\\\tiny Assnt Prof @Purdue};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (3 - 0.375, -4.4)
-        {\includegraphics[height=1.5cm]{figures/nick}\\\scriptsize Nick Hutzler\\\tiny Assnt Prof @Caltech};
-
-        %% Theory
-        \node[below,align=center] at (0, -7.1) {Theory};
-        \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7pt}] at (1.7, -6.6)
-        {\includegraphics[height=1.5cm]{figures/jeremy}\\\scriptsize Jeremy Hutson};
-      \end{tikzpicture}
+    \visible<5->{
+      \vspace{1cm}\\
+      \includegraphics[width=5.5cm]{figures/conclusion_ground_raman.pdf}
     }
   \end{columns}
 \end{frame}
 
+\begin{frame}
+  \begin{center}
+    \begin{tikzpicture}
+      %% PI
+      \node[align=center] at (-0.5, -0.9) {PI};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (1, -0.1) {\includegraphics[height=1.5cm]{figures/acknowledgement_kangkuen}\\
+        \scriptsize Kang-Kuen Ni};
+
+      %% NaCs
+      \node[align=center] at (-3, -3.1) {NaCs\\Team};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (-1.5, -2.2){\includegraphics[height=1.5cm]{figures/acknowledgement_kenneth}\\
+        \scriptsize Kenneth\\\scriptsize Wang};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (0.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_wangyu}\\
+        \scriptsize Yu\\\scriptsize Wang};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (1.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_fang}\\
+        \scriptsize Fang\\\scriptsize Fang};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (3.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_jessie}\\
+        \scriptsize Jessie\\\scriptsize Zhang};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (4.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_lewis}\\
+        \scriptsize Lewis\\\scriptsize Picard};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (6.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_will}\\
+        \scriptsize William\\\scriptsize Cairncross};
+
+      % KRb
+      \node[align=center] at (-2, -5.3) {KRb\\Team};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (-0.5, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_lingbang}\\
+        \scriptsize Lingbang\\\scriptsize Zhu};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (1.75, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_mingguang}\\
+        \scriptsize Mingguang\\\scriptsize Hu};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (4.0, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_matt}\\
+        \scriptsize Matthew\\\scriptsize Nichols};
+
+      %% Former member
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (-2.8, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_lee}\\
+        \scriptsize Lee Liu\\\tiny Postdoc @JILA};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (-1.1, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_jon}\\
+        \scriptsize Jonathan Hood\\\tiny AP @Purdue};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (0.6, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_nick}\\
+        \scriptsize Nick Hutzler\\\tiny AP @Caltech};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (2.0, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_eliot}\\
+        \scriptsize Eliot\\\scriptsize Fenton};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (3.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yenwei}\\
+        \scriptsize Yen-Wei Lin\\\tiny Intelon Optics};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (5.1, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yu}\\
+        \scriptsize Yu Liu\\\tiny Postdoc @NIST};
+      \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
+      at (6.7, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_david}\\
+        \scriptsize David Grimes\\\tiny Instructor @MIT};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \todo{
-  More acknowledgement
+  More acknowledgement (CUA)
   Aviation
   Friends and family
 }
@@ -2322,11 +2363,11 @@
       \begin{tikzpicture}
         \visible<2> {
           \node at (0, 0)
-          {\includegraphics[width=6cm]{figures/cs-histogram}};
+          {\includegraphics[width=6cm]{figures/loading_cs_histogram}};
         }
         \visible<3> {
           \node at (0, 0)
-          {\includegraphics[width=5cm]{figures/na-noatom}};
+          {\includegraphics[width=5cm]{figures/loading_na_noatom}};
         }
         \visible<4> {
           \node[text width=6cm] at (0, 0) {
@@ -2350,7 +2391,7 @@
   \begin{columns}
     \column{5.7cm}
     \begin{center}
-      \only<-3>{\includegraphics[width=5.5cm]{figures/light-shift.png}}
+      \only<-3>{\includegraphics[width=5.5cm]{figures/loading_light_shift.png}}
       \only<4->{
         \begin{block}{Trap modulation}
           Alternate between trap and resonant {\small (cooling and imaging)} light
@@ -2358,7 +2399,7 @@
           {\small $f_{trap}=100\sim500$\ kHz}\\
           {\small $\Gamma=2\pi\times 10$\ MHz}
         \end{block}
-        \includegraphics[width=5cm]{figures/switching.png}
+        \includegraphics[width=5cm]{figures/loading_switching.png}
       }
     \end{center}
     \column{5.8cm}
@@ -2366,7 +2407,7 @@
       \begin{tikzpicture}
         \visible<2-4>{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
-            \includegraphics[width=5.5cm]{figures/det-vs-photon-dc2}};
+            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_dc}};
         }
         \visible<3-5>{
           \node[align=center, text width=5cm] at (0, -4.5) {
@@ -2380,7 +2421,7 @@
         }
         \visible<5->{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
-            \includegraphics[width=5.5cm]{figures/det-vs-photon-ac}};
+            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_ac}};
         }
         \visible<6->{
           \node at (0, -4.5)
@@ -2396,12 +2437,12 @@
 \begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
   \only<1>{
     \begin{center}
-      \includegraphics[height=7cm]{figures/chamber1_5.jpg}
+      \includegraphics[height=7cm]{figures/fb_chamber1_5.jpg}
     \end{center}
   }
   \only<2->{
     \begin{center}
-      \includegraphics[width=10cm]{figures/fb.pdf}\\
+      \includegraphics[width=10cm]{figures/fb_resonance.pdf}\\
       \vspace{0.5cm}
     \end{center}
   }
@@ -2495,13 +2536,13 @@
         };
       }
       \visible<3>{
-        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa-shallow_1b}};
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow_1b}};
       }
       \visible<4>{
-        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa-shallow}};
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow}};
       }
       \visible<6>{
-        \node at (4, 2.5) {\includegraphics[width=5cm]{figures/eit.png}};
+        \node at (4, 2.5) {\includegraphics[width=5cm]{figures/pa_eit.png}};
       }
     \end{tikzpicture}
   \end{center}
