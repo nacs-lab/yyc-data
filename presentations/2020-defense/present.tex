@@ -74,6 +74,15 @@
 \definecolor{pyplotc8}{rgb}{0.737,0.741,0.133}
 \definecolor{pyplotc9}{rgb}{0.090,0.745,0.812}
 
+\newcommand\drawmirror[4][line width=3]{
+  % 1: draw option
+  % 2: center (x, y)
+  % 3: size
+  % 4: angle
+  \draw[#1] ($#2 + ({#3 * cos(#4)}, {#3 * sin(#4)})$) --
+  ($#2 - ({#3 * cos(#4)}, {#3 * sin(#4)})$);
+}
+
 \mode<handout>{
   \usepackage{pgfpages}
   \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
@@ -194,6 +203,18 @@
     text width=8em,
     minimum height=2.5em,
     text centered},
+}
+\tikzset{
+  mid arrow/.style={postaction={decorate,decoration={
+        markings,
+        mark=at position #1 with {\arrow[>=stealth]{>}}
+      }}},
+  mid arrow/.default=0.5,
+  mid arrow2/.style={postaction={decorate,decoration={
+        markings,
+        mark=at position #1 with {\arrow[>=stealth]{><}}
+      }}},
+  mid arrow2/.default=0.5,
 }
 
 \tikzset{onslide/.code args={<#1>#2}{%
@@ -1304,7 +1325,7 @@
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
-        \node[below] at (4, -0.5) {Internuclear distance};
+        \node[below] at (4, -0.5) {Internuclear Distance};
 
         \draw[dashed] (1.0269 - 0.25, 2.5) -- (7 - 0.25, 2.5);
         \draw (1.0793 - 0.25, -0.4631 + 2.5) -- (4.5 - 0.25, -0.4631 + 2.5);
@@ -1859,7 +1880,7 @@
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
-        \node[below] at (2.7, -0.1) {Internuclear distance};
+        \node[below] at (2.7, -0.1) {Internuclear Distance};
 
         \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
 
@@ -2030,76 +2051,6 @@
 % I'll save you from all the measurements that we did,
 % but to summarize we have identified two different sources of extra scattering.
 % __()__
-
-% The first one is from the laser, which is, in fact, already mostly taken care of
-% in the data above as I'll explain shortly.
-% So it turns out that in additional to the desired frequency,
-% the diode laser we use to generate the tweezer and Raman beams
-% also has a very broad band spectrum due to amplified spontaneous emission or ASE.
-% This is something that we knew exists and everyone else also said so
-% but it was surprisingly hard for us to find quantitative information about it.
-% Furtunately, we found a very sensitive optical spectrum analyser,
-% thanks to the Doyle group and, as I heard, Yicheng who rescued it from a trash dump.
-% And it allows us to actually see this in action.
-% So here you see what we got from the laser directly,
-% the band here is the desired frequency,
-% but in additional to that we also saw this broad spectral feature
-% that spans tens of nanometers and can couple resonantly to many excited states
-% and cause significant scattering.
-% Furtunately, since this is a well known phenomina,
-% it's actually not hard to find a solution for it.
-% It turns out that people makes these 3D bragg grating to with GHz's bandwidth
-% and is a perfect solution for the ASE.
-% We got one from Ondax/Coherent with a line width of 30 GHz
-% and as you can see in this spectrum after the filter,
-% the ASE is basically completely gone.
-% We can observe the effect on the Raman transition on this plot.
-% On the x axis here I'm plotting the Raman Rabi frequency
-% and the y axis the scattering rate we measured.
-% The bottom right corner corresponds to higher Rabi frequency
-% and low scattering which is good
-% and the top left corner corresponds to bad transfer efficiency.
-% We can see here a few points that corresponds to different tweezer powers,
-% and we can clearly see that with an ASE filter added to clean up the laser,
-% the points are closer to the bottom right and the transition efficiency is improved.
-% But this is actually not the end of it.
-% We added this filter basically right after our laser
-% but we were told by the Lukin group that the fiber can cause a very similar effect as well.
-% So we added a second ASE filter after the fiber and this is what we saw.
-% For various reasons we were only able to take one point in this configuration
-% and it's not completely tuned up, but you can clearly see that
-% it is better than any of the previously measured points.
-% This green point is actually the condition where we took the data that I showed you earlier
-% so most of the noise should be removed already.
-% However, there are still a few improvements we can do on that setup
-% to ensure that we have eliminated the technical noises as my as possible.
-% __()__
-
-% The second noise source is a dissociative two-photon scattering process.
-% So the source I just talked about is mostly what we called background scattering
-% and is insensitive to the tweezer frequency.
-% On the other hand, we can also plot the tweezer frequency **dependent** part
-% of the scattering after measuring it at a few different frequencies as shown here.
-% We can see that this scattering fits fairly well with the tweezer power squared
-% which is evidence that this can be a two photon scattering process
-% and in fact it could account for almost all the scattering we saw
-% after adding the two ASE filters within the error bar.
-% I'll not go into too much deatails here
-% but we believe a likely source of this scattering process is a Raman process
-% that couples the molecular state to the motionally excited state of atoms
-% in a different spin state.
-% Currently we can only do a rough esitmate for this process
-% and the resulting rate agrees with what we saw in the experiment
-% to about a factor of 3 to 4 which proofs that it is indeed a good candidate
-% depending on the value of a few parameters that we can't exactly determine yet.
-% __()__
-
-% Combining these two sources, we believe we have accounted for
-% the majority of the scattering that we saw
-% and both of these can be reduced either via technical improvements
-% or by changing the state selections
-% so we believe the transfer efficiency can be improved in the future significantly.
-% __()__
 \begin{frame}[t]{Experiment}
   \begin{center}
     \vspace{-0.9cm}
@@ -2109,7 +2060,7 @@
           \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
           \node[above,rotate=90] at (0, 4) {Energy};
           \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
-          \node[below] at (2.7, -0.1) {Internuclear distance};
+          \node[below] at (2.7, -0.1) {Internuclear Distance};
 
           \draw[line width=1.1,cyan!85!blue]
           plot[samples=200,domain=0.96:7,variable=\x]
@@ -2180,7 +2131,7 @@
             figures/raman_transfer_rabi_annotate.pdf}};
       }
       \visible<6-> {
-        \node[below, text width=5.5cm, align=center] at (-3, 3.4)
+        \node[below, text width=5.9cm, align=center] at (-3.5, 3.4)
         {
           \begin{itemize}
           \item Transferred $63\%$ of ground state atom to molecule.
@@ -2198,6 +2149,184 @@
       \visible<8-> {
         \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{
             figures/raman_transfer_fit_two_ase_mol_time.pdf}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% The first one is from the laser, which is, in fact, already mostly taken care of
+% in the data above as I'll explain shortly.
+% So it turns out that in additional to the desired frequency,
+% the diode laser we use to generate the tweezer and Raman beams
+% also has a very broad band spectrum due to amplified spontaneous emission or ASE.
+% This is something that we knew exists and everyone else also said so
+% but it was surprisingly hard for us to find quantitative information about it.
+% Furtunately, we found a very sensitive optical spectrum analyser,
+% thanks to the Doyle group and, as I heard, Yicheng who rescued it from a trash dump.
+% And it allows us to actually see this in action.
+% So here you see what we got from the laser directly,
+% the band here is the desired frequency,
+% but in additional to that we also saw this broad spectral feature
+% that spans tens of nanometers and can couple resonantly to many excited states
+% and cause significant scattering.
+% Furtunately, since this is a well known phenomina,
+% it's actually not hard to find a solution for it.
+% It turns out that people makes these 3D bragg grating to with GHz's bandwidth
+% and is a perfect solution for the ASE.
+% We got one from Ondax/Coherent with a line width of 30 GHz
+% and as you can see in this spectrum after the filter,
+% the ASE is basically completely gone.
+% We can observe the effect on the Raman transition on this plot.
+% On the x axis here I'm plotting the Raman Rabi frequency
+% and the y axis the scattering rate we measured.
+% The bottom right corner corresponds to higher Rabi frequency
+% and low scattering which is good
+% and the top left corner corresponds to bad transfer efficiency.
+% We can see here a few points that corresponds to different tweezer powers,
+% and we can clearly see that with an ASE filter added to clean up the laser,
+% the points are closer to the bottom right and the transition efficiency is improved.
+% But this is actually not the end of it.
+% We added this filter basically right after our laser
+% but we were told by the Lukin group that the fiber can cause a very similar effect as well.
+% So we added a second ASE filter after the fiber and this is what we saw.
+% For various reasons we were only able to take one point in this configuration
+% and it's not completely tuned up, but you can clearly see that
+% it is better than any of the previously measured points.
+% This green point is actually the condition where we took the data that I showed you earlier
+% so most of the noise should be removed already.
+% However, there are still a few improvements we can do on that setup
+% to ensure that we have eliminated the technical noises as my as possible.
+% __()__
+\begin{frame}[t]{Amplified Spontaneous Emission (ASE)}
+  \vspace{-0.5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (-3, 2) {
+        \includegraphics[width=5cm]{figures/raman_transfer_spectrum_prefilter.pdf}};
+      \visible<2-4>{
+        \begin{scope}[shift={(2, 2)}]
+          \draw[red,line width=1.6,mid arrow]
+          ({1.7 * cos(40)}, {1.7 * sin(40)}) node[right] {Input} -- (0, 0);
+          \draw[red,line width=0.7,mid arrow]
+          (0, 0) -- ({-1.2 * cos(40)}, {-1.2 * sin(40)}) node[below] {\small ASE};
+          \draw[red,line width=1.6,mid arrow]
+          (0, 0) -- node[below,pos=0.6] {Clean Light} (3, 0);
+          \drawmirror[line width=8,gray!60!white]{(0, 0)}{0.5}{110};
+          \node[rotate=20] at (-0.2, 0.7) {Filter};
+        \end{scope}
+      }
+      \visible<3->{
+        \node at (-3, -2) {
+          \includegraphics[width=5cm]{figures/raman_transfer_spectrum_postfilter.pdf}};
+      }
+      \visible<4>{
+        \node at (3, -2) {
+          \includegraphics[width=5cm]{figures/raman_transfer_gamma_vs_omega_0-1.pdf}};
+      }
+      \visible<5>{
+        \begin{scope}[shift={(3, 2)}]
+          \draw[red,line width=1.6,mid arrow]
+          ({-2.5 + 1.7 * cos(40)}, {-0.5 + 1.7 * sin(40)}) -- (-2.5, -0.5);
+          \draw[red,line width=1.6,mid arrow] (-2.5, -0.5) -- (-0.65, -0.5);
+
+          \drawmirror[line width=8,gray!60!white]{(-2.5, -0.5)}{0.5}{110};
+          \node[rotate=20] at (-2.7, 0.2) {Filter 1};
+
+          \draw[line width=1.2]
+          (-0.65, -0.5) --
+          plot[domain={(-180 - 360 + 90):(180 + 360 + 90)},smooth,variable=\x,samples=2000]
+          ({0.5 * cos(\x) + 0.0003 * \x}, {0.5 * sin(\x)}) -- (0.65, -0.5);
+
+          \node[above] at (0, 0.5) {Fiber};
+
+          \draw[red,line width=1.6,mid arrow] (0.65, -0.5) -- (2.0, -0.5);
+          \draw[red,line width=1.6,mid arrow]
+          (2.0, -0.5) -- ({2.0 - 1.7 * cos(40)}, {-0.5 - 1.7 * sin(40)});
+
+          \drawmirror[line width=8,gray!60!white]{(2.0, -0.5)}{0.5}{110};
+          \node[rotate=20] at (2.2, -1.2) {Filter 2};
+
+        \end{scope}
+        \node at (3, -2) {
+          \includegraphics[width=5cm]{figures/raman_transfer_gamma_vs_omega_0-2.pdf}};
+      }
+      \visible<4->{
+        \node[red] at (1.7, -0.4) {\Large \bf Bad};
+        \node[green!70!black] at (4.8, -3.05) {\Large \bf Good};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% The second noise source is a dissociative two-photon scattering process.
+% So the source I just talked about is mostly what we called background scattering
+% and is insensitive to the tweezer frequency.
+% On the other hand, we can also plot the tweezer frequency **dependent** part
+% of the scattering after measuring it at a few different frequencies as shown here.
+% We can see that this scattering fits fairly well with the tweezer power squared
+% which is evidence that this can be a two photon scattering process
+% and in fact it could account for almost all the scattering we saw
+% after adding the two ASE filters within the error bar.
+% I'll not go into too much deatails here
+% but we believe a likely source of this scattering process is a Raman process
+% that couples the molecular state to the motionally excited state of atoms
+% in a different spin state.
+% Currently we can only do a rough esitmate for this process
+% and the resulting rate agrees with what we saw in the experiment
+% to about a factor of 3 to 4 which proofs that it is indeed a good candidate
+% depending on the value of a few parameters that we can't exactly determine yet.
+% __()__
+
+% Combining these two sources, we believe we have accounted for
+% the majority of the scattering that we saw
+% and both of these can be reduced either via technical improvements
+% or by changing the state selections
+% so we believe the transfer efficiency can be improved in the future significantly.
+% __()__
+
+\begin{frame}{Two-Photon Scattering}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (-3, 0) {
+        \includegraphics[width=5cm]{figures/raman_transfer_scatter_scaling_mol_diff.pdf}};
+      \visible<2->{
+        \begin{scope}[shift={(0, -0.5)}, scale=0.8]
+          \draw[->,>=stealth,line width=1.2] (0.5, -2.5) --
+          node[above,rotate=90] {Energy} (0.5, 5.5);
+          \draw[->,>=stealth,line width=1.2] (0.5, -2.5) --
+          node[below] {Internuclear Distance} (8, -2.5);
+
+          \draw[line width=1.1,cyan!85!blue]
+          plot[samples=200,domain=0.96:7,variable=\x]
+          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+
+          \draw[line width=1.1,green!80!black]
+          plot[samples=200,domain=0.96:11,variable=\x]
+          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 0.5});
+
+          \draw[black!40,dashed,line width=1] ({5 * 0.7}, -2 * 1.3 + 7.5) --
+          ({8 * 0.7}, -2 * 1.3 + 7.5);
+
+          \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+          \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+          \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+          \fill[green!80!black,opacity=0.3] (7.5 * 0.7, 0.5) rectangle (10.5 * 0.7, 3);
+
+          \draw[fullsnakearrow,red,line width=0.8]
+          (8.7 * 0.7, -0.19  * 1.3 + 2.5) -- (7.7 * 0.7, -0.19  * 1.3 + 2.5);
+          \draw[fullsnakearrow,red,line width=0.8]
+          (9.3 * 0.7, -0.19  * 1.3 + 2.5) -- (10.3 * 0.7, -0.19  * 1.3 + 2.5);
+
+          \mytweezer.drawNaAtom(8.7 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+          \mytweezer.drawCsAtom(9.3 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] (4.165 * 0.7, -0.12 * 1.3 + 2.5)
+          -- ({6.5 * 0.7}, -2 * 1.3 + 7.5);
+
+          \draw[->,>=stealth,blue!50!orange,line width=0.8] ({6.55 * 0.7}, -2 * 1.3 + 7.5)
+          -- (9 * 0.7, -0.12 * 1.3 + 2.5);
+        \end{scope}
       }
     \end{tikzpicture}
   \end{center}
@@ -2493,7 +2622,7 @@
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
         \node[above,rotate=90] at (0, 4) {Energy};
         \draw[->,>=stealth,line width=1.2] (0, 0) -- (8, 0);
-        \node[below] at (4, -0.1) {Internuclear distance};
+        \node[below] at (4, -0.1) {Internuclear Distance};
 
         \draw[cyan!85!blue] (1.0269 + 0.25, 2.5) -- (7.25, 2.5);
 
