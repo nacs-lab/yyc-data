@@ -72,7 +72,7 @@ yscale("log")
 ax3.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 yticks([0.1, 1, 10], ["0.1", "1", "10"])
 xlim([-300, 300])
-ylim([0.02, 40])
+ylim([0.02, 30])
 xlabel("One-Photon Detuning (GHz)")
 ylabel("\$\\Omega_{\\mathrm{Raman}}/\\Gamma_{\\mathrm{scatter}}\$")
 legend(fontsize=13.88, loc="upper left", bbox_to_anchor=(0, 0.8),

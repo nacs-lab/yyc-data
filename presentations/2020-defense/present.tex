@@ -1233,41 +1233,41 @@
             }}
         };
       }
-      \visible<9->{
+      \visible<8->{
         \node[below,text width=5.5cm,align=center] at (6.6, 0.5) {
           {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Solution}}\\
           \begin{itemize}
           \item Use higher order sidebands.
-          \item<11-> Simulation-guided\\optimization.
+          \item<10-> Simulation-guided\\optimization.
           \end{itemize}
         };
       }
-      \visible<13-> {
+      \visible<12-> {
         \node[red] at (6.6, -2.5) {3D ground state: $93.5(7)\%$};
       }
-      \visible<5>{
+      \visible<4>{
         \node[below] at (0.5, 4.5)
         {\includegraphics[width=5.4cm]{figures/rsc_op_branching_1.pdf}};
       }
-      \visible<6-10>{
+      \visible<5-9>{
         \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{figures/rsc_op_branching.pdf}};
       }
-      \visible<11->{
+      \visible<10->{
         \node[below] at (0.6, 3.7) {\includegraphics[width=6.3cm]{figures/rsc_sequence}};
       }
-      \visible<7-9>{
+      \visible<6-8>{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{figures/rsc_raman_rabi_1.pdf}};
       }
-      \visible<8-9>{
+      \visible<7-8>{
         \draw[->,line width=1.8,>=stealth,red] (0.8, -1.0) -> (0.0, -1.8);
         \draw[->,line width=1.8,>=stealth,red] (1.4, -1.0) -> (2.8, -1.8);
         \node[red,above] at (1.1, -0.95) {Dead zone};
       }
-      \visible<10-11>{
+      \visible<9-10>{
         \node[below] at (0.5, 0.5)
         {\includegraphics[width=5.4cm]{figures/rsc_raman_rabi_all.pdf}};
       }
-      \visible<12->{
+      \visible<11->{
         \node[below,align=center] at (0.5, 0.5) {
           Axial sideband spectrum\\
           \includegraphics[width=5.4cm]{figures/rsc_spectrum_az}
@@ -2219,14 +2219,15 @@
         \node at (-3, -2) {
           \includegraphics[width=5cm]{figures/raman_transfer_spectrum_postfilter.pdf}};
       }
-      \visible<4>{
+      \visible<4-5>{
         \node at (3, -2) {
           \includegraphics[width=5cm]{figures/raman_transfer_gamma_vs_omega_0-1.pdf}};
       }
-      \visible<5>{
+      \visible<5->{
         \begin{scope}[shift={(3, 2)}]
           \draw[red,line width=1.6,mid arrow]
-          ({-2.5 + 1.7 * cos(40)}, {-0.5 + 1.7 * sin(40)}) -- (-2.5, -0.5);
+          ({-2.5 + 1.7 * cos(40)}, {-0.5 + 1.7 * sin(40)}) node[above] {Laser}
+          -- (-2.5, -0.5);
           \draw[red,line width=1.6,mid arrow] (-2.5, -0.5) -- (-0.65, -0.5);
 
           \drawmirror[line width=8,gray!60!white]{(-2.5, -0.5)}{0.5}{110};
@@ -2240,15 +2241,19 @@
           \node[above] at (0, 0.5) {Fiber};
 
           \draw[red,line width=1.6,mid arrow] (0.65, -0.5) -- (2.0, -0.5);
-          \draw[red,line width=1.6,mid arrow]
-          (2.0, -0.5) -- ({2.0 - 1.7 * cos(40)}, {-0.5 - 1.7 * sin(40)});
 
-          \drawmirror[line width=8,gray!60!white]{(2.0, -0.5)}{0.5}{110};
-          \node[rotate=20] at (2.2, -1.2) {Filter 2};
+          \visible<6->{
+            \draw[red,line width=1.6,mid arrow]
+            (2.0, -0.5) -- ({2.0 - 1.7 * cos(40)}, {-0.5 - 1.7 * sin(40)});
 
+            \drawmirror[line width=8,gray!60!white]{(2.0, -0.5)}{0.5}{110};
+            \node[rotate=20] at (2.2, -1.2) {Filter 2};
+          }
         \end{scope}
-        \node at (3, -2) {
-          \includegraphics[width=5cm]{figures/raman_transfer_gamma_vs_omega_0-2.pdf}};
+        \visible<6->{
+          \node at (3, -2) {
+            \includegraphics[width=5cm]{figures/raman_transfer_gamma_vs_omega_0-2.pdf}};
+        }
       }
       \visible<4->{
         \node[red] at (1.7, -0.4) {\Large \bf Bad};
@@ -2450,7 +2455,7 @@
       \visible<3->{
         \node at (3, 2.2) {
           \includegraphics[width=5cm]{figures/acknowledgement_nha.jpg}};
-        \node at (4.5, 3.5) {
+        \node at (4.4826, 3.5) {
           \includegraphics[width=2cm]{figures/acknowledgement_nha_logo.png}};
         \node at (3, -2.2) {
           \includegraphics[width=4cm]{figures/acknowledgement_julia.pdf}};
