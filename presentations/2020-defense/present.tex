@@ -504,13 +504,13 @@
         \node[below,align=center,text width=5cm] at (6, 2.2) {
           \begin{itemize}[label=$\boxempty$]
           \item Strong interaction
-          \item Rich internal structure
-          \item Long coherence time
-          \item Fully controllable
+          \item<5-> Rich internal structure
+          \item<6-> Long coherence time
+          \item<7-> Fully controllable
           \end{itemize}
         };
       }
-      \visible<5->{
+      \visible<8->{
         \node[below,align=center] at (6.2, -1) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
           Ions {\tiny (Monroe et al.)}};
@@ -978,42 +978,46 @@
 % all the way following the ladder to the ground state.
 % __()__
 \begin{frame}{Raman sideband cooling}
-  \vspace{-0.5cm}
+  \vspace{-0.3cm}
   \begin{center}
     \begin{tikzpicture}
-      \begin{scope}
-        \draw[line width=1] plot[domain={-1.5:1.5},smooth,variable=\x]
-        ({\x}, {(\x)^2 * 2.2});
+      \node[below,align=center] at (0, 5.8) {
+        \usebeamercolor[fg]{frametitle}{\bf \small Used for cooling in trap}};
+      \visible<2->{
+        \begin{scope}
+          \draw[line width=1] plot[domain={-1.5:1.5},smooth,variable=\x]
+          ({\x}, {(\x)^2 * 2.2});
 
-        \node[right,rotate=90] at (0, 3.75 + 0.2) {\LARGE $\cdots$};
-        \draw[line width=0.8] ({-sqrt(3.75 / 2.2)}, 3.75)
-        node[left=0.1] {$|2\rangle$} -- ({sqrt(3.75 / 2.2)}, 3.75);
-        \draw[line width=0.8] ({-sqrt(2.25 / 2.2)}, 2.25)
-        node[left=0.1] {$|1\rangle$} -- ({sqrt(2.25 / 2.2)}, 2.25);
-        \draw[line width=0.8] ({-sqrt(0.75 / 2.2)}, 0.75)
-        node[left=0.1] {$|0\rangle$} -- ({sqrt(0.75 / 2.2)}, 0.75);
+          \node[right,rotate=90] at (0, 3.75 + 0.2) {\LARGE $\cdots$};
+          \draw[line width=0.8] ({-sqrt(3.75 / 2.2)}, 3.75)
+          node[left=0.1] {$|2\rangle$} -- ({sqrt(3.75 / 2.2)}, 3.75);
+          \draw[line width=0.8] ({-sqrt(2.25 / 2.2)}, 2.25)
+          node[left=0.1] {$|1\rangle$} -- ({sqrt(2.25 / 2.2)}, 2.25);
+          \draw[line width=0.8] ({-sqrt(0.75 / 2.2)}, 0.75)
+          node[left=0.1] {$|0\rangle$} -- ({sqrt(0.75 / 2.2)}, 0.75);
 
-        \draw[<->, line width=0.7, >=stealth] (0 - 0.5, 2.25) --
-        node[right] {$\omega$} (0 - 0.5, 3.75);
-      \end{scope}
+          \draw[<->, line width=0.7, >=stealth] (0 - 0.5, 2.25) --
+          node[right] {$\omega$} (0 - 0.5, 3.75);
+        \end{scope}
+      }
 
       \begin{scope}[shift={(4, -1)}]
         \foreach \y in {0.75, 2.25, 3.75} {
-          \visible<3->{
+          \visible<4->{
             \draw[line width=1,dashed,gray!50]
             ({sqrt(\y / 2.2)}, \y) -- ({2 * exp(-(\y-2.6)^2 / 5) + 2}, \y);
             \draw[line width=1,red]
             plot[smooth,samples=100,domain={-0.75}:{0.75},variable=\f]
             ({exp(-(\f)^2 * 100) * 2 * exp(-(\y-2.6)^2 / 5) + 2}, {\f+\y});
           }
-          \visible<5->{
+          \visible<6->{
             \draw[line width=1,blue]
             plot[smooth,samples=100,domain={-0.75}:{0.75},variable=\f]
             ({exp(-(\f)^2 * 100) * 2.5 * exp(-(\y-2.6)^2 / 1.5) + 2}, {\f+\y});
           }
         }
 
-        \visible<2->{
+        \visible<3->{
           \draw[line width=1] plot[domain={-1.5:1.5},smooth,variable=\x]
           ({\x}, {(\x)^2 * 2.2});
 
@@ -1026,7 +1030,7 @@
           ({sqrt(0.75 / 2.2)}, 0.75) node[below right=0.1] {$|0\rangle$};
         }
 
-        \visible<3->{
+        \visible<4->{
           \node[right] at (4.31, 2.25) {\small Carrier};
           \node[right,align=center,red!50!black,
           execute at begin node=\setlength{\baselineskip}{7pt}] at (3.54, 0.75)
@@ -1037,20 +1041,20 @@
         }
       \end{scope}
 
-      \visible<3>{
+      \visible<4>{
         \draw[->,red!60!black,>=stealth,line width=1.6] (0, 2.24) -- (4, -1 + 2.5);
       }
 
-      \visible<4->{
+      \visible<5->{
         \draw[->,red!60!black,>=stealth,line width=1.6] (0, 3.75) -- (4, -1 + 2.25);
         \draw[->,red!60!black,>=stealth,line width=1.6] (0, 2.25) -- (4, -1 + 0.75);
       }
-      \visible<4-5>{
+      \visible<5-6>{
         \draw[->,red!60!black,>=stealth,line width=1.6] (0, 0.75) --
         node[red,rotate=-20] {\scalebox{5}{\tiny $\mathbf{\times}$}} (4, -1 - 0.75);
       }
 
-      \visible<6->{
+      \visible<7->{
         \draw[snakearrow,green!60!black,line width=1.6] (4, -1 + 2.25) -- (0, 2.25);
         \draw[snakearrow,green!60!black,line width=1.6] (4, -1 + 0.75) -- (0, 0.75);
       }
