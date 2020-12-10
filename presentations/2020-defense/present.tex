@@ -258,11 +258,15 @@
 % \def\disableAllSlides{}
 
 \newcommand\slideOn[1]{
+  \ifthenelse{\isundefined\disableAllSlides} {
+    \def\disableAllSlides{}
+  }{}
   \expandafter\def\csname slide_ #1 _enable \endcsname{}
 }
 \newcommand\slideOff[1]{
   \expandafter\def\csname slide_ #1 _disable \endcsname{}
 }
+% \slideOn{}
 \ifthenelse{\isundefined\disableAllSlides} {
   \newcommand\ifSlide[1]{
     \expandafter\ifcsname slide_ #1 _disable \endcsname
