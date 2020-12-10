@@ -25,6 +25,7 @@
 \usepackage{multimedia}
 % \usepackage{bm}
 % \usepackage{siunitx}
+\usepackage{ifthen}
 \usepackage{enumitem}
 \usepackage{stmaryrd}
 \setlist[itemize]{label=\textbullet}
@@ -253,6 +254,26 @@
 
 \newcommand{\todo}[1]{}
 
+% Uncomment this to disable all slides except ones that are enabled with \slideOn
+% \def\disableAllSlides{}
+
+\newcommand\slideOn[1]{
+  \expandafter\def\csname slide_ #1 _enable \endcsname{}
+}
+\newcommand\slideOff[1]{
+  \expandafter\def\csname slide_ #1 _disable \endcsname{}
+}
+\ifthenelse{\isundefined\disableAllSlides} {
+  \newcommand\ifSlide[1]{
+    \expandafter\ifcsname slide_ #1 _disable \endcsname
+    \else
+  }
+} {
+  \newcommand\ifSlide[1]{
+    \expandafter\ifcsname slide_ #1 _enable \endcsname
+  }
+}
+
 \title[Coherent Creation of Single Molecules]{Coherent Creation of Single Molecules from Single Atoms}
 \date{}
 \author{Yichao Yu}
@@ -383,6 +404,7 @@
 %% Title
 % I'm Yichao from the Ni lab and today I'll tell you about our experiment
 % on creating single NaCs molecules in optical tweezers from atoms.
+\ifSlide{title}
 {
   \usebackgroundtemplate{
     \makebox[\paperwidth][c]{\centering
@@ -396,6 +418,7 @@
     \titlepage
   \end{frame}
 }
+\fi
 
 %% Goal
 % But before going into the details, let's first talk about why we want to do this.
@@ -461,6 +484,7 @@
 % and in fact some of the techniques that we developped
 % should be and are being applied to other systems.
 % __()__
+\ifSlide{intro_motivation}
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -521,6 +545,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% System
 % So now let's look at our system selection.
@@ -560,6 +585,7 @@
 % In our experiment, we would like to extend these capabilities from atoms to molecules
 % and you'll see later in my talk how we use this to achieve quantum control on our molcules.
 % __()__
+\ifSlide{intro_system}
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -618,6 +644,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Molecules in tweezers
 % So since our goal is to create ultracold molecules,
@@ -648,6 +675,7 @@
 % and then create our molecule from the atoms coherently.
 % These two points will be what I'm going to focus on for the remainder of my talk
 % __()__
+\ifSlide{intro_molecule_tweezer}
 \begin{frame}{Ultracold molecules in tweezers}
   \begin{center}
     \begin{tikzpicture}
@@ -703,6 +731,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Outline
 % So here's an outline for the rest of my talk.
@@ -714,9 +743,11 @@
 % And finally I'll talk about how we create the molecules coherently,
 % before giving my conclusion.
 % __()__
+\ifSlide{outline}
 \begin{frame}{Outline}
   \tableofcontents
 \end{frame}
+\fi
 
 \section{Experiment overview}
 %% Experiment overview
@@ -725,6 +756,7 @@
 % and b) this molecule has a fairly strong dipole moment of 4.6 debye
 % among the bi-alkalis and even among many other diatomic molecules in general.
 % __()__
+\ifSlide{overview_molecule}
 \begin{frame}[t]{Experiment overview}
   \begin{columns}
     \column{5.8cm}
@@ -738,6 +770,7 @@
     \end{center}
   \end{columns}
 \end{frame}
+\fi
 
 % Since we are making molecules from atoms inside the optical tweezer,
 % the obvious first step is to get the atoms in there.
@@ -771,6 +804,7 @@
 % and it also shows what our vacuum chamber
 % within which all of atoms and molecules resides.
 % __()__
+\ifSlide{overview_procedure}
 \begin{frame}[t]{Experiment overview}
   \vspace{-0.5cm}
   \begin{center}
@@ -873,6 +907,7 @@
     \vspace{-2cm}
   \end{center}
 \end{frame}
+\fi
 
 %% Lab pictures
 % ... which is a nice segway to talk about our apparatus
@@ -889,6 +924,7 @@
 % Surrounding the camber we have our beam path for the MOT, shown here,
 % and our tweezer and imaging beam paths, here, as well as many others around.
 % __()__
+\ifSlide{overview_apparatus}
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -920,6 +956,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Atom control
 % So that's a rough overview of our experiment.
@@ -931,9 +968,11 @@
 % __()__
 \section{Atom state control}
 \subsection{Raman sideband cooling of Na atoms}
+\ifSlide{rsc_outline}
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
+\fi
 
 %% Raman sideband cooling
 % So Raman sideband cooling is a technique for cooling particles,
@@ -977,6 +1016,7 @@
 % which allows cooling the atom from arbitrary initial motional state
 % all the way following the ladder to the ground state.
 % __()__
+\ifSlide{rsc_theory}
 \begin{frame}{Raman sideband cooling}
   \vspace{-0.3cm}
   \begin{center}
@@ -1061,6 +1101,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Lamb-Dicke parameter
 % It should not be hard to see that whether this cooling cycle can work
@@ -1175,6 +1216,7 @@
 % where there may be similar challenges due to the the trapping force available
 % and high initial temperature.
 % __()__
+\ifSlide{rsc_result}
 \begin{frame}{Raman sideband cooling}
   \vspace{-0.5cm}
   \begin{center}
@@ -1280,6 +1322,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 \section{Molecule creation}
 
@@ -1295,9 +1338,11 @@
 % It turns out that our tweezer is actually also a very good platform for such measurement.
 % __()__
 \subsection{Atom-atom interaction}
+\ifSlide{interaction_shift_outline}
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
+\fi
 
 %% Scattering length
 % The important property that we are interested in here
@@ -1313,6 +1358,7 @@
 % * As well as refining predictions for FB resonances
 % % % which we have another experiment working on it.
 % __()__
+\ifSlide{interaction_shift_scattering_length}
 \begin{frame}{Scattering length $a$}
   \begin{columns}
     \column{4.5cm}
@@ -1350,6 +1396,7 @@
     \end{tikzpicture}
   \end{columns}
 \end{frame}
+\fi
 
 %% Interaction shift
 % We measure the scattering length using interaction shift and it works like this.
@@ -1471,6 +1518,7 @@
 % and to be able to work even when our cooling isn't perfect,
 % which improves the robustness and signal to noise of our experiment.
 % __()__
+\ifSlide{interaction_shift_result}
 \begin{frame}{Interaction shift}
   \vspace{-0.8cm}
   \begin{tikzpicture}
@@ -1644,6 +1692,7 @@
     }
   \end{tikzpicture}
 \end{frame}
+\fi
 
 \subsection{Coherent optical transfer}
 %% Optical molecule creation
@@ -1651,9 +1700,11 @@
 % we've measured the properties of their interaction.
 % I'll now talk about how we make the molecules while maintaining the quantum control.
 % __()__
+\ifSlide{raman_transfer_outline}
 \begin{frame}{Outline}
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
+\fi
 
 %% Size mismatch
 % So just to remind you, here's a summary of our control of the atom,
@@ -1665,6 +1716,7 @@
 % This massive size mismatch is really the biggest challange
 % for anyone who want to create molecules coherently from atoms. ...
 % __()__
+\ifSlide{raman_transfer_size}
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -1719,6 +1771,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Two step transfer
 % ... which basically necessitate a two step transfer process.
@@ -1758,6 +1811,7 @@
 % __()__
 
 % **Make sure mentioning FB molecule vs optical transfer are two different setups**
+\ifSlide{raman_transfer_two_step}
 \begin{frame}{}
   \begin{center}
     \begin{tikzpicture}
@@ -1840,6 +1894,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Raman scheme
 % The scheme we use is actually very simple.
@@ -1876,6 +1931,7 @@
 % for the near threshold state, whereas for the deeply bound state,
 % we can get a ratio north of 50 when a larger detuning is used.
 % __()__
+\ifSlide{raman_transfer_state}
 \begin{frame}[t]{Raman transfer}
   \begin{center}
     \vspace{-0.9cm}
@@ -1988,6 +2044,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 %% Experiment
 % Based on the comparison, we selected the intermediate excited state
@@ -2055,6 +2112,7 @@
 % I'll save you from all the measurements that we did,
 % but to summarize we have identified two different sources of extra scattering.
 % __()__
+\ifSlide{raman_transfer_result}
 \begin{frame}[t]{Experiment}
   \begin{center}
     \vspace{-0.9cm}
@@ -2157,6 +2215,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 % The first one is from the laser, which is, in fact, already mostly taken care of
 % in the data above as I'll explain shortly.
@@ -2201,6 +2260,7 @@
 % However, there are still a few improvements we can do on that setup
 % to ensure that we have eliminated the technical noises as my as possible.
 % __()__
+\ifSlide{raman_transfer_ase}
 \begin{frame}[t]{Amplified Spontaneous Emission (ASE)}
   \vspace{-0.5cm}
   \begin{center}
@@ -2266,6 +2326,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 % The second noise source is a dissociative two-photon scattering process.
 % So the source I just talked about is mostly what we called background scattering
@@ -2292,7 +2353,7 @@
 % or by changing the state selections
 % so we believe the transfer efficiency can be improved in the future significantly.
 % __()__
-
+\ifSlide{raman_transfer_two_photon}
 \begin{frame}{Two-Photon Scattering}
   \begin{center}
     \begin{tikzpicture}
@@ -2340,6 +2401,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 \section{Conclusion}
 %% Conclusion
@@ -2353,6 +2415,7 @@
 % and we have already demostrated creation of rovibronic ground state molecule
 % starting from FB molecule.
 % __()__
+\ifSlide{conclusion}
 \begin{frame}[t]{Conclusion and outlook}
   \vspace{-0.5cm}
   \begin{columns}
@@ -2371,7 +2434,9 @@
     }
   \end{columns}
 \end{frame}
+\fi
 
+\ifSlide{acknowledgement_lab}
 \begin{frame}
   \begin{center}
     \begin{tikzpicture}
@@ -2449,7 +2514,9 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
+\ifSlide{acknowledgement_other}
 \begin{frame}
   \begin{center}
     \begin{tikzpicture}
@@ -2477,6 +2544,7 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 \begin{frame}{}
 \end{frame}
@@ -2518,6 +2586,7 @@
 
 % Then tried on Na, it worked.
 % Na live atom.
+\ifSlide{loading_intro}
 \begin{frame}{Single Atom in Tweezer}
   \begin{columns}[t]
     \column{5cm}
@@ -2555,7 +2624,9 @@
     \end{center}
   \end{columns}
 \end{frame}
+\fi
 
+\ifSlide{loading_lightshift}
 \begin{frame}{Real Issue with Na: Light Shift}
   \vspace{-1cm}
   \begin{columns}
@@ -2601,9 +2672,11 @@
     \end{center}
   \end{columns}
 \end{frame}
+\fi
 
 %% Another thing we can measure is the FB resonance
 % Better prediction than before.
+\ifSlide{fb}
 \begin{frame}[t]{Na (1, -1) Cs (3, -3) Feshbach resonance}
   \only<1>{
     \begin{center}
@@ -2627,6 +2700,7 @@
     \end{center}
   }
 \end{frame}
+\fi
 
 % Raman transfer obviously need some information about the excited state
 % So that's what we set out to measure first. (i.e. PA spectroscopy)
@@ -2655,6 +2729,7 @@
 % PA process ...
 
 % We scanned around the theoritical prediction between 200-300 MHz and indeed found the resonance.
+\ifSlide{pa_eit}
 \begin{frame}[t]{\alt<-4>{Photoassociation (PA) Spectroscopy}{Electromagnetically Induced Transparency (EIT) Spectroscopy}}
   \vspace{-0.4cm}
   \begin{center}
@@ -2717,5 +2792,6 @@
     \end{tikzpicture}
   \end{center}
 \end{frame}
+\fi
 
 \end{document}
