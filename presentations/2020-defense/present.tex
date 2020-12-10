@@ -511,10 +511,10 @@
       \visible<2->{
         \node[below,align=center] at (-1.4, -0.5) {
           \includegraphics[width=2.7cm]{figures/introduction_atom_bec_interference.png}\\
-          {\tiny Ketterle et al.}};
+          {\tiny Science  275, 637 (1997)}};
         \node[below,align=center] at (1.4, -0.5) {
           \includegraphics[width=2.7cm]{figures/introduction_lithium_microscope.png}\\
-          {\tiny Greiner et al.}};
+          {\tiny Nature 545, 462-466 (2017)}};
       }
       \visible<3->{
         \node[below,align=center,text width=5cm] at (0, -4) {
@@ -537,10 +537,10 @@
       \visible<8->{
         \node[below,align=center] at (6.2, -1) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
-          Ions {\tiny (Monroe et al.)}};
+          Ions {\tiny (Photo Credit Monroe Group)}};
         \node[below,align=center] at (6.2, -2.8) {
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
-          Rydberg Atoms {\tiny (Lukin et al.)}};
+          Rydberg Atoms {\tiny (Photo Credit Lukin Group)}};
       }
     \end{tikzpicture}
   \end{center}
@@ -592,27 +592,27 @@
       \node[below,align=center,text width=5.5cm] at (-3, 2.2) {
         \begin{itemize}[label=$\boxempty$]
         \item[\alt<2->{\textcolor{green!70!black}{\checkmark}}{$\boxempty$}]
-          \textbf{Strong interaction} \textcolor{red}{\visible<2->{(kHz)}}
+          Strong interaction \textcolor{red}{\visible<2->{(kHz)}}
         \item[\alt<4->{\textcolor{green!70!black}{\checkmark}}{$\boxempty$}]
           Rich internal structure
         \item[\alt<3->{\textcolor{green!70!black}{\checkmark}}{$\boxempty$}]
           Long coherence time
         \item[\alt<5->{\textcolor{green!70!black}{\checkmark}}{$\boxempty$}]
-          \textbf{Fully controllable}
+          Fully controllable
         \end{itemize}
       };
       \visible<-5>{
         \node[below,align=center] at (-3, -0.7) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
-          Ions {\tiny (Monroe et al.)}};
+          Ions {\tiny (Photo Credit Monroe Group)}};
         \node[below,align=center] at (-3, -2.1) {
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
-          Rydberg Atoms {\tiny (Lukin et al.)}};
+          Rydberg Atoms {\tiny (Photo Credit Lukin Group)}};
         \visible<2->{
           \node[below,align=center] at (-3, -3.6) {
-            \includegraphics[width=3.2cm]{figures/introduction_molecule_quantum_computing.pdf}\\
+            \includegraphics[width=5.2cm]{figures/introduction_molecule_quantum_computing.pdf}\\
             {\usebeamercolor[fg]{frametitle}{Dipolar Molecule}}
-            {\tiny (PRL. 97, 33003 (2006))}};
+            {\tiny (Chemical Science 9, 6830 - 6838 (2018))}};
         }
       }
       \visible<5->{
@@ -806,9 +806,10 @@
 % __()__
 \ifSlide{overview_procedure}
 \begin{frame}[t]{Experiment overview}
-  \vspace{-0.5cm}
+  \vspace{-0.9cm}
   \begin{center}
     \begin{tikzpicture}[scale=0.7]
+      \draw[white] (0, 0) -- (-3, 0);
       \mytweezer.drawCsTweezer(0, 0)
       \mytweezer.drawNaTweezer(-1, 0)
       \mytweezer.drawCsAtom(-0.07, 0.08, 0.22)
@@ -844,7 +845,9 @@
           plot ({atan((\y+4.7) * 5) / 170 - 0.5},{\y});
         \end{scope}
       }
+
       \visible<1>{
+        \draw[red,dashed,line width=0.5] (-1.5, -1.3) rectangle (0.5, 1.3);
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
         \node[below,align=center] at (6.5, -0.5)
@@ -854,6 +857,7 @@
           Post select on initial and final state.};
       }
       \visible<2>{
+        \draw[red,dashed,line width=0.5] (-1.5, -3.4) rectangle (0.5, 0.3);
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
         \node[below] at (6.5, -1)
@@ -865,6 +869,7 @@
         }
       }
       \visible<3>{
+        \draw[red,dashed,line width=0.5] (-1.5, -7.2) rectangle (0.5, -2.9);
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
         \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
@@ -895,13 +900,21 @@
         \mytweezer.drawNaAtom(6, -8.55, 0.14)
         \mytweezer.drawCsAtom(6, -9.56, 0.11)
 
-        \draw[dotted,line width=2,black!30,opacity=10] (0.3, -3.0) -- (4.5, -0.5);
-        \draw[dotted,line width=2,black!30,opacity=10] (-0.7, -7.0) -- (4.5, -9.3);
+        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -2.9) -- (4.5, -0.5);
+        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -7.2) -- (4.5, -9.3);
       }
       \visible<4>{
-        \node[align=center] at (8, -3.5)
-        {\includegraphics[width=4cm]{figures/overview_science_cover}\\
-          {\tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al., Science 360, 6391 (2018)}};
+        \draw[red,dashed,line width=0.5] (-1.5, -8.3) rectangle (-0.5, -5.7);
+        \node[align=center] at (4, 0)
+        {\usebeamercolor[fg]{frametitle}{Interaction}\\
+          \includegraphics[width=4cm]{figures/interaction_shift_spectrum_42_32.pdf}};
+        \node[align=center] at (10, 0.2) {\usebeamercolor[fg]{frametitle}{Molecule Creation}\\
+          \includegraphics[width=4cm]{figures/raman_transfer_rabi_annotate.pdf}};
+        \node[align=center,
+        execute at begin node=\setlength{\baselineskip}{7pt}] at (8, -6)
+        {\includegraphics[width=3cm]{figures/overview_science_cover}\\
+          \tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al.,\\
+          \tiny Science 360, 6391 (2018)};
       }
     \end{tikzpicture}
     \vspace{-2cm}
