@@ -108,26 +108,29 @@ const prefix = joinpath(@__DIR__, "../figures/raman_transfer_scatter_scaling")
 # ylabel("\$\\Gamma_{\\mathrm{m}}~(\\mathrm{2\\pi\\times kHz})\$")
 # NaCsPlot.maybe_save("$(prefix)_mol")
 
+const diffscale = (1 / (711 - 560)^2) / (1 / (711 - 560)^2 - 1 / (711 - 503)^2)
+
 figure()
 ax = gca()
-errorbar(pwrs, Γ_mol_diff, unc_Γ_mol_diff, fmt="C0o")
-plot(fit1_Γ_mol_diff.plotx, fit1_Γ_mol_diff.ploty, "C0--")
-plot(fit2_Γ_mol_diff.plotx, fit2_Γ_mol_diff.ploty, "C0")
+errorbar(pwrs, Γ_mol_diff .* diffscale, unc_Γ_mol_diff .* diffscale, fmt="C0o")
+plot(fit1_Γ_mol_diff.plotx, fit1_Γ_mol_diff.ploty .* diffscale, "C0--", label="Linear")
+plot(fit2_Γ_mol_diff.plotx, fit2_Γ_mol_diff.ploty .* diffscale, "C0", label="Quadratic")
 xlim([2.4, 17])
-ylim([0.008, 0.8])
+ylim([0.016, 1.6])
 xscale("log")
 yscale("log")
+legend(loc="upper left", fontsize="small")
 grid()
-text(3.8, 0.02,
-     ("\$\\Delta\\Gamma_{\\mathrm{m}}=P^2\\cdot2\\pi\\times$(fit2_Γ_mol_diff.uncs[1] .* 1000)" *
+text(3.1, 0.031,
+     ("\$\\Gamma^{\\mathrm{\\Delta dep}}_{\\mathrm{scatter}}=P^2\\cdot2\\pi\\times$(fit2_Γ_mol_diff.uncs[1] .* 1000 * diffscale)" *
       "~\\mathrm{Hz/mW^2}\$"), fontsize="small", color="C0")
 ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 ax.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 ax.set_xticks(3:17, minor=true)
 xticks([3, 6, 12], ["3", "6", "12"])
-yticks([0.01, 0.03, 0.1, 0.3], ["0.01", "", "0.1", ""])
+yticks([0.03, 0.1, 0.3, 1], ["", "0.1", "", "1"])
 xlabel("Tweezer Power (mW)")
-ylabel("\$\\Delta\\Gamma_{\\mathrm{m}}~(\\mathrm{2\\pi\\times kHz})\$")
+ylabel("\$\\Gamma^{\\mathrm{\\Delta dep}}_{\\mathrm{scatter}}~(\\mathrm{2\\pi\\times kHz})\$")
 gca().yaxis.set_label_coords(-0.09, 0.55)
 NaCsPlot.maybe_save("$(prefix)_mol_diff")
 
