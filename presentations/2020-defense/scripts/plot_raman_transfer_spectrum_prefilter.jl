@@ -86,6 +86,10 @@ ax = gca()
 mask = matplotlib.patches.Rectangle((1036.1, 0), 2.8, 2.4, facecolor="C0", alpha=0.7)
 ax.add_patch(mask)
 errorbar(processed.xs, processed.ys, processed.uncs, linestyle="None")
+annotate("ASE", xy=(1073.9, 1.144),
+         xytext=(1082.8, 1.540),
+         arrowprops=Dict(:width=>5, :headlength=>10, :headwidth=>12, :color=>"C0"),
+         color="C0", fontsize=28)
 grid()
 xlim([params.lambda0, params.lambda1])
 ylim([0, 2.4])
