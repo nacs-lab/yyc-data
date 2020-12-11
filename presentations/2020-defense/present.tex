@@ -511,7 +511,7 @@
         \draw[->,>=latex,green!70!black,thick] (-0.1, -1.25) -- ++(1.3, 0);
       \end{scope}
       \draw[decoration={brace,mirror,raise=3pt, amplitude=10pt},decorate,line width=2]
-      (-2.5, 0.7) -- node[below=0.5] {Complex Dynamic} (2.5, 0.6);
+      (-2.5, 0.6) -- node[below=0.5] {Complex Dynamic} (2.5, 0.6);
       \visible<2->{
         \node[below,align=center] at (-1.4, -0.5) {
           \includegraphics[width=2.7cm]{figures/introduction_atom_bec_interference.png}\\
@@ -873,7 +873,7 @@
         }
       }
       \visible<3>{
-        \draw[red,dashed,line width=0.5] (-1.5, -7.2) rectangle (0.5, -2.9);
+        \draw[red,dashed,line width=0.5] (-1.5, -7.35) rectangle (0.5, -2.9);
         \node[above,align=center] at (7, 0)
         {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
         \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
@@ -905,7 +905,7 @@
         \mytweezer.drawCsAtom(6, -9.56, 0.11)
 
         \draw[dotted,line width=2,black!30,opacity=10] (0.5, -2.9) -- (4.5, -0.5);
-        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -7.2) -- (4.5, -9.3);
+        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -7.35) -- (4.5, -9.3);
       }
       \visible<4>{
         \draw[red,dashed,line width=0.5] (-1.5, -8.3) rectangle (-0.5, -5.7);
@@ -2480,7 +2480,7 @@
     \column{5.7cm}
     \visible<5->{
       \vspace{1cm}\\
-      \includegraphics[width=5.5cm]{figures/conclusion_ground_raman.pdf}
+      \includegraphics[width=5.7cm]{figures/conclusion_ground_raman_annotate.pdf}
     }
   \end{columns}
 \end{frame}
@@ -2587,9 +2587,10 @@
       \visible<4->{
         \fill[white,opacity=0.9] (-5.7, -4.5) rectangle (5.55, 4.3);
         \node at (0, 3.0) {\LARGE \bf \usebeamercolor[fg]{frametitle}{Thanks for your attention}};
-        \node at (-2.5, -0.5) {\includegraphics[width=6.5cm]{
+        \node at (-2.8, -0.5) {\includegraphics[width=5.8cm]{
             figures/raman_transfer_rabi_annotate.pdf}};
-        \node at (3.4, -0.5) {\includegraphics[width=4.5cm]{figures/conclusion_ground_raman.pdf}};
+        \node at (3.1, -0.7) {\includegraphics[width=5.8cm]{
+            figures/conclusion_ground_raman_annotate.pdf}};
       }
     \end{tikzpicture}
   \end{center}
