@@ -28,6 +28,7 @@
 \usepackage{ifthen}
 \usepackage{enumitem}
 \usepackage{stmaryrd}
+\usepackage{changepage}
 \setlist[itemize]{label=\textbullet}
 \usetikzlibrary{
   arrows,
@@ -541,10 +542,14 @@
       \visible<8->{
         \node[below,align=center] at (6.2, -1) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
-          Ions {\tiny (Photo Credit Monroe Group)}};
+          Ions {\tiny (Photo credit: Monroe group)}};
         \node[below,align=center] at (6.2, -2.8) {
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
-          Rydberg Atoms {\tiny (Photo Credit Lukin Group)}};
+          Rydberg Atoms {\tiny (Photo credit: Lukin group)}};
+      }
+      \visible<9->{
+        \node[below,align=center] at (6.2, -4.6)
+        {\usebeamercolor[fg]{frametitle}{\bf New System?}};
       }
     \end{tikzpicture}
   \end{center}
@@ -608,10 +613,10 @@
       \visible<-5>{
         \node[below,align=center] at (-3, -0.7) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
-          Ions {\tiny (Photo Credit Monroe Group)}};
+          Ions {\tiny (Photo credit: Monroe group)}};
         \node[below,align=center] at (-3, -2.1) {
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
-          Rydberg Atoms {\tiny (Photo Credit Lukin Group)}};
+          Rydberg Atoms {\tiny (Photo credit: Lukin group)}};
         \visible<2->{
           \node[below,align=center] at (-3, -3.6) {
             \includegraphics[width=5.2cm]{figures/introduction_molecule_quantum_computing.pdf}\\
@@ -631,17 +636,17 @@
       \visible<6->{
         \node[align=center] at (-3.3, -3) {
           \usebeamercolor[fg]{frametitle}{\footnotesize Loading}\\
-          \includegraphics[width=3.8cm]{figures/introduction_tweezer_loading}\\
+          \includegraphics[width=3.8cm]{figures/introduction_tweezer_loading.pdf}\\
           {\tiny Nat. Phys. 6, 951 (2010)}
         };
         \node[align=center] at (2.7, -1.2) {
           \usebeamercolor[fg]{frametitle}{\footnotesize Cooling}\\
-          \includegraphics[width=3.5cm]{figures/introduction_tweezer_rsc}\\
+          \includegraphics[width=3.5cm]{figures/introduction_tweezer_rsc.pdf}\\
           {\tiny PRX. 2, 041014 (2012)}
         };
         \node[align=center] at (2.4, -4.5) {
           \usebeamercolor[fg]{frametitle}{\footnotesize Rearranging}\\
-          \includegraphics[width=5.7cm]{figures/introduction_tweezer_rearrange}\\
+          \includegraphics[width=5.7cm]{figures/introduction_tweezer_rearrange.png}\\
           {\tiny Science 354, 1024 (2016)}
         };
       }
@@ -852,60 +857,68 @@
 
       \visible<1>{
         \draw[red,dashed,line width=0.5] (-1.5, -1.3) rectangle (0.5, 1.3);
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
-        \node[below,align=center] at (6.5, -0.5)
-        {\includegraphics[width=5cm]{figures/overview_single_atom.png}};
-        \node[below,align=center] at (7, -7.5)
-        {Loading probability per site: 60\%\\
-          Post select on initial and final state.};
+        \begin{scope}[shift={(1, 1)}]
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
+          \node[below,align=center] at (6.5, -0.5)
+          {\includegraphics[width=5cm]{figures/overview_single_atom.png}};
+          \node[below,align=center] at (7, -7.5)
+          {Loading probability per site: 60\%\\
+            Post select on initial and final state.};
+        \end{scope}
       }
       \visible<2>{
         \draw[red,dashed,line width=0.5] (-1.5, -3.4) rectangle (0.5, 0.3);
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
-        \node[below] at (6.5, -1)
-        {\includegraphics[width=6cm]{figures/rsc_spectrum_az.pdf}};
-        \only<2>{
-          \node[below,align=center] at (7, -7)
-          {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
-            Na: 94\% ground state\footnote{\textbf{Y. Yu} et al. PRA 97, 063423 (2018)}};
-        }
+        \begin{scope}[shift={(1, 1)}]
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Cooling}};
+          \node[below] at (6.5, -1)
+          {\includegraphics[width=6cm]{figures/rsc_spectrum_az.pdf}};
+          \only<2>{
+            \node[below,align=center] at (7, -7)
+            {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
+              Na: 94\% ground state\footnote{\textbf{Y. Yu} et al. PRA 97, 063423 (2018)}};
+          }
+        \end{scope}
       }
       \visible<3>{
         \draw[red,dashed,line width=0.5] (-1.5, -7.35) rectangle (0.5, -2.9);
-        \node[above,align=center] at (7, 0)
-        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
-        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
-        function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
-        function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
-        \mytweezer.drawNaAtom(6, -1.22, 0.15)
-        \mytweezer.drawCsAtom(9, -2.06, 0.11)
+        \begin{scope}[shift={(1, 1)}]
+          \node[above,align=center] at (7, 0)
+          {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Merging}};
+          \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+          function {-0.22 * exp(-(x - 9)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 1};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10.5]
+          function {-1.2 * exp(-(x - 9)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 1};
+          \mytweezer.drawNaAtom(6, -1.22, 0.15)
+          \mytweezer.drawCsAtom(9, -2.06, 0.11)
 
-        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
-        function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
-        function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
-        \mytweezer.drawNaAtom(6, -3.72, 0.15)
-        \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
+          \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+          function {-0.22 * exp(-(x - 7.5)**2 / 0.75**2)
+            + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:10]
+          function {-1.2 * exp(-(x - 7.5)**2 / 0.75**2)
+            + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 3.5};
+          \mytweezer.drawNaAtom(6, -3.72, 0.15)
+          \mytweezer.drawCsAtom(7.5, -4.56, 0.11)
 
-        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
-        \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
-        \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
+          \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-0.22 * exp(-(x - 6)**2 / 0.75**2) + -0.4 * exp(-(x - 6)**2 / 0.75**2) - 6};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-1.2 * exp(-(x - 6)**2 / 0.75**2) + 0.45 * exp(-(x - 6)**2 / 0.75**2) - 6};
+          \mytweezer.drawNaAtom(5.9, -6.42, 0.12)
+          \mytweezer.drawCsAtom(6.05, -6.6, 0.13)
 
-        \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
-        \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
-        function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
-        \mytweezer.drawNaAtom(6, -8.55, 0.14)
-        \mytweezer.drawCsAtom(6, -9.56, 0.11)
+          \draw[atomorange,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-0.22 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+          \draw[blue,line width=1.5] plot[draw,samples=200,domain=4.5:8.5]
+          function {-1.2 * exp(-(x - 6)**2 / 0.75**2) - 8.5};
+          \mytweezer.drawNaAtom(6, -8.55, 0.14)
+          \mytweezer.drawCsAtom(6, -9.56, 0.11)
+        \end{scope}
 
-        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -2.9) -- (4.5, -0.5);
-        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -7.35) -- (4.5, -9.3);
+        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -2.9) -- (4.5 + 1, -0.5 + 1);
+        \draw[dotted,line width=2,black!30,opacity=10] (0.5, -7.35) -- (4.5 + 1, -9.3 + 1);
       }
       \visible<4>{
         \draw[red,dashed,line width=0.5] (-1.5, -8.3) rectangle (-0.5, -5.7);
@@ -916,7 +929,7 @@
           \includegraphics[width=4cm]{figures/raman_transfer_rabi_annotate.pdf}};
         \node[align=center,
         execute at begin node=\setlength{\baselineskip}{7pt}] at (8, -6)
-        {\includegraphics[width=3cm]{figures/overview_science_cover}\\
+        {\includegraphics[width=3cm]{figures/overview_science_cover.png}\\
           \tiny L. R. Liu, J. D. Hood, \textbf{Y. Yu} et al.,\\
           \tiny Science 360, 6391 (2018)};
       }
@@ -946,26 +959,26 @@
   \begin{center}
     \begin{tikzpicture}
       \visible<1>{
-        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber.png}};
       }
       \visible<2-3>{
-        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_center}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_center.png}};
       }
       \visible<4>{
         \node at (-3, 3.5) {\usebeamercolor[fg]{frametitle}{\textbf{MOT beam path}}};
-        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_mot}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_mot.png}};
       }
       \visible<5>{
         \node at (-3, 3.5)
         {\usebeamercolor[fg]{frametitle}{\textbf{Tweezer and imaging beam path}}};
-        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_tweezer}};
+        \node at (-3, 0) {\includegraphics[width=9cm]{figures/overview_chamber_tweezer.png}};
       }
       \visible<3> {
         \draw[white, line width=2] (-3.1, -0.2) ellipse (0.25 and 0.4);
         \draw[white, line width=1.5] (-3.15, 0.2) -- (-0.5, 1.65);
         \draw[white, line width=1.5] (-3.15, -0.6) -- (-0.5, -1.65);
         \draw[white, line width=3] (-0.5, 1.65) rectangle (4.5, -1.65);
-        \node at (2, 0) {\includegraphics[width=5cm]{figures/overview_na_mot}};
+        \node at (2, 0) {\includegraphics[width=5cm]{figures/overview_na_mot.png}};
         \fill[black, opacity = 0.3, even odd rule]
         (-0.5, 1.65) rectangle (4.5, -1.65) (1.9, 0.35) circle (0.3);
         \node[below, white] at (1.9, -0.1) {\textbf{\small Na MOT}};
@@ -1318,7 +1331,7 @@
         \node[below] at (0.5, 4.5) {\includegraphics[width=5.4cm]{figures/rsc_op_branching.pdf}};
       }
       \visible<10->{
-        \node[below] at (0.6, 3.7) {\includegraphics[width=6.3cm]{figures/rsc_sequence}};
+        \node[below] at (0.6, 3.7) {\includegraphics[width=6.3cm]{figures/rsc_sequence.pdf}};
       }
       \visible<6-8>{
         \node[below] at (0.5, 0.5) {\includegraphics[width=5.4cm]{figures/rsc_raman_rabi_1.pdf}};
@@ -1335,7 +1348,7 @@
       \visible<11->{
         \node[below,align=center] at (0.5, 0.5) {
           Axial sideband spectrum\\
-          \includegraphics[width=5.4cm]{figures/rsc_spectrum_az}
+          \includegraphics[width=5.4cm]{figures/rsc_spectrum_az.pdf}
         };
       }
     \end{tikzpicture}
@@ -1638,7 +1651,7 @@
     % Equations
     \visible<5-7>{
       \node[below right,align=left] at (-4.9, 3.8)
-      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{m_{1}\omega_{1,i}^2x_{1,i}^2}{2}+\frac{p_{1,i}^2}{2m_{1}})\ +\!\sum_{i=x,y,z}(\frac{m_{2}\omega_{2,i}^2x_{2,i}^2}{2}+\frac{p_{2,i}^2}{2m_{2}})+V_{int}(\vec r_1-\vec r_2)$};
+      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{m_{1}\omega_{1,i}^2x_{1,i}^2}{2}+\frac{p_{1,i}^2}{2m_{1}})\ +\!\sum_{i=x,y,z}(\frac{m_{2}\omega_{2,i}^2x_{2,i}^2}{2}+\frac{p_{2,i}^2}{2m_{2}})+V_{\rm int}(\vec r_1-\vec r_2)$};
       \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
       (-4.15,2.8) -- node[below=10pt] {\small Na} (-1.15,2.8);
       \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
@@ -1687,7 +1700,7 @@
     }
     \visible<7->{
       \node[above right,align=left] at (-6, -4.5)
-      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{M\Omega_{i}^2X_{i}^2}{2}+\frac{P_{i}^2}{2M})\ +\!\sum_{i=x,y,z}(\frac{\mu\omega_{R,i}^2x_{R,i}^2}{2}+\frac{p_{R,i}^2}{2\mu})+V_{int}(\vec r_R)\ +\!\sum_{i=x,y,z}\mu(\omega_{1,i}^2 - \omega_{2,i}^2)X_ix_{R,i}$};
+      {\footnotesize $\displaystyle H=\!\!\sum_{i=x,y,z}(\frac{M\Omega_{i}^2X_{i}^2}{2}+\frac{P_{i}^2}{2M})\ +\!\sum_{i=x,y,z}(\frac{\mu\omega_{\mathrm{R},i}^2x_{\mathrm{R},i}^2}{2}+\frac{p_{\mathrm{R},i}^2}{2\mu})+V_{\rm int}(\vec r_\mathrm{R})\ +\!\sum_{i=x,y,z}\mu(\omega_{1,i}^2 - \omega_{2,i}^2)X_ix_{\mathrm{R},i}$};
       \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
       (-5.25,-3.5) -- node[above=10pt] {\small Center of mass} (-2.5,-3.5);
       \draw[decoration={brace,amplitude=10pt},decorate,line width=1]
@@ -1891,7 +1904,7 @@
         \node at (-3, 0.8) {\usebeamercolor[fg]{frametitle}{\textbf{Feshbach molecule}}};
         \node[below, align=center] at (-3.2, 0.4)
         {\includegraphics[width=6cm]{figures/raman_transfer_fb_molecules.pdf}\\
-          \small{PRL. 124, 253401 (2020)}};
+          \tiny PRL. 124, 253401 (2020)};
         \visible<4->{
           \node[below, text width=6cm, align=left] at (3, -0.3) {\begin{itemize}
             \item Requires Feshbach resonance
@@ -1976,117 +1989,121 @@
 % we can get a ratio north of 50 when a larger detuning is used.
 % __()__
 \ifSlide{raman_transfer_state}
-\begin{frame}[t]{Raman transfer}
-  \begin{center}
-    \vspace{-0.9cm}
-    \begin{tikzpicture}
-      \begin{scope}[scale=0.8]
-        \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
-        \node[above,rotate=90] at (0, 4) {Energy};
-        \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
-        \node[below] at (2.7, -0.1) {Internuclear Distance};
+\begin{frame}[t]{}
+  \begin{adjustwidth}{-0.35cm}{-0.35cm}
+    \begin{center}
+      \vspace{-0.2cm}
+      \begin{tikzpicture}
+        \fill[white,opacity=0] (-1.1, -1.5) rectangle (11.38, 7.5);
+        \node[below right] at (-1.03, 7.235)
+        {\usebeamercolor[fg]{frametitle}{\textbf{Raman transfer}}};
+        \begin{scope}[scale=0.8]
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+          \node[above,rotate=90] at (0, 4) {Energy};
+          \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
+          \node[below] at (2.7, -0.1) {Internuclear Distance};
 
-        \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
+          \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
 
-        \draw[line width=1.1,cyan!85!blue]
-        plot[samples=200,domain=0.96:7,variable=\x]
-        ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+          \draw[line width=1.1,cyan!85!blue]
+          plot[samples=200,domain=0.96:7,variable=\x]
+          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
 
-        \draw[line width=1.1,pyplotc5]
-        plot[samples=200,domain=1:7.5,variable=\x]
-        ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
-        \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+          \draw[line width=1.1,pyplotc5]
+          plot[samples=200,domain=1:7.5,variable=\x]
+          ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+          \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {${\rm c}^3\Sigma^+$};
 
-        \visible<-2,4>{
-          \draw[pyplotc5] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
-          ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
-        }
-        \visible<3->{
-          \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
-          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
-        }
-        \visible<-2>{
-          \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
-          ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
+          \visible<-2,4>{
+            \draw[pyplotc5] ({(1.1102 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5) --
+            ({(6.5 - 0.75) * 0.7}, -0.69 * 1.3 + 7.5);
+          }
+          \visible<3->{
+            \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+            ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5);
+          }
+          \visible<-2>{
+            \draw[black!40,dashed,line width=1] ({(0.9 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5) --
+            ({(7 - 0.75) * 0.7}, -0.77 * 1.3 + 7.5);
+          }
+          \visible<3>{
+            \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+            ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          }
+          \visible<4->{
+            \draw[pyplotc1, line width=1]
+            ({(1.1102 - 0.75) * 0.7 - 0.15}, -0.69 * 1.3 + 7.5 - 0.15) rectangle
+            ({(6.5 - 0.75) * 0.7 + 0.15}, -0.69 * 1.3 + 7.5 + 0.15);
+            \coordinate (ThresholdHighlight)
+            at ({(6.5 - 0.75) * 0.7 + 0.25}, -0.69 * 1.3 + 7.5 - 0.08);
+            \draw[pyplotc0, line width=1]
+            ({(1.4 - 0.75) * 0.7 - 0.15}, -1.8 * 1.3 + 7.5 - 0.15) rectangle
+            ({(2.5 - 0.75) * 0.7 + 0.15}, -1.8 * 1.3 + 7.5 + 0.15);
+            \coordinate (DeepHighlight)
+            at ({(2.5 - 0.75) * 0.7 + 0.25}, -1.8 * 1.3 + 7.5);
+          }
+
+          \mytweezer.drawNaAtom(6.50 * 0.7, 2.6, 0.12)
+          \mytweezer.drawCsAtom(7.10 * 0.7, 2.6, 0.10)
+
+          \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5)
+          -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+          \draw[line width=1] (3.98 * 0.7, -0.19  * 1.3 + 2.5)
+          -- (4.35 * 0.7, -0.19  * 1.3 + 2.5);
+          \mytweezer.drawNaAtom(3.98 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+          \mytweezer.drawCsAtom(4.35 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+
+          \visible<-2>{
+            \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+            -- node[right=0.1] {$\Omega_{\rm up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
+            \draw[->,>=stealth,green!80!black,line width=0.8]
+            ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
+            -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+          }
+          \visible<3>{
+            \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+            -- node[right=0.1] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+            \draw[->,>=stealth,green!80!black,line width=0.8]
+            ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+            -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+          }
+        \end{scope}
+        \visible<2-3>{
+          \node[below, text width=5.4cm, align=center] at (8.13, 6.8)
+          {
+            {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}\\
+            \vspace{0.2cm}
+            \begin{itemize}
+            \item Stronger coupling\\
+              ($\Omega_{\rm up}$ and $\Omega_{\rm down}$)
+            \item Closely spaced
+            \item Fast scattering
+            \end{itemize}
+          };
         }
         \visible<3>{
-          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
-          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+          \node[below, text width=5.4cm, align=center] at (8.13, 2.7)
+          {
+            {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}\\
+            \vspace{0.2cm}
+            \begin{itemize}
+            \item Weaker coupling
+            \item Sparsely spaced
+            \item Allow larger detuning
+            \item Slower scattering
+            \end{itemize}
+            {\tiny \usebeamercolor[fg]{frametitle}{arXiv:1701.03121(2017)}}
+          };
         }
-        \visible<4->{
-          \draw[pyplotc1, line width=1]
-          ({(1.1102 - 0.75) * 0.7 - 0.15}, -0.69 * 1.3 + 7.5 - 0.15) rectangle
-          ({(6.5 - 0.75) * 0.7 + 0.15}, -0.69 * 1.3 + 7.5 + 0.15);
-          \coordinate (ThresholdHighlight)
-          at ({(6.5 - 0.75) * 0.7 + 0.25}, -0.69 * 1.3 + 7.5 - 0.08);
-          \draw[pyplotc0, line width=1]
-          ({(1.4 - 0.75) * 0.7 - 0.15}, -1.8 * 1.3 + 7.5 - 0.15) rectangle
-          ({(2.5 - 0.75) * 0.7 + 0.15}, -1.8 * 1.3 + 7.5 + 0.15);
-          \coordinate (DeepHighlight)
-          at ({(2.5 - 0.75) * 0.7 + 0.25}, -1.8 * 1.3 + 7.5);
+        \visible<4>{
+          \node[below] at (8.13, 7.5)
+          {\includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_omega.pdf}};
+          \node[below] at (8.13, 3.2)
+          {\includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_ratio.pdf}};
         }
-
-        \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
-        \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
-
-        \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
-        \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
-        \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
-
-        \visible<-2>{
-          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{\rm up}$} ({(3.5 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5);
-          \draw[->,>=stealth,green!80!black,line width=0.8] ({(3.45 - 0.75) * 0.7}, -0.8 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
-        }
-        \visible<3>{
-          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
-          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
-        }
-      \end{scope}
-      \visible<2-3>{
-        \node[below, text width=5.4cm, align=center] at (8.13, 6.8)
-        {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Near threshold states}}}\\
-          \vspace{0.2cm}
-          \begin{itemize}
-          \item Stronger coupling\\
-            ($\Omega_{\rm up}$ and $\Omega_{\rm down}$)
-          \item Closely spaced
-          \item Fast scattering
-          \end{itemize}
-        };
-      }
-      \visible<3>{
-        \node[below, text width=5.4cm, align=center] at (8.13, 2.7)
-        {
-          {\usebeamercolor[fg]{frametitle}{\textbf{Deeply bound states}}}\\
-          \vspace{0.2cm}
-          \begin{itemize}
-          \item Weaker coupling
-          \item Sparsely spaced
-          \item Allow larger detuning
-          \item Slower scattering
-          \end{itemize}
-          {\tiny \usebeamercolor[fg]{frametitle}{arXiv:1701.03121(2017)}}
-        };
-      }
-      \visible<4>{
-        \node[below, text width=5.4cm, align=center] (ThresholdPlot) at (8.13, 7.5)
-        {
-          \includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_omega.pdf}
-        };
-        \node[below, text width=5.4cm, align=center] (DeepPlot) at (8.13, 3.2)
-        {
-          \includegraphics[width=5.4cm]{figures/raman_transfer_theory_ratio_ratio.pdf}
-        };
-        % \draw[->,>=stealth, blue, line width=2] (ThresholdPlot) -- (ThresholdHighlight);
-        % \draw[->,>=stealth, blue, line width=2] (DeepPlot) -- (DeepHighlight);
-      }
-    \end{tikzpicture}
-  \end{center}
+      \end{tikzpicture}
+    \end{center}
+  \end{adjustwidth}
 \end{frame}
 \fi
 
@@ -2157,107 +2174,115 @@
 % but to summarize we have identified two different sources of extra scattering.
 % __()__
 \ifSlide{raman_transfer_result}
-\begin{frame}[t]{Experiment}
-  \begin{center}
-    \vspace{-0.9cm}
-    \begin{tikzpicture}
-      \visible<-5>{
-        \begin{scope}[shift={(-5.5, -3.5)}, scale=0.8]
-          \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
-          \node[above,rotate=90] at (0, 4) {Energy};
-          \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
-          \node[below] at (2.7, -0.1) {Internuclear Distance};
+\begin{frame}[t]{}
+  \begin{adjustwidth}{-0.35cm}{-0.35cm}
+    \begin{center}
+      \vspace{-0.2cm}
+      \begin{tikzpicture}
+        \fill[white,shift={(-5.5, -3.5)},opacity=0] (-1.1, -1.5) rectangle (11.38, 7.5);
+        \node[below right,shift={(-5.5, -3.5)}] at (-1.03, 7.235)
+        {\usebeamercolor[fg]{frametitle}{\textbf{Experiment}}};
+        \visible<-5>{
+          \begin{scope}[shift={(-5.5, -3.5)}, scale=0.8]
+            \draw[->,>=stealth,line width=1.2] (0, 0) -- (0, 8);
+            \node[above,rotate=90] at (0, 4) {Energy};
+            \draw[->,>=stealth,line width=1.2] (0, 0) -- (5.4, 0);
+            \node[below] at (2.7, -0.1) {Internuclear Distance};
 
-          \draw[line width=1.1,cyan!85!blue]
-          plot[samples=200,domain=0.96:7,variable=\x]
-          ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
+            \draw[line width=1.1,cyan!85!blue]
+            plot[samples=200,domain=0.96:7,variable=\x]
+            ({(\x + 0.25) * 0.7}, {(6.8*\x^(-3.4)-6.5*\x^(-1.7)) * 1.3 + 2.5});
 
-          \draw[line width=1.1,pyplotc5]
-          plot[samples=200,domain=1:7.5,variable=\x]
-          ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
-          \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {$c^3\Sigma^+$};
+            \draw[line width=1.1,pyplotc5]
+            plot[samples=200,domain=1:7.5,variable=\x]
+            ({(\x - 0.75) * 0.7}, {(9.2*\x^(-2.5)-9.0*\x^(-1.3)) * 1.3 + 7.5});
+            \node[above right,pyplotc5] at (0.55 * 0.7, 7.2) {${\rm c}^3\Sigma^+$};
 
-          \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
-          ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) node[right=0.2] {\scriptsize $v=0$};
-          \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
-          ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+            \draw[pyplotc5] ({(1.4 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) --
+            ({(2.5 - 0.75) * 0.7}, -1.8 * 1.3 + 7.5) node[right=0.2] {\scriptsize $v=0$};
+            \draw[black!40,dashed,line width=1] ({(1.2 - 0.75) * 0.7}, -2 * 1.3 + 7.5) --
+            ({(3 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
 
-          \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
-          \mytweezer.drawNaAtom(6.55 * 0.7, 2.6, 0.12)
-          \mytweezer.drawCsAtom(7.05 * 0.7, 2.6, 0.10)
+            \draw[cyan!85!blue] ({(1.0269 + 0.25) * 0.7}, 2.5) -- (7.25 * 0.7, 2.5);
+            \mytweezer.drawNaAtom(6.50 * 0.7, 2.6, 0.12)
+            \mytweezer.drawCsAtom(7.10 * 0.7, 2.6, 0.10)
 
-          \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
-          \mytweezer.drawNaAtom(4.08 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
-          \mytweezer.drawCsAtom(4.25 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
+            \draw[cyan!85!blue] ({(1.0793 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5) -- ({(6 + 0.25) * 0.7}, -0.28 * 1.3 + 2.5);
+            \draw[line width=1] (3.98 * 0.7, -0.19  * 1.3 + 2.5)
+            -- (4.35 * 0.7, -0.19  * 1.3 + 2.5);
+            \mytweezer.drawNaAtom(3.98 * 0.7, -0.19  * 1.3 + 2.5, 0.12)
+            \mytweezer.drawCsAtom(4.35 * 0.7, -0.19  * 1.3 + 2.5, 0.10)
 
-          \node[right,align=center,cyan,
-          execute at begin node=\setlength{\baselineskip}{7pt}] at (6.8 * 0.7 + 0.3, 2.55)
-          {\scriptsize Na(2,2)\\\scriptsize Cs(3,3)};
+            \node[right,align=center,cyan,
+            execute at begin node=\setlength{\baselineskip}{7pt}] at (6.8 * 0.7 + 0.3, 2.55)
+            {\scriptsize Na(2,2)\\\scriptsize Cs(3,3)};
 
-          \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
-          -- node[right] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
-          \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
-          -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
+            \draw[->,>=stealth,blue!50!orange,line width=0.8] (6.8 * 0.7, 2.7)
+            -- node[right=0.1] {$\Omega_{\rm up}$} ({(2.8 - 0.75) * 0.7}, -2 * 1.3 + 7.5);
+            \draw[->,>=stealth,green!80!black,line width=0.8] ({(2.75 - 0.75) * 0.7}, -2 * 1.3 + 7.5)
+            -- node[left] {$\Omega_{\rm down}$} (4.165 * 0.7, -0.12 * 1.3 + 2.5);
 
-          \visible<2->{
-            \node[above,align=center,
-            execute at begin node=\setlength{\baselineskip}{9pt}] at (3.8, 4.8)
-            {\footnotesize Tweezer\\\footnotesize +Raman};
-            \draw[->,>=stealth,line width=1,dotted,blue!50!orange] (3.8, 4.8) -- (2.6, 4.1);
-            \draw[->,>=stealth,line width=1,dotted,green!80!black] (3.8, 4.8) -- (1.87, 4.1);
-          }
+            \visible<2->{
+              \node[above,align=center,
+              execute at begin node=\setlength{\baselineskip}{9pt}] at (3.8, 4.8)
+              {\footnotesize Tweezer\\\footnotesize +Raman};
+              \draw[->,>=stealth,line width=1,dotted,blue!50!orange] (3.8, 4.8) -- (2.6, 4.1);
+              \draw[->,>=stealth,line width=1,dotted,green!80!black] (3.8, 4.8) -- (1.87, 4.1);
+            }
 
-          \draw[->,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
-          \draw[<-,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
-          -- (5.1 * 0.7, -0.28 * 1.3 + 2)
-          node[below, align=center] {\scriptsize $\approx771\mathrm{MHz}$\\
-            \scriptsize by Jeremy Hutson.};
-        \end{scope}
-      }
-      \visible<3> {
-        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
-            figures/raman_transfer_spectrum.pdf}};
-      }
-      \visible<4-> {
-        \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
-            figures/raman_transfer_spectrum_text.pdf}};
-      }
-      \visible<2-4> {
-        \node[below,text width=5.2cm,align=center] at (2.6, -0.5) {
-          \begin{block}{Tweezer as Raman beam}
+            \draw[->,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, 3) -- (5.1 * 0.7, 2.5);
+            \draw[<-,>=stealth,cyan!55!blue, line width=1] (5.1 * 0.7, -0.28 * 1.3 + 2.5)
+            -- (5.1 * 0.7, -0.28 * 1.3 + 2)
+            node[below,align=center,
+            execute at begin node=\setlength{\baselineskip}{7pt}]
+            {\scriptsize $\approx771\mathrm{MHz}$\\\tiny by Jeremy Hutson.};
+          \end{scope}
+        }
+        \visible<3> {
+          \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
+              figures/raman_transfer_spectrum.pdf}};
+        }
+        \visible<4-> {
+          \node[below] at (2.6, 4) {\includegraphics[width=5.5cm]{
+              figures/raman_transfer_spectrum_text.pdf}};
+        }
+        \visible<2-4> {
+          \node[below,text width=5.2cm,align=center] at (2.6, -0.5) {
+            \begin{block}{Tweezer as Raman beam}
+              \begin{itemize}
+              \item Higher Raman Rabi frequency
+              \item Lower scattering from other sources
+              \end{itemize}
+            \end{block}
+          };
+        }
+        \visible<5-> {
+          \node[below] at (2.6, -0.3) {\includegraphics[width=5.5cm]{
+              figures/raman_transfer_rabi_annotate.pdf}};
+        }
+        \visible<6-> {
+          \node[below, text width=5.9cm, align=center] at (-3.5, 3.4)
+          {
             \begin{itemize}
-            \item Higher Raman Rabi frequency
-            \item Lower scattering from other sources
+            \item Transferred $63\%$ of ground state atom to molecule.
+            \item<7-> Single molecule spin state
+            \item<7-> $>\!50\%$ of molecule\\
+              in motional ground state.
+            \item<8-> Limited by molecule lifetime
             \end{itemize}
-          \end{block}
-        };
-      }
-      \visible<5-> {
-        \node[below] at (2.6, -0.3) {\includegraphics[width=5.5cm]{
-            figures/raman_transfer_rabi_annotate.pdf}};
-      }
-      \visible<6-> {
-        \node[below, text width=5.9cm, align=center] at (-3.5, 3.4)
-        {
-          \begin{itemize}
-          \item Transferred $63\%$ of ground state atom to molecule.
-          \item<7-> Single molecule spin state
-          \item<7-> $>\!50\%$ of molecule\\
-            in motional ground state.
-          \item<8-> Limited by molecule lifetime
-          \end{itemize}
-        };
-      }
-      \visible<6-7> {
-        \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{
-            figures/raman_transfer_2d_mol.pdf}};
-      }
-      \visible<8-> {
-        \node[below] at (-3.2, -0.3) {\includegraphics[width=5cm]{
-            figures/raman_transfer_fit_two_ase_mol_time.pdf}};
-      }
-    \end{tikzpicture}
-  \end{center}
+          };
+        }
+        \visible<6-7> {
+          \node[below] at (-3.2, -0.3) {\includegraphics[width=5.3cm]{
+              figures/raman_transfer_2d_mol.pdf}};
+        }
+        \visible<8-> {
+          \node[below] at (-3.5, -0.5) {\includegraphics[width=5cm]{
+              figures/raman_transfer_fit_two_ase_mol_time.pdf}};
+        }
+      \end{tikzpicture}
+    \end{center}
+  \end{adjustwidth}
 \end{frame}
 \fi
 
@@ -2493,73 +2518,73 @@
       %% PI
       \node[align=center] at (-2.5, -0.9) {PI};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-1, -0.1) {\includegraphics[height=1.5cm]{figures/acknowledgement_kangkuen}\\
+      at (-1, -0.1) {\includegraphics[height=1.5cm]{figures/acknowledgement_kangkuen.jpg}\\
         \scriptsize Kang-Kuen Ni};
 
       %% NaCs
       \node[align=center] at (-3, -3.1) {NaCs\\Team};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-1.5, -2.2){\includegraphics[height=1.5cm]{figures/acknowledgement_kenneth}\\
+      at (-1.5, -2.2){\includegraphics[height=1.5cm]{figures/acknowledgement_kenneth.jpg}\\
         \scriptsize Kenneth\\\scriptsize Wang};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (0.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_wangyu}\\
+      at (0.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_wangyu.jpg}\\
         \scriptsize Yu\\\scriptsize Wang};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (1.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_fang}\\
+      at (1.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_fang.jpg}\\
         \scriptsize Fang\\\scriptsize Fang};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (3.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_jessie}\\
+      at (3.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_jessie.jpg}\\
         \scriptsize Jessie\\\scriptsize Zhang};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (4.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_lewis}\\
+      at (4.5, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_lewis.jpg}\\
         \scriptsize Lewis\\\scriptsize Picard};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (6.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_will}\\
+      at (6.0, -2.2) {\includegraphics[height=1.5cm]{figures/acknowledgement_will.jpg}\\
         \scriptsize William\\\scriptsize Cairncross};
 
       % KRb
       \node[align=center] at (-2, -5.3) {KRb\\Team};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-0.5, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_lingbang}\\
+      at (-0.5, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_lingbang.jpg}\\
         \scriptsize Lingbang\\\scriptsize Zhu};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (1.75, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_mingguang}\\
+      at (1.75, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_mingguang.jpg}\\
         \scriptsize Mingguang\\\scriptsize Hu};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (4.0, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_matt}\\
+      at (4.0, -4.4) {\includegraphics[height=1.5cm]{figures/acknowledgement_matt.jpg}\\
         \scriptsize Matthew\\\scriptsize Nichols};
 
       %% Former member
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-3.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_lee}\\
+      at (-3.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_lee.jpg}\\
         \scriptsize Lee Liu\\\tiny Postdoc @JILA};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-2.05, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_nick}\\
+      at (-2.05, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_nick.jpg}\\
         \scriptsize Nick Hutzler\\\tiny AP @Caltech};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (-0.4, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_jon}\\
+      at (-0.4, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_jon.jpg}\\
         \scriptsize Jonathan Hood\\\tiny AP @Purdue};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (1.0, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_eliot}\\
+      at (1.0, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_eliot.jpg}\\
         \scriptsize Eliot\\\scriptsize Fenton};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (2.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yenwei}\\
+      at (2.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yenwei.jpg}\\
         \scriptsize Yen-Wei Lin\\\tiny Intelon Optics};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (4.0, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yu}\\
+      at (4.0, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_yu.jpg}\\
         \scriptsize Yu Liu\\\tiny Postdoc @NIST};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (5.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_andrei}\\
+      at (5.5, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_andrei.png}\\
         \scriptsize Andrei\\\scriptsize  Gheorghe};
       \node[below,align=center, execute at begin node=\setlength{\baselineskip}{7.5pt}]
-      at (6.9, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_david}\\
+      at (6.9, -6.6) {\includegraphics[height=1.5cm]{figures/acknowledgement_david.jpg}\\
         \scriptsize David Grimes\\\tiny Instructor @MIT};
 
       \visible<2->{
         \node[below] at (2, -0.1) {
-          \includegraphics[height=1.5cm]{figures/acknowledgement_harvard}};
+          \includegraphics[height=1.5cm]{figures/acknowledgement_harvard.png}};
         \node[below] at (5, -0.1) {
-          \includegraphics[height=1.5cm]{figures/acknowledgement_cua}};
+          \includegraphics[height=1.5cm]{figures/acknowledgement_cua.png}};
       }
     \end{tikzpicture}
   \end{center}
@@ -2585,7 +2610,7 @@
           \includegraphics[width=4cm]{figures/acknowledgement_julia.pdf}};
       }
       \visible<4->{
-        \fill[white,opacity=0.9] (-5.7, -4.5) rectangle (5.55, 4.3);
+        \fill[white,opacity=0.94] (-5.7, -4.5) rectangle (5.55, 4.3);
         \node at (0, 3.0) {\LARGE \bf \usebeamercolor[fg]{frametitle}{Thanks for your attention}};
         \node at (-2.8, -0.5) {\includegraphics[width=5.8cm]{
             figures/raman_transfer_rabi_annotate.pdf}};
@@ -2653,11 +2678,11 @@
       \begin{tikzpicture}
         \visible<2> {
           \node at (0, 0)
-          {\includegraphics[width=6cm]{figures/loading_cs_histogram}};
+          {\includegraphics[width=6cm]{figures/loading_cs_histogram.png}};
         }
         \visible<3> {
           \node at (0, 0)
-          {\includegraphics[width=5cm]{figures/loading_na_noatom}};
+          {\includegraphics[width=5cm]{figures/loading_na_noatom.png}};
         }
         \visible<4> {
           \node[text width=6cm] at (0, 0) {
@@ -2699,7 +2724,7 @@
       \begin{tikzpicture}
         \visible<2-4>{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
-            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_dc}};
+            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_dc.png}};
         }
         \visible<3-5>{
           \node[align=center, text width=5cm] at (0, -4.5) {
@@ -2713,7 +2738,7 @@
         }
         \visible<5->{
           \node[align=center] at (0, 0) {Cs single atom imaging\\
-            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_ac}};
+            \includegraphics[width=5.5cm]{figures/loading_det_vs_photon_ac.png}};
         }
         \visible<6->{
           \node at (0, -4.5)
@@ -2796,12 +2821,12 @@
         \draw[line width=1.1,cyan!85!blue]
         plot[samples=200,domain=1:7,variable=\x]
         ({\x + 0.25}, {6.8*\x^(-3.4)-6.5*\x^(-1.7) + 2.5});
-        \node[cyan!85!blue] at (3.75, 1.0) {$a^3\Sigma^+$};
+        \node[cyan!85!blue] at (3.75, 1.0) {${\rm a}^3\Sigma^+$};
 
         \draw[line width=1.1,red]
         plot[samples=200,domain=1:7.5,variable=\x]
         ({\x - 0.75}, {9.2*\x^(-2.5)-9.0*\x^(-1.3) + 7.5});
-        \node[above right,red] at (0.55, 7.2) {$c^3\Sigma^+$};
+        \node[above right,red] at (0.55, 7.2) {${\rm c}^3\Sigma^+$};
 
         \draw[red] (1.1102 - 0.75, -0.7720 + 7.5) -- (6 - 0.75, -0.7720 + 7.5);
         \draw[red] (1.1576 - 0.75, -1.0595 + 7.5) -- (4.5 - 0.75, -1.0595 + 7.5);
@@ -2832,10 +2857,10 @@
         };
       }
       \visible<3>{
-        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow_1b}};
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow_1b.pdf}};
       }
       \visible<4>{
-        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow}};
+        \node at (3, 3) {\includegraphics[width=8cm]{figures/pa_shallow.pdf}};
       }
       \visible<6>{
         \node at (4, 2.5) {\includegraphics[width=5cm]{figures/pa_eit.png}};
