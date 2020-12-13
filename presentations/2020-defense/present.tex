@@ -530,7 +530,7 @@
         };
       }
       \visible<4->{
-        \node[below,align=center,text width=5cm] at (6, 2.2) {
+        \node[below,align=center,text width=5cm] at (6, 2.8) {
           \begin{itemize}[label=$\boxempty$]
           \item Strong interaction
           \item<5-> Rich internal structure
@@ -540,16 +540,27 @@
         };
       }
       \visible<8->{
-        \node[below,align=center] at (6.2, -1) {
+        \node[below,align=center] at (6.2, -0.5) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
           Ions {\tiny (Photo credit: Monroe group)}};
-        \node[below,align=center] at (6.2, -2.8) {
+        \node[below,align=center] at (6.2, -1.9) {
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
           Rydberg Atoms {\tiny (Photo credit: Lukin group)}};
       }
-      \visible<9->{
-        \node[below,align=center] at (6.2, -4.6)
-        {\usebeamercolor[fg]{frametitle}{\bf New System?}};
+      \visible<9>{
+        \node[below,align=center] at (6.2, -3.6)
+        {\usebeamercolor[fg]{frametitle}{\bf \phantom{?}New System?}};
+      }
+      \visible<10->{
+        \node[below,align=center] at (6.2, -3.6)
+        {\usebeamercolor[fg]{frametitle}{\bf \phantom{!}New System!}};
+        \node[below,align=center,text width=5cm] at (6.2, -3.9)
+        {
+          \begin{itemize}
+          \item Different properties
+          \item New tools and techniques
+          \end{itemize}
+        };
       }
     \end{tikzpicture}
   \end{center}
@@ -610,7 +621,7 @@
           Fully controllable
         \end{itemize}
       };
-      \visible<-5>{
+      \visible<-6>{
         \node[below,align=center] at (-3, -0.7) {
           \includegraphics[width=5cm]{figures/introduction_ion_chain.jpg}\\
           Ions {\tiny (Photo credit: Monroe group)}};
@@ -628,12 +639,12 @@
         \node[below,align=center,text width=5.8cm] at (3, 1.8) {{
             {\usebeamercolor[fg]{frametitle}{\textbf{Optical tweezers}}}
             \begin{itemize}
-            \item Single site resolution
-            \item<6-> $\cdots$
+            \item<6-> Single site resolution
+            \item<7-> $\cdots$
             \end{itemize}
           }};
       }
-      \visible<6->{
+      \visible<7->{
         \node[align=center] at (-3.3, -3) {
           \usebeamercolor[fg]{frametitle}{\footnotesize Loading}\\
           \includegraphics[width=3.8cm]{figures/introduction_tweezer_loading.pdf}\\
@@ -1111,8 +1122,9 @@
         }
       \end{scope}
 
-      \visible<4>{
-        \draw[->,red!60!black,>=stealth,line width=1.6] (0, 2.24) -- (4, -1 + 2.5);
+      \visible<3-4>{
+        \draw[->,red!60!black,>=stealth,line width=1.6] (0, 2.24) --
+        node[below,rotate=-10.48] {$\Omega_{\mathrm{Raman}}$} (4, -1 + 2.5);
       }
 
       \visible<5->{
