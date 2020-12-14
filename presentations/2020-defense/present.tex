@@ -1696,47 +1696,59 @@
       (-4.15,2.8) -- node[below=10pt] {\small Na} (-1.15,2.8);
       \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
       (-0.5,2.8) -- node[below=10pt] {\small Cs} (2.5,2.8);
-      \draw[decoration={brace,mirror,amplitude=10pt},decorate,line width=1]
-      (3.05,3) -- node[below=10pt] {\small Interaction} (4.55,3);
+      \draw[decoration={brace,mirror,amplitude=8pt},decorate,line width=1]
+      (3.05,2.8) -- node[below=10pt] {\small Interaction} (4.55,2.8);
     }
     \visible<6-7>{
-      \draw[line width=1] plot[domain={-1:1},smooth,variable=\x]
-      ({\x * 0.8 - 4.5}, {(\x)^2 * 1.5 + 0.5});
-      \mytweezer.drawNaAtom(-4.45, 0.9, 0.16)
-      \draw[->,atomorange,line width=0.8] (-4.8, 1.1) -- (-4.2, 1.1);
-      \node[atomorange] at (-3.9, 0.5) {\small Na};
+      \begin{scope}[shift={(-3.8, 0.7)}]
+        \draw[line width=1] plot[domain={-0.9:0.9},smooth,variable=\x]
+        ({\x * 0.8}, {(\x)^2 * 1.5});
+        \mytweezer.drawNaAtom(0.05, 0.4, 0.16)
+        \draw[->,atomorange,line width=0.8] (-0.3, 0.6) -- (0.3, 0.6);
+        \node[atomorange] at (0.6, 0) {\small Na};
+      \end{scope}
 
-      \draw[line width=1] (-4.5 - 0.3, 0) -- (-4.5 + 0.3, 0);
-      \draw[line width=1] (-4.5, 0 - 0.3) -- (-4.5, 0 + 0.3);
+      \begin{scope}[shift={(-2.5, 1.3075)}]
+        \draw[line width=1] (-0.3, 0) -- (0.3, 0);
+        \draw[line width=1] (0, -0.3) -- (0, 0.3);
+      \end{scope}
 
-      \draw[line width=1] plot[domain={-1:1},smooth,variable=\x]
-      ({\x * 0.8 - 4.5}, {(\x)^2 * 1.5 - 2});
-      \mytweezer.drawCsAtom(-4.55, -1.7, 0.12)
-      \draw[->,blue,line width=0.8] (-4.2, -1.5) -- (-4.8, -1.5);
-      \node[blue] at (-3.9, -2) {\small Cs};
+      \begin{scope}[shift={(-1.2, 0.7)}]
+        \draw[line width=1] plot[domain={-0.9:0.9},smooth,variable=\x]
+        ({\x * 0.8}, {(\x)^2 * 1.5});
+        \mytweezer.drawCsAtom(-0.05, 0.3, 0.12)
+        \draw[->,blue,line width=0.8] (0.3, 0.5) -- (-0.3, 0.5);
+        \node[blue] at (0.6, 0) {\small Cs};
+      \end{scope}
 
-      \draw[->,line width=1.5] (-3.5, 0) -- (-1.5, 0);
+      \draw[->,line width=2.5] (-2.5, 0.55) -- (-2.5, -0.885);
 
-      \draw[line width=1] plot[domain={-1:1},smooth,variable=\x]
-      ({\x * 0.8 - 0.5}, {(\x)^2 * 1.5 + 0.5});
-      \mytweezer.drawNaAtom(-0.35, 0.9, 0.16)
-      \mytweezer.drawCsAtom(-0.65, 0.9, 0.12)
-      \draw[->,atomorange,line width=0.8] (-0.6, 1.15) -- (-0.1, 1.15);
-      \draw[->,blue,line width=0.8] (-0.9, 1.25) -- (-0.4, 1.25);
-      \node[align=left,
-      execute at begin node=\setlength{\baselineskip}{9pt}]
-      at (-1.4, 0.7) {\small Center\\\small of mass};
+      \begin{scope}[shift={(-3.8, -2.3)}]
+        \draw[line width=1] plot[domain={-0.9:0.9},smooth,variable=\x]
+        ({\x * 0.8}, {(\x)^2 * 1.5});
+        \mytweezer.drawNaAtom(0.15, 0.4, 0.16)
+        \mytweezer.drawCsAtom(-0.15, 0.4, 0.12)
+        \draw[->,atomorange,line width=0.8] (-0.1, 0.6) -- (0.4, 0.6);
+        \draw[->,blue,line width=0.8] (-0.4, 0.7) -- (0.1, 0.7);
+        \node[align=left,
+        execute at begin node=\setlength{\baselineskip}{9pt}]
+        at (-0.95, 0.25) {\small Center\\\small of mass};
+      \end{scope}
 
-      \draw[line width=1] (-0.5 - 0.3, 0) -- (-0.5 + 0.3, 0);
-      \draw[line width=1] (-0.5, 0 - 0.3) -- (-0.5, 0 + 0.3);
+      \begin{scope}[shift={(-2.5, -1.5925)}]
+        \draw[line width=1] (-0.3, 0) -- (0.3, 0);
+        \draw[line width=1] (0, -0.3) -- (0, 0.3);
+      \end{scope}
 
-      \draw[line width=1] plot[domain={-1:1},smooth,variable=\x]
-      ({\x * 0.8 - 0.5}, {(\x)^2 * 1.5 - 2});
-      \mytweezer.drawNaAtom(-0.3, -1.5, 0.16)
-      \mytweezer.drawCsAtom(-0.75, -1.5, 0.12)
-      \draw[->,atomorange,line width=0.8] (-0.50, -1.3) -- (-0.03, -1.3);
-      \draw[->,blue,line width=0.8] (-0.58, -1.3) -- (-0.95, -1.3);
-      \node[below] at (-0.5, -2) {\small Relative};
+      \begin{scope}[shift={(-1.2, -2.3)}]
+        \draw[line width=1] plot[domain={-0.9:0.9},smooth,variable=\x]
+        ({\x * 0.8}, {(\x)^2 * 1.5});
+        \mytweezer.drawNaAtom(0.2, 0.5, 0.16)
+        \mytweezer.drawCsAtom(-0.25, 0.5, 0.12)
+        \draw[->,atomorange,line width=0.8] (0, 0.7) -- (0.47, 0.7);
+        \draw[->,blue,line width=0.8] (-0.08, 0.7) -- (-0.45, 0.7);
+        \node at (1, 0.15) {\small Relative};
+      \end{scope}
     }
     \visible<7->{
       \node[above right,align=left] at (-6, -4.5)
