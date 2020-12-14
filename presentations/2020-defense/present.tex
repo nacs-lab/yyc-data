@@ -475,13 +475,13 @@
 % __(4/03:10)__
 
 % I have to say that of course we didn't come up with this list
-% and we are not the only one that explore new options. __(>>)__
-% In fact neutral atom isn't even the first system people used.
-% There are many other choices for example like ions and Rydberg atoms. __(>>)__
+% and we are not the only one that explore new options.
+% In fact neutral atom isn't even the first system people used. __(>>)__
+% There are many other choices for example like ions and Rydberg atoms.
 % Nevertheless, I believe it is still worth investigating in new systems like what we do,
-% because first, all of the existing systems still have their limitations __(>>)__
+% because first, all of the existing systems still have their limitations
 % and although I'll not claim that we fixed all those issues
-% and have the best system in the world, at least not yet,
+% and have the best system in the world, at least not yet, __(>>)__
 % we do have our unique properties and different trade offs
 % which I'll breifly talk about later.
 % In the mean time, we are also bringing in new solutions and tools to the field
@@ -546,11 +546,11 @@
           \includegraphics[width=5cm]{figures/introduction_atom_array.png}\\
           Rydberg Atoms {\tiny (Photo credit: Lukin group)}};
       }
-      \visible<9>{
+      \visible<8>{
         \node[below,align=center] at (6.2, -3.6)
         {\usebeamercolor[fg]{frametitle}{\bf \phantom{?}New System?}};
       }
-      \visible<10->{
+      \visible<9->{
         \node[below,align=center] at (6.2, -3.6)
         {\usebeamercolor[fg]{frametitle}{\bf \phantom{!}New System!}};
         \node[below,align=center,text width=5cm] at (6.2, -3.9)
@@ -1058,8 +1058,8 @@
 
 % Of course, this sideband transition only remove a very limited amount of energy from the atoms
 % and we have to go back to the original spin state to restart the process.
-% This is done using an optical pumping step which is also the step that removes the entropy,
-% if that's your preferred picture. __(>>)__
+% This is done using an optical pumping step __(>>)__
+% which is also the step that removes the entropy, if that's your preferred picture.
 % A simplified schematics of the whole cooling process is shown here
 % which allows cooling the atom from arbitrary initial motional state
 % all the way to the ground state following this ladder of transitions.
@@ -1145,7 +1145,8 @@
 
       \visible<7->{
         \draw[snakearrow,green!60!black,line width=1.6] (4, -1 + 2.25) -- (0, 2.25);
-        \draw[snakearrow,green!60!black,line width=1.6] (4, -1 + 0.75) -- (0, 0.75);
+        \draw[snakearrow,green!60!black,line width=1.6] (4, -1 + 0.75) --
+        node[below=0.1,rotate=-14] {\footnotesize Optical Pumping} (0, 0.75);
       }
     \end{tikzpicture}
   \end{center}
