@@ -859,11 +859,16 @@
       }
       \visible<4>{
         \draw[red,dashed,line width=0.5] (-1.5, -8.3) rectangle (-0.5, -5.7);
-        \node[align=center] at (4, 0)
-        {\usebeamercolor[fg]{frametitle}{Interaction}\\
-          \includegraphics[width=4cm]{figures/interaction_shift_spectrum_42_32.pdf}};
-        \node[align=center] at (10, 0.2) {\usebeamercolor[fg]{frametitle}{Molecule Creation}\\
-          \includegraphics[width=4cm]{figures/raman_transfer_rabi_annotate.pdf}};
+        \node (Interaction) at (4, 0)
+        {\includegraphics[width=4cm]{figures/interaction_shift_spectrum_42_32.pdf}};
+        \node[above=-0.1] at ($(Interaction.north) + (0.4, 0)$)
+        {\usebeamercolor[fg]{frametitle}{Interaction}};
+        \node[below=-0.1] at ($(Interaction.south) + (0.4, 0)$)
+        {\tiny Phys. Rev. Research 2, 023108 (2020)};
+        \node (Molecule) at (10, 0.2)
+        {\includegraphics[width=4cm]{figures/raman_transfer_rabi_annotate.pdf}};
+        \node[above=-0.35] at ($(Molecule.north) + (0.3, 0)$)
+        {\usebeamercolor[fg]{frametitle}{Molecule Creation}};
         \node[align=center,
         execute at begin node=\setlength{\baselineskip}{7pt}] at (8, -6)
         {\includegraphics[width=3cm]{figures/overview_science_cover.png}\\
