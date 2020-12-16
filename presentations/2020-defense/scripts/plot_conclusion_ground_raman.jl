@@ -39,7 +39,7 @@ grid()
 xlim([0, 27])
 ylim([0, 1.0])
 xlabel("Raman Time (\$\\mathrm{\\mu s}\$)")
-ylabel("Fraction of FB molecule")
+ylabel("Fraction of Feshbach molecule")
 NaCsPlot.maybe_save("$(prefix)")
 
 NaCsPlot.maybe_show()
