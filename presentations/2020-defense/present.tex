@@ -799,9 +799,13 @@
           {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{\Large Loading}};
           \node[below,align=center] at (6.5, -0.5)
           {\includegraphics[width=5cm]{figures/overview_single_atom.png}};
-          \node[below,align=center] at (7, -7.5)
+          \node[below,align=center] (Loading) at (7, -7.5)
           {Loading probability per site: 60\%\\
             Post select on initial and final state.};
+          \node[below=0.2,align=center,execute at begin node=\setlength{\baselineskip}{7pt}]
+          at (Loading.south)
+          {\tiny N. R. Hutzler, L. R. Liu, \textbf{Y. Yu} et al., New J. Phys. 19 (2017)\\
+            \tiny \textbf{Y. Yu} et al., PRX 9, 021039 (2019)};
         \end{scope}
       }
       \visible<2>{
@@ -812,9 +816,13 @@
           \node[below] at (6.5, -1)
           {\includegraphics[width=6cm]{figures/rsc_spectrum_az.pdf}};
           \only<2>{
-            \node[below,align=center] at (7, -7)
-            {Cs: 96\% ground state\footnote{\textbf{Y. Yu} et al. PRX 9, 021039 (2019)}\\
-              Na: 94\% ground state\footnote{\textbf{Y. Yu} et al. PRA 97, 063423 (2018)}};
+            \node[below,align=center] (RSC) at (7, -7)
+            {Cs: 96\% ground state\textsuperscript{1}\\
+              Na: 94\% ground state\textsuperscript{2}};
+            \node[below=0.2,align=center,execute at begin node=\setlength{\baselineskip}{7pt}]
+            at (RSC.south)
+            {\tiny 1: \textbf{Y. Yu} et al., PRX 9, 021039 (2019)\\
+              \tiny 2: \textbf{Y. Yu} et al., PRA 97, 063423 (2018)};
           }
         \end{scope}
       }
@@ -863,12 +871,16 @@
         {\includegraphics[width=4cm]{figures/interaction_shift_spectrum_42_32.pdf}};
         \node[above=-0.1] at ($(Interaction.north) + (0.4, 0)$)
         {\usebeamercolor[fg]{frametitle}{Interaction}};
-        \node[below=-0.1] at ($(Interaction.south) + (0.4, 0)$)
-        {\tiny Phys. Rev. Research 2, 023108 (2020)};
+        \node[below=-0.1,align=center,execute at begin node=\setlength{\baselineskip}{7pt}]
+        at ($(Interaction.south) + (0.4, 0)$)
+        {\tiny J. D. Hood, \textbf{Y. Yu} et al.,\\
+          \tiny Phys. Rev. Research 2, 023108 (2020)};
         \node (Molecule) at (10, 0.2)
         {\includegraphics[width=4cm]{figures/raman_transfer_rabi_annotate.pdf}};
         \node[above=-0.35] at ($(Molecule.north) + (0.3, 0)$)
         {\usebeamercolor[fg]{frametitle}{Molecule Creation}};
+        \node[below=-0.2] at ($(Molecule.south) + (0.3, 0)$)
+        {\tiny \textbf{Y. Yu} et al., arXiv: \todo{}};
         \node[align=center,
         execute at begin node=\setlength{\baselineskip}{7pt}] at (8, -6)
         {\includegraphics[width=3cm]{figures/overview_science_cover.png}\\
@@ -1280,7 +1292,8 @@
         };
       }
       \visible<12-> {
-        \node[red] at (6.6, -2.5) {3D ground state: $93.5(7)\%$};
+        \node[red] (Result) at (6.6, -2.5) {3D ground state: $93.5(7)\%$};
+        \node[below] at (Result.south) {\tiny PRA 97, 063423 (2018)};
       }
       \visible<4>{
         \node[below] at (0.5, 4.5)
@@ -1716,9 +1729,10 @@
           Na(2,2) Cs(3,3)&-693.8\\\hline
           Na(1,1) Cs(3,3)&13.19\\\hline
         \end{tabular}};
+      \node[below] at (3.6, 0.6) {\tiny Phys. Rev. Research 2, 023108 (2020)};
     }
     \visible<12->{
-      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.5, 0.3)
+      \draw[->,>=stealth,line width=1,color=red!50!black] (0.8, 1.45) -- (-1.7, 0.3)
       node[below] {Enhanced coupling to molecular state!};
       \node[below] at (-3, -0.3) {\includegraphics[width=5.5cm]{
           figures/interaction_shift_atomic_wavefunction.pdf}};
@@ -1772,9 +1786,9 @@
       \node[below,align=center] at (5.25, 3.5)
       {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}{Merging}};
       \node[above,align=center] at (2.2, -3.3)
-      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRA. 97, 063423 (2018)}}};
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al., PRA. 97, 063423 (2018)}}};
       \node[above,align=center] at (5.4, -3.1)
-      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}};
+      {\usebeamercolor[fg]{frametitle}{\tiny{\textbf{Y. Yu} et al., PRX. 9, 021039 (2019)}}};
       \begin{scope}[shift={(4.8, 4)}, xscale=-0.8, yscale=0.8]
         \mytweezer.drawCsTweezer(0, -3.1)
         \mytweezer.drawNaTweezer(-1, -3.1)
@@ -1914,7 +1928,7 @@
           {\footnotesize $\mathrm{Sr_2}$}
           {\usebeamercolor[fg]{frametitle}{\tiny PRL. 109, 115302 (2012)}}\\
           {\footnotesize $\mathrm{NaCs}$}
-          {\usebeamercolor[fg]{frametitle}{\tiny \textbf{Y. Yu} et al. PRX. 9, 021039 (2019)}}\\
+          {\usebeamercolor[fg]{frametitle}{\tiny \textbf{Y. Yu} et al., PRX. 9, 021039 (2019)}}\\
           \includegraphics[width=3.5cm]{figures/raman_transfer_old.pdf}
         };
       }
@@ -2424,9 +2438,10 @@
 \begin{frame}{Two-Photon Scattering}
   \begin{center}
     \begin{tikzpicture}
-      \node[align=center] at (-3, 0.5) {
-        \small Detuning Dependent Scattering\\
+      \node[align=center] at (-3, 1.35) {
+        \small \hspace{0.5cm}Detuning Dependent Scattering\\
         \includegraphics[width=5cm]{figures/raman_transfer_scatter_scaling_mol_diff.pdf}};
+      \node at (-3, -2) {\tiny arXiv: \todo{}};
       \visible<2->{
         \begin{scope}[shift={(0, -0.5)}, scale=0.8]
           \draw[->,>=stealth,line width=1.2] (0.5, -2.5) --
