@@ -26,6 +26,7 @@
 \usepackage{bm}
 \usepackage{siunitx}
 \usepackage{xcolor,pifont}
+\usepackage{upgreek}
 
 \usetikzlibrary{
   arrows,
@@ -203,6 +204,14 @@
 \addtobeamertemplate{background}{\box\@backgroundblock}{}
 \makeatother
 
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\ue}{\mathrm{e}}
+\newcommand{\ui}{\mathrm{i}}
+\newcommand{\Na}{\mathrm{Na}}
+\newcommand{\Cs}{\mathrm{Cs}}
+\newcommand{\abs}[1]{{\left|{#1}\right|}}
+\newcommand{\paren}[1]{{\left({#1}\right)}}
+
 % \def\timeleft{15:00->14:55}
 
 \title[Measuring scrambling]{Measuring the scrambling of quantum information}
@@ -225,6 +234,123 @@
 
 \begin{frame}{}
   \titlepage
+\end{frame}
+
+\begin{frame}{}
+  \begin{center}
+    \begin{columns}
+      \column{9cm}
+      \begin{itemize}
+      \item Scrambling of quantum information
+      \item Out-of-time-order (OTO) correlator
+      \item Measurement of OTO correlator
+      \item Experimental realization with cavity QED system
+      \end{itemize}
+    \end{columns}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Relaxiation vs Scrambling}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above] at (-2.8, 0) {\textbf{Relaxiation}};
+      \node[below,text width=5.4cm,align=center] at (-2.8, 0) {
+        \begin{itemize}
+        \item<1-> Decay/leaking of information from a single qubit.
+        \item<3-> Fast\\
+          \uncover<-2,4->{Time scale: $\uptau$}
+        \end{itemize}
+      };
+      \node[above] at (2.8, 0) {\textbf{Scrambling}};
+      \node[below,text width=5.4cm,align=center] at (2.8, 0) {
+        \begin{itemize}
+        \item<2-> Spreading of information to the whole system.
+        \item<3-> Slow\\
+          \uncover<-2,4->{Time scale: $t_*=\uptau\ln\mathrm{S}$}
+        \end{itemize}
+      };
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Out-of-time-order (OTO) correlator}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above] at (-2.8, 0) {$F\paren{t}\equiv\langle W_t^\dagger V^\dagger W_t V\rangle$};
+      \node[below,align=center] at (-2.8, -0.3)
+      {\small $W_t=U(-t)WU(t)$\\
+        \small $U(t)=\ue^{-\ui Ht}$};
+
+      \node[below,text width=5.4cm,align=center] at (2.8, 0.8) {
+        \begin{itemize}
+        \item<2-> Interpretation:\uncover<-1,3->{
+            $F=\langle\psi_1|\psi_2\rangle$\\
+            \vspace{0.2cm}
+            \small $|\psi_1\rangle=W_tV|\psi_0\rangle$\\
+            \small $|\psi_2\rangle=VW_t|\psi_0\rangle$
+          }
+        \item<4-> Choice of $V$ and $W$?
+        \item<5-> Scaling of $F$ with system size.
+        \item<6-> Relation with scrambling time?
+        \end{itemize}
+      };
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Measurement of OTO correlator}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above] at (0, 0.3)
+      {Given $H$, $F$, $W$, measure $F\paren{t}\equiv\langle W_t^\dagger V^\dagger W_t V\rangle$};
+      \visible<2->{
+        \node[below] at (0, 0){\includegraphics[width=8cm]{fig1.pdf}};
+      }
+      \visible<3->{
+        \node[below] at (0, -4.8){Time reversal: $U(-t)$};
+      }
+      \visible<4->{
+        \node[below] at (0, -5.5){Controlled-$V$:
+          $I_S\otimes|0\rangle\langle0|_C+V_S\otimes|1\rangle\langle1|_C$};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cavity QED implementation}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=7cm]{fig2.pdf}};
+      \visible<1>{
+        \node at (0, -2.1) {$\displaystyle H=\sum_{ij}J_{ij}s_i^xs_j^x+h.c.$};
+        \node at (0, -3.2)
+        {\small $\displaystyle J_{ij}=\sum_{\alpha}\frac{\Omega^*_{\uparrow}\paren{r_i}\Omega_{\downarrow}\paren{r_j}}{\Delta_{\uparrow}\Delta_{\downarrow}}\frac{g_\alpha\paren{r_i}g_\alpha^*\paren{r_j}}{\delta}$};
+      }
+      \visible<2>{
+        \node at (0, -2.1) {$\displaystyle Z_\phi^C=I_S\otimes|0\rangle\langle0|_C+\ue^{-\ui\phi S_z^S}\otimes|1\rangle\langle1|_C$};
+        \node at (0, -3.2)
+        {\small $\displaystyle V=W=\ue^{-\ui\phi S_z^S}$};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$S_x^2$ dynamics}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 2.3) {$\displaystyle H=\sum_{ij}J_{ij}s_i^xs_j^x+h.c.\ \rightarrow\ H=JS_x^2$};
+      \node at (0, 0) {\includegraphics[width=7cm]{fig3.pdf}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{$S_x^2 + S_z$ dynamics}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0.2, 2.4) {$\displaystyle F\paren{t}\equiv\langle W_t^\dagger V^\dagger W_t V\rangle\ \ \ G\paren{t}\equiv\langle V_t^\dagger V\rangle$};
+      \node at (0, 0) {\includegraphics[width=7cm]{fig4.pdf}};
+    \end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \end{document}
