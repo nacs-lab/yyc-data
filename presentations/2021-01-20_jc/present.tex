@@ -286,8 +286,8 @@
         \item<2-> Interpretation:\uncover<-1,3->{
             $F=\langle\psi_1|\psi_2\rangle$\\
             \vspace{0.2cm}
-            \small $|\psi_1\rangle=W_tV|\psi_0\rangle$\\
-            \small $|\psi_2\rangle=VW_t|\psi_0\rangle$
+            \small $|\psi_1\rangle=VW_t|\psi_0\rangle$\\
+            \small $|\psi_2\rangle=W_tV|\psi_0\rangle$
           }
         \item<4-> Choice of $V$ and $W$?
         \item<5-> Scaling of $F$ with system size.
@@ -302,7 +302,7 @@
   \begin{center}
     \begin{tikzpicture}
       \node[above] at (0, 0.3)
-      {Given $H$, $F$, $W$, measure $F\paren{t}\equiv\langle W_t^\dagger V^\dagger W_t V\rangle$};
+      {Given $H$, $V$, $W$, measure $F\paren{t}\equiv\langle W_t^\dagger V^\dagger W_t V\rangle$};
       \visible<2->{
         \node[below] at (0, 0){\includegraphics[width=8cm]{fig1.pdf}};
       }
