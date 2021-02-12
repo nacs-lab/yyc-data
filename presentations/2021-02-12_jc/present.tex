@@ -310,9 +310,193 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{High Dimensional Cluster State}
+\begin{frame}[t]{High Dimensional Cluster State}
   \begin{center}
     \begin{tikzpicture}
+      \draw[line width=1] (-1, 3.5) -- (1, 3.5);
+      \draw[line width=1] (-1, 2.5) -- (1, 2.5);
+      \draw[line width=1] (-1, 1.5) -- (1, 1.5);
+      \draw[line width=1,dashed] (-1.5, 3.5) -- (1.5, 3.5);
+      \draw[line width=1,dashed] (-1.5, 2.5) -- (1.5, 2.5);
+      \draw[line width=1,dashed] (-1.5, 1.5) -- (1.5, 1.5);
+
+      \draw[line width=1] (-1, 3.5) -- (-1, 1.5);
+      \draw[line width=1] (0, 3.5) -- (0, 1.5);
+      \draw[line width=1] (1, 3.5) -- (1, 1.5);
+      \draw[line width=1,dashed] (-1, 4) -- (-1, 1);
+      \draw[line width=1,dashed] (0, 4) -- (0, 1);
+      \draw[line width=1,dashed] (1, 4) -- (1, 1);
+
+      \fill[red] (-1, 3.5) circle (0.15cm);
+      \fill[red] (0, 3.5) circle (0.15cm);
+      \fill[red] (1, 3.5) circle (0.15cm);
+      \fill[red] (-1, 2.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (0, 2.5) circle (0.15cm);
+      \fill[red] (1, 2.5) circle (0.15cm);
+      \fill[red] (-1, 1.5) circle (0.15cm) node[black,above right=0.2] {$a$};
+      \fill[red] (0, 1.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (1, 1.5) circle (0.15cm);
+      \node at (0, -0.5) {$\displaystyle H=\sum_{a,a'\in\Gamma}\frac{1+\sigma_z^{(a)}}{2}\frac{1-\sigma_z^{(a')}}{2}$};
+      \node at (0, -1.5) {$\displaystyle \Gamma=\left\{(a,a')|a'=a+\hat e_i\right\}$};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{High Dimensional Cluster State}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {$\displaystyle H=\sum_{a,a'\in\Gamma}\frac{1+\sigma_z^{(a)}}{2}\frac{1-\sigma_z^{(a')}}{2}$};
+      \node at (0, -1) {$\displaystyle [H, \sigma_z^{(a)}]=0,\ \ [\mathcal{S}, \sigma_z^{(a)}]=0$};
+
+      \visible<2->{
+        \begin{scope}[shift={(-2, -3)}, scale=0.5]
+          \draw[line width=1] (-2, 2) -- (2, 2);
+          \draw[line width=1] (-2, 1) -- (2, 1);
+          \draw[line width=1] (-2, 0) -- (2, 0);
+          \draw[line width=1] (-2, -1) -- (2, -1);
+          \draw[line width=1] (-2, -2) -- (2, -2);
+
+          \draw[line width=1] (-2, 2) -- (-2, -2);
+          \draw[line width=1] (-1, 2) -- (-1, -2);
+          \draw[line width=1] (0, 2) -- (0, -2);
+          \draw[line width=1] (1, 2) -- (1, -2);
+          \draw[line width=1] (2, 2) -- (2, -2);
+
+          \fill[red] (-2, 2) circle (0.15cm);
+          \fill[red] (-1, 2) circle (0.15cm);
+          \fill[red] (0, 2) circle (0.15cm);
+          \fill[red] (1, 2) circle (0.15cm);
+          \fill[red] (2, 2) circle (0.15cm);
+          \fill[red] (-2, 1) circle (0.15cm);
+          \fill[red] (-1, 1) circle (0.15cm);
+          \fill[red] (0, 1) circle (0.15cm);
+          \fill[red] (1, 1) circle (0.15cm);
+          \fill[red] (2, 1) circle (0.15cm);
+          \fill[red] (-2, 0) circle (0.15cm);
+          \fill[red] (-1, 0) circle (0.15cm);
+          \fill[red] (0, 0) circle (0.15cm);
+          \fill[red] (1, 0) circle (0.15cm);
+          \fill[red] (2, 0) circle (0.15cm);
+          \fill[red] (-2, -1) circle (0.15cm);
+          \fill[red] (-1, -1) circle (0.15cm);
+          \fill[red] (0, -1) circle (0.15cm);
+          \fill[red] (1, -1) circle (0.15cm);
+          \fill[red] (2, -1) circle (0.15cm);
+          \fill[red] (-2, -2) circle (0.15cm);
+          \fill[red] (-1, -2) circle (0.15cm);
+          \fill[red] (0, -2) circle (0.15cm);
+          \fill[red] (1, -2) circle (0.15cm);
+          \fill[red] (2, -2) circle (0.15cm);
+        \end{scope}
+
+        \draw[->,>=stealth,line width=3] (-0.7, -3) -- node[above] {\Large $\sigma_z$} (0.7, -3);
+
+        \begin{scope}[shift={(2, -3)}, scale=0.5]
+          \draw[line width=1] (-2, 2) -- (-1, 2);
+          \draw[line width=1] (1, 2) -- (2, 2);
+          \draw[line width=1] (0, 1) -- (2, 1);
+          \draw[line width=1] (-2, 0) -- (-1, 0);
+          \draw[line width=1] (1, 0) -- (2, 0);
+          \draw[line width=1] (-2, -1) -- (1, -1);
+          \draw[line width=1] (1, -2) -- (2, -2);
+
+          \draw[line width=1] (-2, 2) -- (-2, -2);
+          \draw[line width=1] (-1, 0) -- (-1, -1);
+          \draw[line width=1] (1, 2) -- (1, -2);
+          \draw[line width=1] (2, 2) -- (2, 0);
+
+          \fill[red] (-2, 2) circle (0.15cm);
+          \fill[red] (-1, 2) circle (0.15cm);
+          \draw[red,fill=white] (0, 2) circle (0.15cm);
+          \fill[red] (1, 2) circle (0.15cm);
+          \fill[red] (2, 2) circle (0.15cm);
+          \fill[red] (-2, 1) circle (0.15cm);
+          \draw[red,fill=white] (-1, 1) circle (0.15cm);
+          \fill[red] (0, 1) circle (0.15cm);
+          \fill[red] (1, 1) circle (0.15cm);
+          \fill[red] (2, 1) circle (0.15cm);
+          \fill[red] (-2, 0) circle (0.15cm);
+          \fill[red] (-1, 0) circle (0.15cm);
+          \draw[red,fill=white] (0, 0) circle (0.15cm);
+          \fill[red] (1, 0) circle (0.15cm);
+          \fill[red] (2, 0) circle (0.15cm);
+          \fill[red] (-2, -1) circle (0.15cm);
+          \fill[red] (-1, -1) circle (0.15cm);
+          \fill[red] (0, -1) circle (0.15cm);
+          \fill[red] (1, -1) circle (0.15cm);
+          \draw[red,fill=white] (2, -1) circle (0.15cm);
+          \fill[red] (-2, -2) circle (0.15cm);
+          \draw[red,fill=white] (-1, -2) circle (0.15cm);
+          \draw[red,fill=white] (0, -2) circle (0.15cm);
+          \fill[red] (1, -2) circle (0.15cm);
+          \fill[red] (2, -2) circle (0.15cm);
+        \end{scope}
+      }
+
+      \visible<3->{
+        \begin{scope}[shift={(0, -5.5)}, scale=0.9]
+          \draw[line width=1] (-1, 1) -- (0, 1);
+          \draw[line width=1] (-1, 0) -- (0, 0);
+          \draw[line width=1] (-1, -1) -- (0, -1);
+
+          \draw[line width=1] (-1, 1) -- (-1, -1);
+          \draw[line width=1] (0, 1) -- (0, -1);
+
+          \fill[red] (-1, 1) circle (0.15cm);
+          \fill[red] (0, 1) circle (0.15cm);
+          \fill[red] (-1, 0) circle (0.15cm);
+          \fill[red] (0, 0) circle (0.15cm) node[below left=0.1] {\small $a$};
+          \draw[blue,line width=1,fill=white] (1, 0) circle (0.15cm)
+          node[below left=0.1] {\small $b$}
+          node[right=0.25] {\small $\sigma^{(b)}_z=s$};
+          \fill[red] (-1, -1) circle (0.15cm);
+          \fill[red] (0, -1) circle (0.15cm);
+
+          \draw[blue,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
+          (1, 0) to[bend right] node[above] {$\sigma_z^s$} (0, 0);
+        \end{scope}
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{High Dimensional Cluster State}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[line width=1] (-1, 3.5) -- (1, 3.5);
+      \draw[line width=1] (-1, 2.5) -- (1, 2.5);
+      \draw[line width=1] (-1, 1.5) -- (1, 1.5);
+
+      \draw[line width=1] (-1, 3.5) -- (-1, 1.5);
+      \draw[line width=1] (0, 3.5) -- (0, 1.5);
+      \draw[line width=1] (1, 3.5) -- (1, 1.5);
+
+      \fill[red] (-1, 3.5) circle (0.15cm);
+      \fill[red] (0, 3.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (1, 3.5) circle (0.15cm);
+      \fill[red] (-1, 2.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (0, 2.5) circle (0.15cm) node[black,above right=0.2] {$a$};
+      \fill[red] (1, 2.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (-1, 1.5) circle (0.15cm);
+      \fill[red] (0, 1.5) circle (0.15cm) node[black,above right=0.2] {$a'$};
+      \fill[red] (1, 1.5) circle (0.15cm);
+      \node at (0, 0) {$\displaystyle K_a=\sigma_x^{(a)}\bigotimes_{a'\in\Gamma'}\sigma_z^{(a')}$};
+      \node at (0, -1)
+      {\footnotesize $\displaystyle \Gamma'=\left\{(a,a')|a'=a\pm\hat e_i\right\}$};
+
+      \visible<2->{
+        \node[align=center,text width=6cm] at (6, 1.7) {
+          \begin{itemize}
+          \item<2->$K_a|\phi_N\rangle=\pm|\phi_N\rangle$
+          \item<3->$\{K_a,\sigma_z^{(a)}\}=0$
+          \item<4->$[K_a,K_b]=0$
+          \item<5->$\left.[K_a,\sigma_z^{(b)}]\right|_{a\neq b}=0$
+          \item<6->Independent
+          \item<7->Complete
+          \item<8->Equivalent definition of cluster state
+          \end{itemize}
+        };
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -320,6 +504,71 @@
 \begin{frame}{Quantum Circuit on Cluster State}
   \begin{center}
     \begin{tikzpicture}
+      \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (-3, 0) {};
+      \node[above] at (-3, 1) {\footnotesize $|\psi_{\rm in}\rangle_1$};
+      \node[draw,minimum height=2cm,minimum width=1.5cm,rounded corners=.2cm,align=center]
+      at (-1.5, 0) {$U_1$\\\scriptsize $|\psi_U\rangle_1$};
+      \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (0, 0) {};
+      \node[above] at (0, 1)
+      {\footnotesize $|\psi_{\rm out}\rangle_1\!\!=\!|\psi_{\rm in}\rangle_2$};
+      \node[draw,minimum height=2cm,minimum width=1.5cm,rounded corners=.2cm,align=center]
+      at (1.5, 0) {$U_2$\\\scriptsize $|\psi_U\rangle_2$};
+      \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (3, 0) {};
+      \node[above] at (3, 1) {\footnotesize $|\psi_{\rm out}\rangle_2$};
+      \draw (-2.8, 0) -- (-2.25, 0);
+      \draw (-0.75, 0) -- (-0.2, 0);
+      \draw (0.2, 0) -- (0.75, 0);
+      \draw (2.25, 0) -- (2.8, 0);
+
+      \draw (-2.8, -0.7) -- (-2.25, -0.7);
+      \draw (-0.75, -0.7) -- (-0.2, -0.7);
+      \draw (0.2, -0.7) -- (0.75, -0.7);
+      \draw (2.25, -0.7) -- (2.8, -0.7);
+
+      \draw (-2.8, 0.7) -- (-2.25, 0.7);
+      \draw (-0.75, 0.7) -- (-0.2, 0.7);
+      \draw (0.2, 0.7) -- (0.75, 0.7);
+      \draw (2.25, 0.7) -- (2.8, 0.7);
+
+      \visible<2->{
+        \node[draw,blue,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-4.3, -2) {Apply\\$\mathcal{S}_1$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-2.75, -2) {Measure\\$|\psi_{\rm in}\rangle_1$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-1, -2) {Measure\\$|\psi_{U}\rangle_1$};
+
+        \draw[dashed,line width=1] (-3.3, -0.9) -- (-4.8, -1.5);
+        \draw[dashed,line width=1] (-0.7, -0.9) -- (-0.3, -1.5);
+      }
+
+      \visible<3->{
+        \node[draw,blue,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (0.55, -2) {Apply\\$\mathcal{S}_2$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (2.1, -2) {Measure\\$|\psi_{\rm in}\rangle_2$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (3.85, -2) {Measure\\$|\psi_{U}\rangle_2$};
+
+        \draw[dashed,line width=1] (-0.2, -0.9) -- (0.0, -1.5);
+        \draw[dashed,line width=1] (2.3, -0.9) -- (4.55, -1.5);
+      }
+
+      \visible<4->{
+        \node[draw,blue,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-4.3, -4) {Apply\\$\mathcal{S}_1$};
+        \node[draw,blue,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-2.95, -4) {Apply\\$\mathcal{S}_2$};
+
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (-1.4, -4) {Measure\\$|\psi_{\rm in}\rangle_1$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (0.35, -4) {Measure\\$|\psi_{U}\rangle_1$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (2.1, -4) {Measure\\$|\psi_{\rm in}\rangle_2$};
+        \node[draw,red,rounded corners=.1cm,inner sep = 0.08cm,align=center]
+        at (3.85, -4) {Measure\\$|\psi_{U}\rangle_2$};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
