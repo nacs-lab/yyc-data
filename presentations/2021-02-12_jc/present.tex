@@ -254,9 +254,58 @@
   \end{center}
 \end{frame}
 
+\begin{frame}[t]{1D Cluster State}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[line width=1,dashed] (3, 2) -- (4, 2);
+      \draw[line width=1,dashed] (-3, 2) -- (-4, 2);
+      \draw[line width=1] (-3, 2) -- (3, 2);
+      \fill[red] (-3, 2) circle (0.15cm);
+      \fill[red] (-1.5, 2) circle (0.15cm) node[black,above=0.2] {$a$};
+      \fill[red] (0, 2) circle (0.15cm) node[black,above=0.2] {$a'$};
+      \fill[red] (1.5, 2) circle (0.15cm);
+      \fill[red] (3, 2) circle (0.15cm);
+      \node at (0, 0) {$\displaystyle H=\sum_{a,a'\in\Gamma}\frac{1+\sigma_z^{(a)}}{2}\frac{1-\sigma_z^{(a')}}{2}$};
+      \node at (0, -1) {$\displaystyle \Gamma=\left\{(a,a')|a'=a+1\right\}$};
+      \node at (0, -2.3) {$\displaystyle \mathcal{S}=\ue^{\ui\pi H}$};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{1D Cluster State}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[line width=1,dashed] (3, 2) -- (4, 2);
+      \draw[line width=1,dashed] (-3, 2) -- (-4, 2);
+      \draw[line width=1] (-3, 2) -- (3, 2);
+      \fill[red] (-3, 2) circle (0.15cm);
+      \fill[red] (-1.5, 2) circle (0.15cm) node[black,above=0.2] {$a$};
+      \fill[red] (0, 2) circle (0.15cm) node[black,above=0.2] {$a'$};
+      \fill[red] (1.5, 2) circle (0.15cm);
+      \fill[red] (3, 2) circle (0.15cm);
+      \node at (0, 0) {$\displaystyle |\phi_N\rangle=\mathcal{S}\bigotimes_{a}|+\rangle_a
+        =\frac{1}{2^{N/2}}\bigotimes_{a}\paren{|0\rangle_a\sigma_z^{a+1}+|1\rangle_a}$};
+      \node at (0, -1) {\footnotesize $\displaystyle |\phi_2\rangle=\frac{1}{\sqrt{2}}\paren{|0-\rangle+|1+\rangle}$};
+      \node at (0, -1.8) {\footnotesize $\displaystyle |\phi_3\rangle=\frac{1}{\sqrt{2}}\paren{|+0-\rangle-|-1+\rangle}$};
+      \node at (0, -2.6) {\footnotesize $\displaystyle |\phi_4\rangle=\frac{1}{2}\paren{|0-0-\rangle-|0+1+\rangle+|1+0-\rangle-|1-1+\rangle}$};
+      \node at (0, -4) {\footnotesize $\displaystyle |\mathrm{GHZ}_N\rangle=\frac{1}{\sqrt{2}}\paren{\bigotimes_{a}|0\rangle_a+\bigotimes_{a}|1\rangle_a}$};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \begin{frame}{1D Cluster State}
   \begin{center}
     \begin{tikzpicture}
+      \node[text width=8.5cm,align=center] at (0, 0) {
+        \begin{itemize}
+        \item Maximum connectedness\\
+          Ability to create Bell state by local measurements.\\
+          \uncover<2->{Yes for both GHZ state and cluster state.}
+        \item<3-> Persistency\\
+          Minimum local measurements to destroy all entanglements.\\
+          \uncover<-2,4->{GHZ: $P_e=1$, cluster: $P_e=\lfloor N/2\rfloor$}
+        \end{itemize}
+      };
     \end{tikzpicture}
   \end{center}
 \end{frame}
