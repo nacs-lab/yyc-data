@@ -573,9 +573,50 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Gates and single qubit operations}
+\begin{frame}{Gates and Single Qubit Operations}
   \begin{center}
     \begin{tikzpicture}
+      \node[align=left,text width=9cm] at (0, 0) {
+        Single qubit propagation: Measure $\sigma_x$
+        \begin{align*}
+          \mathcal{S}\paren{a|0\rangle_1+b|1\rangle_1}|+\rangle_2
+          =&|+\rangle_1\paren{a|-\rangle_2+b|+\rangle_2}\\
+           &+|-\rangle_1\paren{a|-\rangle_2-b|+\rangle_2}
+        \end{align*}
+      };
+      \visible<2->{
+        \node[align=left,text width=9cm] at (0, -2) {
+          Single qubit rotation: Measure $\sigma_x\cos\theta+\sigma_y\sin\theta$
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Gates and Single Qubit Operations}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {CNOT};
+
+      \begin{scope}[shift={(0, -2)}]
+        \draw[line width=1] (-1, 0) -- (1, 0);
+        \draw[line width=1] (0, 0) -- (0, -1);
+        \fill[red] (-1, 0) circle (0.15cm) node[white] {$z$}
+        node[black,left=0.2] {\scriptsize target};
+        \fill[blue] (0, 0) circle (0.15cm) node[white] {$x$};
+        \fill[red] (1, 0) circle (0.15cm) node[white] {$z$};
+        \fill[red] (0, -1) circle (0.15cm) node[white] {$z$}
+        node[black,left=0.2] {\scriptsize control};
+
+        \visible<2->{
+          \draw[blue,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
+          (0, -1) to[bend left] node[left] {\small C-$\sigma_z$} (0, 0);
+        }
+        \visible<3->{
+          \draw[red,dotted,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
+          (0, -1) to[bend right=50] node[right=0.2cm] {\small C-$\sigma_x$,i.e. CNOT} (1, 0);
+        }
+      \end{scope}
     \end{tikzpicture}
   \end{center}
 \end{frame}
