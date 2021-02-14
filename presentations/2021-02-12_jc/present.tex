@@ -215,7 +215,7 @@
 % \def\timeleft{15:00->14:55}
 
 \title[One-Way Quantum Computing]{A One-Way Quantum Computer}
-\date{Feb. 12, 2021}
+\date{Feb. 15, 2021}
 \author{Yichao Yu}
 \institute{Ni Group}
 
@@ -257,6 +257,8 @@
 \begin{frame}[t]{1D Cluster State}
   \begin{center}
     \begin{tikzpicture}
+      \draw[white,opacity=0] (-6, 0) -- (6, 0);
+
       \draw[line width=1,dashed] (3, 2) -- (4, 2);
       \draw[line width=1,dashed] (-3, 2) -- (-4, 2);
       \draw[line width=1] (-3, 2) -- (3, 2);
@@ -265,9 +267,15 @@
       \fill[red] (0, 2) circle (0.15cm) node[black,above=0.2] {$a'$};
       \fill[red] (1.5, 2) circle (0.15cm);
       \fill[red] (3, 2) circle (0.15cm);
-      \node at (0, 0) {$\displaystyle H=\sum_{a,a'\in\Gamma}\frac{1+\sigma_z^{(a)}}{2}\frac{1-\sigma_z^{(a')}}{2}$};
-      \node at (0, -1) {$\displaystyle \Gamma=\left\{(a,a')|a'=a+1\right\}$};
-      \node at (0, -2.3) {$\displaystyle \mathcal{S}=\ue^{\ui\pi H}$};
+
+      \node at (-2.5, 0) {$\displaystyle H=\sum_{a,a'\in\Gamma}\frac{1+\sigma_z^{(a)}}{2}\frac{1-\sigma_z^{(a')}}{2}$};
+      \node at (-2.5, -1) {$\displaystyle \Gamma=\left\{(a,a')|a'=a+1\right\}$};
+      \node at (-2.5, -2.3) {$\displaystyle \mathcal{S}=\ue^{\ui\pi H}$};
+
+      \visible<2->{
+        \node at (2.5, 0) {$\displaystyle H=\sum\begin{pmatrix}0&&&\\&0&&\\&&1&\\&&&0\\\end{pmatrix}$};
+        \node at (2.5, -3) {$\displaystyle \mathcal{S}=\bigotimes\begin{pmatrix}1&&&\\&1&&\\&&-1&\\&&&1\\\end{pmatrix}$};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -275,6 +283,8 @@
 \begin{frame}[t]{1D Cluster State}
   \begin{center}
     \begin{tikzpicture}
+      \draw[white,opacity=0] (-6, 0) -- (6, 0);
+
       \draw[line width=1,dashed] (3, 2) -- (4, 2);
       \draw[line width=1,dashed] (-3, 2) -- (-4, 2);
       \draw[line width=1] (-3, 2) -- (3, 2);
@@ -285,10 +295,18 @@
       \fill[red] (3, 2) circle (0.15cm);
       \node at (0, 0) {$\displaystyle |\phi_N\rangle=\mathcal{S}\bigotimes_{a}|+\rangle_a
         =\frac{1}{2^{N/2}}\bigotimes_{a}\paren{|0\rangle_a\sigma_z^{a+1}+|1\rangle_a}$};
-      \node at (0, -1) {\footnotesize $\displaystyle |\phi_2\rangle=\frac{1}{\sqrt{2}}\paren{|0-\rangle+|1+\rangle}$};
-      \node at (0, -1.8) {\footnotesize $\displaystyle |\phi_3\rangle=\frac{1}{\sqrt{2}}\paren{|+0-\rangle-|-1+\rangle}$};
-      \node at (0, -2.6) {\footnotesize $\displaystyle |\phi_4\rangle=\frac{1}{2}\paren{|0-0-\rangle-|0+1+\rangle+|1+0-\rangle-|1-1+\rangle}$};
-      \node at (0, -4) {\footnotesize $\displaystyle |\mathrm{GHZ}_N\rangle=\frac{1}{\sqrt{2}}\paren{\bigotimes_{a}|0\rangle_a+\bigotimes_{a}|1\rangle_a}$};
+      \visible<2->{
+        \node at (0, -1) {\footnotesize $\displaystyle |\phi_2\rangle=\frac{1}{\sqrt{2}}\paren{|0-\rangle+|1+\rangle}$};
+      }
+      \visible<3->{
+        \node at (0, -1.8) {\footnotesize $\displaystyle |\phi_3\rangle=\frac{1}{\sqrt{2}}\paren{|+0-\rangle-|-1+\rangle}$};
+      }
+      \visible<4->{
+        \node at (0, -2.6) {\footnotesize $\displaystyle |\phi_4\rangle=\frac{1}{2}\paren{|0-0-\rangle-|0+1+\rangle+|1+0-\rangle-|1-1+\rangle}$};
+      }
+      \visible<5->{
+        \node at (0, -4) {\footnotesize $\displaystyle |\mathrm{GHZ}_N\rangle=\frac{1}{\sqrt{2}}\paren{\bigotimes_{a}|0\rangle_a+\bigotimes_{a}|1\rangle_a}$};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
@@ -493,7 +511,12 @@
           \item<5->$\left.[K_a,\sigma_z^{(b)}]\right|_{a\neq b}=0$
           \item<6->Independent
           \item<7->Complete
-          \item<8->Equivalent definition of cluster state
+          \item<8->Equivalent definitions of cluster state
+            \begin{itemize}
+            \item<-7,9-> Apply full $\mathcal{S}$ and measure $\sigma_z$'s on removed sites
+            \item<-7,10-> Apply partial $\mathcal{S}$ and apply $\sigma_z$'s on remaining sites
+            \item<-7,11-> Eigenstates of all $K_a$
+            \end{itemize}
           \end{itemize}
         };
       }
@@ -510,25 +533,29 @@
       at (-1.5, 0) {$U_1$\\\scriptsize $|\psi_U\rangle_1$};
       \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (0, 0) {};
       \node[above] at (0, 1)
-      {\footnotesize $|\psi_{\rm out}\rangle_1\!\!=\!|\psi_{\rm in}\rangle_2$};
-      \node[draw,minimum height=2cm,minimum width=1.5cm,rounded corners=.2cm,align=center]
-      at (1.5, 0) {$U_2$\\\scriptsize $|\psi_U\rangle_2$};
-      \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (3, 0) {};
-      \node[above] at (3, 1) {\footnotesize $|\psi_{\rm out}\rangle_2$};
+      {\footnotesize \only<-2>{$|\psi_{\rm out}\rangle_1$}
+        \only<3->{$|\psi_{\rm out}\rangle_1\!\!=\!|\psi_{\rm in}\rangle_2$}};
+      \visible<3->{
+        \node[draw,minimum height=2cm,minimum width=1.5cm,rounded corners=.2cm,align=center]
+        at (1.5, 0) {$U_2$\\\scriptsize $|\psi_U\rangle_2$};
+        \node[draw,minimum height=2cm,minimum width=0.4cm,rounded corners=.2cm] at (3, 0) {};
+        \node[above] at (3, 1) {\footnotesize $|\psi_{\rm out}\rangle_2$};
+      }
       \draw (-2.8, 0) -- (-2.25, 0);
       \draw (-0.75, 0) -- (-0.2, 0);
-      \draw (0.2, 0) -- (0.75, 0);
-      \draw (2.25, 0) -- (2.8, 0);
-
       \draw (-2.8, -0.7) -- (-2.25, -0.7);
       \draw (-0.75, -0.7) -- (-0.2, -0.7);
-      \draw (0.2, -0.7) -- (0.75, -0.7);
-      \draw (2.25, -0.7) -- (2.8, -0.7);
-
       \draw (-2.8, 0.7) -- (-2.25, 0.7);
       \draw (-0.75, 0.7) -- (-0.2, 0.7);
-      \draw (0.2, 0.7) -- (0.75, 0.7);
-      \draw (2.25, 0.7) -- (2.8, 0.7);
+
+      \visible<3->{
+        \draw (0.2, 0) -- (0.75, 0);
+        \draw (2.25, 0) -- (2.8, 0);
+        \draw (0.2, -0.7) -- (0.75, -0.7);
+        \draw (2.25, -0.7) -- (2.8, -0.7);
+        \draw (0.2, 0.7) -- (0.75, 0.7);
+        \draw (2.25, 0.7) -- (2.8, 0.7);
+      }
 
       \visible<2->{
         \node[draw,blue,rounded corners=.1cm,inner sep = 0.08cm,align=center]
@@ -585,7 +612,16 @@
         \end{align*}
       };
       \visible<2->{
-        \node[align=left,text width=9cm] at (0, -2) {
+        \node[draw,minimum height=1cm,minimum width=1.7cm,rounded corners=.1cm] (RG)
+        at (-1, -2) {$\sigma_x/\!\!-\!\!\ui\sigma_y$};
+        \node[draw,minimum height=1cm,minimum width=1cm,rounded corners=.1cm] (HG)
+        at (1, -2) {$H$};
+        \draw[line width=0.7] (-2.5, -2) -- (-1.85, -2);
+        \draw[line width=0.7] (-0.15, -2) -- (0.5, -2);
+        \draw[line width=0.7] (1.5, -2) -- (2.15, -2);
+      }
+      \visible<3->{
+        \node[align=left,text width=9cm] at (0, -4) {
           Single qubit rotation: Measure $\sigma_x\cos\theta+\sigma_y\sin\theta$
         };
       }
@@ -611,6 +647,7 @@
         \visible<2->{
           \draw[blue,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
           (0, -1) to[bend left] node[left] {\small C-$\sigma_z$} (0, 0);
+          \node at (4, 2) {$\displaystyle \mathcal{S}=\bigotimes\begin{pmatrix}1&&&\\&1&&\\&&-1&\\&&&1\\\end{pmatrix}$};
         }
         \visible<3->{
           \draw[red,dotted,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
