@@ -600,18 +600,41 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Gates and Single Qubit Operations}
+\begin{frame}{Gates and Single Qubit Operations (Single Qubit)}
   \begin{center}
     \begin{tikzpicture}
       \node[align=left,text width=9cm] at (0, 0) {
-        Single qubit propagation: Measure $\sigma_x$
-        \begin{align*}
-          \mathcal{S}\paren{a|0\rangle_1+b|1\rangle_1}|+\rangle_2
-          =&|+\rangle_1\paren{a|-\rangle_2+b|+\rangle_2}\\
-           &+|-\rangle_1\paren{a|-\rangle_2-b|+\rangle_2}
-        \end{align*}
+        Propagation: Measure $\sigma_x$
+        {
+          \visible<4->{
+            \begin{align*}
+              \mathcal{S}\paren{a|0\rangle_1+b|1\rangle_1}|+\rangle_2
+              =&|+\rangle_1\paren{a|-\rangle_2+b|+\rangle_2}\\
+               &+|-\rangle_1\paren{a|-\rangle_2-b|+\rangle_2}
+            \end{align*}
+          }
+        }
       };
-      \visible<2->{
+      \begin{scope}[shift={(3.1, 1.8)}]
+        \visible<2->{
+          \draw[line width=1] (-1, 0) -- node[above,blue] {\small $\mathcal{S}$}
+          node[below=0.5cm,blue!80!black] {\small Step 1} (0, 0);
+          \fill[red] (-1, 0) circle (0.2cm) node[white] {\footnotesize $\psi_i$};
+          \fill[red] (0, 0) circle (0.2cm);
+        }
+
+        \visible<3->{
+          \draw[line width=1] (0.8, 0) --
+          node[below=0.5cm,blue!80!black] {\small Step 2} (1.8, 0);
+          \fill[red] (0.8, 0) circle (0.2cm)
+          node[above=0.21cm,blue,align=center,
+          execute at begin node=\setlength{\baselineskip}{7pt}]
+          {\footnotesize Measure\\\small $\sigma_x$};
+          \fill[red] (1.8, 0) circle (0.2cm) node[white] {\footnotesize $\psi_o$};
+        }
+      \end{scope}
+
+      \visible<5->{
         \node[draw,minimum height=1cm,minimum width=1.7cm,rounded corners=.1cm] (RG)
         at (-1, -2) {$\sigma_x/\!\!-\!\!\ui\sigma_y$};
         \node[draw,minimum height=1cm,minimum width=1cm,rounded corners=.1cm] (HG)
@@ -620,40 +643,100 @@
         \draw[line width=0.7] (-0.15, -2) -- (0.5, -2);
         \draw[line width=0.7] (1.5, -2) -- (2.15, -2);
       }
-      \visible<3->{
+      \visible<6->{
         \node[align=left,text width=9cm] at (0, -4) {
-          Single qubit rotation: Measure $\sigma_x\cos\theta+\sigma_y\sin\theta$
+          Rotation: Measure $\sigma_x\cos\theta+\sigma_y\sin\theta$
         };
       }
     \end{tikzpicture}
   \end{center}
 \end{frame}
 
-\begin{frame}{Gates and Single Qubit Operations}
+\begin{frame}{Gates and Single Qubit Operations (CNOT)}
   \begin{center}
     \begin{tikzpicture}
-      \node at (0, 0) {CNOT};
-
-      \begin{scope}[shift={(0, -2)}]
-        \draw[line width=1] (-1, 0) -- (1, 0);
-        \draw[line width=1] (0, 0) -- (0, -1);
-        \fill[red] (-1, 0) circle (0.15cm) node[white] {$z$}
+      \begin{scope}[shift={(-4, 3)}]
+        \draw[line width=1] (-1, 0) -- node[blue,above] {\small $\mathcal{S}$} (0, 0)
+        -- node[blue,above] {\small $\mathcal{S}$} (1, 0);
+        \draw[line width=1] (0, 0) -- node[blue,right] {\small $\mathcal{S}$} (0, -1);
+        \fill[red] (-1, 0) circle (0.17cm) node[white] {\scriptsize $\psi_i$}
         node[black,left=0.2] {\scriptsize target};
-        \fill[blue] (0, 0) circle (0.15cm) node[white] {$x$};
-        \fill[red] (1, 0) circle (0.15cm) node[white] {$z$};
-        \fill[red] (0, -1) circle (0.15cm) node[white] {$z$}
+        \fill[red] (0, 0) circle (0.17cm);
+        \fill[red] (1, 0) circle (0.17cm);
+        \fill[red] (0, -1) circle (0.17cm)
         node[black,left=0.2] {\scriptsize control};
-
-        \visible<2->{
-          \draw[blue,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
-          (0, -1) to[bend left] node[left] {\small C-$\sigma_z$} (0, 0);
-          \node at (4, 2) {$\displaystyle \mathcal{S}=\bigotimes\begin{pmatrix}1&&&\\&1&&\\&&-1&\\&&&1\\\end{pmatrix}$};
-        }
-        \visible<3->{
-          \draw[red,dotted,->,>=stealth,line width=1.5,shorten <=0.15cm,shorten >=0.1cm]
-          (0, -1) to[bend right=50] node[right=0.2cm] {\small C-$\sigma_x$,i.e. CNOT} (1, 0);
-        }
       \end{scope}
+      \begin{scope}[shift={(0, 3)}]
+        \draw[line width=1] (-1, 0) -- (0, 0) -- (1, 0);
+        \draw[line width=1] (0, 0) -- (0, -1);
+        \fill[red] (-1, 0) circle (0.17cm)
+        node[above=0.2cm,blue,align=center,
+        execute at begin node=\setlength{\baselineskip}{7pt}]
+        {\footnotesize Measure\\\small $\sigma_x$};
+        \fill[red] (0, 0) circle (0.17cm);
+        \fill[red] (1, 0) circle (0.17cm);
+        \fill[red] (0, -1) circle (0.17cm);
+      \end{scope}
+      \begin{scope}[shift={(4, 3)}]
+        \draw[line width=1] (-1, 0) -- (0, 0) -- (1, 0);
+        \draw[line width=1] (0, 0) -- (0, -1);
+        \fill[red] (-1, 0) circle (0.17cm);
+        \fill[red] (0, 0) circle (0.17cm)
+        node[above=0.2cm,blue,align=center,
+        execute at begin node=\setlength{\baselineskip}{7pt}]
+        {\footnotesize Measure\\\small $\sigma_x$};
+        \fill[red] (1, 0) circle (0.17cm) node[white] {\scriptsize $\psi_o$};
+        \fill[red] (0, -1) circle (0.17cm);
+      \end{scope}
+
+      \draw[->,>=stealth,line width=2] (-5.5, 1.5) -- (5.5, 1.5);
+
+      \visible<2->{
+        \begin{scope}[shift={(-4.2, 0)}]
+          \draw[line width=1] (-1, 0) -- node[blue,above] {\small $\mathcal{S}$} (0, 0) -- (1, 0);
+          \draw[line width=1] (0, 0) -- (0, -1);
+          \fill[red] (-1, 0) circle (0.17cm) node[white] {$z$}
+          node[above=0.2cm,blue,align=center,
+          execute at begin node=\setlength{\baselineskip}{7pt}]
+          {\footnotesize Measure\\\small $\sigma_x$};
+          \fill[blue] (0, 0) circle (0.17cm) node[white] {$x$};
+          \fill[red] (1, 0) circle (0.17cm);
+          \fill[red] (0, -1) circle (0.17cm) node[white] {$z$};
+        \end{scope}
+      }
+
+      \visible<3->{
+        \begin{scope}[shift={(-0.5, 0)}]
+          \draw[line width=1] (0, 0) -- (1, 0);
+          \draw[line width=1] (0, 0) --
+          node[blue,right] {\small $\mathcal{S}\!=\!\text{C-}\sigma_z$} (0, -1);
+          \draw[red,fill=white] (-1, 0) circle (0.17cm);
+          \fill[blue] (0, 0) circle (0.17cm) node[white] {$x$};
+          \fill[red] (1, 0) circle (0.17cm);
+          \fill[red] (0, -1) circle (0.17cm) node[white] {$z$};
+
+          \node at (0, -2.5) {\footnotesize $\displaystyle \mathcal{S}=\bigotimes\begin{pmatrix}1&&&\\&1&&\\&&-1&\\&&&1\\\end{pmatrix}$};
+        \end{scope}
+      }
+
+      \visible<4->{
+        \begin{scope}[shift={(3.2, 0)}]
+          \draw[line width=1] (0, 0) --
+          node[blue,above] {\small $\mathcal{S}$} (1, 0);
+          \draw[line width=1] (0, 0) -- (0, -1);
+          \draw[red,fill=white] (-1, 0) circle (0.17cm);
+          \fill[blue] (0, 0) circle (0.17cm) node[white] {\small $x'$}
+          node[above=0.2cm,blue,align=center,
+          execute at begin node=\setlength{\baselineskip}{7pt}]
+          {\footnotesize Measure\\\small $\sigma_x$};
+          \fill[red] (1, 0) circle (0.17cm) node[white] {\small $z'$};
+          \fill[red] (0, -1) circle (0.17cm) node[white] {$z$};
+
+          \draw[red,dotted,->,>=stealth,line width=1.5,shorten <=0.17cm,shorten >=0.17cm]
+          (0, -1) to[bend right=50]
+          node[below right,pos=0.2] {\footnotesize C-$\sigma_x$, i.e. CNOT} (1, 0);
+        \end{scope}
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
