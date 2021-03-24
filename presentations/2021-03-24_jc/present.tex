@@ -1,0 +1,321 @@
+\documentclass[xcolor={table}]{beamer}
+\mode<presentation>{
+  \usetheme{Boadilla}
+  \usefonttheme[onlylarge]{structurebold}
+  \usefonttheme[stillsansseriflarge]{serif}
+  \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+  % \setbeamertemplate{navigation symbols}{}
+  \setbeamercovered{transparent}
+}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{esint}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xkeyval}
+\usepackage{xargs}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{multimedia}
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+\usepackage{bm}
+\usepackage{siunitx}
+\usepackage{xcolor,pifont}
+\usepackage{upgreek}
+
+\usetikzlibrary{
+  arrows,
+  calc,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.markings,
+  fadings,
+  positioning,
+  shapes,
+  arrows.meta
+}
+\usepgfmodule{oo}
+
+\pgfdeclareradialshading{glow2}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(2mm)=(white);
+  color(8mm)=(black);
+  color(10mm)=(black)
+}
+\pgfdeclareradialshading{glow}{\pgfpoint{0cm}{0cm}}{
+  color(0mm)=(white);
+  color(5mm)=(white);
+  color(9mm)=(black);
+  color(10mm)=(black)
+}
+
+\begin{tikzfadingfrompicture}[name=glow fading]
+  \shade [shading=glow] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\begin{tikzfadingfrompicture}[name=glow2 fading]
+  \shade [shading=glow2] (0,0) circle (1);
+\end{tikzfadingfrompicture}
+
+\mode<handout>{
+  \usepackage{pgfpages}
+  \pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+  \setbeamercolor{background canvas}{bg=black!10}
+}
+
+\newcommand\pgfmathsinandcos[3]{%
+  \pgfmathsetmacro#1{sin(#3)}%
+  \pgfmathsetmacro#2{cos(#3)}%
+}
+\newcommand\LongitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % azimuth
+  \tikzset{#1/.estyle={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
+}
+\newcommand\LatitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % latitude
+  \pgfmathsetmacro\yshift{\cosEl*\sint}
+  \tikzset{#1/.estyle={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
+}
+\newcommand\DrawLongitudeCircle[2][1]{
+  \LongitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1);
+  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1);
+}
+\newcommand\DrawLatitudeCircleArrow[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane,decoration={markings, mark=at position 0.6 with {\arrow{<}}},postaction={decorate},line width=.6mm] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed,line width=.6mm] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\DrawLatitudeCircle[2][1]{
+  \LatitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={scale=#1}}
+  \pgfmathsetmacro\sinVis{sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+  % angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}
+  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1);
+  \draw[current plane,dashed] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\coil[1]{
+  {\rh * cos(\t * pi r)}, {\apart * (2 * #1 + \t) + \rv * sin(\t * pi r)}
+}
+\makeatletter
+\define@key{DrawFromCenter}{style}[{->}]{
+  \tikzset{DrawFromCenterPlane/.style={#1}}
+}
+\define@key{DrawFromCenter}{r}[1]{
+  \def\@R{#1}
+}
+\define@key{DrawFromCenter}{center}[(0, 0)]{
+  \def\@Center{#1}
+}
+\define@key{DrawFromCenter}{theta}[0]{
+  \def\@Theta{#1}
+}
+\define@key{DrawFromCenter}{phi}[0]{
+  \def\@Phi{#1}
+}
+\presetkeys{DrawFromCenter}{style, r, center, theta, phi}{}
+\newcommand*\DrawFromCenter[1][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY);
+  }
+}
+\newcommand*\DrawFromCenterText[2][]{
+  \setkeys{DrawFromCenter}{#1}{
+    \pgfmathsinandcos\sint\cost{\@Theta}
+    \pgfmathsinandcos\sinp\cosp{\@Phi}
+    \pgfmathsinandcos\sinA\cosA{\angEl}
+    \pgfmathsetmacro\DX{\@R*\cost*\cosp}
+    \pgfmathsetmacro\DY{\@R*(\cost*\sinp*\sinA+\sint*\cosA)}
+    \draw[DrawFromCenterPlane] \@Center -- ++(\DX, \DY) node {#2};
+  }
+}
+\makeatother
+
+% not mandatory, but I though it was better to set it blank
+\setbeamertemplate{headline}{}
+\def\beamer@entrycode{\vspace{-\headheight}}
+
+\tikzstyle{snakearrow} = [decorate, decoration={pre length=0.2cm,
+  post length=0.2cm, snake, amplitude=.4mm,
+  segment length=2mm},thick, ->]
+
+%% document-wide tikz options and styles
+
+\tikzset{%
+  % >=latex, % option for nice arrows
+  inner sep=0pt,%
+  outer sep=2pt,%
+  mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
+    fill=black,circle}%
+}
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, very thick,
+    text width=8em,
+    minimum height=2.5em,
+    text centered},
+}
+
+\tikzset{onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+    % \pgfkeysalso doesn't change the path
+  }}
+\tikzset{temporal/.code args={<#1>#2#3#4}{%
+    \temporal<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}{\pgfkeysalso{#4}}
+    % \pgfkeysalso doesn't change the path
+  }}
+
+\makeatletter
+\newbox\@backgroundblock
+\newenvironment{backgroundblock}[2]{%
+  \global\setbox\@backgroundblock=\vbox\bgroup%
+  \unvbox\@backgroundblock%
+  \vbox to0pt\bgroup\vskip#2\hbox to0pt\bgroup\hskip#1\relax%
+}{\egroup\egroup\egroup}
+\addtobeamertemplate{background}{\box\@backgroundblock}{}
+\makeatother
+
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\ue}{\mathrm{e}}
+\newcommand{\ui}{\mathrm{i}}
+\newcommand{\Na}{\mathrm{Na}}
+\newcommand{\Cs}{\mathrm{Cs}}
+\newcommand{\abs}[1]{{\left|{#1}\right|}}
+\newcommand{\paren}[1]{{\left({#1}\right)}}
+
+% \def\timeleft{15:00->14:55}
+
+\title{Emergent Randomness and Benchmarking from Many-Body Quantum Chaos}
+\date{Mar. 24, 2021}
+\author{Yichao Yu}
+\institute{Ni Group}
+
+\ifpdf
+% Ensure reproducible output
+\pdfinfoomitdate=1
+\pdfsuppressptexinfo=-1
+\pdftrailerid{}
+\hypersetup{
+  pdfcreator={},
+  pdfproducer={}
+}
+\fi
+
+\begin{document}
+
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+\begin{frame}{}
+  \begin{center}
+    \begin{columns}
+      \column{9cm}
+      \begin{itemize}
+      \item Experimental observation of thermalization
+      \item Projected state ensemble
+      \item Application
+      \end{itemize}
+    \end{columns}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{Experiment}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<-5>{
+        \node[left] at (0, 0) {\includegraphics[width=6.5cm]{fig1.pdf}};
+      }
+      \visible<6->{
+        \node[left] at (0, 0) {\includegraphics[width=6cm]{fig2.pdf}};
+      }
+      \node[right,align=center,text width=5cm] at (0, 0) {
+        \begin{itemize}
+        \item<1-> Rydberg system with chaotic dynamic
+        \item<2-> A: system, B: Bath
+        \item<3-> Conditional probability $p(z_A|z_B)$
+        \item<4-> Random state vs dephasing
+        \item<5-> $L_A>1$
+        \item<6-> Moments
+          $\displaystyle p^{(k)}\equiv\sum_pp^kP(p)$
+        \item<7-> Independent of system division
+        \end{itemize}
+      };
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{Projected State Ensemble}
+  \begin{center}
+    \begin{tikzpicture}
+      \visible<5->{
+        \node[left] at (0, 0) {\includegraphics[width=6.5cm]{fig3.pdf}};
+      }
+      \node[right,align=center,text width=5cm] at (0, 0) {
+        \begin{itemize}
+        \item<1-> Density matrix:
+          $\rho=\sum p_i|\psi_i\rangle\langle\psi_i|$
+        \item<2-> Choice of $\{p_i, \psi_i\}$ is not unique
+        \item<3-> Full description if the system is all what can be measured
+        \item<4-> Projected state ensemble:\\
+          Determine $\{p_i, \psi_i\}$ by selecting the bath basis.
+        \item<5-> $k$-design
+        \end{itemize}
+      };
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[t]{Application}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[above,align=center,text width=10cm] at (0, 0.5) {
+        \begin{itemize}
+        \item<1-> Useful in quantum cryptography and supremacy test
+        \item<2-> Fidelity estimation
+        \item<3-> $\displaystyle F_c=2\frac{\sum_zp(z)p_0(z)}{\sum_zp_0^2(z)} - 1$
+        \item<4-> Generic?
+        \end{itemize}
+      };
+      \visible<2->{
+        \node[below] at (0, 0) {\includegraphics[width=10cm]{fig4.pdf}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Questions?}
+  \begin{center}
+  \end{center}
+\end{frame}
+
+\end{document}
