@@ -249,9 +249,9 @@
 % % * DC electrodes
 % % * 1-D: require swapping (local 2-D)
 % % * Cooling after transport
+% * Cooling (requirement 4)
 % * Phase tracking (requirement 3)
 % % * Stable qubit and stable drive
-% * Cooling (requirement 4)
 % * Parallelized operation (requirement 5)
 % % * Holistic benchmarks
 % * QV Test
@@ -281,7 +281,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}[t]{Scalable quantum computing platform}
+\begin{frame}{Scalable quantum computing platform}
   \begin{center}
     \begin{tikzpicture}
       \node[draw,red,rounded corners=.2cm,inner sep=0.12cm,align=center] (L1) at (-4, 2)
@@ -326,6 +326,39 @@
         \draw[green!50!black,->,dashed,>=stealth,line width=1] (L2) -- (R5);
         \draw[blue,->,dashed,>=stealth,line width=1] (L3) -- (R5);
       }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Device}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=8cm]{setup}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Gate operation and transport}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=7cm]{sequence}};
+      \visible<2->{
+        \node[text width=6cm] at (0, -3) {
+          \begin{itemize}
+          \item Swapping
+          \item<3-> Cooling with $^{138}\mathrm{Ba}^+$
+          \item<4-> Low crosstalk
+          \end{itemize}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Quantum Volume}
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0, 0) {\includegraphics[width=7cm]{QV}};
     \end{tikzpicture}
   \end{center}
 \end{frame}
