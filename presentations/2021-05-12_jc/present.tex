@@ -214,7 +214,7 @@
 
 % \def\timeleft{15:00->14:55}
 
-\title{Entanglement from tensor networks on a trapped-ion QCCD quantum computer}
+\title[Entanglement from tensor networks]{Entanglement from tensor networks on a trapped-ion QCCD quantum computer}
 \date{May 12, 2021}
 \author{Yichao Yu}
 \institute{Ni Group}
@@ -257,25 +257,31 @@
 % * Expression
 % * Structure
 % * Dimensions
+% * Half infinite system (dimension?)
 \begin{frame}{Matrix product states (MPS)}
   \begin{center}
     \begin{tikzpicture}
-      \node at (0, 0) {$\sum c_{\sigma_1\sigma_2\cdots\sigma_n}|\sigma_1\sigma_2\cdots\sigma_n\rangle$};
+      \node at (0, 0.5) {$\displaystyle\sum_{\sigma_1\sigma_2\cdots\sigma_n}\!\!\!\!c_{\sigma_1\sigma_2\cdots\sigma_n}|\sigma_1\sigma_2\cdots\sigma_n\rangle$};
 
       \visible<2->{
-        \node at (0, -0.7) {$\sum \mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma_n}}|\sigma_1\sigma_2\cdots\sigma_n\rangle$};
+        \node at (0, -0.6) {$\displaystyle\sum_{\sigma_1\sigma_2\cdots\sigma_n}\!\!\!\!\mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma_n}}|\sigma_1\sigma_2\cdots\sigma_n\rangle$};
       }
       \visible<3->{
-        \node at (0, -1.6) {$c_{\sigma_1\sigma_2\cdots\sigma_m\cdots\sigma_n}=\mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma_m}\cdots V_{\sigma_n}}$};
-        \node at (0, -2.3) {$c_{\sigma_1\sigma_2\cdots\sigma'_m\cdots\sigma_n}=\mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma'_m}\cdots V_{\sigma_n}}$};
+        \node at (0, -1.6) {$c_{\sigma_1\sigma_2\cdots\sigma_m\cdots\sigma_n}\!\!=\!\mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma_m}\cdots V_{\sigma_n}}$};
+        \node at (0, -2.3) {$c_{\sigma_1\sigma_2\cdots\sigma'_m\cdots\sigma_n}\!\!=\!\mathrm{Tr}\paren{V_{\sigma_1}V_{\sigma_2}\cdots V_{\sigma'_m}\cdots V_{\sigma_n}}$};
       }
-      \visible<4->{
+      \visible<6->{
         \node[align=left] at (0, -3.5)
+        {$\displaystyle\sum_{\sigma_1\sigma_2\cdots}\!\!LV_{\sigma_1}V_{\sigma_2}\cdots|\sigma_1\sigma_2\cdots\rangle$};
+      }
+
+      \visible<4->{
+        \node[align=left] at (6, -1.5)
         {Minimum matrix dimension:\\
-          related to the entanglement in the system};
+          \hspace{0.4cm}entanglement in the system};
       }
       \visible<5->{
-        \node[align=left] at (0, -4.5) {Exploding structure in the state};
+        \node[align=left] at (6, -2.5) {Exploding structure in the state};
       }
     \end{tikzpicture}
   \end{center}
@@ -283,7 +289,54 @@
 
 \begin{frame}{Simulation of MPS}
   \begin{center}
+    \vspace{-1cm}
     \begin{tikzpicture}
+      \node[align=left] at (-3, 0) {$c_{\sigma_1\sigma_2\cdots}=LV_{\sigma_1}V_{\sigma_2}\cdots$};
+      \visible<3->{
+        \node[align=left] at (-3, -1) {$\langle L_\beta|V_\sigma|L_\alpha\rangle$};
+      }
+      \visible<4->{
+        \node[align=left] at (-3, -2) {$\langle\sigma_i|\langle L_\beta|U|L_\alpha\rangle|0_i\rangle$};
+      }
+      \visible<6->{
+        \node[below] at (-3, -2.5) {\includegraphics[width=4.423cm]{embedding_chain.pdf}};
+      }
+      \visible<2->{
+        \node[align=left] at (3, 0.5) {$L$ as fictitious state};
+      }
+      \visible<3->{
+        \node[align=left] at (3, -0.5) {$V$ as operator on the fictitious space};
+      }
+      \visible<4->{
+        \node[align=left] at (3, -1.5) {Embedding into the product space};
+      }
+      \visible<5->{
+        \node[align=left] at (3, -2.8) {State $U|L_\alpha\rangle|0_i\rangle$ carries info about\\
+          site $i$ in the ``physical subspace''.};
+      }
+      \visible<4->{
+        \node[below] at (3, -3.5) {\includegraphics[width=4cm]{embedding.pdf}};
+      }
+      \visible<7->{
+        \node[below] at (0.3, -6) {\includegraphics[width=8.18cm]{chain_reuse.pdf}};
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% rho_A is fully determined after we cross the dashed line
+\begin{frame}{Entanglement spectrum}
+  \begin{center}
+    \vspace{-0.4cm}
+    \begin{tikzpicture}
+      \node[align=left] at (-3, 0)
+      {Eigenvalues of $\rho_A=\mathrm{Tr}_B(|\Psi\rangle\langle\Psi|)$};
+      \visible<2->{
+        \node at (3, 0) {\includegraphics[width=4.4802cm]{chain_cut.pdf}};
+      }
+      \visible<3->{
+        \node at (0, -3.5) {\includegraphics[width=8.89762034210196cm]{chain_cut_reuse.pdf}};
+      }
     \end{tikzpicture}
   \end{center}
 \end{frame}
